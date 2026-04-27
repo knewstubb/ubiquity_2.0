@@ -1,0 +1,296 @@
+/* Auto-generated from Figma tokens — do not edit manually */
+/* Run: node scripts/generate-tokens.mjs */
+:root {
+  /* ── zinc ── */
+  --color-zinc-50: #FAFAFA;
+  --color-zinc-100: #F4F4F5;
+  --color-zinc-200: #E4E4E7;
+  --color-zinc-300: #D4D4D8;
+  --color-zinc-400: #A1A1AA;
+  --color-zinc-500: #71717A;
+  --color-zinc-600: #52525B;
+  --color-zinc-700: #3F3F46;
+  --color-zinc-800: #27272A;
+  --color-zinc-900: #18181B;
+  --color-zinc-950: #09090B;
+
+  /* ── mint ── */
+  --color-mint-50: #E6F9F5;
+  --color-mint-100: #B3EDE0;
+  --color-mint-200: #80E0CB;
+  --color-mint-300: #4DD4B6;
+  --color-mint-400: #26C79D;
+  --color-mint-500: #14B88A;
+  --color-mint-600: #10A078;
+  --color-mint-700: #0D8866;
+  --color-mint-800: #0A7054;
+  --color-mint-900: #075842;
+  --color-mint-950: #043D2E;
+
+  /* ── red ── */
+  --color-red-50: #FEF2F2;
+  --color-red-100: #FEE2E2;
+  --color-red-200: #FECACA;
+  --color-red-300: #FCA5A5;
+  --color-red-400: #F87171;
+  --color-red-500: #EF4444;
+  --color-red-600: #DC2626;
+  --color-red-700: #B91C1C;
+  --color-red-800: #991B1B;
+  --color-red-900: #7F1D1D;
+  --color-red-950: #450A0A;
+
+  /* ── orange ── */
+  --color-orange-50: #FFF7ED;
+  --color-orange-100: #FFEDD5;
+  --color-orange-200: #FED7AA;
+  --color-orange-300: #FDBA74;
+  --color-orange-400: #FB923C;
+  --color-orange-500: #F97316;
+  --color-orange-600: #EA580C;
+  --color-orange-700: #C2410C;
+  --color-orange-800: #9A3412;
+  --color-orange-900: #7C2D12;
+  --color-orange-950: #431407;
+
+  /* ── amber ── */
+  --color-amber-50: #FFFBEB;
+  --color-amber-100: #FEF3C7;
+  --color-amber-200: #FDE68A;
+  --color-amber-300: #FCD34D;
+  --color-amber-400: #FBBF24;
+  --color-amber-500: #F59E0B;
+  --color-amber-600: #D97706;
+  --color-amber-700: #B45309;
+  --color-amber-800: #92400E;
+  --color-amber-900: #78350F;
+  --color-amber-950: #451A03;
+
+  /* ── purple ── */
+  --color-purple-50: #FAF5FF;
+  --color-purple-100: #F3E8FF;
+  --color-purple-200: #E9D5FF;
+  --color-purple-300: #D8B4FE;
+  --color-purple-400: #C084FC;
+  --color-purple-500: #A855F7;
+  --color-purple-600: #9333EA;
+  --color-purple-700: #7E22CE;
+  --color-purple-800: #6B21A8;
+  --color-purple-900: #581C87;
+  --color-purple-950: #3B0764;
+
+  /* ── blue ── */
+  --color-blue-50: #EFF6FF;
+  --color-blue-100: #DBEAFE;
+  --color-blue-200: #BFDBFE;
+  --color-blue-300: #93C5FD;
+  --color-blue-400: #60A5FA;
+  --color-blue-500: #3B82F6;
+  --color-blue-600: #2563EB;
+  --color-blue-700: #1D4ED8;
+  --color-blue-800: #1E40AF;
+  --color-blue-900: #1E3A8A;
+  --color-blue-950: #172554;
+
+  /* ── sky ── */
+  --color-sky-50: #F0F9FF;
+  --color-sky-100: #E0F2FE;
+  --color-sky-200: #BAE6FD;
+  --color-sky-300: #7DD3FC;
+  --color-sky-400: #38BDF8;
+  --color-sky-500: #0EA5E9;
+  --color-sky-600: #0284C7;
+  --color-sky-700: #0369A1;
+  --color-sky-800: #075985;
+  --color-sky-900: #0C4A6E;
+  --color-sky-950: #053652;
+
+  /* ── Primaries ── */
+  --color-primary: #14B88A;
+
+  /* ── Semantic ── */
+  --color-success: #14B88A;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #38BDF8;
+
+  /* ── Text ── */
+  --color-text-primary: #27272A;
+  --color-text-secondary: #52525B;
+  --color-text-tertiary: #A1A1AA;
+  --color-text-disabled: #D4D4D8;
+  --color-text-inverse: #FAFAFA;
+
+  /* ── Surfaces ── */
+  --color-surface-base: #FAFAFA;
+  --color-surface-surface: #F4F4F5;
+  --color-surface-work-item: #E4E4E7;
+  --color-surface-overlay: rgba(0, 0, 0, 0.30);
+  --color-surface-primary-subtle: #E6F9F5;
+
+  /* ── Borders ── */
+  --color-border-default: #D4D4D8;
+  --color-border-hover: #A1A1AA;
+  --color-border-focus: #14B88A;
+
+  /* ── Action Colours ── */
+  --action-bg-primary: #14B88A;
+  --action-bg-primary-hover: #10A078;
+  --action-bg-secondary: #F4F4F5;
+  --action-bg-secondary-hover: #E4E4E7;
+  --action-bg-disabled: #F4F4F5;
+  --action-border-default: #D4D4D8;
+  --action-border-hover: #A1A1AA;
+  --action-border-focus: #14B88A;
+  --action-border-disabled: #E4E4E7;
+  --action-text-primary: #FFFFFF;
+  --action-text-secondary: #3F3F46;
+  --action-text-disabled: #A1A1AA;
+
+  /* ── Icon Colours ── */
+  --icon-icon-primary: #3F3F46;
+  --icon-icon-inverse: #FAFAFA;
+  --icon-icon-secondary: #71717A;
+  --icon-icon-tertiary: #A1A1AA;
+  --icon-icon-destructive: #EF4444;
+  --icon-icon-brand: #14B88A;
+  --icon-icon-disabled: #D4D4D8;
+
+  /* ── Status Colours ── */
+  --status-success-bg: #E6F9F5;
+  --status-success-text: #0D8866;
+  --status-success-border: #80E0CB;
+  --status-warning-bg: #FFFBEB;
+  --status-warning-text: #B45309;
+  --status-warning-border: #FDE68A;
+  --status-error-bg: #FEF2F2;
+  --status-error-text: #B91C1C;
+  --status-error-border: #FECACA;
+  --status-info-bg: #F0F9FF;
+  --status-info-text: #0369A1;
+  --status-info-border: #BAE6FD;
+
+  /* ── Spacing ── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* ── Radius ── */
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* ── Font Family ── */
+  --font-family-primary: 'Inter', sans-serif;
+  --font-family-mono: 'JetBrains Mono', sans-serif;
+
+  /* ── Font Size ── */
+  --font-xxs: 10px;
+  --font-xs: 12px;
+  --font-sm: 14px;
+  --font-base: 16px;
+  --font-lg: 18px;
+  --font-xl: 20px;
+  --font-2xl: 24px;
+  --font-3xl: 30px;
+  --font-4xl: 36px;
+  --font-5xl: 48px;
+
+  /* ── Font Weight ── */
+  --weight-light: 300;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ── Line Height ── */
+  --leading-tight: 1.2000000476837158;
+  --leading-base: 1.5;
+  --leading-relaxed: 1.75;
+  --leading-loose: 2;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  /* ── Border Width ── */
+  --border-none: 0px;
+  --border-thin: 1px;
+  --border-medium: 2px;
+  --border-thick: 4px;
+
+}
+
+/* ══ Backward-compatible aliases ══ */
+/* Map old --color-grey-* to Figma --color-zinc-* */
+/* Map old --color-primary-* to Figma --color-mint-* */
+/* Remove these once components are migrated to new names */
+:root {
+  --color-grey-50: var(--color-zinc-50);
+  --color-grey-100: var(--color-zinc-100);
+  --color-grey-200: var(--color-zinc-200);
+  --color-grey-300: var(--color-zinc-300);
+  --color-grey-400: var(--color-zinc-400);
+  --color-grey-500: var(--color-zinc-500);
+  --color-grey-600: var(--color-zinc-600);
+  --color-grey-700: var(--color-zinc-700);
+  --color-grey-800: var(--color-zinc-800);
+  --color-grey-900: var(--color-zinc-900);
+  --color-grey-950: var(--color-zinc-950);
+
+  --color-primary-50: var(--color-mint-50);
+  --color-primary-100: var(--color-mint-100);
+  --color-primary-200: var(--color-mint-200);
+  --color-primary-300: var(--color-mint-300);
+  --color-primary-400: var(--color-mint-400);
+  --color-primary-500: var(--color-mint-500);
+  --color-primary-600: var(--color-mint-600);
+  --color-primary-700: var(--color-mint-700);
+  --color-primary-800: var(--color-mint-800);
+  --color-primary-900: var(--color-mint-900);
+  --color-primary-950: var(--color-mint-950);
+
+  /* Semantic aliases */
+  --color-bg: var(--color-zinc-50);
+  --color-surface: var(--color-zinc-100);
+  --color-border: var(--color-zinc-300);
+  --color-text-primary: var(--color-zinc-800);
+  --color-text-secondary: var(--color-zinc-600);
+  --color-text-muted: var(--color-zinc-500);
+  --color-text-inverse: var(--color-zinc-50);
+  --color-success: var(--color-mint-500);
+  --color-success-light: var(--color-mint-50);
+  --color-warning: var(--color-amber-500, #F59E0B);
+  --color-warning-light: var(--color-amber-50, #FFFBEB);
+  --color-error: var(--color-red-500);
+  --color-error-light: var(--color-red-50);
+  --color-info: var(--color-sky-400, #38BDF8);
+  --color-info-light: var(--color-sky-50, #F0F9FF);
+  --color-focus: var(--color-mint-500);
+  --shadow-focus: 0 0 0 2px rgba(20, 184, 138, 0.2);
+
+  /* Numeric spacing aliases */
+  --space-0: 0;
+  --space-1: var(--space-xs);
+  --space-2: var(--space-sm);
+  --space-3: 12px;
+  --space-4: var(--space-md);
+  --space-5: 20px;
+  --space-6: var(--space-lg);
+  --space-7: var(--space-xl);
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+  --space-15: 15px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease-in-out;
+  --transition-slow: 300ms ease;
+}

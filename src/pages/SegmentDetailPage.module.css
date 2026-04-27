@@ -1,0 +1,83 @@
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-sm);
+  color: var(--color-primary-500);
+  text-decoration: none;
+  margin-bottom: var(--space-4);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.segmentHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.segmentName {
+  font-size: var(--font-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.typeBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+}
+
+.smart {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
+
+.manual {
+  background-color: var(--color-zinc-100);
+  color: var(--color-zinc-600);
+}
+
+.memberCount {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.manualLabel {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-bottom: var(--space-3);
+}
+
+.section {
+  margin-top: var(--space-6);
+}
+
+.sectionTitle {
+  font-size: var(--font-base);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.notFound {
+  text-align: center;
+  padding: var(--space-10) 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-base);
+}

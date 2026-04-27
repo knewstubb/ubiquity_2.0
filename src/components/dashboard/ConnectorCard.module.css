@@ -1,0 +1,157 @@
+/* Connector row — flat horizontal layout */
+.card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-1) var(--space-4);
+  height: 44px;
+  border: 1px solid var(--color-grey-300);
+  border-radius: var(--radius-lg);
+  background: var(--color-grey-100);
+  cursor: pointer;
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+  user-select: none;
+}
+
+/* Status-based styles */
+.cardActive {
+  border-color: rgb(20, 184, 138);
+  background: rgb(240, 251, 249);
+}
+
+.cardPaused {
+  border-color: rgb(212, 212, 212);
+  background: rgb(245, 245, 245);
+}
+
+.cardError {
+  border-color: rgb(239, 68, 68);
+  background: rgb(254, 242, 242);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.name {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.badges {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.directionBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+  background-color: var(--color-grey-100);
+  color: var(--color-grey-700);
+  text-transform: capitalize;
+}
+
+.schedule {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.overflowButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  position: relative;
+}
+
+.overflowButton:hover {
+  background-color: var(--color-grey-100);
+  color: var(--color-text-primary);
+}
+
+.overflowButton:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.overflowMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 10;
+  min-width: 120px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-1) 0;
+}
+
+.menuItem {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  background: transparent;
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.menuItem:hover {
+  background-color: var(--color-grey-50);
+}
+
+.menuItem:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: -2px;
+  background-color: var(--color-grey-50);
+}
+
+.menuItemDanger {
+  color: var(--color-error);
+}
+
+.menuItemDanger:hover {
+  background-color: var(--color-error-light);
+}

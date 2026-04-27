@@ -1,0 +1,30 @@
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+}
+
+.active {
+  background-color: #e6f7f2;
+  color: #14B88A;
+}
+
+.paused {
+  background-color: #fef3c7;
+  color: #F59E0B;
+}
+
+.draft {
+  background-color: #f4f4f5;
+  color: #A1A1AA;
+}
+
+.completed {
+  background-color: #dcfce7;
+  color: #22C55E;
+}

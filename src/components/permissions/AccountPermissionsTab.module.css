@@ -1,0 +1,107 @@
+.container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Left sidebar */
+.sidebar {
+  border-right: 1px solid var(--color-zinc-200);
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sidebarHeading {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-2) 0;
+  padding: 0 var(--space-2);
+}
+
+/* Right main area */
+.main {
+  padding: var(--space-6);
+  overflow-y: auto;
+}
+
+/* Empty state */
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-base);
+  color: var(--color-text-muted);
+}
+
+/* Header area */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.heading {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.subtitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: var(--leading-normal);
+}
+
+/* Manage Users button */
+.manageButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-500);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-inverse);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.manageButton:hover {
+  background-color: var(--color-primary-600);
+}
+
+.manageButton:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* User cards list */
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}

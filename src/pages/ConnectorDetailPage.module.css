@@ -1,0 +1,196 @@
+/* ConnectorDetailPage — read-only connector configuration view */
+
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-6);
+  min-width: 0;
+}
+
+@media (min-width: 1280px) {
+  .page {
+    max-width: 1120px;
+  }
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-sm);
+  color: var(--color-primary-500);
+  text-decoration: none;
+  margin-bottom: var(--space-5);
+}
+
+.backLink:hover {
+  color: var(--color-primary-700);
+  text-decoration: underline;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-7);
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.title {
+  font-size: var(--font-xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.editButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary-500);
+  color: var(--color-text-inverse);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background var(--transition-fast);
+}
+
+.editButton:hover {
+  background: var(--color-primary-600);
+}
+
+.editButton:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.deleteButton {
+  padding: var(--space-2) var(--space-4);
+  background: none;
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.deleteButton:hover {
+  background: var(--color-error);
+  color: var(--color-text-inverse);
+}
+
+.deleteButton:focus-visible {
+  outline: 2px solid var(--color-error);
+  outline-offset: 2px;
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.section {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+}
+
+.sectionTitle {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.sectionValue {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.fieldList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.fieldItem {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+.fieldIndex {
+  color: var(--color-text-muted);
+  margin-right: var(--space-2);
+  min-width: 20px;
+  display: inline-block;
+}
+
+.optionRow {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-1) 0;
+}
+
+.optionLabel {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.optionValue {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notFound {
+  text-align: center;
+  padding: var(--space-10) 0;
+}
+
+.notFoundTitle {
+  font-size: var(--font-lg);
+  font-weight: var(--weight-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.notFoundText {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-5) 0;
+}

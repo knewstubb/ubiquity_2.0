@@ -1,0 +1,119 @@
+.input {
+  width: 100%;
+  min-width: 140px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  line-height: var(--leading-base);
+}
+
+.input:hover {
+  border-color: var(--color-zinc-400);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: var(--shadow-focus);
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.betweenRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.betweenLabel {
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.inLastRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.daysLabel {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.multiSelect {
+  position: relative;
+}
+
+.multiSelectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 160px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.multiSelectTrigger:hover {
+  border-color: var(--color-zinc-400);
+}
+
+.multiSelectTrigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.chevron {
+  color: var(--color-zinc-500);
+  display: flex;
+  align-items: center;
+  margin-left: var(--space-2);
+}
+
+.multiSelectDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.multiSelectOption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.multiSelectOption:hover {
+  background-color: var(--color-zinc-100);
+}

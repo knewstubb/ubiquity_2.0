@@ -1,0 +1,5 @@
+.dataType {
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono, monospace);
+}

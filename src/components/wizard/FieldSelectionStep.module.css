@@ -1,0 +1,141 @@
+/* FieldSelectionStep — field picker with checkboxes and drag-to-reorder */
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sectionLabel {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.hint {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+}
+
+.hintError {
+  font-size: var(--font-xs);
+  color: var(--color-error);
+}
+
+.selectAllRow {
+  display: flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.fieldList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.fieldItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  transition: background-color var(--transition-fast);
+}
+
+.fieldItem:last-child {
+  border-bottom: none;
+}
+
+.fieldItem:hover {
+  background-color: var(--color-grey-50);
+}
+
+/* Selected fields reorder list */
+.reorderSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.reorderList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.reorderItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  cursor: grab;
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.reorderItem:last-child {
+  border-bottom: none;
+}
+
+.reorderItem:hover {
+  background-color: var(--color-grey-50);
+}
+
+.reorderItem:active {
+  cursor: grabbing;
+  background-color: var(--color-primary-50);
+}
+
+.reorderItemDragging {
+  opacity: 0.5;
+  background-color: var(--color-primary-50);
+  box-shadow: var(--shadow-md);
+  transform: scale(1.02);
+  z-index: 1;
+  position: relative;
+}
+
+.reorderItemOver {
+  border-top: 2px solid var(--color-primary-500);
+  padding-top: calc(var(--space-2) - 2px);
+}
+
+.fieldLabel {
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.fieldSource {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  margin-left: auto;
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--color-grey-100);
+  border-radius: var(--radius-full);
+}
+
+.orderNumber {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  min-width: 20px;
+  text-align: center;
+}

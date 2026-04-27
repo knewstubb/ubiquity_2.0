@@ -1,0 +1,92 @@
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.nested {
+  margin-left: var(--space-lg);
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--color-primary-200);
+  background-color: var(--color-zinc-50);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding-top: var(--space-sm);
+  padding-bottom: var(--space-sm);
+  padding-right: var(--space-sm);
+}
+
+.ruleItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.combinatorRow {
+  display: flex;
+  align-items: center;
+  padding: var(--space-1) 0;
+}
+
+.nestedGroupItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.nestedGroupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-1) 0;
+}
+
+.removeGroupBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--color-zinc-400);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.removeGroupBtn:hover {
+  color: var(--color-error);
+  background-color: var(--color-red-50);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-primary-500);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.addBtn:hover {
+  color: var(--color-primary-600);
+  background-color: var(--color-primary-50);
+}
+
+.addBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -1,0 +1,76 @@
+/* DataTypeStep — Figma-matched layout */
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sectionLabel {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  line-height: 20px;
+}
+
+/* Figma text input */
+.nameInput {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: var(--font-sm);
+  font-weight: var(--weight-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  line-height: 20px;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.nameInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.nameInput:hover {
+  border-color: var(--color-grey-400);
+}
+
+.nameInput:focus {
+  outline: none;
+  border-color: var(--color-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+/* Horizontal card row for connection type cards */
+.radioGroup {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.subSelector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--color-primary-200);
+  margin-top: var(--space-1);
+}
+
+.subSelectorLabel {
+  font-size: var(--font-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.subRadioGroup {
+  display: flex;
+  gap: var(--space-3);
+}

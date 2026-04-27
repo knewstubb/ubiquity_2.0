@@ -1,0 +1,263 @@
+/* ── Top Nav Bar ── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #FAFAFA;
+  border-bottom: 1px solid #E4E4E7;
+  height: 56px;
+}
+
+.primaryBar {
+  display: flex;
+  align-items: center;
+  padding: 0 16px 0 24px;
+  height: 100%;
+}
+
+/* ── Logo — teal rounded square with white U ── */
+.logoIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #14B88A;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 150ms ease;
+}
+
+.logoIcon:hover {
+  opacity: 0.9;
+}
+
+.logoLetter {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  color: #FFFFFF;
+}
+
+/* ── Vertical Divider ── */
+.verticalDivider {
+  width: 1px;
+  height: 20px;
+  background: #E4E4E7;
+  flex-shrink: 0;
+  margin: 0 12px;
+}
+
+/* ── Primary Nav Items ── */
+.primaryItems {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 100%;
+}
+
+.navItemWrapper {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.primaryItem {
+  position: relative;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #18181B;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.primaryItem:hover {
+  background: #F4F4F5;
+}
+
+.primaryItemActive {
+  color: #14B88A;
+}
+
+.primaryItemActive::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #14B88A;
+}
+
+.caretIcon {
+  display: flex;
+  align-items: center;
+  color: inherit;
+  transition: transform 150ms ease;
+}
+
+.caretIconOpen {
+  transform: rotate(180deg);
+}
+
+/* ── Spacer ── */
+.spacer {
+  flex: 1;
+}
+
+/* ── Search Bar ── */
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 200px;
+  height: 32px;
+  padding: 0 10px;
+  background: #F5F5F5;
+  border: 0.5px solid #E4E4E7;
+  border-radius: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 150ms ease;
+}
+
+.searchBar:hover {
+  border-color: #D4D4D8;
+}
+
+.searchBar:focus-visible {
+  outline: 2px solid #14B88A;
+  outline-offset: 1px;
+}
+
+.searchIcon {
+  color: #717179;
+  flex-shrink: 0;
+}
+
+.searchPlaceholder {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: #8C8C8C;
+  flex: 1;
+  text-align: left;
+}
+
+.searchShortcut {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 5px;
+  background: #ECECEC;
+  border: 0.5px solid #E4E4E7;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: #8C8C8C;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* ── Right Actions ── */
+.rightActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding-left: 8px;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #E6F9F2;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+  flex-shrink: 0;
+}
+
+.avatar:hover {
+  opacity: 0.85;
+}
+
+.avatarInitials {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  color: #0D8866;
+  letter-spacing: 0.02em;
+}
+
+.avatarWrapper {
+  position: relative;
+}
+
+/* ── Dropdown Menu ── */
+.dropdown {
+  position: absolute;
+  top: calc(100%);
+  left: 0;
+  min-width: 180px;
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 4px;
+  z-index: 100;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #18181B;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 150ms ease;
+  white-space: nowrap;
+}
+
+.dropdownItem:hover {
+  background: #F4F4F5;
+}
+
+.dropdownItemActive {
+  color: #14B88A;
+}
+
+.dropdownRight {
+  left: auto;
+  right: 0;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background: #E4E4E7;
+  margin: 4px 0;
+}

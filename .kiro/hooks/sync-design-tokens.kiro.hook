@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Sync Design Tokens",
+  "description": "Regenerates tokens.css from Figma JSON token files whenever they are edited",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "**/styles/*.tokens.json"
+    ]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "node scripts/generate-tokens.mjs"
+  }
+}

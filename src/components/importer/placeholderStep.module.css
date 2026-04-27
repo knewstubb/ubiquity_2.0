@@ -1,0 +1,11 @@
+/* Shared placeholder step styling */
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+  font-size: var(--font-lg);
+  color: var(--color-text-muted);
+  font-weight: var(--weight-medium);
+}

@@ -1,0 +1,226 @@
+/* ImportMappingStep — shared mapping table for contact & transactional */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: var(--font-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary-500);
+}
+
+.subtitle {
+  margin: -16px 0 0;
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+/* Table container */
+.table {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  overflow: hidden;
+}
+
+/* Header row */
+.headerRow {
+  display: grid;
+  grid-template-columns: 1fr 32px 1.2fr 32px 1fr;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headerCell {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.headerSpacer {
+  /* arrow / equals column — no header text */
+}
+
+/* Mapping rows */
+.mappingRow {
+  display: grid;
+  grid-template-columns: 1fr 40px 1.2fr 40px 1fr;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.mappingRow:last-child {
+}
+
+/* Source field name */
+.sourceField {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-normal);
+  color: var(--color-text-primary);
+  margin: 0;
+  word-break: break-all;
+}
+
+.sourceFieldDuplicate {
+  color: rgb(239, 68, 68);
+  font-weight: var(--weight-medium);
+}
+
+/* Arrow and equals symbols */
+.symbol {
+  font-size: var(--font-sm);
+  color: var(--color-grey-400);
+  text-align: center;
+  user-select: none;
+}
+
+/* Dropdown select */
+.select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: var(--font-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.select:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 2px rgba(20, 184, 138, 0.15);
+}
+
+.selectDuplicate {
+  border-color: rgb(239, 68, 68);
+}
+
+.selectDuplicate:focus {
+  border-color: rgb(239, 68, 68);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+}
+
+.selectNoMatch {
+  border-color: rgb(245, 158, 11);
+}
+
+.selectNoMatch:focus {
+  border-color: rgb(245, 158, 11);
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.15);
+}
+
+/* Example value + warning cell */
+.exampleCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 20px;
+}
+
+.exampleValue {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Warning icons */
+.warningIcon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.warningIconDuplicate {
+  color: rgb(239, 68, 68);
+}
+
+.warningIconNoMatch {
+  color: rgb(245, 158, 11);
+}
+
+/* Add new field link */
+.addFieldLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--color-primary-500);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  padding: 0;
+  margin-top: 4px;
+}
+
+.addFieldLink:hover {
+  color: var(--color-primary-600);
+  text-decoration: underline;
+}
+
+/* Dropdown wrapper for positioning icon */
+.selectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.noMatchPlaceholder {
+  color: var(--color-text-muted);
+}
+
+/* Hover tooltip on warning icons */
+.tooltipWrap {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  line-height: 18px;
+  color: white;
+  z-index: 50;
+  pointer-events: none;
+  white-space: normal;
+}
+
+.tooltipError {
+  background: rgb(239, 68, 68);
+}
+
+.tooltipWarning {
+  background: rgb(245, 158, 11);
+}
+
+.tooltipWrap:hover .tooltip {
+  display: block;
+}

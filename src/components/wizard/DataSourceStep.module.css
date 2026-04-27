@@ -1,0 +1,148 @@
+/* DataSourceStep — importer row layout pattern */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary-500);
+}
+
+.subtitle {
+  margin: -20px 0 0;
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+/* Row layout: label column + input column */
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 56px;
+}
+
+.labelCol {
+  width: 160px;
+  flex-shrink: 0;
+  padding-top: 0;
+  position: relative;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.labelText {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.labelHint {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  margin: 4px 0 0;
+}
+
+.inputCol {
+  width: 552px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Segmented toggle */
+.segmented {
+  display: flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  width: 100%;
+}
+
+.segmentBtn {
+  flex: 1;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  background: var(--color-grey-100);
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
+  white-space: nowrap;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.segmentBtn:not(:last-child) {
+  border-right: 1px solid var(--color-border);
+}
+
+.segmentBtn:hover:not(.segmentBtnActive) {
+  color: var(--color-text-secondary);
+}
+
+.segmentBtnActive {
+  color: var(--color-primary-500);
+  font-weight: var(--weight-semibold);
+  background: var(--color-bg);
+  border-bottom: 2px solid var(--color-primary-500);
+}
+
+/* Input label */
+.inputLabel {
+  font-size: var(--font-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Text input (disabled database field) */
+.textInput {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: var(--font-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-grey-100);
+  color: var(--color-text-muted);
+  outline: none;
+  box-sizing: border-box;
+  cursor: not-allowed;
+}
+
+/* Select dropdown */
+.selectInput {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: var(--font-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  outline: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.selectInput:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 2px rgba(20, 184, 138, 0.15);
+}

@@ -1,0 +1,87 @@
+.card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid #E4E4E7;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.05);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  background: #14B88A;
+  color: #fff;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-xs);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+
+.userName {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: #27272A;
+  margin: 0;
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userEmail {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-xs);
+  color: #52525B;
+  margin: 0;
+  line-height: var(--leading-base);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.groupDropdown {
+  width: 160px;
+}
+
+.editButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  padding: var(--space-xs);
+  border-radius: 4px;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.editButton:hover {
+  color: var(--color-primary-500);
+  background: var(--color-zinc-100);
+}

@@ -1,0 +1,306 @@
+# Implementation Plan: Collaborative Prototype Infrastructure
+
+## Overview
+
+Transform the UbiQuity 2.0 prototype from local-only state into a collaborative hosted environment backed by Supabase. The implementation proceeds bottom-up: environment config → Supabase client → schema/seed → domain adapters → data layer provider → auth → feature flags → collaboration features → app restructure → tests.
+
+## Tasks
+
+- [x] 1. Environment configuration and Supabase client
+  - [x] 1.1 Create `.env.example` with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` placeholders, add `.env` to `.gitignore`
+    - _Requirements: 10.2_
+  - [x] 1.2 Install `@supabase/supabase-js` dependency
+    - _Requirements: 1.1_
+  - [x] 1.3 Create `src/lib/supabase.ts` — Supabase client singleton
+    - Export `supabase: SupabaseClient | null` (null when env vars missing)
+    - Export `isSupabaseConfigured(): boolean` helper
+    - _Requirements: 1.5_
+
+- [x] 2. Supabase database schema
+  - [x] 2.1 Create `supabase/migrations/001_initial_schema.sql`
+    - All domain tables (accounts, campaigns, journeys, connections, connectors, contacts, segments, assets, treatments, products, permission_groups, user_account_assignments, prototype_users, notifications, field_registry, operator_registry, journey_seeds, spa_contacts, transactional_data)
+    - All collaboration tables (feature_flags, feedback_comments, activity_log, changelog_entries, user_changelog_seen)
+    - Indexes on activity_log and feedback_comments
+    - `modified_by TEXT` column on mutable tables (campaigns, journeys, connections, connectors, segments, assets)
+    - RLS enabled on all tables with "require authenticated user" policy
+    - `reset_user_data` RPC function (deletes rows by `modified_by`, SECURITY DEFINER)
+    - _Requirements: 1.1, 4.4, 3.1_
+
+- [x] 3. Database seeding script
+  - [x] 3.1 Create `scripts/seed.ts` — reads all `src/data/*.ts` modules and upserts into Supabase
+    - Use `ON CONFLICT ... DO UPDATE` for idempotency
+    - Create pre-configured reviewer accounts with known credentials
+    - Skip connectors table (no seed data — connectors are user-created)
+    - Add `seed` script to `package.json` (e.g., `tsx scripts/seed.ts`)
+    - _Requirements: 4.1, 4.2, 4.3, 4.5_
+
+- [x] 4. Domain-specific data adapters
+  - [x] 4.1 Create `src/lib/adapters/accounts-adapter.ts` (read-only: `getAll`, `getById`)
+    - Falls back to local `src/data/accounts.ts` when Supabase not configured
+    - _Requirements: 1.1, 1.5_
+  - [x] 4.2 Create `src/lib/adapters/campaigns-adapter.ts` (CRUD for campaigns + journeys with cross-entity ops)
+    - `addJourney` also updates parent campaign's `journeyIds`
+    - `deleteCampaign` also deletes child journeys
+    - Sets `modified_by` on create/update
+    - _Requirements: 1.1, 1.3, 1.5_
+  - [x] 4.3 Create `src/lib/adapters/journeys-adapter.ts` (CRUD + node/edge ops on JSONB columns)
+    - Node/edge operations update JSONB `nodes`/`edges`/`settings` columns on the journey row
+    - Sets `modified_by` on create/update
+    - _Requirements: 1.1, 1.3, 1.5_
+  - [x] 4.4 Create `src/lib/adapters/connections-adapter.ts` (CRUD)
+    - Sets `modified_by` on create/update
+    - _Requirements: 1.1, 1.3, 1.5_
+  - [x] 4.5 Create `src/lib/adapters/connectors-adapter.ts` (CRUD, applies `migrateFilters()` on read)
+    - No seed data for connectors
+    - Sets `modified_by` on create/update
+    - _Requirements: 1.1, 1.3, 1.5_
+  - [x] 4.6 Create `src/lib/adapters/data-adapter.ts` (read-only: contacts, treatments, products)
+    - _Requirements: 1.1, 1.5_
+  - [x] 4.7 Create `src/lib/adapters/permissions-adapter.ts` (CRUD for groups + assignments + users)
+    - _Requirements: 1.1, 1.3, 1.5_
+  - [x] 4.8 Create `src/lib/adapters/assets-adapter.ts` (CRUD)
+    - Sets `modified_by` on create/update
+    - _Requirements: 1.1, 1.3, 1.5_
+  - [x] 4.9 Create `src/lib/adapters/segments-adapter.ts` (CRUD)
+    - Sets `modified_by` on create/update
+    - _Requirements: 1.1, 1.3, 1.5_
+
+- [x] 5. Checkpoint — Verify adapters compile and local fallback works
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 6. DataLayerProvider and context refactoring
+  - [x] 6.1 Create `src/providers/DataLayerProvider.tsx`
+    - Fetch all domain data in parallel via `Promise.all` on adapter calls
+    - Provide unified `isLoading` / `error` state
+    - Render full-page loading skeleton while data is in flight
+    - When Supabase not configured, load from local mock data synchronously (no loading state)
+    - _Requirements: 1.2, 1.4, 1.5_
+  - [x] 6.2 Refactor existing contexts (`AccountContext`, `CampaignsContext`, `JourneysContext`, `ConnectionsContext`, `ConnectorsContext`, `DataContext`, `PermissionsContext`, `AssetsContext`) to accept initial data as props from `DataLayerProvider` and use adapters for mutations
+    - Preserve existing context interfaces so UI components remain unchanged
+    - Show non-blocking toast on Supabase query failure, retain previous local state
+    - _Requirements: 1.2, 1.3, 1.4_
+  - [x] 6.3 Create `src/components/shared/Toast.tsx` — lightweight toast notification component
+    - Auto-dismiss after 5 seconds, stack vertically in bottom-right corner, non-blocking
+    - _Requirements: 1.4_
+
+- [x] 7. Authentication
+  - [x] 7.1 Create `src/contexts/AuthContext.tsx`
+    - `AuthUser` type with `id`, `email`, `displayName`, `avatarInitials`
+    - `signIn`, `signOut`, `isLoading` (prevents login page flash), `user`
+    - Subscribe to Supabase `onAuthStateChange` for session management and silent token refresh
+    - _Requirements: 2.1, 2.5, 2.6, 2.7_
+  - [x] 7.2 Create `src/pages/LoginPage.tsx` + `LoginPage.module.css`
+    - Email/password form with inline error for invalid credentials
+    - Read `returnTo` query parameter, redirect there after successful sign-in
+    - _Requirements: 2.2, 2.3, 2.4_
+  - [x] 7.3 Create `src/components/auth/ProtectedRoute.tsx`
+    - If `AuthContext.isLoading` → render nothing (prevents login flash)
+    - If not authenticated → redirect to `/login?returnTo={currentPath}`
+    - If route has disabled feature flag → render `ComingSoonPlaceholder`
+    - Otherwise → render children
+    - _Requirements: 2.2, 2.3, 3.3_
+  - [x] 7.4 Create `src/components/shared/ComingSoonPlaceholder.tsx` + CSS module
+    - Full-page placeholder with page name and "coming soon" message, link back to dashboard
+    - _Requirements: 3.3_
+
+- [x] 8. Feature flags
+  - [x] 8.1 Create `src/contexts/FeatureFlagContext.tsx`
+    - Fetch flags from Supabase `feature_flags` table on mount, cache in context
+    - `isEnabled(flagName)`, `isRouteEnabled(routePath)` helpers
+    - `target` field links flags to routes/components
+    - Fail-open: if fetch fails or table missing, treat all flags as enabled
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+  - [x] 8.2 Integrate feature flags into `AppNavBar.tsx`
+    - Use `isRouteEnabled` to filter nav items for disabled page-scoped flags
+    - _Requirements: 3.3_
+
+- [x] 9. Checkpoint — Verify auth flow, feature flags, and data layer work end-to-end
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 10. Session state persistence
+  - [x] 10.1 Create `src/lib/session-store.ts`
+    - `saveSession(userId, partialState)` — partial merge into existing stored state (not full replace)
+    - `loadSession(userId)` — returns `SessionState | null`
+    - `clearSession(userId)` — clears on logout
+    - localStorage keyed by user ID
+    - Silently fail on quota exceeded
+    - _Requirements: 6.1, 6.2, 6.3, 6.4_
+
+- [x] 11. Role simulator
+  - [x] 11.1 Create `src/components/layout/RoleSimulator.tsx` + CSS module
+    - Dropdown listing admin, marketer, viewer personas
+    - Display active persona name in nav bar adjacent to user avatar
+    - Persist selected persona in SessionStore
+    - Default to admin on load
+    - _Requirements: 7.1, 7.3, 7.4, 7.5_
+  - [x] 11.2 Create `src/contexts/RoleSimulatorContext.tsx`
+    - Wraps `PermissionsContext` — overrides resolved permissions with predefined CRUD matrix per persona
+    - Explicit persona CRUD matrices matching the design's Persona Permission Sets table
+    - _Requirements: 7.2_
+
+- [x] 12. Collaboration features
+  - [x] 12.1 Create `src/contexts/FeedbackContext.tsx`
+    - CRUD for feedback comments stored in Supabase `feedback_comments` table
+    - `commentCountForPage(route)`, `addComment`, `deleteComment` (author only)
+    - Reject empty/whitespace-only comments with validation message
+    - `isOpen` / `togglePanel` for panel visibility
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
+  - [x] 12.2 Create `src/components/shared/FeedbackWidget.tsx` + CSS module — floating action button + comment thread panel
+    - Badge count for current page
+    - Comment input with validation
+    - Thread panel listing comments ordered by timestamp descending
+    - _Requirements: 5.1, 5.3, 5.4_
+  - [x] 12.3 Create `src/lib/activity-log.ts` — ActivityLogService
+    - `trackPageView(route)`, `trackInteraction(type, targetId)`
+    - Batched async writes — queue events, flush every 5 seconds or on page unload
+    - Discard batch on 429 or flush failure (non-critical, console warning)
+    - _Requirements: 9.1, 9.2, 9.4, 9.5_
+  - [x] 12.4 Create `src/contexts/ChangelogContext.tsx`
+    - Fetch changelog entries from Supabase
+    - Track `last_seen_entry_id` per user in `user_changelog_seen`
+    - `showBanner` / `dismissBanner` / `unseenEntries`
+    - _Requirements: 8.1, 8.2, 8.3_
+  - [x] 12.5 Create `src/components/layout/WhatsNewPanel.tsx` + CSS module — slide-out panel showing full changelog history
+    - "What's New" link in AppNavBar right-side actions area
+    - _Requirements: 8.4_
+  - [x] 12.6 Create `src/components/layout/ChangelogBanner.tsx` + CSS module — dismissible banner at top of page
+    - Lists unseen changelog entries
+    - _Requirements: 8.2, 8.3_
+  - [x] 12.7 Create `src/providers/CollaborationProvider.tsx`
+    - Composes FeedbackContext, ChangelogContext, and ActivityLogService
+    - Only activates when Supabase configured + user authenticated
+    - In local-only mode, provides no-op implementations
+    - _Requirements: 5.1, 8.1, 9.1_
+
+- [x] 13. Activity log admin view and reset account
+  - [x] 13.1 Create `src/pages/ActivityLogPage.tsx` + CSS module
+    - Read-only admin page at `/admin/activity`
+    - Aggregated page visit counts, interaction frequency, per-user summary, date range filter
+    - _Requirements: 9.3_
+  - [x] 13.2 Create `src/components/shared/ResetAccountButton.tsx`
+    - Button in user avatar dropdown menu
+    - Calls `reset_user_data` Supabase RPC with current user ID
+    - _Requirements: 4.4_
+
+- [x] 14. App.tsx restructure and wiring
+  - [x] 14.1 Restructure `src/App.tsx` with new provider tree
+    - `BrowserRouter` → `AuthProvider` → `FeatureFlagProvider` → Routes with `/login` outside `ProtectedRoute`
+    - `ProtectedRoute` wraps `DataLayerProvider` → `CollaborationProvider` → existing providers + `AppNavBar` + Routes
+    - Add `/login` route, `/admin/activity` route
+    - Integrate RoleSimulator, WhatsNewPanel, ChangelogBanner, FeedbackWidget, ResetAccountButton into layout
+    - _Requirements: 2.2, 2.3, 3.3, 10.3_
+  - [x] 14.2 Update `AppNavBar.tsx` to integrate feature flag filtering, "What's New" link, and RoleSimulator display
+    - _Requirements: 3.3, 7.5, 8.4_
+
+- [x] 15. Hosting and documentation
+  - [x] 15.1 Create deployment configuration (Vercel/Netlify config file for SPA routing)
+    - _Requirements: 10.1_
+  - [x] 15.2 Update `README.md` with setup instructions
+    - Clone, configure `.env`, seed database, run locally
+    - Hosted URL access and login credentials
+    - _Requirements: 10.4_
+
+- [x] 16. Checkpoint — Full integration verification
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 17. Unit tests for new components
+  - [x] 17.1 Write unit tests for domain adapters (one test file per adapter, mocked Supabase client)
+    - Test Supabase mode and local fallback mode for each adapter
+    - _Requirements: 1.1, 1.3, 1.5_
+  - [x] 17.2 Write unit tests for `AuthContext` (sign-in/sign-out flows, `isLoading` state, mocked Supabase Auth)
+    - _Requirements: 2.1, 2.3, 2.5_
+  - [x] 17.3 Write unit tests for `LoginPage` (form validation, error display, `returnTo` redirect)
+    - _Requirements: 2.3, 2.4_
+  - [x] 17.4 Write unit tests for `ProtectedRoute` (redirect for unauthenticated, `returnTo` param, feature flag placeholder)
+    - _Requirements: 2.2, 3.3_
+  - [x] 17.5 Write unit tests for `FeatureFlagContext` (flag resolution, `isRouteEnabled`, fail-open fallback)
+    - _Requirements: 3.2, 3.3, 3.4_
+  - [x] 17.6 Write unit tests for `FeedbackContext` (comment CRUD, validation, ordering)
+    - _Requirements: 5.2, 5.4, 5.5, 5.6_
+  - [x] 17.7 Write unit tests for `SessionStore` (save/load/clear, partial merge, mocked localStorage)
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 17.8 Write unit tests for `RoleSimulatorContext` (role switching updates permissions with correct CRUD matrix)
+    - _Requirements: 7.2_
+  - [x] 17.9 Write unit tests for `ChangelogContext` (banner visibility, dismiss, unseen entries)
+    - _Requirements: 8.2, 8.3_
+  - [x] 17.10 Write unit tests for `ActivityLogService` (batching, flush, 429 handling)
+    - _Requirements: 9.4, 9.5_
+  - [x] 17.11 Write unit tests for `ComingSoonPlaceholder`, `ResetAccountButton`, `WhatsNewPanel`, `Toast`
+    - _Requirements: 3.3, 4.4, 8.4, 1.4_
+
+- [x] 18. Property-based tests
+  - [x] 18.1 Extend `src/test/generators.ts` with generators for all new domain objects (Connection, Connector, Contact, Segment, Asset, FeedbackComment, SessionState, ChangelogEntry, ActivityEvent, FeatureFlag)
+    - _Requirements: 1.1_
+  - [x] 18.2 Write property test: Data adapter round-trip preserves shape
+    - **Property 1: Data adapter round-trip preserves shape**
+    - Generate random domain objects, write through mocked adapter, read back, assert deep equality
+    - **Validates: Requirements 1.1**
+  - [x] 18.3 Write property test: Mutations are reflected in subsequent reads
+    - **Property 2: Mutations are reflected in subsequent reads**
+    - Generate random objects + random mutations (create/update/delete), verify reads reflect changes
+    - **Validates: Requirements 1.3**
+  - [x] 18.4 Write property test: Unauthenticated users are redirected to login
+    - **Property 3: Unauthenticated users are redirected to login**
+    - Generate random route paths, verify redirect to `/login?returnTo={route}`
+    - **Validates: Requirements 2.2**
+  - [x] 18.5 Write property test: Disabled feature flags hide navigation and show placeholder
+    - **Property 4: Disabled feature flags hide navigation and show placeholder**
+    - Generate random flag configs with `target` routes, verify nav filtering and placeholder rendering
+    - **Validates: Requirements 3.3**
+  - [x] 18.6 Write property test: Feedback comments are stored with all required fields
+    - **Property 5: Feedback comments are stored with all required fields**
+    - Generate random comments, verify stored record has correct `page_route`, `user_id`, ISO timestamp, exact `body`
+    - **Validates: Requirements 5.2**
+  - [x] 18.7 Write property test: Feedback badge count equals stored comment count
+    - **Property 6: Feedback badge count equals stored comment count**
+    - Generate random comment sets per route, verify badge count matches record count
+    - **Validates: Requirements 5.3**
+  - [x] 18.8 Write property test: Feedback comments are ordered by timestamp descending
+    - **Property 7: Feedback comments are ordered by timestamp descending**
+    - Generate random timestamps, verify sort order in thread panel
+    - **Validates: Requirements 5.4**
+  - [x] 18.9 Write property test: Whitespace-only comments are rejected
+    - **Property 8: Whitespace-only comments are rejected**
+    - Generate whitespace-only strings, verify rejection without record creation
+    - **Validates: Requirements 5.5**
+  - [x] 18.10 Write property test: Session state round-trip with partial merge
+    - **Property 9: Session state round-trip with partial merge**
+    - Generate random SessionState objects, verify save/load equivalence and partial merge preserves unrelated keys
+    - **Validates: Requirements 6.1, 6.2, 7.3**
+  - [x] 18.11 Write property test: Role selection updates permission context
+    - **Property 10: Role selection updates permission context**
+    - For each role (admin, marketer, viewer), verify permission context matches predefined CRUD matrix
+    - **Validates: Requirements 7.2**
+  - [x] 18.12 Write property test: Unseen changelog entries trigger banner
+    - **Property 11: Unseen changelog entries trigger banner**
+    - Generate random seen/unseen states, verify banner visibility and listed entries
+    - **Validates: Requirements 8.2**
+  - [x] 18.13 Write property test: Activity log records all navigations and interactions
+    - **Property 12: Activity log records all navigations and interactions**
+    - Generate random page navigations and interactions, verify activity_log records exist with correct fields
+    - **Validates: Requirements 9.1, 9.2**
+
+- [x] 19. Integration tests
+  - [x] 19.1 Write integration tests for seed script (idempotency: run twice, compare state)
+    - _Requirements: 4.3_
+  - [x] 19.2 Write integration tests for auth flow (sign in, navigate, sign out, `returnTo` redirect)
+    - _Requirements: 2.2, 2.3, 2.8_
+  - [x] 19.3 Write integration tests for feedback submission and retrieval
+    - _Requirements: 5.2, 5.4_
+  - [x] 19.4 Write integration tests for per-user data reset via RPC
+    - _Requirements: 4.4_
+
+- [x] 20. Final checkpoint — Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+## Notes
+
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties from the design document using mocked Supabase (not live DB)
+- Unit tests validate specific examples and edge cases
+- All adapters use domain-specific interfaces (not generic CRUD) matching existing context method signatures
+- The `connectors` table has no seed data — connectors are user-created at runtime
+- `migrateFilters()` is applied in the connectors adapter on read, matching existing behaviour
+- `modified_by` column enables per-user reset without full row-level isolation

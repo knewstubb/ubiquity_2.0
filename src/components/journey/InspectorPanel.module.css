@@ -1,0 +1,173 @@
+/* InspectorPanel — slide-in right sidebar for node/journey config */
+
+.panel {
+  position: relative;
+  width: 300px;
+  min-width: 300px;
+  height: 100%;
+  background: #fff;
+  border-left: 1px solid var(--color-zinc-200);
+  font-family: var(--font-family-primary);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.15s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--color-zinc-200);
+  min-height: 52px;
+}
+
+.headerIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+}
+
+.headerIcon.trigger {
+  color: var(--color-mint-500);
+  background: color-mix(in srgb, var(--color-mint-500) 10%, transparent);
+}
+
+.headerIcon.action {
+  color: var(--color-blue-500);
+  background: color-mix(in srgb, var(--color-blue-500) 10%, transparent);
+}
+
+.headerIcon.wait {
+  color: var(--color-amber-500);
+  background: color-mix(in srgb, var(--color-amber-500) 10%, transparent);
+}
+
+.headerIcon.branch {
+  color: var(--color-purple-500);
+  background: color-mix(in srgb, var(--color-purple-500) 10%, transparent);
+}
+
+.headerIcon.end {
+  color: var(--color-zinc-400);
+  background: color-mix(in srgb, var(--color-zinc-400) 10%, transparent);
+}
+
+.headerIcon.join {
+  color: var(--color-zinc-300);
+  background: color-mix(in srgb, var(--color-zinc-300) 10%, transparent);
+}
+
+.headerIcon.settings {
+  color: var(--color-text-secondary);
+  background: var(--color-zinc-100);
+}
+
+.headerLabel {
+  flex: 1;
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.closeButton:hover {
+  background: var(--color-zinc-100);
+  color: var(--color-text-primary);
+}
+
+/* ── Scrollable content area ── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-md);
+}
+
+/* ── Placeholder config form styling ── */
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg) var(--space-md);
+  border: 1px dashed var(--color-zinc-200);
+  border-radius: var(--radius-sm);
+  background: var(--color-zinc-50);
+  text-align: center;
+}
+
+.placeholderLabel {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.placeholderHint {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+}
+
+/* ── Footer with delete button ── */
+.footer {
+  padding: var(--space-md);
+  border-top: 1px solid var(--color-zinc-200);
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-red-500);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-red-500);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.deleteButton:hover {
+  background: var(--color-red-500);
+  color: #fff;
+}

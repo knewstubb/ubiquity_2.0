@@ -1,0 +1,119 @@
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--color-zinc-50);
+  font-family: var(--font-family-primary);
+}
+
+.card {
+  width: 100%;
+  max-width: 380px;
+  background: #fff;
+  border: 1px solid var(--color-zinc-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-xl);
+}
+
+.logoRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.logoIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-mint-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: var(--weight-bold);
+  line-height: 1;
+}
+
+.logoText {
+  font-size: var(--font-xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-zinc-900);
+}
+
+.heading {
+  font-size: var(--font-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  text-align: center;
+  margin: 0 0 var(--space-lg);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.label {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.input {
+  height: 40px;
+  padding: 0 var(--space-sm);
+  border: 1px solid var(--color-zinc-300);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-base);
+  font-family: var(--font-family-primary);
+  color: var(--color-text-primary);
+  background: #fff;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.input:focus {
+  border-color: var(--color-mint-500);
+  box-shadow: var(--shadow-focus);
+}
+
+.error {
+  font-size: var(--font-sm);
+  color: var(--color-error);
+  text-align: center;
+  margin: 0;
+}
+
+.submitButton {
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: var(--action-bg-primary);
+  color: var(--action-text-primary);
+  font-size: var(--font-base);
+  font-weight: var(--weight-semibold);
+  font-family: var(--font-family-primary);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: var(--action-bg-primary-hover);
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

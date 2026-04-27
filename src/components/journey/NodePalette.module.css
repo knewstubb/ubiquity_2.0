@@ -1,0 +1,111 @@
+/* NodePalette — left sidebar for draggable node types */
+
+.palette {
+  width: 220px;
+  min-width: 220px;
+  height: 100%;
+  background: #fff;
+  border-right: 1px solid var(--color-zinc-200);
+  overflow-y: auto;
+  font-family: var(--font-family-primary);
+  padding: var(--space-md) 0;
+  user-select: none;
+}
+
+.paletteTitle {
+  font-size: var(--font-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+/* ── Category group ── */
+.category {
+  margin-bottom: var(--space-md);
+}
+
+.categoryHeader {
+  font-size: var(--font-xxs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--space-xs) var(--space-md);
+}
+
+.categoryDisabled .categoryHeader {
+  opacity: 0.5;
+}
+
+/* ── Draggable palette item ── */
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-md);
+  cursor: grab;
+  border-radius: var(--radius-sm);
+  margin: 0 var(--space-xs);
+  transition: background var(--transition-fast);
+}
+
+.item:hover {
+  background: var(--color-zinc-50);
+}
+
+.item:active {
+  cursor: grabbing;
+}
+
+.itemDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.itemIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Icon colour accents per category ── */
+.triggerIcon {
+  color: var(--color-mint-500);
+  background: color-mix(in srgb, var(--color-mint-500) 10%, transparent);
+}
+
+.actionIcon {
+  color: var(--color-blue-500);
+  background: color-mix(in srgb, var(--color-blue-500) 10%, transparent);
+}
+
+.waitIcon {
+  color: var(--color-amber-500);
+  background: color-mix(in srgb, var(--color-amber-500) 10%, transparent);
+}
+
+.branchIcon {
+  color: var(--color-purple-500);
+  background: color-mix(in srgb, var(--color-purple-500) 10%, transparent);
+}
+
+.endIcon {
+  color: var(--color-zinc-400);
+  background: color-mix(in srgb, var(--color-zinc-400) 10%, transparent);
+}
+
+.itemLabel {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-primary);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+}

@@ -1,0 +1,73 @@
+/* JourneyCanvasPage layout */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 56px); /* subtract nav bar height */
+  overflow: hidden;
+  position: relative;
+}
+
+/* Validation summary dropdown positioned below toolbar */
+.validationDropdown {
+  position: absolute;
+  top: 48px; /* toolbar height */
+  right: 16px;
+  z-index: 20;
+  width: 360px;
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 4px;
+  box-shadow: 0px 7px 10px -3px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--color-border, #e4e4e7);
+  background: var(--color-background, #fafafa);
+}
+
+/* Main canvas row: palette | canvas | inspector */
+.canvasRow {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.canvasCenter {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+/* Not found state */
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 56px);
+  gap: 8px;
+  color: var(--color-text-secondary, #52525b);
+}
+
+.notFound h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary, #27272a);
+  margin: 0;
+}
+
+.notFound p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.backLink {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary, #14b88a);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}

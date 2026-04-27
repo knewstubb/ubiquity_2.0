@@ -1,0 +1,127 @@
+/* ReviewStep — read-only configuration summary */
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.heading {
+  font-size: var(--font-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary-500);
+  margin: 0;
+}
+
+.description {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  margin: -20px 0 0;
+}
+
+.section {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  transition: box-shadow var(--transition-fast);
+}
+
+.section:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.sectionTitle {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.editLink {
+  font-size: var(--font-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-primary-500);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+}
+
+.editLink:hover {
+  text-decoration: underline;
+  color: var(--color-primary-700);
+}
+
+.editLink:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.sectionValue {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.fieldList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.fieldItem {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+.fieldIndex {
+  color: var(--color-text-muted);
+  margin-right: var(--space-2);
+  min-width: 20px;
+  display: inline-block;
+}
+
+.optionRow {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-1) 0;
+}
+
+.optionLabel {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.optionValue {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.optionValueMono {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+  font-family: monospace;
+  word-break: break-all;
+}
+
+.combinator {
+  font-size: var(--font-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
