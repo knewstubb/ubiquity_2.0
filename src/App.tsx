@@ -36,7 +36,7 @@ import SmsPage from './pages/SmsPage';
 import AnalyticsDashboardsPage from './pages/AnalyticsDashboardsPage';
 import ReportsPage from './pages/ReportsPage';
 import ActivityPage from './pages/ActivityPage';
-import BillingPage from './pages/BillingPage';
+import BillingReportPage from './pages/BillingReportPage';
 import SettingsPage from './pages/SettingsPage';
 import PermissionsPage from './pages/PermissionsPage';
 import AssetsPage from './pages/AssetsPage';
@@ -87,7 +87,7 @@ function App() {
                                             <Route path="/analytics/dashboards" element={<AnalyticsDashboardsPage />} />
                                             <Route path="/analytics/reports" element={<ReportsPage />} />
                                             <Route path="/analytics/activity" element={<ActivityPage />} />
-                                            <Route path="/analytics/billing" element={<BillingPage />} />
+                                            <Route path="/admin/billing" element={<BillingReportPage />} />
                                             <Route path="/settings" element={<SettingsPage />} />
                                             <Route path="/settings/permissions" element={<PermissionsPage />} />
                                             <Route path="/admin/brand" element={<SettingsPage />} />
@@ -95,7 +95,6 @@ function App() {
                                             <Route path="/admin/integrations" element={<SettingsPage />} />
                                             <Route path="/admin/domains" element={<SettingsPage />} />
                                             <Route path="/admin/api" element={<SettingsPage />} />
-                                            <Route path="/admin/billing" element={<BillingPage />} />
                                             <Route path="/admin/activity" element={<ActivityLogPage />} />
                                           </Routes>
                                           <FeedbackWidget />

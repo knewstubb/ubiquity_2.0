@@ -29,3 +29,5 @@ export type { Segment, FilterRule, FilterGroup } from './segment';
 export type { Campaign, Journey, CampaignStatus, JourneyType } from './campaign';
 export type { Asset } from './asset';
 export type { Notification } from './notification';
+export type { BillingCategory, BillingLineItem } from './billing';
+export { getCurrentBillingCycle } from './billing';

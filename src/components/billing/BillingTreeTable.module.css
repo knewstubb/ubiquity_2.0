@@ -1,0 +1,117 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family-primary);
+}
+
+/* Column headers */
+.headerCell {
+  background: var(--color-zinc-50);
+  font-weight: 600;
+  font-size: 14px;
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--color-zinc-200);
+  cursor: pointer;
+  user-select: none;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.headerCell:hover {
+  color: var(--color-primary-500);
+}
+
+.headerCellItems {
+  composes: headerCell;
+  text-align: right;
+}
+
+.sortArrow {
+  margin-left: 4px;
+  font-size: 12px;
+  color: var(--color-zinc-400);
+}
+
+/* Body rows */
+.bodyRow {
+  border-bottom: 1px solid var(--color-zinc-100);
+}
+
+.bodyCell {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+.bodyCellItems {
+  composes: bodyCell;
+  text-align: right;
+}
+
+/* Account summary rows */
+.accountRow {
+  composes: bodyRow;
+  cursor: pointer;
+}
+
+.accountRow:hover {
+  background: var(--color-zinc-50);
+}
+
+.accountRowLevel0 {
+  composes: accountRow;
+  background: var(--color-zinc-50);
+  font-weight: 600;
+}
+
+.accountRowLevel1 {
+  composes: accountRow;
+  background: rgba(244, 244, 245, 0.5);
+}
+
+.accountRowLevel2 {
+  composes: accountRow;
+}
+
+.accountCell {
+  composes: bodyCell;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Chevron icon */
+.chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--color-zinc-400);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.chevronExpanded {
+  composes: chevron;
+  transform: rotate(90deg);
+}
+
+/* Line item rows */
+.lineItemRow {
+  composes: bodyRow;
+}
+
+.lineItemRow:hover {
+  background: var(--color-zinc-50);
+}
+
+/* Empty state */
+.emptyState {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}

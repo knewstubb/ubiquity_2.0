@@ -55,7 +55,6 @@ const NAV_ITEMS: NavItem[] = [
       { label: 'Overview', path: '/analytics/dashboards' },
       { label: 'Campaign Results', path: '/analytics/reports' },
       { label: 'Audience Growth', path: '/analytics/activity' },
-      { label: 'Deliverability', path: '/analytics/billing' },
     ],
   },
   {
