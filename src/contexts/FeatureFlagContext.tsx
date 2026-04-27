@@ -8,6 +8,13 @@ import {
   type ReactNode,
 } from 'react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { useAuth } from './AuthContext';
+
+/**
+ * Admin emails that bypass all feature flags (always see everything enabled).
+ * Add emails here to grant full access regardless of flag state.
+ */
+const ADMIN_BYPASS_EMAILS = ['knewstubb@gmail.com'];
 
 export interface FeatureFlag {
   name: string;
@@ -40,6 +47,10 @@ const FAIL_OPEN_VALUE: FeatureFlagContextValue = {
 export function FeatureFlagProvider({ children }: { children: ReactNode }) {
   const [flags, setFlags] = useState<Record<string, FeatureFlag>>({});
   const [isLoading, setIsLoading] = useState(isSupabaseConfigured());
+  const { user } = useAuth();
+
+  // Admin bypass — if the current user's email is in the bypass list, all flags are enabled
+  const isAdminBypass = user?.email ? ADMIN_BYPASS_EMAILS.includes(user.email.toLowerCase()) : false;
 
   useEffect(() => {
     if (!supabase) {
@@ -95,16 +106,18 @@ export function FeatureFlagProvider({ children }: { children: ReactNode }) {
 
   const isEnabled = useCallback(
     (flagName: string): boolean => {
+      if (isAdminBypass) return true;
       const flag = flags[flagName];
       // Fail-open: if flag doesn't exist, treat as enabled
       if (!flag) return true;
       return flag.enabled;
     },
-    [flags],
+    [flags, isAdminBypass],
   );
 
   const isRouteEnabled = useCallback(
     (routePath: string): boolean => {
+      if (isAdminBypass) return true;
       // Check if any page-scoped flag with matching target is disabled
       for (const flag of Object.values(flags)) {
         if (flag.scope === 'page' && flag.target === routePath && !flag.enabled) {
@@ -114,7 +127,7 @@ export function FeatureFlagProvider({ children }: { children: ReactNode }) {
       // No flag disables this route — enabled
       return true;
     },
-    [flags],
+    [flags, isAdminBypass],
   );
 
   const value = useMemo<FeatureFlagContextValue>(
