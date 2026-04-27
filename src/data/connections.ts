@@ -25,4 +25,32 @@ export const connections: Connection[] = [
       path: '/uploads/exports/',
     },
   },
+
+  // Christchurch City Council
+  {
+    id: 'conn-ccc-rates',
+    name: 'CCC Rates Database',
+    protocol: 'SFTP',
+    status: 'connected',
+    basePath: '/data/rates/',
+    config: {
+      host: 'sftp.ccc.govt.nz',
+      port: 22,
+      path: '/data/rates/',
+    },
+  },
+
+  // Save the Children NZ
+  {
+    id: 'conn-stc-donor',
+    name: 'Donor Management System',
+    protocol: 'S3',
+    status: 'connected',
+    basePath: '/donors/exports/',
+    config: {
+      region: 'ap-southeast-2',
+      bucket: 'stc-nz-donor-data',
+      prefix: 'donors/exports/',
+    },
+  },
 ];

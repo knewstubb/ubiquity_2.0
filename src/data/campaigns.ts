@@ -41,6 +41,50 @@ export const campaigns: Campaign[] = [
     journeyIds: ['jrn-loyalty-announce', 'jrn-loyalty-enrol'],
     tags: ['loyalty', 'pilot', 'auckland'],
   },
+
+  // --- Christchurch City Council campaigns ---
+  {
+    id: 'cmp-ccc-summer',
+    name: 'Summer in the City 2025',
+    accountId: 'acc-ccc',
+    goal: 'Promote summer events, library programmes and parks activities across Christchurch',
+    dateRange: { start: '2024-12-01', end: '2025-03-31' },
+    status: 'active',
+    journeyIds: ['jrn-ccc-events-news', 'jrn-ccc-lib-updates'],
+    tags: ['seasonal', 'events'],
+  },
+  {
+    id: 'cmp-ccc-rates',
+    name: 'Rates Reminder Series',
+    accountId: 'acc-ccc',
+    goal: 'Ensure ratepayers receive timely reminders and payment confirmations',
+    dateRange: { start: '2025-01-01', end: '2025-12-31' },
+    status: 'active',
+    journeyIds: ['jrn-ccc-rates-remind', 'jrn-ccc-rates-confirm'],
+    tags: ['compliance', 'rates'],
+  },
+
+  // --- Save the Children NZ campaigns ---
+  {
+    id: 'cmp-stc-eoy',
+    name: 'End of Year Appeal 2025',
+    accountId: 'acc-stc',
+    goal: 'Drive end-of-year donations through a multi-touch email appeal series',
+    dateRange: { start: '2025-10-01', end: '2025-12-31' },
+    status: 'active',
+    journeyIds: ['jrn-stc-thankyou', 'jrn-stc-appeal'],
+    tags: ['fundraising', 'appeal'],
+  },
+  {
+    id: 'cmp-stc-sponsor',
+    name: 'Child Sponsorship Updates',
+    accountId: 'acc-stc',
+    goal: 'Keep child sponsors engaged with regular updates and impact reports',
+    dateRange: { start: '2025-01-01', end: '2025-12-31' },
+    status: 'active',
+    journeyIds: ['jrn-stc-sponsor-update', 'jrn-stc-impact'],
+    tags: ['sponsorship', 'updates'],
+  },
 ];
 
 export const journeys: Journey[] = [
@@ -177,5 +221,93 @@ export const journeys: Journey[] = [
     nodeCount: 7,
     entryCount: 0,
     type: 'welcome',
+  },
+
+  // --- CCC: Summer in the City journeys ---
+  {
+    id: 'jrn-ccc-events-news',
+    name: 'Event Newsletter',
+    campaignId: 'cmp-ccc-summer',
+    accountId: 'acc-ccc-events',
+    status: 'active',
+    nodeCount: 5,
+    entryCount: 28,
+    type: 'promotional',
+  },
+  {
+    id: 'jrn-ccc-lib-updates',
+    name: 'Library Programme Updates',
+    campaignId: 'cmp-ccc-summer',
+    accountId: 'acc-ccc-libraries',
+    status: 'active',
+    nodeCount: 4,
+    entryCount: 15,
+    type: 'transactional',
+  },
+
+  // --- CCC: Rates Reminder journeys ---
+  {
+    id: 'jrn-ccc-rates-remind',
+    name: 'Rates Due Reminder',
+    campaignId: 'cmp-ccc-rates',
+    accountId: 'acc-ccc',
+    status: 'active',
+    nodeCount: 6,
+    entryCount: 42,
+    type: 'transactional',
+  },
+  {
+    id: 'jrn-ccc-rates-confirm',
+    name: 'Payment Confirmation',
+    campaignId: 'cmp-ccc-rates',
+    accountId: 'acc-ccc',
+    status: 'active',
+    nodeCount: 3,
+    entryCount: 38,
+    type: 'transactional',
+  },
+
+  // --- STC: End of Year Appeal journeys ---
+  {
+    id: 'jrn-stc-thankyou',
+    name: 'Donor Thank You',
+    campaignId: 'cmp-stc-eoy',
+    accountId: 'acc-stc-fundraising',
+    status: 'active',
+    nodeCount: 4,
+    entryCount: 35,
+    type: 'transactional',
+  },
+  {
+    id: 'jrn-stc-appeal',
+    name: 'Appeal Email Series',
+    campaignId: 'cmp-stc-eoy',
+    accountId: 'acc-stc-fundraising',
+    status: 'active',
+    nodeCount: 8,
+    entryCount: 50,
+    type: 'promotional',
+  },
+
+  // --- STC: Child Sponsorship journeys ---
+  {
+    id: 'jrn-stc-sponsor-update',
+    name: 'Monthly Sponsor Update',
+    campaignId: 'cmp-stc-sponsor',
+    accountId: 'acc-stc-programmes',
+    status: 'active',
+    nodeCount: 5,
+    entryCount: 22,
+    type: 'transactional',
+  },
+  {
+    id: 'jrn-stc-impact',
+    name: 'Impact Report',
+    campaignId: 'cmp-stc-sponsor',
+    accountId: 'acc-stc-comms',
+    status: 'active',
+    nodeCount: 6,
+    entryCount: 18,
+    type: 'promotional',
   },
 ];
