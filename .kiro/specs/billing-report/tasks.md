@@ -18,7 +18,7 @@ Replace the existing BillingPage usage summary with a comprehensive, filterable 
     - Update parent account `childIds` arrays to include new grandchild IDs
     - _Requirements: 9.2, 2.1_
 
-  - [ ]* 1.3 Write property test for billing cycle calculation
+  - [x]* 1.3 Write property test for billing cycle calculation
     - **Property 1: Date Formatting Consistency**
     - **Validates: Requirements 4.4, 5.2**
 
@@ -33,7 +33,7 @@ Replace the existing BillingPage usage summary with a comprehensive, filterable 
     - Export the generated `BillingLineItem[]` array
     - _Requirements: 9.1, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8_
 
-  - [ ]* 2.2 Write property test for row grain uniqueness
+  - [x]* 2.2 Write property test for row grain uniqueness
     - **Property 8: Row Grain — One Row Per Individual Item**
     - **Validates: Requirements 3.2, 9.1**
 
@@ -49,20 +49,20 @@ Replace the existing BillingPage usage summary with a comprehensive, filterable 
     - Compute rolled-up totals for parent/child accounts
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 6.1, 6.2, 6.3, 6.4, 4.5, 4.6, 2.2_
 
-  - [ ]* 3.2 Write property test for date range filter correctness
+  - [x]* 3.2 Write property test for date range filter correctness
     - **Property 4: Date Range Filter Correctness**
     - **Validates: Requirements 5.3, 5.4, 5.5**
 
-  - [ ]* 3.3 Write property test for account filter correctness
+  - [x]* 3.3 Write property test for account filter correctness
     - **Property 5: Account Filter Correctness**
     - **Validates: Requirements 6.3, 6.4**
 
-  - [ ]* 3.4 Write property tests for sort behaviour
+  - [x]* 3.4 Write property tests for sort behaviour
     - **Property 2: Sort Stability — Ascending**
     - **Property 3: Sort Toggle — Descending is Reverse of Ascending**
     - **Validates: Requirements 4.5, 4.6**
 
-  - [ ]* 3.5 Write property test for rolled-up totals
+  - [x]* 3.5 Write property test for rolled-up totals
     - **Property 7: Rolled-Up Totals Equal Sum of Descendants**
     - **Validates: Requirements 2.2**
 
@@ -74,7 +74,7 @@ Replace the existing BillingPage usage summary with a comprehensive, filterable 
     - Trigger browser download with filename `billing-report-YYYY-MM-DD.csv`
     - _Requirements: 7.2, 7.3, 7.4, 7.5, 7.6_
 
-  - [ ]* 3.7 Write property test for CSV leaf-only export
+  - [x]* 3.7 Write property test for CSV leaf-only export
     - **Property 6: CSV Contains Only Leaf Items**
     - **Validates: Requirements 7.2, 7.3**
 
@@ -102,7 +102,7 @@ Replace the existing BillingPage usage summary with a comprehensive, filterable 
     - Dates formatted as DD MMM YYYY
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 8.1, 8.2_
 
-  - [ ]* 5.3 Write unit tests for BillingTreeTable
+  - [x]* 5.3 Write unit tests for BillingTreeTable
     - Test expand/collapse toggling
     - Test indentation levels render correctly
     - Test empty state message displays when no data
