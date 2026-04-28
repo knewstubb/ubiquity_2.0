@@ -78,21 +78,6 @@ export function InitialModal({ connection, onProceed, onClose }: InitialModalPro
                 </svg>
                 <span className={styles.typeCardLabel}>EXPORTER</span>
               </button>
-              <button
-                type="button"
-                className={`${styles.typeCard} ${styles.typeCardDisabled}`}
-                disabled
-                aria-label="Sync (coming soon)"
-              >
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                  <path d="M6 16a10 10 0 0117.07-7.07" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M23 5v4h-4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M26 16a10 10 0 01-17.07 7.07" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M9 27v-4h4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span className={styles.typeCardLabel}>SYNC</span>
-                <span className={styles.comingSoon}>Coming soon</span>
-              </button>
             </div>
           </div>
 
