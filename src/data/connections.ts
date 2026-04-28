@@ -53,4 +53,93 @@ export const connections: Connection[] = [
       prefix: 'donors/exports/',
     },
   },
+
+  // Additional integrations — Serenity Spa
+  {
+    id: 'conn-spa-shopify',
+    name: 'Shopify Product Sync',
+    protocol: 'S3',
+    status: 'connected',
+    basePath: '/shopify/sync/',
+    config: {
+      region: 'ap-southeast-2',
+      bucket: 'serenity-spa-shopify',
+      prefix: 'shopify/sync/',
+    },
+  },
+  {
+    id: 'conn-spa-xero',
+    name: 'Xero Accounting Export',
+    protocol: 'SFTP',
+    status: 'connected',
+    basePath: '/xero/invoices/',
+    config: {
+      host: 'sftp.xero-integration.co.nz',
+      port: 22,
+      path: '/xero/invoices/',
+    },
+  },
+
+  // Additional integrations — CCC
+  {
+    id: 'conn-ccc-library',
+    name: 'Library Catalogue Sync',
+    protocol: 'SFTP',
+    status: 'connected',
+    basePath: '/library/members/',
+    config: {
+      host: 'sftp.libraries.ccc.govt.nz',
+      port: 22,
+      path: '/library/members/',
+    },
+  },
+  {
+    id: 'conn-ccc-events',
+    name: 'Eventfinda Integration',
+    protocol: 'S3',
+    status: 'connected',
+    basePath: '/events/feed/',
+    config: {
+      region: 'ap-southeast-2',
+      bucket: 'ccc-events-data',
+      prefix: 'events/feed/',
+    },
+  },
+  {
+    id: 'conn-ccc-parks',
+    name: 'Parks Booking System',
+    protocol: 'Azure Blob',
+    status: 'connected',
+    basePath: '/bookings/',
+    config: {
+      accountName: 'cccparksdata',
+      containerName: 'bookings',
+    },
+  },
+
+  // Additional integrations — STC
+  {
+    id: 'conn-stc-salesforce',
+    name: 'Salesforce CRM Sync',
+    protocol: 'S3',
+    status: 'connected',
+    basePath: '/salesforce/contacts/',
+    config: {
+      region: 'ap-southeast-2',
+      bucket: 'stc-nz-salesforce',
+      prefix: 'salesforce/contacts/',
+    },
+  },
+  {
+    id: 'conn-stc-stripe',
+    name: 'Stripe Donations Export',
+    protocol: 'SFTP',
+    status: 'connected',
+    basePath: '/stripe/donations/',
+    config: {
+      host: 'sftp.savethechildren.org.nz',
+      port: 22,
+      path: '/stripe/donations/',
+    },
+  },
 ];
