@@ -105,6 +105,10 @@ async function upsertRows(
 const REVIEWER_ACCOUNTS = [
   { email: 'reviewer1@ubiquity.test', password: 'password123', displayName: 'Reviewer One' },
   { email: 'reviewer2@ubiquity.test', password: 'password123', displayName: 'Reviewer Two' },
+  { email: 'Matt.Dale@spark.co.nz', password: 'PW12345', displayName: 'Matt Dale' },
+  { email: 'Deborah.Hall@spark.co.nz', password: 'PW12345', displayName: 'Deborah Hall' },
+  { email: 'Pippa.Taylor@spark.co.nz', password: 'PW12345', displayName: 'Pippa Taylor' },
+  { email: 'Pippa.McKenzie@spark.co.nz', password: 'PW12345', displayName: 'Pippa McKenzie' },
 ];
 
 async function seedReviewerAccounts(): Promise<void> {

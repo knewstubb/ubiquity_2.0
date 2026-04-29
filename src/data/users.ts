@@ -19,4 +19,10 @@ export const users: PermissionUser[] = [
 
   // Multi-account user (Admin on Serenity Spa Group, Viewer on CCC)
   { id: 'usr-012', name: 'Jordan Blake', email: 'jordan@ubiquity.io', initials: 'JB' },
+
+  // Spark reviewers
+  { id: 'usr-013', name: 'Matt Dale', email: 'Matt.Dale@spark.co.nz', initials: 'MD' },
+  { id: 'usr-014', name: 'Deborah Hall', email: 'Deborah.Hall@spark.co.nz', initials: 'DH' },
+  { id: 'usr-015', name: 'Pippa Taylor', email: 'Pippa.Taylor@spark.co.nz', initials: 'PT' },
+  { id: 'usr-016', name: 'Pippa McKenzie', email: 'Pippa.McKenzie@spark.co.nz', initials: 'PM' },
 ];
