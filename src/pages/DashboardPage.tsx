@@ -177,6 +177,7 @@ export default function DashboardPage() {
                   connectionError={connection.status === 'error'}
                   onToggleStatus={() => toggleConnectorStatus(connector.id)}
                   onEdit={() => setSettingsConnectorId(connector.id)}
+                  onEditWizard={() => handleEdit(connector.id)}
                   onDelete={() => handleDeleteRequest(connector)}
                 />
               ))}

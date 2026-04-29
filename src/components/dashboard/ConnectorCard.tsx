@@ -10,6 +10,7 @@ interface ConnectorCardProps {
   connectionError?: boolean;
   onToggleStatus: () => void;
   onEdit: () => void;
+  onEditWizard: () => void;
   onDelete: () => void;
 }
 
@@ -46,7 +47,7 @@ function getLastRunStatus(connector: Connector): 'Completed' | 'Failed' {
   return hash % 7 === 0 ? 'Failed' : 'Completed';
 }
 
-export function ConnectorCard({ connector, connectionError, onToggleStatus, onEdit, onDelete }: ConnectorCardProps) {
+export function ConnectorCard({ connector, connectionError, onToggleStatus, onEdit, onEditWizard, onDelete }: ConnectorCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -90,7 +91,7 @@ export function ConnectorCard({ connector, connectionError, onToggleStatus, onEd
           style={{ top: menuPos.top, left: menuPos.left }}
         >
           <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEdit(); }}><GearSix size={16} weight="regular" /> Automation Settings</button>
-          <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEdit(); }}><PencilSimple size={16} weight="regular" /> Edit Automation</button>
+          <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEditWizard(); }}><PencilSimple size={16} weight="regular" /> Edit Automation</button>
           <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><ListBullets size={16} weight="regular" /> Activity Log</button>
           <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><ClockCounterClockwise size={16} weight="regular" /> History</button>
           <div className={styles.menuDivider} />
