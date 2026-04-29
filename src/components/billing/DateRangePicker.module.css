@@ -1,0 +1,225 @@
+.wrapper {
+  position: relative;
+}
+
+/* Trigger button */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: var(--font-family-primary);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-primary);
+  background: #fff;
+  border: 1px solid var(--color-zinc-200);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.trigger:hover {
+  border-color: var(--color-zinc-300);
+}
+
+.trigger:focus-visible {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 2px rgba(20, 184, 138, 0.15);
+  outline: none;
+}
+
+.calIcon {
+  color: var(--color-zinc-400);
+  flex-shrink: 0;
+}
+
+.triggerText {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dropdown panel */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 100;
+  display: flex;
+  background: #fff;
+  border: 1px solid var(--color-zinc-200);
+  border-radius: 8px;
+  box-shadow: 0px 7px 10px -3px rgba(0, 0, 0, 0.08), 0px 0px 0px 1px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+/* Calendar side */
+.calendarSide {
+  padding: 16px;
+  min-width: 280px;
+}
+
+.monthHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.monthLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.monthNav {
+  display: flex;
+  gap: 4px;
+}
+
+.navBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  border-radius: 4px;
+  color: var(--color-zinc-500);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.navBtn:hover {
+  background: var(--color-zinc-100);
+}
+
+/* Day headers */
+.dayHeaders {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  margin-bottom: 4px;
+}
+
+.dayHeader {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-zinc-400);
+  text-align: center;
+  padding: 4px 0;
+}
+
+/* Calendar grid */
+.calGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+}
+
+.emptyDay {
+  width: 36px;
+  height: 36px;
+}
+
+.day {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-family: var(--font-family-primary);
+  color: var(--color-text-primary);
+  background: none;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.day:hover {
+  background: var(--color-zinc-100);
+}
+
+.dayInRange {
+  background: rgba(20, 184, 138, 0.1);
+}
+
+.dayInRange:hover {
+  background: rgba(20, 184, 138, 0.18);
+}
+
+.dayEdge {
+  background: var(--color-primary-500);
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 600;
+}
+
+.dayEdge:hover {
+  background: var(--color-primary-600, #0d9e76);
+}
+
+.dayToday {
+  font-weight: 600;
+  color: var(--color-primary-500);
+}
+
+/* Presets side */
+.presetsSide {
+  border-left: 1px solid var(--color-zinc-200);
+  padding: 12px 0;
+  min-width: 180px;
+  max-height: 340px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.presetBtn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-family: var(--font-family-primary);
+  font-weight: var(--weight-normal);
+  color: var(--color-text-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.presetBtn:hover {
+  background: var(--color-zinc-50);
+}
+
+.presetBtnActive {
+  color: var(--color-primary-500);
+  font-weight: 600;
+  background: rgba(20, 184, 138, 0.06);
+}
+
+/* Scrollbar styling for presets */
+.presetsSide::-webkit-scrollbar {
+  width: 6px;
+}
+
+.presetsSide::-webkit-scrollbar-thumb {
+  background: var(--color-zinc-300);
+  border-radius: 3px;
+}
+
+.presetsSide::-webkit-scrollbar-track {
+  background: transparent;
+}
