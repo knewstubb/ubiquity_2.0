@@ -16,6 +16,7 @@ function mapRowToConnection(row: any): Connection {
     protocol: row.protocol,
     status: row.status,
     basePath: row.base_path,
+    accountId: row.account_id,
     config: row.config,
   };
 }
@@ -27,6 +28,7 @@ function mapConnectionToRow(connection: Connection) {
     protocol: connection.protocol,
     status: connection.status,
     base_path: connection.basePath,
+    account_id: connection.accountId,
     config: connection.config,
   };
 }
@@ -62,6 +64,7 @@ export async function update(id: string, updates: Partial<Connection>): Promise<
   if (updates.protocol !== undefined) row.protocol = updates.protocol;
   if (updates.status !== undefined) row.status = updates.status;
   if (updates.basePath !== undefined) row.base_path = updates.basePath;
+  if (updates.accountId !== undefined) row.account_id = updates.accountId;
   if (updates.config !== undefined) row.config = updates.config;
 
   const { data, error } = await supabase!.from('connections').update(row).eq('id', id).select().single();

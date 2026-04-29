@@ -12,6 +12,7 @@ describe('SessionStore', () => {
 
   const fullState: SessionState = {
     selectedAccountId: 'acc-1',
+    selectedRootAccountId: 'root-1',
     activeFilters: { campaignTags: ['promo'], assetTypeFilter: 'image' },
     openPanels: ['feedback', 'inspector'],
     simulatedRole: 'marketer',
@@ -82,8 +83,36 @@ describe('SessionStore', () => {
     expect(loaded).not.toBeNull();
     expect(loaded?.lastRoute).toBe('/dashboard');
     expect(loaded?.selectedAccountId).toBe('');
+    expect(loaded?.selectedRootAccountId).toBeNull();
     expect(loaded?.simulatedRole).toBe('admin');
     expect(loaded?.openPanels).toEqual([]);
+  });
+
+  // --- selectedRootAccountId persistence ---
+
+  it('stores null selectedRootAccountId as __all__ in localStorage', () => {
+    saveSession(userId, { selectedRootAccountId: null });
+    const raw = localStorage.getItem(storageKey);
+    expect(raw).not.toBeNull();
+    expect(JSON.parse(raw!).selectedRootAccountId).toBe('__all__');
+  });
+
+  it('loads __all__ from localStorage as null selectedRootAccountId', () => {
+    saveSession(userId, { selectedRootAccountId: null });
+    const loaded = loadSession(userId);
+    expect(loaded?.selectedRootAccountId).toBeNull();
+  });
+
+  it('round-trips a specific root account ID', () => {
+    saveSession(userId, { selectedRootAccountId: 'acc-master' });
+    const loaded = loadSession(userId);
+    expect(loaded?.selectedRootAccountId).toBe('acc-master');
+  });
+
+  it('round-trips null selectedRootAccountId (All Accounts Mode)', () => {
+    saveSession(userId, { selectedRootAccountId: null });
+    const loaded = loadSession(userId);
+    expect(loaded?.selectedRootAccountId).toBeNull();
   });
 
   // --- Quota exceeded (silent failure) ---

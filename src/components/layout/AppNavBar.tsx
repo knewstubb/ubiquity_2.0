@@ -2,11 +2,13 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MagnifyingGlass, CaretDown } from '@phosphor-icons/react';
 import { AccountSwitcher } from './AccountSwitcher';
+import { RootAccountSelector } from './RootAccountSelector';
 import { RoleSimulator } from './RoleSimulator';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { ResetAccountButton } from '../shared/ResetAccountButton';
 import { useFeatureFlags } from '../../contexts/FeatureFlagContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { usePlatformAdmin } from '../../contexts/PlatformAdminContext';
 import styles from './AppNavBar.module.css';
 
 interface SubItem {
@@ -90,10 +92,24 @@ export function AppNavBar() {
   const navRef = useRef<HTMLDivElement>(null);
   const { isRouteEnabled } = useFeatureFlags();
   const { user, signOut } = useAuth();
+  const { isPlatformAdmin } = usePlatformAdmin();
 
-  // Filter nav items based on feature flags (in render logic, not modifying NAV_ITEMS)
+  // Filter nav items based on feature flags, and conditionally add admin-only items
   const filteredNavItems = useMemo(() => {
-    return NAV_ITEMS.map((item) => {
+    // Build nav items with admin-only additions
+    const items = NAV_ITEMS.map((item) => {
+      // For the Admin dropdown, conditionally add "User Management" for platform admins
+      if (item.label === 'Admin' && isPlatformAdmin && item.subItems) {
+        const adminSubItems = [
+          ...item.subItems,
+          { label: 'User Management', path: '/admin/users' },
+        ];
+        return { ...item, subItems: adminSubItems };
+      }
+      return item;
+    });
+
+    return items.map((item) => {
       if (item.subItems) {
         const enabledSubItems = item.subItems.filter((sub) => isRouteEnabled(sub.path));
         // If all sub-items are disabled, hide the entire dropdown
@@ -104,7 +120,7 @@ export function AppNavBar() {
       if (item.path && !isRouteEnabled(item.path)) return null;
       return item;
     }).filter((item): item is NavItem => item !== null);
-  }, [isRouteEnabled]);
+  }, [isRouteEnabled, isPlatformAdmin]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -248,8 +264,15 @@ export function AppNavBar() {
             </button>
             {openDropdown === '_avatar' && (
               <div className={`${styles.dropdown} ${styles.dropdownRight}`} role="menu">
+                {isPlatformAdmin && (
+                  <>
+                    <RootAccountSelector onSelect={() => setOpenDropdown(null)} />
+                    <div className={styles.dropdownDivider} />
+                  </>
+                )}
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => setOpenDropdown(null)}>Profile</button>
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => setOpenDropdown(null)}>Password</button>
+                <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { navigate('/admin/pricing'); setOpenDropdown(null); }}>Prices</button>
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => setOpenDropdown(null)}>Help</button>
                 <div className={styles.dropdownDivider} />
                 <ResetAccountButton />

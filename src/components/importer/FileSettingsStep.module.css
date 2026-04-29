@@ -324,3 +324,19 @@
   font-size: 13px;
   line-height: 18px;
 }
+
+/* Validation error */
+.textInputError {
+  border-color: var(--color-error);
+}
+
+.textInputError:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+}
+
+.validationError {
+  font-size: var(--font-xs);
+  color: var(--color-error);
+  margin: -4px 0 0;
+}

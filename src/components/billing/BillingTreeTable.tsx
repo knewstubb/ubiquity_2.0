@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react';
 import { CaretRight } from '@phosphor-icons/react';
 import type { AccountTreeNode } from './useBillingReport';
 import type { BillingLineItem } from '../../models/billing';
+import type { BillingCategory } from '../../models/billing';
+import { usePricing } from '../../contexts/PricingContext';
 import styles from './BillingTreeTable.module.css';
 
 export interface BillingTreeTableProps {
@@ -16,9 +18,11 @@ const COLUMNS: { key: string; label: string; align?: 'right' }[] = [
   { key: 'type', label: 'Type' },
   { key: 'description', label: 'Description' },
   { key: 'sendDate', label: 'Send Date' },
-  { key: 'items', label: 'Items', align: 'right' },
-  { key: 'createdDate', label: 'Created/Activated Date' },
+  { key: 'createdDate', label: 'Created/Activated' },
   { key: 'user', label: 'User' },
+  { key: 'items', label: 'Items', align: 'right' },
+  { key: 'unitPrice', label: 'Unit Price', align: 'right' },
+  { key: 'total', label: 'Total', align: 'right' },
 ];
 
 /** Format an ISO date string as DD MMM YYYY, e.g. "15 Jan 2025". */
@@ -32,6 +36,30 @@ function formatDate(iso: string | null | undefined): string {
   return `${day} ${month} ${year}`;
 }
 
+/** Format a number as NZD currency, e.g. "$1,234.56". */
+function formatCurrency(amount: number): string {
+  return `$${amount.toLocaleString('en-NZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+/** Format unit price — show more decimals for small values. */
+function formatUnitPrice(price: number): string {
+  if (price >= 1) {
+    return `$${price.toFixed(2)}`;
+  }
+  // Show 3 decimal places for sub-dollar prices
+  return `$${price.toFixed(3)}`;
+}
+
+/** Calculate the rolled-up total cost for a tree node. */
+function calcNodeTotal(node: AccountTreeNode, prices: Record<BillingCategory, number>): number {
+  const ownTotal = node.items.reduce(
+    (sum, item) => sum + item.items * (prices[item.category as BillingCategory] ?? 0),
+    0,
+  );
+  const childTotal = node.children.reduce((sum, c) => sum + calcNodeTotal(c, prices), 0);
+  return ownTotal + childTotal;
+}
+
 export function BillingTreeTable({
   tree,
   sortColumn,
@@ -39,6 +67,7 @@ export function BillingTreeTable({
   onToggleSort,
 }: BillingTreeTableProps) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const { prices } = usePricing();
 
   const toggle = useCallback((accountId: string) => {
     setExpanded((prev) => {
@@ -81,7 +110,7 @@ export function BillingTreeTable({
         </tr>
       </thead>
       <tbody>
-        {tree.map((node) => renderNode(node, expanded, toggle))}
+        {tree.map((node) => renderNode(node, expanded, toggle, prices))}
       </tbody>
     </table>
   );
@@ -96,6 +125,7 @@ function renderNode(
   node: AccountTreeNode,
   expanded: Set<string>,
   toggle: (id: string) => void,
+  prices: Record<BillingCategory, number>,
 ): React.ReactNode[] {
   const rows: React.ReactNode[] = [];
   const isExpanded = expanded.has(node.account.id);
@@ -110,6 +140,8 @@ function renderNode(
         : styles.accountRowLevel2;
 
   const indent = node.level * 24;
+
+  const nodeTotal = calcNodeTotal(node, prices);
 
   // Account summary row
   rows.push(
@@ -131,32 +163,38 @@ function renderNode(
       <td className={styles.bodyCell} />
       <td className={styles.bodyCell} />
       <td className={styles.bodyCell} />
+      <td className={styles.bodyCell} />
+      <td className={styles.bodyCell} />
       <td className={styles.bodyCellItems}>
         {node.rolledUpTotal.toLocaleString()}
       </td>
       <td className={styles.bodyCell} />
-      <td className={styles.bodyCell} />
+      <td className={styles.bodyCellItems}>
+        {nodeTotal > 0 ? formatCurrency(nodeTotal) : ''}
+      </td>
     </tr>,
   );
 
   // Expanded content
   if (isExpanded) {
-    // Child account nodes
-    for (const child of node.children) {
-      rows.push(...renderNode(child, expanded, toggle));
+    // Line items for this account FIRST (parent's own items above children)
+    for (const item of node.items) {
+      rows.push(renderLineItem(item, node.level, prices));
     }
 
-    // Line items for this account
-    for (const item of node.items) {
-      rows.push(renderLineItem(item, node.level));
+    // Then child account nodes
+    for (const child of node.children) {
+      rows.push(...renderNode(child, expanded, toggle, prices));
     }
   }
 
   return rows;
 }
 
-function renderLineItem(item: BillingLineItem, parentLevel: number): React.ReactNode {
+function renderLineItem(item: BillingLineItem, parentLevel: number, prices: Record<BillingCategory, number>): React.ReactNode {
   const indent = parentLevel * 24 + 24;
+  const unitPrice = prices[item.category as BillingCategory] ?? 0;
+  const total = item.items * unitPrice;
 
   return (
     <tr key={`item-${item.id}`} className={styles.lineItemRow}>
@@ -166,9 +204,11 @@ function renderLineItem(item: BillingLineItem, parentLevel: number): React.React
       <td className={styles.bodyCell}>{item.category}</td>
       <td className={styles.bodyCell}>{item.description}</td>
       <td className={styles.bodyCell}>{formatDate(item.sendDate)}</td>
-      <td className={styles.bodyCellItems}>{item.items.toLocaleString()}</td>
       <td className={styles.bodyCell}>{formatDate(item.createdDate)}</td>
       <td className={styles.bodyCell}>{item.user}</td>
+      <td className={styles.bodyCellItems}>{item.items.toLocaleString()}</td>
+      <td className={styles.bodyCellItems}>{unitPrice > 0 ? formatUnitPrice(unitPrice) : ''}</td>
+      <td className={styles.bodyCellItems}>{total > 0 ? formatCurrency(total) : ''}</td>
     </tr>
   );
 }

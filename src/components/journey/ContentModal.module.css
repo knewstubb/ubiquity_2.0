@@ -23,6 +23,7 @@
 
 .modal {
   width: 60vw;
+  max-width: 1080px;
   height: 80vh;
   background: var(--color-bg);
   border-radius: var(--radius-lg);

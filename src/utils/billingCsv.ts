@@ -1,4 +1,5 @@
 import type { BillingLineItem } from '../models/billing';
+import type { BillingCategory } from '../models/billing';
 import { accounts } from '../data/accounts';
 
 const accountNameMap = new Map(accounts.map((a) => [a.id, a.name]));
@@ -19,18 +20,24 @@ function escapeCsvValue(value: string): string {
   return value;
 }
 
-export function downloadBillingCsv(items: BillingLineItem[]): void {
-  const headers = ['Account', 'Type', 'Description', 'Send Date', 'Items', 'Created/Activated Date', 'User'];
+export function downloadBillingCsv(items: BillingLineItem[], prices: Record<BillingCategory, number>): void {
+  const headers = ['Account', 'Type', 'Description', 'Send Date', 'Created/Activated', 'User', 'Items', 'Unit Price', 'Total'];
 
-  const rows = items.map((item) => [
-    escapeCsvValue(accountNameMap.get(item.accountId) ?? item.accountId),
-    escapeCsvValue(item.category),
-    escapeCsvValue(item.description),
-    escapeCsvValue(formatDate(item.sendDate)),
-    String(item.items),
-    escapeCsvValue(formatDate(item.createdDate)),
-    escapeCsvValue(item.user),
-  ]);
+  const rows = items.map((item) => {
+    const unitPrice = prices[item.category as BillingCategory] ?? 0;
+    const total = item.items * unitPrice;
+    return [
+      escapeCsvValue(accountNameMap.get(item.accountId) ?? item.accountId),
+      escapeCsvValue(item.category),
+      escapeCsvValue(item.description),
+      escapeCsvValue(formatDate(item.sendDate)),
+      escapeCsvValue(formatDate(item.createdDate)),
+      escapeCsvValue(item.user),
+      String(item.items),
+      unitPrice.toFixed(3),
+      total.toFixed(2),
+    ];
+  });
 
   const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
 

@@ -100,6 +100,48 @@ function makeCascadingAssignments(
   }));
 }
 
+const cccAccounts = [
+  'acc-ccc',
+  'acc-ccc-parks',
+  'acc-ccc-libraries',
+  'acc-ccc-turanga',
+  'acc-ccc-south-lib',
+  'acc-ccc-events',
+];
+
+function makeCccAssignments(
+  userId: string,
+  groupId: string,
+): UserAccountAssignment[] {
+  return cccAccounts.map((accountId) => ({
+    userId,
+    accountId,
+    permissionGroupId: groupId,
+    customPermissions: null,
+  }));
+}
+
+const stcAccounts = [
+  'acc-stc',
+  'acc-stc-fundraising',
+  'acc-stc-programmes',
+  'acc-stc-early',
+  'acc-stc-youth',
+  'acc-stc-comms',
+];
+
+function makeStcAssignments(
+  userId: string,
+  groupId: string,
+): UserAccountAssignment[] {
+  return stcAccounts.map((accountId) => ({
+    userId,
+    accountId,
+    permissionGroupId: groupId,
+    customPermissions: null,
+  }));
+}
+
 export const defaultAssignments: UserAccountAssignment[] = [
   // Aroha Mitchell (usr-001): Admin on acc-master, cascading to all children
   ...makeCascadingAssignments('usr-001', 'grp-admin'),
@@ -128,4 +170,42 @@ export const defaultAssignments: UserAccountAssignment[] = [
       Settings: { create: false, read: false, update: false, delete: false },
     },
   },
+
+  // --- Christchurch City Council assignments ---
+
+  // Sarah Thornton (usr-006): Admin across entire CCC tree
+  ...makeCccAssignments('usr-006', 'grp-admin'),
+
+  // Mike Regan (usr-007): Editor on CCC root + parks, Viewer on libraries subtree
+  { userId: 'usr-007', accountId: 'acc-ccc', permissionGroupId: 'grp-editor', customPermissions: null },
+  { userId: 'usr-007', accountId: 'acc-ccc-parks', permissionGroupId: 'grp-editor', customPermissions: null },
+  { userId: 'usr-007', accountId: 'acc-ccc-libraries', permissionGroupId: 'grp-viewer', customPermissions: null },
+  { userId: 'usr-007', accountId: 'acc-ccc-turanga', permissionGroupId: 'grp-viewer', customPermissions: null },
+  { userId: 'usr-007', accountId: 'acc-ccc-south-lib', permissionGroupId: 'grp-viewer', customPermissions: null },
+  { userId: 'usr-007', accountId: 'acc-ccc-events', permissionGroupId: 'grp-editor', customPermissions: null },
+
+  // Priya Sharma (usr-008): Viewer across entire CCC tree
+  ...makeCccAssignments('usr-008', 'grp-viewer'),
+
+  // --- Save the Children NZ assignments ---
+
+  // Emma Wilson (usr-009): Admin across entire STC tree
+  ...makeStcAssignments('usr-009', 'grp-admin'),
+
+  // David Tui (usr-010): Editor on STC root + fundraising, Viewer on programmes subtree
+  { userId: 'usr-010', accountId: 'acc-stc', permissionGroupId: 'grp-editor', customPermissions: null },
+  { userId: 'usr-010', accountId: 'acc-stc-fundraising', permissionGroupId: 'grp-editor', customPermissions: null },
+  { userId: 'usr-010', accountId: 'acc-stc-programmes', permissionGroupId: 'grp-viewer', customPermissions: null },
+  { userId: 'usr-010', accountId: 'acc-stc-early', permissionGroupId: 'grp-viewer', customPermissions: null },
+  { userId: 'usr-010', accountId: 'acc-stc-youth', permissionGroupId: 'grp-viewer', customPermissions: null },
+  { userId: 'usr-010', accountId: 'acc-stc-comms', permissionGroupId: 'grp-editor', customPermissions: null },
+
+  // Hana Moana (usr-011): Viewer across entire STC tree
+  ...makeStcAssignments('usr-011', 'grp-viewer'),
+
+  // --- Multi-account user ---
+
+  // Jordan Blake (usr-012): Admin on Serenity Spa Group, Viewer on CCC
+  { userId: 'usr-012', accountId: 'acc-master', permissionGroupId: 'grp-admin', customPermissions: null },
+  { userId: 'usr-012', accountId: 'acc-ccc', permissionGroupId: 'grp-viewer', customPermissions: null },
 ];

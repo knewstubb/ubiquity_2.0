@@ -4,7 +4,23 @@ export type BillingCategory =
   | 'Mailouts'
   | 'Automated Mailouts'
   | 'Form Triggered Emails'
-  | 'Integrations';
+  | 'TXT Message Parts'
+  | 'Survey Responses'
+  | 'Event Triggered Emails'
+  | 'Integration';
+
+/** Unit prices per billing category (NZD) */
+export const UNIT_PRICES: Record<BillingCategory, number> = {
+  'Database Records': 0.003,
+  'Transactional Records': 0.002,
+  'Mailouts': 0.008,
+  'Automated Mailouts': 0.008,
+  'Form Triggered Emails': 0.008,
+  'TXT Message Parts': 0.065,
+  'Survey Responses': 0.015,
+  'Event Triggered Emails': 0.008,
+  'Integration': 25.00,
+};
 
 export interface BillingLineItem {
   id: string;

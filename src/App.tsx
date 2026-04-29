@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastProvider } from './components/shared/Toast';
 import { AuthProvider } from './contexts/AuthContext';
 import { FeatureFlagProvider } from './contexts/FeatureFlagContext';
@@ -6,7 +6,9 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { DataLayerProvider } from './providers/DataLayerProvider';
 import { RoleSimulatorProvider } from './contexts/RoleSimulatorContext';
 import { CollaborationProvider } from './providers/CollaborationProvider';
+import { PlatformAdminProvider } from './contexts/PlatformAdminContext';
 import { AccountProvider } from './contexts/AccountContext';
+import { PricingProvider } from './contexts/PricingContext';
 import { CampaignsProvider } from './contexts/CampaignsContext';
 import { JourneysProvider } from './contexts/JourneysContext';
 import { PermissionsProvider } from './contexts/PermissionsContext';
@@ -15,6 +17,7 @@ import { ConnectionsProvider } from './contexts/ConnectionsContext';
 import { ConnectorsProvider } from './contexts/ConnectorsContext';
 import { DataProvider } from './contexts/DataContext';
 import { AppNavBar } from './components/layout/AppNavBar';
+import { AdminAccountBanner } from './components/layout/AdminAccountBanner';
 import { ChangelogBanner } from './components/layout/ChangelogBanner';
 import { FeedbackWidget } from './components/shared/FeedbackWidget';
 import LoginPage from './pages/LoginPage';
@@ -37,10 +40,20 @@ import AnalyticsDashboardsPage from './pages/AnalyticsDashboardsPage';
 import ReportsPage from './pages/ReportsPage';
 import ActivityPage from './pages/ActivityPage';
 import BillingReportPage from './pages/BillingReportPage';
+import PricingPage from './pages/PricingPage';
 import SettingsPage from './pages/SettingsPage';
 import PermissionsPage from './pages/PermissionsPage';
 import AssetsPage from './pages/AssetsPage';
 import ActivityLogPage from './pages/ActivityLogPage';
+import UserManagementPage from './pages/UserManagementPage';
+import { usePlatformAdmin } from './contexts/PlatformAdminContext';
+
+/** Redirects non-admin users to /dashboard */
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { isPlatformAdmin } = usePlatformAdmin();
+  if (!isPlatformAdmin) return <Navigate to="/dashboard" replace />;
+  return <>{children}</>;
+}
 
 function App() {
   return (
@@ -57,7 +70,9 @@ function App() {
                     <DataLayerProvider>
                       <RoleSimulatorProvider>
                         <CollaborationProvider>
+                          <PlatformAdminProvider>
                           <AccountProvider>
+                          <PricingProvider>
                             <CampaignsProvider>
                               <JourneysProvider>
                                 <PermissionsProvider>
@@ -67,6 +82,7 @@ function App() {
                                         <DataProvider>
                                           <ChangelogBanner />
                                           <AppNavBar />
+                                          <AdminAccountBanner />
                                           <Routes>
                                             <Route path="/" element={<DashboardPage />} />
                                             <Route path="/connector/:id" element={<ConnectorDetailPage />} />
@@ -88,6 +104,7 @@ function App() {
                                             <Route path="/analytics/reports" element={<ReportsPage />} />
                                             <Route path="/analytics/activity" element={<ActivityPage />} />
                                             <Route path="/admin/billing" element={<BillingReportPage />} />
+                                            <Route path="/admin/pricing" element={<PricingPage />} />
                                             <Route path="/settings" element={<SettingsPage />} />
                                             <Route path="/settings/permissions" element={<PermissionsPage />} />
                                             <Route path="/admin/brand" element={<SettingsPage />} />
@@ -96,6 +113,7 @@ function App() {
                                             <Route path="/admin/domains" element={<SettingsPage />} />
                                             <Route path="/admin/api" element={<SettingsPage />} />
                                             <Route path="/admin/activity" element={<ActivityLogPage />} />
+                                            <Route path="/admin/users" element={<AdminRoute><UserManagementPage /></AdminRoute>} />
                                           </Routes>
                                           <FeedbackWidget />
                                         </DataProvider>
@@ -105,7 +123,9 @@ function App() {
                                 </PermissionsProvider>
                               </JourneysProvider>
                             </CampaignsProvider>
+                          </PricingProvider>
                           </AccountProvider>
+                          </PlatformAdminProvider>
                         </CollaborationProvider>
                       </RoleSimulatorProvider>
                     </DataLayerProvider>

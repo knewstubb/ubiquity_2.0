@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { BillingTreeTable } from '../BillingTreeTable';
+import { PricingProvider } from '../../../contexts/PricingContext';
 import type { AccountTreeNode } from '../useBillingReport';
 
 /** Helper to build a minimal AccountTreeNode */
@@ -36,7 +37,7 @@ const sampleLineItem = {
 const sampleLineItem2 = {
   id: 'item-2',
   accountId: 'acc-1-child',
-  category: 'Integrations' as const,
+  category: 'Integration' as const,
   description: 'Shopify — REST',
   sendDate: null,
   items: 100,
@@ -74,6 +75,10 @@ function buildSampleTree(): AccountTreeNode[] {
   return [parent];
 }
 
+function renderWithProviders(ui: React.ReactElement) {
+  return render(<PricingProvider>{ui}</PricingProvider>);
+}
+
 describe('BillingTreeTable', () => {
   const defaultProps = {
     sortColumn: 'account',
@@ -83,14 +88,14 @@ describe('BillingTreeTable', () => {
 
   describe('empty state', () => {
     it('displays empty state message when tree is empty', () => {
-      render(<BillingTreeTable tree={[]} {...defaultProps} />);
+      renderWithProviders(<BillingTreeTable tree={[]} {...defaultProps} />);
       expect(
         screen.getByText('No billing data found for the selected criteria.'),
       ).toBeInTheDocument();
     });
 
     it('does not render a table when tree is empty', () => {
-      render(<BillingTreeTable tree={[]} {...defaultProps} />);
+      renderWithProviders(<BillingTreeTable tree={[]} {...defaultProps} />);
       expect(screen.queryByRole('table')).not.toBeInTheDocument();
     });
   });
@@ -98,7 +103,7 @@ describe('BillingTreeTable', () => {
   describe('expand/collapse toggling', () => {
     it('initially shows only parent account rows (collapsed)', () => {
       const tree = buildSampleTree();
-      render(<BillingTreeTable tree={tree} {...defaultProps} />);
+      renderWithProviders(<BillingTreeTable tree={tree} {...defaultProps} />);
 
       // Parent should be visible
       expect(screen.getByText('Parent Account')).toBeInTheDocument();
@@ -109,7 +114,7 @@ describe('BillingTreeTable', () => {
     it('clicking a parent row expands to show children and line items', async () => {
       const user = userEvent.setup();
       const tree = buildSampleTree();
-      render(<BillingTreeTable tree={tree} {...defaultProps} />);
+      renderWithProviders(<BillingTreeTable tree={tree} {...defaultProps} />);
 
       // Click parent to expand
       await user.click(screen.getByText('Parent Account'));
@@ -122,7 +127,7 @@ describe('BillingTreeTable', () => {
     it('clicking an expanded parent row collapses it', async () => {
       const user = userEvent.setup();
       const tree = buildSampleTree();
-      render(<BillingTreeTable tree={tree} {...defaultProps} />);
+      renderWithProviders(<BillingTreeTable tree={tree} {...defaultProps} />);
 
       // Expand
       await user.click(screen.getByText('Parent Account'));
@@ -137,7 +142,7 @@ describe('BillingTreeTable', () => {
   describe('indentation levels', () => {
     it('renders level 0 (parent) with no indentation padding', async () => {
       const tree = buildSampleTree();
-      render(<BillingTreeTable tree={tree} {...defaultProps} />);
+      renderWithProviders(<BillingTreeTable tree={tree} {...defaultProps} />);
 
       // Parent row should have paddingLeft: 0 (level 0 * 24 = 0)
       const parentCell = screen.getByText('Parent Account');
@@ -148,7 +153,7 @@ describe('BillingTreeTable', () => {
     it('renders level 1 (child) with 24px indentation', async () => {
       const user = userEvent.setup();
       const tree = buildSampleTree();
-      render(<BillingTreeTable tree={tree} {...defaultProps} />);
+      renderWithProviders(<BillingTreeTable tree={tree} {...defaultProps} />);
 
       // Expand parent
       await user.click(screen.getByText('Parent Account'));
@@ -161,7 +166,7 @@ describe('BillingTreeTable', () => {
     it('renders level 2 (grandchild) with 48px indentation', async () => {
       const user = userEvent.setup();
       const tree = buildSampleTree();
-      render(<BillingTreeTable tree={tree} {...defaultProps} />);
+      renderWithProviders(<BillingTreeTable tree={tree} {...defaultProps} />);
 
       // Expand parent, then child
       await user.click(screen.getByText('Parent Account'));
@@ -176,7 +181,7 @@ describe('BillingTreeTable', () => {
   describe('sort arrow indicator', () => {
     it('shows ▲ arrow on active sort column in ascending direction', () => {
       const tree = buildSampleTree();
-      render(
+      renderWithProviders(
         <BillingTreeTable
           tree={tree}
           sortColumn="account"
@@ -190,7 +195,7 @@ describe('BillingTreeTable', () => {
 
     it('shows ▼ arrow on active sort column in descending direction', () => {
       const tree = buildSampleTree();
-      render(
+      renderWithProviders(
         <BillingTreeTable
           tree={tree}
           sortColumn="account"
@@ -204,7 +209,7 @@ describe('BillingTreeTable', () => {
 
     it('does not show arrow on non-active sort columns', () => {
       const tree = buildSampleTree();
-      render(
+      renderWithProviders(
         <BillingTreeTable
           tree={tree}
           sortColumn="account"
@@ -222,7 +227,7 @@ describe('BillingTreeTable', () => {
       const user = userEvent.setup();
       const onToggleSort = vi.fn();
       const tree = buildSampleTree();
-      render(
+      renderWithProviders(
         <BillingTreeTable
           tree={tree}
           sortColumn="account"

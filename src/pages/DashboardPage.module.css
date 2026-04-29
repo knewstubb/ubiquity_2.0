@@ -63,3 +63,23 @@
   padding: var(--space-10) 0;
   font-size: var(--font-base);
 }
+
+.addAutomationCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  border: 1px dashed #D4D4D8;
+  border-radius: 8px;
+  background: transparent;
+  color: #14B88A;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.addAutomationCard:hover {
+  background: rgba(20, 184, 138, 0.04);
+  border-color: #14B88A;
+}

@@ -1,157 +1,189 @@
-/* Connector row — flat horizontal layout */
-.card {
-  display: flex;
+/* Automation row — 4 groups spread evenly */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-1) var(--space-4);
+  padding: 4px 16px;
   height: 44px;
-  border: 1px solid var(--color-grey-300);
-  border-radius: var(--radius-lg);
-  background: var(--color-grey-100);
+  background: #FAFAFA;
+  border: 1px solid #D4D4D8;
+  border-radius: 8px;
+  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+  transition: box-shadow 150ms ease, border-color 150ms ease;
   user-select: none;
 }
 
-/* Status-based styles */
-.cardActive {
-  border-color: rgb(20, 184, 138);
-  background: rgb(240, 251, 249);
+.row:hover {
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.1);
 }
 
-.cardPaused {
-  border-color: rgb(212, 212, 212);
-  background: rgb(245, 245, 245);
-}
-
-.cardError {
-  border-color: rgb(239, 68, 68);
-  background: rgb(254, 242, 242);
-}
-
-.card:hover {
-  box-shadow: var(--shadow-sm);
-}
-
-.card:focus-visible {
+.row:focus-visible {
   outline: 2px solid var(--color-primary-500);
   outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.rowPaused {
+  background: #F4F4F5;
+  border-color: #E4E4E7;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+/* Group 1: Icon + Name */
+.groupName {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.directionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #14B88A;
+  flex-shrink: 0;
+}
+
+.directionIconPaused {
+  color: #A1A1AA;
+}
+
+.directionIconError {
+  color: #EF4444;
 }
 
 .name {
-  font-size: var(--font-sm);
-  font-weight: var(--weight-semibold);
-  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  color: #18181B;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 0;
 }
 
-.badges {
+/* Group 2: Data type */
+.dataType {
+  font-size: 14px;
+  color: #52525B;
+  white-space: nowrap;
+}
+
+/* Group 3: Status + Time */
+.groupStatus {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  flex-shrink: 0;
+  gap: 8px;
 }
 
-.directionBadge {
+.lastRunBadge {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
-  font-size: var(--font-xs);
-  font-weight: var(--weight-medium);
-  line-height: var(--leading-tight);
+  padding: 0px 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
   white-space: nowrap;
-  background-color: var(--color-grey-100);
-  color: var(--color-grey-700);
-  text-transform: capitalize;
+  line-height: 16px;
 }
 
-.schedule {
-  font-size: var(--font-xs);
-  color: var(--color-text-muted);
+.lastRunCompleted {
+  background-color: rgba(20, 184, 138, 0.15);
+  color: #0D9668;
+}
+
+.lastRunFailed {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #DC2626;
+}
+
+.lastRunTime {
+  font-size: 12px;
+  color: #A1A1AA;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.spacer {
-  flex: 1;
-}
-
-.actions {
+/* Group 4: Toggle + Meatball */
+.groupActions {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  flex-shrink: 0;
+  gap: 16px;
 }
 
-.overflowButton {
+/* Meatball menu */
+.meatballWrapper {
+  position: relative;
+}
+
+.meatballButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 28px;
   height: 28px;
+  background: none;
   border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-text-muted);
+  border-radius: 6px;
+  color: #71717A;
   cursor: pointer;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
-  position: relative;
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
-.overflowButton:hover {
-  background-color: var(--color-grey-100);
-  color: var(--color-text-primary);
+.meatballButton:hover {
+  background-color: #F4F4F5;
+  color: #18181B;
 }
 
-.overflowButton:focus-visible {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: 2px;
-}
-
-.overflowMenu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  z-index: 10;
-  min-width: 120px;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  padding: var(--space-1) 0;
+.contextMenu {
+  position: fixed;
+  transform: translateX(-100%);
+  min-width: 220px;
+  white-space: nowrap;
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 8px;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08), 0px 1px 4px rgba(0, 0, 0, 0.04);
+  z-index: 9999;
+  padding: 6px;
 }
 
 .menuItem {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   width: 100%;
-  padding: var(--space-2) var(--space-3);
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #27272A;
+  background: none;
   border: none;
-  background: transparent;
-  font-size: var(--font-sm);
-  color: var(--color-text-primary);
-  text-align: left;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  text-align: left;
+  transition: background 100ms ease;
+  white-space: nowrap;
 }
 
 .menuItem:hover {
-  background-color: var(--color-grey-50);
+  background: #F4F4F5;
 }
 
-.menuItem:focus-visible {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: -2px;
-  background-color: var(--color-grey-50);
+.menuItem:active {
+  background: #E4E4E7;
 }
 
 .menuItemDanger {
-  color: var(--color-error);
+  color: #EF4444;
 }
 
 .menuItemDanger:hover {
-  background-color: var(--color-error-light);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.menuDivider {
+  height: 1px;
+  margin: 4px 0;
+  background: #E4E4E7;
 }

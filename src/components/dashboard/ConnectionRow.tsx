@@ -1,6 +1,7 @@
-import { useState, type ReactNode } from 'react';
+import { useState, useRef, useEffect, type ReactNode } from 'react';
 import type { Connection } from '../../models/connection';
 import type { Connector } from '../../models/connector';
+import { DotsThree, PencilSimple, Trash } from '@phosphor-icons/react';
 import { ProtocolIcon } from '../shared/ProtocolIcon';
 import styles from './ConnectionRow.module.css';
 
@@ -8,17 +9,33 @@ interface ConnectionRowProps {
   connection: Connection;
   connectors: Connector[];
   onAddConnector: (connectionId: string) => void;
+  onEditConnection?: (connectionId: string) => void;
+  onDeleteConnection?: (connectionId: string) => void;
   children?: ReactNode;
 }
 
-export function ConnectionRow({ connection, connectors, onAddConnector, children }: ConnectionRowProps) {
+export function ConnectionRow({ connection, connectors, onAddConnector, onEditConnection, onDeleteConnection, children }: ConnectionRowProps) {
   const [expanded, setExpanded] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const connectorCount = connectors.length;
   const activeCount = connectors.filter((c) => c.status === 'active').length;
+  const isError = connection.status === 'error';
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [menuOpen]);
 
   return (
-    <div className={styles.row}>
+    <div className={`${styles.row} ${isError ? styles.rowError : ''}`}>
       <div
         className={styles.header}
         role="button"
@@ -49,33 +66,84 @@ export function ConnectionRow({ connection, connectors, onAddConnector, children
           </span>
 
           <div className={styles.connectionInfo}>
-            <ProtocolIcon protocol={connection.protocol} size={20} />
+            <ProtocolIcon protocol={connection.protocol} size={20} className={isError ? styles.iconError : ''} />
             <span className={styles.name}>{connection.name}</span>
-            <span
-              className={`${styles.statusDot} ${
-                connection.status === 'connected'
-                  ? styles.statusConnected
-                  : styles.statusError
-              }`}
-              title={connection.status === 'connected' ? 'Connected' : 'Error'}
-            />
           </div>
         </div>
 
-        <div className={styles.meta}>
-          <span className={styles.connectorCount}>
-            {activeCount} of {connectorCount} Automations Active
+        {isError && (
+          <span className={styles.errorMessage}>
+            Connection Error. <em>Automations Cannot Run</em>
           </span>
+        )}
+
+        <div className={styles.meta}>
+          {!isError && (
+            <span className={styles.connectorCount}>
+              {connectorCount === 0
+                ? 'No Automations'
+                : `${activeCount} of ${connectorCount} Automations Active`}
+            </span>
+          )}
           <button
             type="button"
-            className={styles.addLink}
+            className={`${styles.addButton} ${isError ? styles.addButtonDisabled : ''}`}
+            disabled={isError}
+            title={isError ? 'Fix connection error before adding automations' : 'Add Automation'}
+            aria-label="Add Automation"
             onClick={(e) => {
               e.stopPropagation();
               onAddConnector(connection.id);
             }}
           >
-            + Add Automation
+            +
           </button>
+          <div className={styles.meatballWrapper} ref={menuRef}>
+            <button
+              type="button"
+              className={styles.meatballButton}
+              aria-label="Connection actions"
+              aria-haspopup="true"
+              aria-expanded={menuOpen}
+              onClick={(e) => {
+                e.stopPropagation();
+                setMenuOpen((prev) => !prev);
+              }}
+            >
+              <DotsThree size={20} weight="bold" />
+            </button>
+            {menuOpen && (
+              <div className={styles.contextMenu} role="menu">
+                <button
+                  type="button"
+                  role="menuitem"
+                  className={styles.menuItem}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMenuOpen(false);
+                    onEditConnection?.(connection.id);
+                  }}
+                >
+                  <PencilSimple size={16} weight="regular" /> Edit Connection
+                </button>
+                <div className={styles.menuDivider} />
+                <button
+                  type="button"
+                  role="menuitem"
+                  className={`${styles.menuItem} ${styles.menuItemDestructive}`}
+                  disabled={connectorCount > 0}
+                  title={connectorCount > 0 ? 'Remove all Automations before deleting connection' : undefined}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMenuOpen(false);
+                    onDeleteConnection?.(connection.id);
+                  }}
+                >
+                  <Trash size={16} weight="regular" /> Delete Connection
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

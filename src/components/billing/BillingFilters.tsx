@@ -1,5 +1,6 @@
 import { accounts } from '../../data/accounts';
 import type { Account } from '../../models/account';
+import type { CategoryFilter } from './useBillingReport';
 import styles from './BillingFilters.module.css';
 
 export interface BillingFiltersProps {
@@ -9,6 +10,8 @@ export interface BillingFiltersProps {
   onEndDateChange: (date: string) => void;
   selectedAccountId: string | null;
   onAccountChange: (accountId: string | null) => void;
+  categoryFilter: CategoryFilter;
+  onCategoryFilterChange: (filter: CategoryFilter) => void;
   onReset: () => void;
 }
 
@@ -48,6 +51,8 @@ export function BillingFilters({
   onEndDateChange,
   selectedAccountId,
   onAccountChange,
+  categoryFilter,
+  onCategoryFilterChange,
   onReset,
 }: BillingFiltersProps) {
   return (
@@ -89,6 +94,30 @@ export function BillingFilters({
             </option>
           ))}
         </select>
+      </div>
+
+      <div className={styles.group}>
+        <span className={styles.label}>Category</span>
+        <div className={styles.segmentedControl} role="radiogroup" aria-label="Category filter">
+          <button
+            type="button"
+            role="radio"
+            aria-checked={categoryFilter === 'all'}
+            className={`${styles.segment} ${categoryFilter === 'all' ? styles.segmentActive : ''}`}
+            onClick={() => onCategoryFilterChange('all')}
+          >
+            All
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={categoryFilter === 'Integration'}
+            className={`${styles.segment} ${categoryFilter === 'Integration' ? styles.segmentActive : ''}`}
+            onClick={() => onCategoryFilterChange('Integration')}
+          >
+            Integration
+          </button>
+        </div>
       </div>
 
       <button type="button" className={styles.resetBtn} onClick={onReset}>

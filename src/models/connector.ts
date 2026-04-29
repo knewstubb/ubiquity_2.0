@@ -35,7 +35,7 @@ export interface Connector {
   id: string;                          // UUID
   connectionId: string;                // Parent connection reference
   name: string;                        // User-provided name
-  direction: 'export';                 // Always 'export' in this prototype
+  direction: 'import' | 'export';       // Import or export automation
   dataType: ExportDataType;
   transactionalSource?: TransactionalSource; // Required when dataType includes transactional
   enrichmentKeyField?: string;         // Key field on transactional side for enrichment join

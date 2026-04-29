@@ -56,14 +56,17 @@ describe('Property 4: Date Range Filter Correctness', () => {
           switch (item.category) {
             case 'Mailouts':
             case 'Automated Mailouts':
-            case 'Form Triggered Emails': {
+            case 'Form Triggered Emails':
+            case 'Event Triggered Emails':
+            case 'TXT Message Parts': {
               // sendDate must be within range
               expect(item.sendDate).toBeTruthy();
               expect(item.sendDate! >= start).toBe(true);
               expect(item.sendDate! <= end).toBe(true);
               break;
             }
-            case 'Database Records': {
+            case 'Database Records':
+            case 'Integration': {
               // billing cycle must overlap with selected range
               expect(item.billingCycleStart).toBeTruthy();
               expect(item.billingCycleEnd).toBeTruthy();

@@ -1,7 +1,8 @@
 import { useState, useMemo, useCallback } from 'react';
 import type { BillingLineItem } from '../../models/billing';
-import { getCurrentBillingCycle } from '../../models/billing';
-import type { Account } from '../../models/account';
+import { getCurrentBillingCycle, UNIT_PRICES } from '../../models/billing';
+import type { Account, } from '../../models/account';
+import type { BillingCategory } from '../../models/billing';
 import { billingLineItems } from '../../data/billingData';
 import { accounts } from '../../data/accounts';
 
@@ -17,6 +18,8 @@ export interface AccountTreeNode {
   children: AccountTreeNode[];
 }
 
+export type CategoryFilter = 'all' | 'Integration';
+
 export interface UseBillingReportReturn {
   tree: AccountTreeNode[];
   startDate: string;
@@ -25,6 +28,8 @@ export interface UseBillingReportReturn {
   setEndDate: (d: string) => void;
   selectedAccountId: string | null;
   setSelectedAccountId: (id: string | null) => void;
+  categoryFilter: CategoryFilter;
+  setCategoryFilter: (f: CategoryFilter) => void;
   sortColumn: string;
   sortDirection: 'asc' | 'desc';
   toggleSort: (column: string) => void;
@@ -75,12 +80,15 @@ function filterByDateRange(
     switch (item.category) {
       case 'Mailouts':
       case 'Automated Mailouts':
-      case 'Form Triggered Emails': {
+      case 'Form Triggered Emails':
+      case 'Event Triggered Emails':
+      case 'TXT Message Parts': {
         // Filter by sendDate
         if (!item.sendDate) return false;
         return item.sendDate >= startDate && item.sendDate <= endDate;
       }
-      case 'Database Records': {
+      case 'Database Records':
+      case 'Integration': {
         // Include if billing cycle overlaps with selected date range
         if (!item.billingCycleStart || !item.billingCycleEnd) return false;
         return rangesOverlap(
@@ -91,7 +99,7 @@ function filterByDateRange(
         );
       }
       case 'Transactional Records':
-      case 'Integrations':
+      case 'Survey Responses':
       default: {
         // Filter by createdDate
         return item.createdDate >= startDate && item.createdDate <= endDate;
@@ -155,6 +163,16 @@ function sortItems(
         aVal = a.user;
         bVal = b.user;
         break;
+      case 'unitPrice': {
+        aVal = UNIT_PRICES[a.category as BillingCategory] ?? 0;
+        bVal = UNIT_PRICES[b.category as BillingCategory] ?? 0;
+        break;
+      }
+      case 'total': {
+        aVal = a.items * (UNIT_PRICES[a.category as BillingCategory] ?? 0);
+        bVal = b.items * (UNIT_PRICES[b.category as BillingCategory] ?? 0);
+        break;
+      }
       default:
         return 0;
     }
@@ -262,6 +280,7 @@ export function useBillingReport(): UseBillingReportReturn {
   const [startDate, setStartDate] = useState(cycle.start);
   const [endDate, setEndDate] = useState(cycle.end);
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
   const [sortColumn, setSortColumn] = useState<string>('account');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
@@ -281,9 +300,12 @@ export function useBillingReport(): UseBillingReportReturn {
   const leafItems = useMemo(() => {
     let result = filterByDateRange(billingLineItems, startDate, endDate);
     result = filterByAccount(result, selectedAccountId);
+    if (categoryFilter !== 'all') {
+      result = result.filter((item) => item.category === categoryFilter);
+    }
     result = sortItems(result, sortColumn, sortDirection);
     return result;
-  }, [startDate, endDate, selectedAccountId, sortColumn, sortDirection]);
+  }, [startDate, endDate, selectedAccountId, categoryFilter, sortColumn, sortDirection]);
 
   // Tree structure
   const tree = useMemo(
@@ -299,6 +321,8 @@ export function useBillingReport(): UseBillingReportReturn {
     setEndDate,
     selectedAccountId,
     setSelectedAccountId,
+    categoryFilter,
+    setCategoryFilter,
     sortColumn,
     sortDirection,
     toggleSort,

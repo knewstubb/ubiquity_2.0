@@ -1,0 +1,46 @@
+/* ── Root Account Selector (avatar dropdown section) ── */
+
+.sectionHeader {
+  padding: 8px 12px 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #A1A1AA;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #18181B;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 150ms ease;
+  white-space: nowrap;
+}
+
+.option:hover {
+  background: #F4F4F5;
+}
+
+.optionActive {
+  color: #14B88A;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: inherit;
+}

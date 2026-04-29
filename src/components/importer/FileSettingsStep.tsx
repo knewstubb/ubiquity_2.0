@@ -66,12 +66,26 @@ export function FileSettingsStep({
   connectionName,
   onUpdate,
 }: FileSettingsStepProps) {
+  const [patternError, setPatternError] = useState('');
   const { filePathConfig, dataType } = config;
   const { pathMode, folderName, readPath, errorFolderPath, archiveFolderPath, fileNamePattern } =
     filePathConfig;
 
   function updatePath(patch: Partial<typeof filePathConfig>) {
     onUpdate({ filePathConfig: { ...filePathConfig, ...patch } });
+  }
+
+  function validateFilePattern(value: string) {
+    if (!value.includes('*')) {
+      setPatternError('');
+      return;
+    }
+    const beforeWildcard = value.split('*')[0];
+    if (beforeWildcard.length === 0) {
+      setPatternError('A filename must be included when using a wildcard');
+    } else {
+      setPatternError('');
+    }
   }
 
   const effectiveBasePath =
@@ -224,13 +238,17 @@ export function FileSettingsStep({
         </div>
         <div className={styles.inputCol}>
           <input
-            className={styles.textInput}
+            className={`${styles.textInput} ${patternError ? styles.textInputError : ''}`}
             type="text"
             value={fileNamePattern}
             onChange={(e) => updatePath({ fileNamePattern: e.target.value })}
-            placeholder="*.csv"
+            onBlur={(e) => validateFilePattern(e.target.value)}
+            placeholder="filename*.csv"
             title="Which filenames to look for. Use * to match any characters."
           />
+          {patternError && (
+            <p className={styles.validationError}>{patternError}</p>
+          )}
         </div>
       </div>
       )}

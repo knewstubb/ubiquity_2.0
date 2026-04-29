@@ -60,6 +60,7 @@ const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROL
 import { accounts } from '../src/data/accounts.js';
 import { campaigns, journeys } from '../src/data/campaigns.js';
 import { connections } from '../src/data/connections.js';
+import { connectors } from '../src/data/connectors.js';
 import { contacts } from '../src/data/contacts.js';
 import { segments } from '../src/data/segments.js';
 import { seedAssets } from '../src/data/assets.js';
@@ -209,12 +210,35 @@ async function seedConnections(): Promise<void> {
     protocol: c.protocol,
     status: c.status,
     base_path: c.basePath,
+    account_id: c.accountId,
     config: c.config,
   }));
   await upsertRows('connections', rows);
 }
 
 // Note: connectors table is skipped — connectors are user-created at runtime
+
+async function seedConnectors(): Promise<void> {
+  const rows = connectors.map((c) => ({
+    id: c.id,
+    connection_id: c.connectionId,
+    name: c.name,
+    direction: c.direction,
+    data_type: c.dataType,
+    transactional_source: c.transactionalSource ?? null,
+    enrichment_key_field: c.enrichmentKeyField ?? null,
+    selected_fields: c.selectedFields,
+    file_type: c.fileType,
+    format_options: c.formatOptions,
+    file_naming_pattern: c.fileNamingPattern,
+    schedule: c.schedule,
+    filters: c.filters,
+    status: c.status,
+    created_at: c.createdAt,
+    updated_at: c.updatedAt,
+  }));
+  await upsertRows('connectors', rows);
+}
 
 async function seedContacts(): Promise<void> {
   // contacts.ts has the simple ContactRecord shape (no accountId/segmentIds/etc.)
@@ -415,6 +439,7 @@ async function main(): Promise<void> {
   // Level 1: depends on accounts
   await seedCampaigns();
   await seedConnections();
+  await seedConnectors();
   await seedSegments();
 
   // Level 2: depends on campaigns + accounts
