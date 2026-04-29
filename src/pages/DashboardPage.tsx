@@ -38,6 +38,7 @@ export default function DashboardPage() {
 
   const [showCreateConnection, setShowCreateConnection] = useState(false);
   const [editingConnection, setEditingConnection] = useState<string | null>(null);
+  const [pendingEditConnectionId, setPendingEditConnectionId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Connector | null>(null);
   const [initialModalConnectionId, setInitialModalConnectionId] = useState<string | null>(null);
   const [wizardModalState, setWizardModalState] = useState<WizardModalState | null>(null);
@@ -168,7 +169,7 @@ export default function DashboardPage() {
               connection={connection}
               connectors={childConnectors}
               onAddConnector={handleAddConnector}
-              onEditConnection={(id) => setEditingConnection(id)}
+              onEditConnection={(id) => setPendingEditConnectionId(id)}
             >
               {childConnectors.map((connector) => (
                 <ConnectorCard
@@ -204,6 +205,31 @@ export default function DashboardPage() {
             setShowCreateConnection(false);
           }}
         />
+      )}
+
+      {/* Edit Connection Warning — shown before opening the edit modal */}
+      {pendingEditConnectionId && (
+        <div className={styles.warningOverlay} onClick={() => setPendingEditConnectionId(null)}>
+          <div className={styles.warningModal} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.warningTitle}>Edit Connection</h3>
+            <p className={styles.warningText}>
+              Changes to a connection may affect all linked automations. Proceed only if you understand the impact.
+            </p>
+            <div className={styles.warningActions}>
+              <button type="button" className={styles.warningCancel} onClick={() => setPendingEditConnectionId(null)}>Cancel</button>
+              <button
+                type="button"
+                className={styles.warningProceed}
+                onClick={() => {
+                  setEditingConnection(pendingEditConnectionId);
+                  setPendingEditConnectionId(null);
+                }}
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* EditConnectionModal — shown when user clicks "Edit Connection" from meatball menu */}
