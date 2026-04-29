@@ -40,6 +40,7 @@ export default function DashboardPage() {
   const [editingConnection, setEditingConnection] = useState<string | null>(null);
   const [pendingEditConnectionId, setPendingEditConnectionId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Connector | null>(null);
+  const [pendingDeleteConnectionId, setPendingDeleteConnectionId] = useState<string | null>(null);
   const [initialModalConnectionId, setInitialModalConnectionId] = useState<string | null>(null);
   const [wizardModalState, setWizardModalState] = useState<WizardModalState | null>(null);
   const [importerModalState, setImporterModalState] = useState<ImporterModalState | null>(null);
@@ -170,6 +171,7 @@ export default function DashboardPage() {
               connectors={childConnectors}
               onAddConnector={handleAddConnector}
               onEditConnection={(id) => setPendingEditConnectionId(id)}
+              onDeleteConnection={(id) => setPendingDeleteConnectionId(id)}
             >
               {childConnectors.map((connector) => (
                 <ConnectorCard
@@ -275,14 +277,32 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* Delete confirmation */}
+      {/* Delete automation confirmation */}
       {pendingDelete && (
         <DeleteConfirmModal
-          connectorName={pendingDelete.name}
+          objectType="Automation"
+          objectName={pendingDelete.name}
           onConfirm={handleDeleteConfirm}
           onCancel={handleDeleteCancel}
         />
       )}
+
+      {/* Delete connection confirmation */}
+      {pendingDeleteConnectionId && (() => {
+        const conn = getConnectionById(pendingDeleteConnectionId);
+        if (!conn) return null;
+        return (
+          <DeleteConfirmModal
+            objectType="Connection"
+            objectName={conn.name}
+            onConfirm={() => {
+              // Prototype: just close the modal. Real implementation would call delete API.
+              setPendingDeleteConnectionId(null);
+            }}
+            onCancel={() => setPendingDeleteConnectionId(null)}
+          />
+        );
+      })()}
 
       {/* Automation Settings Modal — shown when user clicks an automation card */}
       {settingsConnectorId && (() => {
