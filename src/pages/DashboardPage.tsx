@@ -361,8 +361,18 @@ function EmptyConnectionState({ onCreateConnection }: { onCreateConnection: () =
 
       {showRequirements && (
         <div className={styles.reqOverlay} onClick={() => setShowRequirements(false)}>
-          <div className={styles.reqModal} onClick={(e) => e.stopPropagation()}>
-            <h3 className={styles.reqTitle}>Connection Requirements</h3>
+          <div className={styles.reqPopover} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.reqTitleRow}>
+              <h3 className={styles.reqTitle}>Connection Requirements</h3>
+              <button
+                type="button"
+                className={styles.reqClose}
+                onClick={() => setShowRequirements(false)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
             <p className={styles.reqSubtitle}>Before setting up a connection, ensure you have:</p>
             <ul className={styles.reqList}>
               <li>Access credentials (hostname, username, password or access key)</li>
@@ -374,9 +384,6 @@ function EmptyConnectionState({ onCreateConnection }: { onCreateConnection: () =
             <p className={styles.reqNote}>
               Your technical admin or IT team can provide these details. Each protocol (SFTP, S3, Azure Blob) has specific requirements.
             </p>
-            <button type="button" className={styles.reqCloseBtn} onClick={() => setShowRequirements(false)}>
-              Got it
-            </button>
           </div>
         </div>
       )}
