@@ -4,6 +4,7 @@ export type SimulatedRole = 'admin' | 'marketer' | 'viewer';
 
 export interface SessionState {
   selectedAccountId: string;
+  selectedRootAccountId: string | null;
   activeFilters: {
     segmentFilters?: FilterGroup;
     campaignTags?: string[];
@@ -26,6 +27,7 @@ export function saveSession(userId: string, state: Partial<SessionState>): void 
     const merged: SessionState = {
       ...(existing ?? {
         selectedAccountId: '',
+        selectedRootAccountId: null,
         activeFilters: {},
         openPanels: [],
         simulatedRole: 'admin' as SimulatedRole,
@@ -33,7 +35,11 @@ export function saveSession(userId: string, state: Partial<SessionState>): void 
       }),
       ...state,
     };
-    localStorage.setItem(storageKey(userId), JSON.stringify(merged));
+    const toStore = {
+      ...merged,
+      selectedRootAccountId: merged.selectedRootAccountId === null ? '__all__' : merged.selectedRootAccountId,
+    };
+    localStorage.setItem(storageKey(userId), JSON.stringify(toStore));
   } catch (e) {
     console.warn('session-store: failed to save session', e);
   }
@@ -43,7 +49,11 @@ export function loadSession(userId: string): SessionState | null {
   try {
     const raw = localStorage.getItem(storageKey(userId));
     if (!raw) return null;
-    return JSON.parse(raw) as SessionState;
+    const parsed = JSON.parse(raw) as SessionState;
+    return {
+      ...parsed,
+      selectedRootAccountId: (parsed.selectedRootAccountId as unknown) === '__all__' ? null : parsed.selectedRootAccountId ?? null,
+    };
   } catch {
     return null;
   }

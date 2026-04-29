@@ -4,6 +4,7 @@ import { PageShell } from '../components/layout/PageShell';
 import { BillingFilters } from '../components/billing/BillingFilters';
 import { BillingTreeTable } from '../components/billing/BillingTreeTable';
 import { useBillingReport } from '../components/billing/useBillingReport';
+import { usePricing } from '../contexts/PricingContext';
 import { downloadBillingCsv } from '../utils/billingCsv';
 import { getCurrentBillingCycle } from '../models/billing';
 import styles from './BillingReportPage.module.css';
@@ -17,22 +18,26 @@ export default function BillingReportPage() {
     setEndDate,
     selectedAccountId,
     setSelectedAccountId,
+    categoryFilter,
+    setCategoryFilter,
     sortColumn,
     sortDirection,
     toggleSort,
     leafItems,
   } = useBillingReport();
+  const { prices } = usePricing();
 
   const handleDownloadCsv = useCallback(() => {
-    downloadBillingCsv(leafItems);
-  }, [leafItems]);
+    downloadBillingCsv(leafItems, prices);
+  }, [leafItems, prices]);
 
   const handleReset = useCallback(() => {
     const cycle = getCurrentBillingCycle();
     setStartDate(cycle.start);
     setEndDate(cycle.end);
     setSelectedAccountId(null);
-  }, [setStartDate, setEndDate, setSelectedAccountId]);
+    setCategoryFilter('all');
+  }, [setStartDate, setEndDate, setSelectedAccountId, setCategoryFilter]);
 
   return (
     <PageShell
@@ -52,6 +57,8 @@ export default function BillingReportPage() {
         onEndDateChange={setEndDate}
         selectedAccountId={selectedAccountId}
         onAccountChange={setSelectedAccountId}
+        categoryFilter={categoryFilter}
+        onCategoryFilterChange={setCategoryFilter}
         onReset={handleReset}
       />
       <BillingTreeTable

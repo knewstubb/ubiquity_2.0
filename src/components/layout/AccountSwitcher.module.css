@@ -89,3 +89,54 @@
   color: var(--color-text-muted);
   font-weight: var(--weight-regular);
 }
+
+/* --- Multi-account root section --- */
+
+.rootSection {
+  padding: 4px 0;
+}
+
+.sectionLabel {
+  padding: 4px 12px 2px;
+  font-size: var(--font-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 15px;
+}
+
+.rootOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: var(--font-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 100ms ease;
+}
+
+.rootOption:hover {
+  background: var(--color-surface);
+}
+
+.sectionDivider {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--color-border);
+}
+
+/* --- Disabled trigger for All Accounts Mode --- */
+
+.disabledTrigger {
+  opacity: 0.6;
+  cursor: default;
+  pointer-events: none;
+  color: var(--color-text-muted);
+}

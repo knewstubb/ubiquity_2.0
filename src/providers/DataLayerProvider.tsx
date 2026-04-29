@@ -21,6 +21,7 @@ import { accounts as localAccounts } from '../data/accounts';
 import { campaigns as localCampaigns, journeys as localJourneys } from '../data/campaigns';
 import { journeyDefinitions as localJourneyDefinitions } from '../data/journeySeeds';
 import { connections as localConnections } from '../data/connections';
+import { connectors as localConnectors } from '../data/connectors';
 import { contacts as localContacts } from '../data/contacts';
 import { treatments as localTreatments } from '../data/treatments';
 import { products as localProducts } from '../data/products';
@@ -47,7 +48,7 @@ function loadLocalData() {
     campaignJourneys: localJourneys,
     journeyDefinitions: localJourneyDefinitions,
     connections: localConnections,
-    connectors: [] as Connector[],
+    connectors: localConnectors,
     contacts: localContacts,
     treatments: localTreatments,
     products: localProducts,

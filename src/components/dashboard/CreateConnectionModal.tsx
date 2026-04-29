@@ -10,20 +10,25 @@ type TestStatus = 'idle' | 'testing' | 'success';
 interface CreateConnectionModalProps {
   onClose: () => void;
   onCreate: (connection: Connection) => void;
+  editConnection?: Connection;
 }
 
-export function CreateConnectionModal({ onClose, onCreate }: CreateConnectionModalProps) {
-  const [step, setStep] = useState<1 | 2>(1);
+export function CreateConnectionModal({ onClose, onCreate, editConnection }: CreateConnectionModalProps) {
+  const isEditing = !!editConnection;
+  const [step, setStep] = useState<1 | 2>(isEditing ? 2 : 1);
 
   // Step 1 state
-  const [name, setName] = useState('');
-  const [connectionType, setConnectionType] = useState<ConnectionType | null>(null);
-  const [basePath, setBasePath] = useState('');
+  const [name, setName] = useState(editConnection?.name ?? '');
+  const [connectionType, setConnectionType] = useState<ConnectionType | null>(
+    editConnection ? (editConnection.protocol === 'S3' ? 'aws-s3' : editConnection.protocol === 'Azure Blob' ? 'azure-blob' : 'sftp') : null,
+  );
+  const [basePath, setBasePath] = useState(editConnection?.basePath ?? '');
 
   // Step 2 — AWS S3
-  const [awsRegion, setAwsRegion] = useState('');
-  const [bucketName, setBucketName] = useState('');
-  const [prefix, setPrefix] = useState('');
+  const s3Config = editConnection?.protocol === 'S3' ? editConnection.config as { region: string; bucket: string; prefix: string } : null;
+  const [awsRegion, setAwsRegion] = useState(s3Config?.region ?? '');
+  const [bucketName, setBucketName] = useState(s3Config?.bucket ?? '');
+  const [prefix, setPrefix] = useState(s3Config?.prefix ?? '');
   const [awsAuthMethod, setAwsAuthMethod] = useState<AwsAuthMethod>('access-key');
   const [accessKeyId, setAccessKeyId] = useState('');
   const [secretAccessKey, setSecretAccessKey] = useState('');
@@ -31,13 +36,15 @@ export function CreateConnectionModal({ onClose, onCreate }: CreateConnectionMod
   const [iamRoleArn, setIamRoleArn] = useState('');
 
   // Step 2 — Azure Blob
-  const [containerName, setContainerName] = useState('');
-  const [accountName, setAccountName] = useState('');
+  const blobConfig = editConnection?.protocol === 'Azure Blob' ? editConnection.config as { containerName: string; accountName: string } : null;
+  const [containerName, setContainerName] = useState(blobConfig?.containerName ?? '');
+  const [accountName, setAccountName] = useState(blobConfig?.accountName ?? '');
   const [sasToken, setSasToken] = useState('');
 
   // Step 2 — SFTP
-  const [hostname, setHostname] = useState('');
-  const [port, setPort] = useState('22');
+  const sftpConfig = editConnection?.protocol === 'SFTP' ? editConnection.config as { host: string; port: number; path: string } : null;
+  const [hostname, setHostname] = useState(sftpConfig?.host ?? '');
+  const [port, setPort] = useState(sftpConfig?.port?.toString() ?? '22');
   const [sftpUsername, setSftpUsername] = useState('');
   const [sftpAuthMethod, setSftpAuthMethod] = useState<SftpAuthMethod>('password');
   const [sftpPassword, setSftpPassword] = useState('');
@@ -90,11 +97,12 @@ export function CreateConnectionModal({ onClose, onCreate }: CreateConnectionMod
       : { host: hostname, port: parseInt(port) || 22, path: basePath };
 
     const connection: Connection = {
-      id: crypto.randomUUID(),
+      id: editConnection?.id ?? crypto.randomUUID(),
       name: name.trim(),
       protocol,
-      status: 'connected',
+      status: editConnection?.status ?? 'connected',
       basePath: basePath || '/company/base-path/',
+      accountId: editConnection?.accountId ?? '',
       config,
     };
 
@@ -107,7 +115,7 @@ export function CreateConnectionModal({ onClose, onCreate }: CreateConnectionMod
       <div className={styles.dialog}>
         {/* Title bar */}
         <div className={styles.titleBar}>
-          <h2 id="create-conn-title" className={styles.title}>Create Connection</h2>
+          <h2 id="create-conn-title" className={styles.title}>{isEditing ? 'Edit Connection' : 'Create Connection'}</h2>
           <button type="button" className={styles.closeButton} onClick={onClose} aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -131,7 +139,7 @@ export function CreateConnectionModal({ onClose, onCreate }: CreateConnectionMod
             </button>
           ) : (
             <button type="button" className={styles.primaryButton} onClick={handleCreate}>
-              Create Connection
+              {isEditing ? 'Update Connection' : 'Create Connection'}
             </button>
           )}
         </div>

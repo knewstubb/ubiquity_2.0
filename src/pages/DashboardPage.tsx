@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useConnections } from '../contexts/ConnectionsContext';
 import { useConnectors } from '../contexts/ConnectorsContext';
+import { useAccount } from '../contexts/AccountContext';
 import { ConnectionRow } from '../components/dashboard/ConnectionRow';
 import { ConnectorCard } from '../components/dashboard/ConnectorCard';
 import { DeleteConfirmModal } from '../components/dashboard/DeleteConfirmModal';
@@ -30,8 +31,12 @@ export default function DashboardPage() {
   const { connections, getConnectionById, addConnection } = useConnections();
   const { connectors, addConnector, updateConnector, toggleConnectorStatus, deleteConnector } =
     useConnectors();
+  const { selectedAccountId } = useAccount();
+
+  const filteredConnections = connections.filter((c) => c.accountId === selectedAccountId);
 
   const [showCreateConnection, setShowCreateConnection] = useState(false);
+  const [editingConnection, setEditingConnection] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Connector | null>(null);
   const [initialModalConnectionId, setInitialModalConnectionId] = useState<string | null>(null);
   const [wizardModalState, setWizardModalState] = useState<WizardModalState | null>(null);
@@ -71,12 +76,21 @@ export default function DashboardPage() {
   function handleEdit(connectorId: string) {
     const connector = connectors.find((c) => c.id === connectorId);
     if (!connector) return;
-    setWizardModalState({
-      open: true,
-      connectionId: connector.connectionId,
-      connectorName: connector.name,
-      editConnectorId: connector.id,
-    });
+
+    if (connector.direction === 'import') {
+      setImporterModalState({
+        open: true,
+        connectionId: connector.connectionId,
+        connectorName: connector.name,
+      });
+    } else {
+      setWizardModalState({
+        open: true,
+        connectionId: connector.connectionId,
+        connectorName: connector.name,
+        editConnectorId: connector.id,
+      });
+    }
   }
 
   // --- WizardModal save ---
@@ -141,7 +155,7 @@ export default function DashboardPage() {
       </div>
 
       <div className={styles.connectionList}>
-        {connections.map((connection) => {
+        {filteredConnections.map((connection) => {
           const childConnectors = connectors.filter(
             (c) => c.connectionId === connection.id,
           );
@@ -152,16 +166,27 @@ export default function DashboardPage() {
               connection={connection}
               connectors={childConnectors}
               onAddConnector={handleAddConnector}
+              onEditConnection={(id) => setEditingConnection(id)}
             >
               {childConnectors.map((connector) => (
                 <ConnectorCard
                   key={connector.id}
                   connector={connector}
+                  connectionError={connection.status === 'error'}
                   onToggleStatus={() => toggleConnectorStatus(connector.id)}
                   onEdit={() => handleEdit(connector.id)}
                   onDelete={() => handleDeleteRequest(connector)}
                 />
               ))}
+              {!connection.status.includes('error') && (
+                <button
+                  type="button"
+                  className={styles.addAutomationCard}
+                  onClick={() => handleAddConnector(connection.id)}
+                >
+                  + Add Automation
+                </button>
+              )}
             </ConnectionRow>
           );
         })}
@@ -174,6 +199,19 @@ export default function DashboardPage() {
           onCreate={(connection) => {
             addConnection(connection);
             setShowCreateConnection(false);
+          }}
+        />
+      )}
+
+      {/* EditConnectionModal — shown when user clicks "Edit Connection" from meatball menu */}
+      {editingConnection && getConnectionById(editingConnection) && (
+        <CreateConnectionModal
+          editConnection={getConnectionById(editingConnection)}
+          onClose={() => setEditingConnection(null)}
+          onCreate={(connection) => {
+            // Prototype: replace in local state. Real implementation would call update API.
+            addConnection(connection);
+            setEditingConnection(null);
           }}
         />
       )}

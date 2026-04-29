@@ -65,30 +65,106 @@
   text-overflow: ellipsis;
 }
 
-.statusDot {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius-full);
+/* Meatball menu */
+.meatballWrapper {
+  position: relative;
   flex-shrink: 0;
 }
 
-.statusConnected {
-  background-color: var(--color-success);
+.meatballButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  opacity: 0;
 }
 
-.statusError {
-  background-color: var(--color-error);
+.header:hover .meatballButton,
+.meatballButton[aria-expanded="true"] {
+  opacity: 1;
+}
+
+.meatballButton:hover {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.contextMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 220px;
+  white-space: nowrap;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08), 0px 1px 4px rgba(0, 0, 0, 0.04);
+  z-index: 100;
+  padding: 6px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 100ms ease;
+  white-space: nowrap;
+}
+
+.menuItem:hover {
+  background: var(--color-surface);
+}
+
+.menuItem:active {
+  background: var(--color-border);
+}
+
+.menuItem:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.menuItemDestructive {
+  color: var(--color-error);
+}
+
+.menuItemDestructive:hover {
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.menuDivider {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--color-border);
 }
 
 .meta {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: 32px;
   flex-shrink: 0;
 }
 
 .connectorCount {
   font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
   color: var(--color-text-muted);
   white-space: nowrap;
   position: absolute;
@@ -96,28 +172,61 @@
   transform: translateX(-50%);
 }
 
-.addLink {
-  font-size: var(--font-sm);
-  font-weight: var(--weight-medium);
-  color: var(--color-primary-600);
-  background: none;
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   border: none;
-  padding: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-primary-500);
+  font-size: 18px;
+  font-weight: var(--weight-bold);
+  line-height: 1;
   cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color var(--transition-fast);
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.addLink:hover {
-  color: var(--color-primary-800);
-  text-decoration: underline;
+.addButton:hover {
+  background: rgba(20, 184, 138, 0.1);
 }
 
-.addLink:focus-visible {
+.addButton:focus-visible {
   outline: 2px solid var(--color-primary-500);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
+}
+
+.addButtonDisabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Error state */
+.rowError {
+  /* no row-level styling — error is inline */
+}
+
+.errorMessage {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-error);
+  white-space: nowrap;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.errorMessage em {
+  font-style: italic;
+  font-weight: var(--weight-regular);
+}
+
+.iconError {
+  color: var(--color-error);
 }
 
 /* Expand/collapse animation wrapper */
@@ -125,7 +234,6 @@
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows var(--transition-slow);
-  overflow: hidden;
 }
 
 .childrenWrapperExpanded {
@@ -134,6 +242,7 @@
 
 .childrenInner {
   min-height: 0;
+  overflow: hidden;
 }
 
 .children {
@@ -141,4 +250,5 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  overflow: visible;
 }

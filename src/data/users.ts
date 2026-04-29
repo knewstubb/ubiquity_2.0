@@ -16,4 +16,7 @@ export const users: PermissionUser[] = [
   { id: 'usr-009', name: 'Emma Wilson', email: 'emma@savethechildren.org.nz', initials: 'EW' },
   { id: 'usr-010', name: 'David Tui', email: 'david@savethechildren.org.nz', initials: 'DT' },
   { id: 'usr-011', name: 'Hana Moana', email: 'hana@savethechildren.org.nz', initials: 'HM' },
+
+  // Multi-account user (Admin on Serenity Spa Group, Viewer on CCC)
+  { id: 'usr-012', name: 'Jordan Blake', email: 'jordan@ubiquity.io', initials: 'JB' },
 ];

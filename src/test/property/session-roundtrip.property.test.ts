@@ -33,6 +33,7 @@ function arbFilterGroup(): fc.Arbitrary<FilterGroup> {
 function arbSessionStateLocal(): fc.Arbitrary<SessionState> {
   return fc.record({
     selectedAccountId: fc.constantFrom(...ACCOUNT_IDS),
+    selectedRootAccountId: fc.constantFrom(null, ...ACCOUNT_IDS),
     activeFilters: fc.record({
       segmentFilters: fc.option(arbFilterGroup(), { nil: undefined }),
       campaignTags: fc.option(

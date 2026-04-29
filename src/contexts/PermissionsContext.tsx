@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from 'react';
 import type { Account } from '../models/account';
 import type {
   FunctionalPermissions,
@@ -11,6 +11,9 @@ import { isSupabaseConfigured } from '../lib/supabase';
 import { useDataLayer } from '../providers/DataLayerProvider';
 import { useToast } from '../components/shared/Toast';
 import * as permissionsAdapter from '../lib/adapters/permissions-adapter';
+import { useAccount } from './AccountContext';
+import { useAuth } from './AuthContext';
+import { resolveEffectivePermissions } from '../lib/account-utils';
 
 const STORAGE_KEY = 'ubiquity-permissions';
 
@@ -50,6 +53,9 @@ export interface PermissionsContextValue {
   // Utility
   resolveGroupName: (assignment: UserAccountAssignment) => string;
   matchPermissionsToGroup: (permissions: Record<string, FunctionalPermissions>) => string | null;
+
+  // Effective permissions for the active root account tree
+  effectivePermissions: Record<string, FunctionalPermissions>;
 }
 
 function persistState(state: PersistedState): void {
@@ -82,6 +88,8 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
   const { showToast } = useToast();
   const supabaseMode = isSupabaseConfigured();
   const allAccounts = dataLayer.accounts;
+  const { user } = useAuth();
+  const { activeRootAccountId, accountsInActiveTree } = useAccount();
 
   const [permissionGroups, setPermissionGroups] = useState<PermissionGroup[]>(() => {
     if (!supabaseMode) {
@@ -312,6 +320,16 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     [permissionGroups, matchPermissionsToGroup],
   );
 
+  // --- Effective permissions for active root account tree ---
+
+  const effectivePermissions = useMemo<Record<string, FunctionalPermissions>>(() => {
+    const userId = user?.id ?? '';
+    if (!userId) return {};
+
+    const accountTreeIds = accountsInActiveTree.map((a) => a.id);
+    return resolveEffectivePermissions(assignments, permissionGroups, accountTreeIds, userId);
+  }, [user?.id, accountsInActiveTree, assignments, permissionGroups]);
+
   const value: PermissionsContextValue = {
     permissionGroups,
     addPermissionGroup,
@@ -329,6 +347,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     getRootAccounts,
     resolveGroupName,
     matchPermissionsToGroup,
+    effectivePermissions,
   };
 
   return (

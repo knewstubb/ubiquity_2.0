@@ -1,0 +1,132 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family-primary);
+  max-width: 800px;
+}
+
+.headerCell {
+  background: var(--color-zinc-50);
+  font-weight: 600;
+  font-size: 14px;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--color-zinc-200);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.headerCellPrice {
+  composes: headerCell;
+  text-align: right;
+}
+
+.row {
+  border-bottom: 1px solid var(--color-zinc-100);
+}
+
+.row:hover {
+  background: var(--color-zinc-50);
+}
+
+.bodyCell {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+.bodyCellPrice {
+  composes: bodyCell;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.categoryName {
+  font-weight: 500;
+}
+
+/* Editable price button */
+.priceButton {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-family: var(--font-family-primary);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.priceButton:hover {
+  border-color: var(--color-zinc-300);
+  background: var(--color-zinc-50);
+}
+
+.priceButton:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Edit mode */
+.editWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.dollarSign {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.priceInput {
+  width: 80px;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-family: var(--font-family-primary);
+  font-weight: 600;
+  border: 1px solid var(--color-primary-500);
+  border-radius: 4px;
+  text-align: right;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(20, 184, 138, 0.15);
+  font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+}
+
+.priceInput::-webkit-inner-spin-button,
+.priceInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Reset button */
+.resetBtn {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-family: var(--font-family-primary);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: #fff;
+  border: 1px solid var(--color-zinc-200);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.resetBtn:hover {
+  background: var(--color-zinc-50);
+  border-color: var(--color-zinc-300);
+}
+
+.resetBtn:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
