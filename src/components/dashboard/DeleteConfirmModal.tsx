@@ -18,7 +18,7 @@ export function DeleteConfirmModal({
   onCancel,
 }: DeleteConfirmModalProps) {
   const [inputValue, setInputValue] = useState('');
-  const isValid = inputValue.trim().toUpperCase() === 'ACCEPT';
+  const isValid = inputValue.trim() === 'ACCEPT';
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {

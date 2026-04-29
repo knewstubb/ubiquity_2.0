@@ -50,13 +50,12 @@ describe('DeleteConfirmModal', () => {
     expect(onConfirm).toHaveBeenCalledOnce();
   });
 
-  it('accepts lowercase "accept"', async () => {
-    const onConfirm = vi.fn();
-    render(<DeleteConfirmModal {...defaultProps} onConfirm={onConfirm} />);
+  it('rejects lowercase "accept"', async () => {
+    render(<DeleteConfirmModal {...defaultProps} />);
     const input = screen.getByPlaceholderText('ACCEPT');
     await userEvent.type(input, 'accept');
-    await userEvent.click(screen.getByRole('button', { name: 'Delete Automation' }));
-    expect(onConfirm).toHaveBeenCalledOnce();
+    const deleteBtn = screen.getByRole('button', { name: 'Delete Automation' });
+    expect(deleteBtn).toBeDisabled();
   });
 
   it('calls onCancel when Cancel button is clicked', async () => {
