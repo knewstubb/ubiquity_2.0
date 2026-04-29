@@ -301,12 +301,14 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  list-style-type: disc;
 }
 
 .reqList li {
   font-size: 14px;
   color: rgba(250, 250, 250, 0.9);
   line-height: 1.4;
+  display: list-item;
 }
 
 .reqNote {
