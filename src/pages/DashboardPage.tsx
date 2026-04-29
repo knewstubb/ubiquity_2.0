@@ -9,6 +9,7 @@ import { CreateConnectionModal } from '../components/dashboard/CreateConnectionM
 import { InitialModal } from '../components/dashboard/InitialModal';
 import { WizardModal } from '../components/wizard/WizardModal';
 import { ImporterWizardModal } from '../components/importer/ImporterWizardModal';
+import { AutomationSettingsModal } from '../components/dashboard/AutomationSettingsModal';
 import type { Connector } from '../models/connector';
 import type { WizardDraft } from '../models/wizard';
 import type { ImporterConfig } from '../models/importer';
@@ -41,6 +42,7 @@ export default function DashboardPage() {
   const [initialModalConnectionId, setInitialModalConnectionId] = useState<string | null>(null);
   const [wizardModalState, setWizardModalState] = useState<WizardModalState | null>(null);
   const [importerModalState, setImporterModalState] = useState<ImporterModalState | null>(null);
+  const [settingsConnectorId, setSettingsConnectorId] = useState<string | null>(null);
 
   // --- Add Connector flow (InitialModal → WizardModal or ImporterWizardModal) ---
   function handleAddConnector(connectionId: string) {
@@ -174,7 +176,7 @@ export default function DashboardPage() {
                   connector={connector}
                   connectionError={connection.status === 'error'}
                   onToggleStatus={() => toggleConnectorStatus(connector.id)}
-                  onEdit={() => handleEdit(connector.id)}
+                  onEdit={() => setSettingsConnectorId(connector.id)}
                   onDelete={() => handleDeleteRequest(connector)}
                 />
               ))}
@@ -254,6 +256,24 @@ export default function DashboardPage() {
           onCancel={handleDeleteCancel}
         />
       )}
+
+      {/* Automation Settings Modal — shown when user clicks an automation card */}
+      {settingsConnectorId && (() => {
+        const connector = connectors.find((c) => c.id === settingsConnectorId);
+        const connection = connector ? getConnectionById(connector.connectionId) : undefined;
+        if (!connector || !connection) return null;
+        return (
+          <AutomationSettingsModal
+            connector={connector}
+            connection={connection}
+            onClose={() => setSettingsConnectorId(null)}
+            onEdit={() => {
+              setSettingsConnectorId(null);
+              handleEdit(connector.id);
+            }}
+          />
+        );
+      })()}
     </div>
   );
 }
