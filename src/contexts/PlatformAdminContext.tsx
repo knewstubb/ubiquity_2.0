@@ -7,35 +7,76 @@ import {
 import { useAuth } from './AuthContext';
 
 /**
- * Platform admin emails — users whose email matches (case-insensitive)
- * get system-level access to all root accounts and admin-only features.
- * Separate from ADMIN_BYPASS_EMAILS in FeatureFlagContext (different concern).
+ * Role hierarchy (highest to lowest):
+ *
+ * 1. super-admin     — You. Bypasses feature flags, sees everything.
+ * 2. platform-admin  — @spark.co.nz users. Sees all root accounts, feature flags apply.
+ * 3. account-admin   — Has admin access within their assigned root account(s).
+ * 4. editor          — Can create/edit content but no admin section.
+ * 5. viewer          — Read-only access.
  */
-const PLATFORM_ADMIN_EMAILS: string[] = [
+export type UserRole = 'super-admin' | 'platform-admin' | 'account-admin' | 'editor' | 'viewer';
+
+/** Super admin emails — bypass everything including feature flags */
+const SUPER_ADMIN_EMAILS: string[] = [
   'knewstubb@gmail.com',
   'local@ubiquity.dev', // local mode mock user
 ];
 
+/** Platform admin email domains — see all accounts, feature flags apply */
+const PLATFORM_ADMIN_DOMAINS: string[] = [
+  'spark.co.nz',
+];
+
 export interface PlatformAdminContextValue {
+  /** The resolved role for the current user */
+  role: UserRole;
+  /** Convenience: true for super-admin and platform-admin */
   isPlatformAdmin: boolean;
+  /** Convenience: true only for super-admin (bypasses feature flags) */
+  isSuperAdmin: boolean;
+  /** True if user can see admin pages (super-admin, platform-admin, account-admin) */
+  canAccessAdmin: boolean;
+  /** True if user can create/edit content (everyone except viewer) */
+  canEdit: boolean;
 }
 
 const PlatformAdminContext = createContext<PlatformAdminContextValue | undefined>(undefined);
 
+function resolveRole(email: string | undefined): UserRole {
+  if (!email) return 'viewer';
+  const normalised = email.toLowerCase();
+
+  // Super admin — exact email match
+  if (SUPER_ADMIN_EMAILS.some((e) => e.toLowerCase() === normalised)) {
+    return 'super-admin';
+  }
+
+  // Platform admin — domain match
+  const domain = normalised.split('@')[1];
+  if (domain && PLATFORM_ADMIN_DOMAINS.some((d) => d.toLowerCase() === domain)) {
+    return 'platform-admin';
+  }
+
+  // Default for prototype: account-admin (all demo users get admin within their accounts)
+  // In production this would come from the user_account_assignments table
+  return 'account-admin';
+}
+
 export function PlatformAdminProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
 
-  const isPlatformAdmin = useMemo(() => {
-    if (!user?.email || PLATFORM_ADMIN_EMAILS.length === 0) return false;
-    const normalised = user.email.toLowerCase();
-    return PLATFORM_ADMIN_EMAILS.some(
-      (adminEmail) => adminEmail.toLowerCase() === normalised,
-    );
-  }, [user?.email]);
+  const role = useMemo(() => resolveRole(user?.email), [user?.email]);
 
   const value = useMemo<PlatformAdminContextValue>(
-    () => ({ isPlatformAdmin }),
-    [isPlatformAdmin],
+    () => ({
+      role,
+      isPlatformAdmin: role === 'super-admin' || role === 'platform-admin',
+      isSuperAdmin: role === 'super-admin',
+      canAccessAdmin: role === 'super-admin' || role === 'platform-admin' || role === 'account-admin',
+      canEdit: role !== 'viewer',
+    }),
+    [role],
   );
 
   return (

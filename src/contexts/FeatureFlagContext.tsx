@@ -11,10 +11,10 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuth } from './AuthContext';
 
 /**
- * Admin emails that bypass all feature flags (always see everything enabled).
- * Add emails here to grant full access regardless of flag state.
+ * Super admin emails that bypass all feature flags (always see everything enabled).
+ * Must match the SUPER_ADMIN_EMAILS list in PlatformAdminContext.
  */
-const ADMIN_BYPASS_EMAILS = ['knewstubb@gmail.com'];
+const SUPER_ADMIN_EMAILS = ['knewstubb@gmail.com', 'local@ubiquity.dev'];
 
 export interface FeatureFlag {
   name: string;
@@ -55,8 +55,10 @@ export function FeatureFlagProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(isSupabaseConfigured());
   const { user } = useAuth();
 
-  // Admin bypass — if the current user's email is in the bypass list, all flags are enabled
-  const isAdminBypass = user?.email ? ADMIN_BYPASS_EMAILS.includes(user.email.toLowerCase()) : false;
+  // Super admin bypass — all flags are enabled
+  const isAdminBypass = user?.email
+    ? SUPER_ADMIN_EMAILS.some((e) => e.toLowerCase() === user.email.toLowerCase())
+    : false;
 
   useEffect(() => {
     if (!supabase) {

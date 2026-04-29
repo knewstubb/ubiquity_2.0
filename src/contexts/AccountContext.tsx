@@ -75,11 +75,17 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const userId = user?.id ?? '';
 
   // --- Resolve accessible root accounts ---
-  // All users can see all root accounts for switching context.
-  // Platform admins additionally get "All Accounts" mode.
+  // Super admins and platform admins see all root accounts.
+  // Account admins see all root accounts too (prototype simplification).
+  // In production, account admins would only see their assigned roots.
   const accessibleRootAccounts = useMemo<Account[]>(() => {
+    if (isPlatformAdmin) {
+      return allAccounts.filter((a) => a.parentId === null);
+    }
+    // For non-platform users, still show all roots in the prototype
+    // In production this would use resolveAccessibleRoots(assignments, allAccounts, userId)
     return allAccounts.filter((a) => a.parentId === null);
-  }, [allAccounts]);
+  }, [isPlatformAdmin, allAccounts]);
 
   // --- Determine access pattern ---
   const accessPattern = useMemo<AccessPattern>(() => {
