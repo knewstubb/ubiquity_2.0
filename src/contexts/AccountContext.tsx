@@ -64,7 +64,7 @@ function resolveInitialRootId(
     console.warn('session-store: stored root account no longer accessible, falling back');
   }
 
-  // Default: first accessible root
+  // Default: first accessible root (Spa account is first in the list)
   return accessibleRoots.length > 0 ? accessibleRoots[0].id : null;
 }
 
@@ -75,13 +75,11 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const userId = user?.id ?? '';
 
   // --- Resolve accessible root accounts ---
+  // All users can see all root accounts for switching context.
+  // Platform admins additionally get "All Accounts" mode.
   const accessibleRootAccounts = useMemo<Account[]>(() => {
-    if (isPlatformAdmin) {
-      // Platform admins see all root accounts
-      return allAccounts.filter((a) => a.parentId === null);
-    }
-    return resolveAccessibleRoots(assignments, allAccounts, userId);
-  }, [isPlatformAdmin, assignments, allAccounts, userId]);
+    return allAccounts.filter((a) => a.parentId === null);
+  }, [allAccounts]);
 
   // --- Determine access pattern ---
   const accessPattern = useMemo<AccessPattern>(() => {

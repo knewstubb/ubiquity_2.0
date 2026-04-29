@@ -268,12 +268,8 @@ export function AppNavBar() {
             </button>
             {openDropdown === '_avatar' && (
               <div className={`${styles.dropdown} ${styles.dropdownRight}`} role="menu">
-                {isPlatformAdmin && (
-                  <>
-                    <RootAccountSelector onSelect={() => setOpenDropdown(null)} />
-                    <div className={styles.dropdownDivider} />
-                  </>
-                )}
+                <RootAccountSelector onSelect={() => setOpenDropdown(null)} />
+                <div className={styles.dropdownDivider} />
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => setOpenDropdown(null)}>Profile</button>
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { setOpenDropdown(null); setShowPasswordModal(true); }}>Password</button>
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { navigate('/admin/pricing'); setOpenDropdown(null); }}>Prices</button>
