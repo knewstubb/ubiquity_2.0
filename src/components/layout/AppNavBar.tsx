@@ -6,6 +6,7 @@ import { RootAccountSelector } from './RootAccountSelector';
 import { RoleSimulator } from './RoleSimulator';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { ResetAccountButton } from '../shared/ResetAccountButton';
+import { ChangePasswordModal } from './ChangePasswordModal';
 import { useFeatureFlags } from '../../contexts/FeatureFlagContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlatformAdmin } from '../../contexts/PlatformAdminContext';
@@ -93,6 +94,7 @@ export function AppNavBar() {
   const { isRouteEnabled } = useFeatureFlags();
   const { user, signOut } = useAuth();
   const { isPlatformAdmin } = usePlatformAdmin();
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   // Filter nav items based on feature flags, and conditionally add admin-only items
   const filteredNavItems = useMemo(() => {
@@ -271,7 +273,7 @@ export function AppNavBar() {
                   </>
                 )}
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => setOpenDropdown(null)}>Profile</button>
-                <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => setOpenDropdown(null)}>Password</button>
+                <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { setOpenDropdown(null); setShowPasswordModal(true); }}>Password</button>
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { navigate('/admin/pricing'); setOpenDropdown(null); }}>Prices</button>
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => setOpenDropdown(null)}>Help</button>
                 <div className={styles.dropdownDivider} />
@@ -283,6 +285,9 @@ export function AppNavBar() {
           </div>
         </div>
       </div>
+      {showPasswordModal && (
+        <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />
+      )}
     </nav>
   );
 }
