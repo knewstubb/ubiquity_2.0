@@ -7,6 +7,7 @@ import { RoleSimulator } from './RoleSimulator';
 import { WhatsNewPanel } from './WhatsNewPanel';
 import { ResetAccountButton } from '../shared/ResetAccountButton';
 import { ChangePasswordModal } from './ChangePasswordModal';
+import { FeatureFlagsModal } from './FeatureFlagsModal';
 import { useFeatureFlags } from '../../contexts/FeatureFlagContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlatformAdmin } from '../../contexts/PlatformAdminContext';
@@ -95,6 +96,7 @@ export function AppNavBar() {
   const { user, signOut } = useAuth();
   const { isPlatformAdmin } = usePlatformAdmin();
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showFlagsModal, setShowFlagsModal] = useState(false);
 
   // Filter nav items based on feature flags, and conditionally add admin-only items
   const filteredNavItems = useMemo(() => {
@@ -277,6 +279,8 @@ export function AppNavBar() {
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { navigate('/admin/pricing'); setOpenDropdown(null); }}>Prices</button>
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => setOpenDropdown(null)}>Help</button>
                 <div className={styles.dropdownDivider} />
+                <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { setOpenDropdown(null); setShowFlagsModal(true); }}>Feature Flags</button>
+                <div className={styles.dropdownDivider} />
                 <ResetAccountButton />
                 <div className={styles.dropdownDivider} />
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { setOpenDropdown(null); signOut(); }}>Logout</button>
@@ -287,6 +291,9 @@ export function AppNavBar() {
       </div>
       {showPasswordModal && (
         <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />
+      )}
+      {showFlagsModal && (
+        <FeatureFlagsModal onClose={() => setShowFlagsModal(false)} />
       )}
     </nav>
   );

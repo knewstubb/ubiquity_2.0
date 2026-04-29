@@ -29,6 +29,9 @@ export interface FeatureFlagContextValue {
   isEnabled: (flagName: string) => boolean;
   isRouteEnabled: (routePath: string) => boolean;
   isLoading: boolean;
+  setFlagEnabled: (flagName: string, enabled: boolean) => Promise<void>;
+  createFlag: (flag: Omit<FeatureFlag, 'enabled'> & { enabled?: boolean }) => Promise<void>;
+  deleteFlag: (flagName: string) => Promise<void>;
 }
 
 const FeatureFlagContext = createContext<FeatureFlagContextValue | undefined>(undefined);
@@ -42,6 +45,9 @@ const FAIL_OPEN_VALUE: FeatureFlagContextValue = {
   isEnabled: () => true,
   isRouteEnabled: () => true,
   isLoading: false,
+  setFlagEnabled: async () => {},
+  createFlag: async () => {},
+  deleteFlag: async () => {},
 };
 
 export function FeatureFlagProvider({ children }: { children: ReactNode }) {
@@ -130,15 +136,57 @@ export function FeatureFlagProvider({ children }: { children: ReactNode }) {
     [flags, isAdminBypass],
   );
 
+  const setFlagEnabled = useCallback(
+    async (flagName: string, enabled: boolean) => {
+      if (!supabase) return;
+      await supabase.from('feature_flags').update({ enabled }).eq('name', flagName);
+      setFlags((prev) => {
+        const flag = prev[flagName];
+        if (!flag) return prev;
+        return { ...prev, [flagName]: { ...flag, enabled } };
+      });
+    },
+    [],
+  );
+
+  const createFlag = useCallback(
+    async (flag: Omit<FeatureFlag, 'enabled'> & { enabled?: boolean }) => {
+      if (!supabase) return;
+      const newFlag: FeatureFlag = { ...flag, enabled: flag.enabled ?? false };
+      await supabase.from('feature_flags').upsert({
+        name: newFlag.name,
+        enabled: newFlag.enabled,
+        description: newFlag.description,
+        scope: newFlag.scope,
+        target: newFlag.target,
+      });
+      setFlags((prev) => ({ ...prev, [newFlag.name]: newFlag }));
+    },
+    [],
+  );
+
+  const deleteFlag = useCallback(
+    async (flagName: string) => {
+      if (!supabase) return;
+      await supabase.from('feature_flags').delete().eq('name', flagName);
+      setFlags((prev) => {
+        const next = { ...prev };
+        delete next[flagName];
+        return next;
+      });
+    },
+    [],
+  );
+
   const value = useMemo<FeatureFlagContextValue>(
     () => {
       // When Supabase is not configured, return fail-open defaults
       if (!isSupabaseConfigured()) {
         return FAIL_OPEN_VALUE;
       }
-      return { flags, isEnabled, isRouteEnabled, isLoading };
+      return { flags, isEnabled, isRouteEnabled, isLoading, setFlagEnabled, createFlag, deleteFlag };
     },
-    [flags, isEnabled, isRouteEnabled, isLoading],
+    [flags, isEnabled, isRouteEnabled, isLoading, setFlagEnabled, createFlag, deleteFlag],
   );
 
   return (
