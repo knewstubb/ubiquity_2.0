@@ -159,7 +159,9 @@ export default function DashboardPage() {
       </div>
 
       <div className={styles.connectionList}>
-        {filteredConnections.map((connection) => {
+        {filteredConnections.length === 0 ? (
+          <EmptyConnectionState onCreateConnection={() => setShowCreateConnection(true)} />
+        ) : filteredConnections.map((connection) => {
           const childConnectors = connectors.filter(
             (c) => c.connectionId === connection.id,
           );
@@ -321,6 +323,63 @@ export default function DashboardPage() {
           />
         );
       })()}
+    </div>
+  );
+}
+
+/* ── Empty state when no connections exist ── */
+
+function EmptyConnectionState({ onCreateConnection }: { onCreateConnection: () => void }) {
+  const [showRequirements, setShowRequirements] = useState(false);
+
+  return (
+    <div className={styles.emptyState}>
+      <p className={styles.emptyTitle}>
+        An active connection is required before your first automation can be created.
+      </p>
+      <div className={styles.emptyInfoBox}>
+        <p className={styles.emptyInfoText}>
+          Specific access credentials for your external database will be required to establish a connection to UbiQuity.
+        </p>
+        <p className={styles.emptyInfoText}>
+          Specific requirements can be found{' '}
+          <button
+            type="button"
+            className={styles.emptyLink}
+            onClick={() => setShowRequirements(true)}
+          >
+            here
+          </button>
+        </p>
+        <p className={styles.emptyInfoText}>
+          Speak to your technical admin if you need support.
+        </p>
+      </div>
+      <button type="button" className={styles.emptyCreateBtn} onClick={onCreateConnection}>
+        Create Your First Connection
+      </button>
+
+      {showRequirements && (
+        <div className={styles.reqOverlay} onClick={() => setShowRequirements(false)}>
+          <div className={styles.reqModal} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.reqTitle}>Connection Requirements</h3>
+            <p className={styles.reqSubtitle}>Before setting up a connection, ensure you have:</p>
+            <ul className={styles.reqList}>
+              <li>Access credentials (hostname, username, password or access key)</li>
+              <li>The file path or bucket location where your data resides</li>
+              <li>Network access from UbiQuity's IP range to your server (firewall/whitelist)</li>
+              <li>A sample file in the expected format (CSV, JSON, or delimited text)</li>
+              <li>Knowledge of the file naming pattern used by your system</li>
+            </ul>
+            <p className={styles.reqNote}>
+              Your technical admin or IT team can provide these details. Each protocol (SFTP, S3, Azure Blob) has specific requirements.
+            </p>
+            <button type="button" className={styles.reqCloseBtn} onClick={() => setShowRequirements(false)}>
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
