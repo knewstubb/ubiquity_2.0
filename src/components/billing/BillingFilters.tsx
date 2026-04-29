@@ -1,6 +1,7 @@
 import { accounts } from '../../data/accounts';
 import type { Account } from '../../models/account';
 import type { CategoryFilter } from './useBillingReport';
+import { DateRangePicker } from './DateRangePicker';
 import styles from './BillingFilters.module.css';
 
 export interface BillingFiltersProps {
@@ -32,7 +33,6 @@ function buildAccountOptions(): { id: string; label: string }[] {
     }
   }
 
-  // Start from root accounts (no parent)
   for (const account of accounts) {
     if (account.parentId === null) {
       walk(account.id, 0);
@@ -58,25 +58,13 @@ export function BillingFilters({
   return (
     <div className={styles.filters} role="group" aria-label="Billing report filters">
       <div className={styles.group}>
-        <label className={styles.label} htmlFor="billing-start-date">From</label>
-        <div className={styles.dateRange}>
-          <input
-            id="billing-start-date"
-            type="date"
-            className={styles.input}
-            value={startDate}
-            onChange={(e) => onStartDateChange(e.target.value)}
-          />
-          <label className={styles.label} htmlFor="billing-end-date">To</label>
-          <input
-            id="billing-end-date"
-            type="date"
-            className={styles.input}
-            value={endDate}
-            min={startDate}
-            onChange={(e) => onEndDateChange(e.target.value)}
-          />
-        </div>
+        <span className={styles.label}>Date Range</span>
+        <DateRangePicker
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={onStartDateChange}
+          onEndDateChange={onEndDateChange}
+        />
       </div>
 
       <div className={styles.group}>
