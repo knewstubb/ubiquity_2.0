@@ -421,6 +421,68 @@ async function seedTransactionalData(): Promise<void> {
 
 
 // ---------------------------------------------------------------------------
+// 6b. Feature flags
+// ---------------------------------------------------------------------------
+
+const DEFAULT_FEATURE_FLAGS = [
+  // --- Home ---
+  { name: 'page-home', enabled: true, description: 'Home / Overview dashboard', scope: 'page', target: '/dashboard' },
+
+  // --- Campaigns ---
+  { name: 'page-campaigns', enabled: true, description: 'All Campaigns list', scope: 'page', target: '/automations/campaigns' },
+  { name: 'page-journeys', enabled: true, description: 'All Journeys list', scope: 'page', target: '/automations/journeys' },
+
+  // --- Audience ---
+  { name: 'page-databases', enabled: true, description: 'Audience Databases', scope: 'page', target: '/audiences/databases' },
+  { name: 'page-segments', enabled: true, description: 'Audience Segments', scope: 'page', target: '/audiences/segments' },
+  { name: 'page-integrations', enabled: true, description: 'Integrations (connections & automations)', scope: 'page', target: '/' },
+  { name: 'page-fields-config', enabled: true, description: 'Fields & Config', scope: 'page', target: '/audiences/attributes' },
+
+  // --- Assets ---
+  { name: 'page-email-templates', enabled: true, description: 'Email Templates', scope: 'page', target: '/content/templates' },
+  { name: 'page-brand-assets', enabled: true, description: 'Brand Assets', scope: 'page', target: '/content/assets' },
+  { name: 'page-forms-surveys', enabled: true, description: 'Forms & Surveys', scope: 'page', target: '/content/forms' },
+  { name: 'page-media-library', enabled: true, description: 'Media Library', scope: 'page', target: '/content/emails' },
+  { name: 'page-sms-push', enabled: true, description: 'SMS & Push Templates', scope: 'page', target: '/content/sms' },
+
+  // --- Reporting ---
+  { name: 'page-reporting-overview', enabled: true, description: 'Reporting Overview', scope: 'page', target: '/analytics/dashboards' },
+  { name: 'page-campaign-results', enabled: true, description: 'Campaign Results', scope: 'page', target: '/analytics/reports' },
+  { name: 'page-audience-growth', enabled: true, description: 'Audience Growth', scope: 'page', target: '/analytics/activity' },
+
+  // --- Admin ---
+  { name: 'page-brand-config', enabled: true, description: 'Brand Configuration', scope: 'page', target: '/admin/brand' },
+  { name: 'page-business-rules', enabled: true, description: 'Business Rules', scope: 'page', target: '/admin/rules' },
+  { name: 'page-integrations-config', enabled: true, description: 'Integrations Config', scope: 'page', target: '/admin/integrations' },
+  { name: 'page-permissions', enabled: true, description: 'Users & Permissions', scope: 'page', target: '/settings/permissions' },
+  { name: 'page-sending-domains', enabled: true, description: 'Sending Domains', scope: 'page', target: '/admin/domains' },
+  { name: 'page-api-webhooks', enabled: true, description: 'API & Webhooks', scope: 'page', target: '/admin/api' },
+  { name: 'page-billing', enabled: true, description: 'Billing Report', scope: 'page', target: '/admin/billing' },
+  { name: 'page-pricing', enabled: true, description: 'Pricing page', scope: 'page', target: '/admin/pricing' },
+  { name: 'page-user-management', enabled: true, description: 'User Management (admin only)', scope: 'page', target: '/admin/users' },
+
+  // --- Components ---
+  { name: 'component-journey-builder', enabled: true, description: 'Journey Builder canvas', scope: 'component', target: 'journey-builder' },
+  { name: 'component-importer-wizard', enabled: true, description: 'Import Automation wizard', scope: 'component', target: 'importer-wizard' },
+  { name: 'component-segment-builder', enabled: true, description: 'Segment rule builder', scope: 'component', target: 'segment-builder' },
+];
+
+async function seedFeatureFlags(): Promise<void> {
+  // Use upsert so existing flags keep their current enabled state
+  // Only insert new flags that don't exist yet
+  for (const flag of DEFAULT_FEATURE_FLAGS) {
+    const { data: existing } = await supabase.from('feature_flags').select('name').eq('name', flag.name).single();
+    if (!existing) {
+      const { error } = await supabase.from('feature_flags').insert(flag);
+      if (error) {
+        console.error(`  ❌ feature_flags/${flag.name}: ${error.message}`);
+      }
+    }
+  }
+  console.log(`  ✅ feature_flags: ${DEFAULT_FEATURE_FLAGS.length} flags (new flags inserted, existing preserved)`);
+}
+
+// ---------------------------------------------------------------------------
 // 7. Main — seed in dependency order
 // ---------------------------------------------------------------------------
 
@@ -470,6 +532,10 @@ async function main(): Promise<void> {
   await seedJourneySeeds();
   await seedSpaContacts();
   await seedTransactionalData();
+
+  // --- Feature flags ---
+  console.log('\n🚩 Seeding feature flags...');
+  await seedFeatureFlags();
 
   console.log('\n✅ Seed complete!');
 }
