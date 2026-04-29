@@ -241,7 +241,8 @@ export function ImportConfigStep({ type }: ImportConfigStepProps) {
         </div>
       </div>
 
-      {/* Blank Values */}
+      {/* Blank Values — only relevant when updating existing records */}
+      {updateType !== 'append' && (
       <div className={styles.row}>
         <div className={styles.labelCol}>
           <div className={styles.labelRow}>
@@ -281,6 +282,7 @@ export function ImportConfigStep({ type }: ImportConfigStepProps) {
           </div>
         </div>
       </div>
+      )}
 
       {/* Matching Fields */}
       <div className={styles.row}>
