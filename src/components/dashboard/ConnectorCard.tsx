@@ -9,15 +9,17 @@ interface ConnectorCardProps {
   connector: Connector;
   connectionError?: boolean;
   onToggleStatus: () => void;
-  onEdit: () => void;
+  onViewSettings: () => void;
   onEditWizard: () => void;
   onDelete: () => void;
+  onActivityLog?: () => void;
+  onHistory?: () => void;
 }
 
 const DATA_TYPE_LABELS: Record<string, string> = {
-  contact: 'contacts',
-  transactional: 'transactional_sales',
-  transactional_with_contact: 'transactional_with_contact',
+  contact: 'Contacts',
+  transactional: 'Transactional',
+  transactional_with_contact: 'Transactional + Contact',
 };
 
 function ImporterIcon() {
@@ -39,7 +41,7 @@ function ExporterIcon() {
 }
 
 function getLastRunTime(): string {
-  return '2-minutes ago';
+  return '2 minutes ago';
 }
 
 function getLastRunStatus(connector: Connector): 'Completed' | 'Failed' {
@@ -47,7 +49,7 @@ function getLastRunStatus(connector: Connector): 'Completed' | 'Failed' {
   return hash % 7 === 0 ? 'Failed' : 'Completed';
 }
 
-export function ConnectorCard({ connector, connectionError, onToggleStatus, onEdit, onEditWizard, onDelete }: ConnectorCardProps) {
+export function ConnectorCard({ connector, connectionError, onToggleStatus, onViewSettings, onEditWizard, onDelete, onActivityLog, onHistory }: ConnectorCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -90,10 +92,10 @@ export function ConnectorCard({ connector, connectionError, onToggleStatus, onEd
           role="menu"
           style={{ top: menuPos.top, left: menuPos.left }}
         >
-          <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEdit(); }}><GearSix size={16} weight="regular" /> Automation Settings</button>
+          <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onViewSettings(); }}><GearSix size={16} weight="regular" /> Automation Settings</button>
           <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onEditWizard(); }}><PencilSimple size={16} weight="regular" /> Edit Automation</button>
-          <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><ListBullets size={16} weight="regular" /> Activity Log</button>
-          <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><ClockCounterClockwise size={16} weight="regular" /> History</button>
+          <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onActivityLog?.(); }}><ListBullets size={16} weight="regular" /> Activity Log</button>
+          <button type="button" role="menuitem" className={styles.menuItem} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onHistory?.(); }}><ClockCounterClockwise size={16} weight="regular" /> History</button>
           <div className={styles.menuDivider} />
           <button type="button" role="menuitem" className={`${styles.menuItem} ${styles.menuItemDanger}`} onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onDelete(); }}><Trash size={16} weight="regular" /> Delete Automation</button>
         </div>,
@@ -107,8 +109,8 @@ export function ConnectorCard({ connector, connectionError, onToggleStatus, onEd
       role="button"
       tabIndex={0}
       aria-label={`Automation: ${connector.name}`}
-      onClick={() => onEdit()}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onEdit(); } }}
+      onClick={() => onViewSettings()}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onViewSettings(); } }}
     >
       {/* Group 1: Icon + Name */}
       <div className={styles.groupName}>

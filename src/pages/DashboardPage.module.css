@@ -21,6 +21,13 @@
   margin: 0;
 }
 
+.subtitle {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  margin: 4px 0 0;
+  font-weight: var(--weight-regular);
+}
+
 .newButton {
   display: inline-flex;
   align-items: center;

@@ -9,6 +9,8 @@ interface ConnectionsContextValue {
   connections: Connection[];
   getConnectionById: (id: string) => Connection | undefined;
   addConnection: (connection: Connection) => void;
+  updateConnection: (id: string, updates: Partial<Connection>) => void;
+  deleteConnection: (id: string) => void;
 }
 
 const ConnectionsContext = createContext<ConnectionsContextValue | undefined>(undefined);
@@ -35,8 +37,34 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
     }
   }, [supabaseMode, showToast]);
 
+  const updateConnection = useCallback((id: string, updates: Partial<Connection>) => {
+    setConnections((prev) => {
+      const updated = prev.map((c) => (c.id === id ? { ...c, ...updates } : c));
+      if (supabaseMode) {
+        connectionsAdapter.update(id, updates).catch((err) => {
+          showToast(err.message || 'Failed to update connection', 'error');
+          setConnections(prev);
+        });
+      }
+      return updated;
+    });
+  }, [supabaseMode, showToast]);
+
+  const deleteConnection = useCallback((id: string) => {
+    setConnections((prev) => {
+      const filtered = prev.filter((c) => c.id !== id);
+      if (supabaseMode) {
+        connectionsAdapter.del(id).catch((err) => {
+          showToast(err.message || 'Failed to delete connection', 'error');
+          setConnections(prev);
+        });
+      }
+      return filtered;
+    });
+  }, [supabaseMode, showToast]);
+
   return (
-    <ConnectionsContext.Provider value={{ connections, getConnectionById, addConnection }}>
+    <ConnectionsContext.Provider value={{ connections, getConnectionById, addConnection, updateConnection, deleteConnection }}>
       {children}
     </ConnectionsContext.Provider>
   );

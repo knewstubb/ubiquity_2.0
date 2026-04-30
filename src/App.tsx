@@ -22,7 +22,6 @@ import { ChangelogBanner } from './components/layout/ChangelogBanner';
 import { FeedbackWidget } from './components/shared/FeedbackWidget';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
-import ConnectorDetailPage from './pages/ConnectorDetailPage';
 import OverviewDashboardPage from './pages/OverviewDashboardPage';
 import SegmentsPage from './pages/SegmentsPage';
 import SegmentDetailPage from './pages/SegmentDetailPage';
@@ -86,7 +85,6 @@ function App() {
                                           <AdminAccountBanner />
                                           <Routes>
                                             <Route path="/" element={<DashboardPage />} />
-                                            <Route path="/connector/:id" element={<ConnectorDetailPage />} />
                                             <Route path="/dashboard" element={<OverviewDashboardPage />} />
                                             <Route path="/audiences/segments" element={<SegmentsPage />} />
                                             <Route path="/audiences/segments/:segmentId" element={<SegmentDetailPage />} />

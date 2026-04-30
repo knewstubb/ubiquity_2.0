@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Connection } from '../../models/connection';
+import { useAccount } from '../../contexts/AccountContext';
 import styles from './CreateConnectionModal.module.css';
 
 type ConnectionType = 'aws-s3' | 'azure-blob' | 'sftp';
@@ -15,6 +16,7 @@ interface CreateConnectionModalProps {
 
 export function CreateConnectionModal({ onClose, onCreate, editConnection }: CreateConnectionModalProps) {
   const isEditing = !!editConnection;
+  const { selectedAccountId } = useAccount();
   const [step, setStep] = useState<1 | 2>(isEditing ? 2 : 1);
 
   // Step 1 state
@@ -52,6 +54,7 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
 
   // Test connection
   const [testStatus, setTestStatus] = useState<TestStatus>('idle');
+  const testPassed = testStatus === 'success';
 
   const canProceedStep1 = name.trim().length > 0 && connectionType !== null;
 
@@ -102,7 +105,7 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
       protocol,
       status: editConnection?.status ?? 'connected',
       basePath: basePath || '/company/base-path/',
-      accountId: editConnection?.accountId ?? '',
+      accountId: editConnection?.accountId ?? selectedAccountId,
       config,
     };
 
@@ -138,7 +141,7 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
               Next
             </button>
           ) : (
-            <button type="button" className={styles.primaryButton} onClick={handleCreate}>
+            <button type="button" className={styles.primaryButton} disabled={!testPassed} onClick={handleCreate}>
               {isEditing ? 'Update Connection' : 'Create Connection'}
             </button>
           )}

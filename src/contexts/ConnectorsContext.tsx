@@ -18,6 +18,7 @@ const STORAGE_KEY = 'ubiquity-connectors';
 interface ConnectorsContextValue {
   connectors: Connector[];
   addConnector: (draft: WizardDraft) => Connector;
+  addConnectorDirect: (connector: Connector) => void;
   updateConnector: (id: string, draft: WizardDraft) => void;
   toggleConnectorStatus: (id: string) => void;
   deleteConnector: (id: string) => void;
@@ -88,6 +89,16 @@ export function ConnectorsProvider({ children }: { children: ReactNode }) {
       });
     }
     return connector;
+  }, [supabaseMode, showToast]);
+
+  const addConnectorDirect = useCallback((connector: Connector): void => {
+    setConnectors((prev) => [...prev, connector]);
+    if (supabaseMode) {
+      connectorsAdapter.add(connector).catch((err) => {
+        showToast(err.message || 'Failed to add connector', 'error');
+        setConnectors((prev) => prev.filter((c) => c.id !== connector.id));
+      });
+    }
   }, [supabaseMode, showToast]);
 
   const updateConnector = useCallback((id: string, draft: WizardDraft): void => {
@@ -163,7 +174,7 @@ export function ConnectorsProvider({ children }: { children: ReactNode }) {
 
   return (
     <ConnectorsContext.Provider
-      value={{ connectors, addConnector, updateConnector, toggleConnectorStatus, deleteConnector }}
+      value={{ connectors, addConnector, addConnectorDirect, updateConnector, toggleConnectorStatus, deleteConnector }}
     >
       {children}
     </ConnectorsContext.Provider>

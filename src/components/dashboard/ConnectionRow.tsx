@@ -151,6 +151,11 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
         className={`${styles.childrenWrapper} ${expanded ? styles.childrenWrapperExpanded : ''}`}
       >
         <div className={styles.childrenInner}>
+          {connectorCount === 0 && expanded && (
+            <div className={styles.emptyAutomations}>
+              No automations yet. Create one to start importing data.
+            </div>
+          )}
           {children && <div className={styles.children}>{children}</div>}
         </div>
       </div>

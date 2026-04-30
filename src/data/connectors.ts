@@ -53,7 +53,7 @@ export const connectors: Connector[] = [
     updatedAt: '2026-04-18T11:00:00Z',
   },
 
-  // --- Spa SFTP Server — 2 importers ---
+  // --- Spa SFTP Server — 2 importers + 1 exporter ---
   {
     id: 'auto-spa-sftp-bookings',
     connectionId: 'c9b8a7d6-e5f4-3210-abcd-ef9876543210',
@@ -86,6 +86,22 @@ export const connectors: Connector[] = [
     status: 'active',
     createdAt: '2026-03-01T08:00:00Z',
     updatedAt: '2026-04-24T09:00:00Z',
+  },
+  {
+    id: 'auto-spa-sftp-crm-export',
+    connectionId: 'c9b8a7d6-e5f4-3210-abcd-ef9876543210',
+    name: 'Contact Export to CRM',
+    direction: 'export',
+    dataType: 'contact',
+    selectedFields: [],
+    fileType: 'csv',
+    formatOptions: { delimiter: ',', includeHeader: true, dateFormat: 'ISO8601', timezone: 'Pacific/Auckland' },
+    fileNamingPattern: 'crm_contacts_{date}.csv',
+    schedule: 'daily',
+    filters: { combinator: 'AND', rules: [], groups: [] },
+    status: 'active',
+    createdAt: '2026-03-10T08:00:00Z',
+    updatedAt: '2026-04-25T10:00:00Z',
   },
 
   // --- Spa Azure Blob Storage — 1 importer ---
@@ -196,7 +212,7 @@ export const connectors: Connector[] = [
     updatedAt: '2026-04-27T09:00:00Z',
   },
 
-  // --- CCC Rates Database — 2 importers ---
+  // --- CCC Rates Database — 2 importers + 1 exporter ---
   {
     id: 'auto-ccc-ratepayers',
     connectionId: 'conn-ccc-rates',
@@ -229,6 +245,22 @@ export const connectors: Connector[] = [
     status: 'active',
     createdAt: '2026-03-01T08:00:00Z',
     updatedAt: '2026-04-23T14:00:00Z',
+  },
+  {
+    id: 'auto-ccc-rates-export',
+    connectionId: 'conn-ccc-rates',
+    name: 'Rates Notice Export',
+    direction: 'export',
+    dataType: 'transactional',
+    selectedFields: [],
+    fileType: 'csv',
+    formatOptions: { delimiter: ',', includeHeader: true, dateFormat: 'ISO8601', timezone: 'Pacific/Auckland' },
+    fileNamingPattern: 'rates_notices_{date}.csv',
+    schedule: 'weekly',
+    filters: { combinator: 'AND', rules: [], groups: [] },
+    status: 'active',
+    createdAt: '2026-03-15T08:00:00Z',
+    updatedAt: '2026-04-22T08:00:00Z',
   },
 
   // --- Eventfinda Integration — 1 importer ---

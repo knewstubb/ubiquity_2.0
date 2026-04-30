@@ -10,6 +10,8 @@ import { InitialModal } from '../components/dashboard/InitialModal';
 import { WizardModal } from '../components/wizard/WizardModal';
 import { ImporterWizardModal } from '../components/importer/ImporterWizardModal';
 import { AutomationSettingsModal } from '../components/dashboard/AutomationSettingsModal';
+import { ActivityLogModal } from '../components/dashboard/ActivityLogModal';
+import { HistoryModal } from '../components/dashboard/HistoryModal';
 import type { Connector } from '../models/connector';
 import type { WizardDraft } from '../models/wizard';
 import type { ImporterConfig } from '../models/importer';
@@ -29,12 +31,16 @@ interface ImporterModalState {
 }
 
 export default function DashboardPage() {
-  const { connections, getConnectionById, addConnection } = useConnections();
-  const { connectors, addConnector, updateConnector, toggleConnectorStatus, deleteConnector } =
+  const { connections, getConnectionById, addConnection, updateConnection, deleteConnection } = useConnections();
+  const { connectors, addConnector, addConnectorDirect, updateConnector, toggleConnectorStatus, deleteConnector } =
     useConnectors();
   const { selectedAccountId } = useAccount();
 
   const filteredConnections = connections.filter((c) => c.accountId === selectedAccountId);
+
+  const totalAutomations = connectors.filter((c) =>
+    filteredConnections.some((conn) => conn.id === c.connectionId),
+  ).length;
 
   const [showCreateConnection, setShowCreateConnection] = useState(false);
   const [editingConnection, setEditingConnection] = useState<string | null>(null);
@@ -45,6 +51,8 @@ export default function DashboardPage() {
   const [wizardModalState, setWizardModalState] = useState<WizardModalState | null>(null);
   const [importerModalState, setImporterModalState] = useState<ImporterModalState | null>(null);
   const [settingsConnectorId, setSettingsConnectorId] = useState<string | null>(null);
+  const [activityLogConnectorId, setActivityLogConnectorId] = useState<string | null>(null);
+  const [historyConnectorId, setHistoryConnectorId] = useState<string | null>(null);
 
   // --- Add Connector flow (InitialModal → WizardModal or ImporterWizardModal) ---
   function handleAddConnector(connectionId: string) {
@@ -111,8 +119,30 @@ export default function DashboardPage() {
   }
 
   // --- ImporterWizardModal save ---
-  function handleImporterSave(_config: ImporterConfig) {
-    // Prototype: just close the modal. Real implementation would persist.
+  function handleImporterSave(config: ImporterConfig) {
+    const now = new Date().toISOString();
+    const dataType = config.dataType === 'both' ? 'transactional_with_contact' as const
+      : config.dataType === 'transactional' ? 'transactional' as const
+      : 'contact' as const;
+
+    const connector: Connector = {
+      id: crypto.randomUUID(),
+      connectionId: config.connectionId,
+      name: config.name,
+      direction: 'import',
+      dataType,
+      selectedFields: [],
+      fileType: 'csv',
+      formatOptions: { delimiter: ',', includeHeader: true, dateFormat: 'ISO8601', timezone: 'Pacific/Auckland' },
+      fileNamingPattern: config.filePathConfig.fileNamePattern || `${config.name.toLowerCase().replace(/\s+/g, '_')}_{date}.csv`,
+      schedule: 'daily',
+      filters: { combinator: 'AND', rules: [], groups: [] },
+      status: 'active',
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    addConnectorDirect(connector);
   }
 
   function handleImporterClose() {
@@ -143,7 +173,12 @@ export default function DashboardPage() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Integrations</h1>
+        <div>
+          <h1 className={styles.title}>Integrations</h1>
+          <p className={styles.subtitle}>
+            {filteredConnections.length} connection{filteredConnections.length !== 1 ? 's' : ''} · {totalAutomations} automation{totalAutomations !== 1 ? 's' : ''}
+          </p>
+        </div>
         <button
           type="button"
           className={styles.newButton}
@@ -181,9 +216,11 @@ export default function DashboardPage() {
                   connector={connector}
                   connectionError={connection.status === 'error'}
                   onToggleStatus={() => toggleConnectorStatus(connector.id)}
-                  onEdit={() => setSettingsConnectorId(connector.id)}
+                  onViewSettings={() => setSettingsConnectorId(connector.id)}
                   onEditWizard={() => handleEdit(connector.id)}
                   onDelete={() => handleDeleteRequest(connector)}
+                  onActivityLog={() => setActivityLogConnectorId(connector.id)}
+                  onHistory={() => setHistoryConnectorId(connector.id)}
                 />
               ))}
               {!connection.status.includes('error') && (
@@ -242,8 +279,7 @@ export default function DashboardPage() {
           editConnection={getConnectionById(editingConnection)}
           onClose={() => setEditingConnection(null)}
           onCreate={(connection) => {
-            // Prototype: replace in local state. Real implementation would call update API.
-            addConnection(connection);
+            updateConnection(editingConnection, connection);
             setEditingConnection(null);
           }}
         />
@@ -298,7 +334,7 @@ export default function DashboardPage() {
             objectType="Connection"
             objectName={conn.name}
             onConfirm={() => {
-              // Prototype: just close the modal. Real implementation would call delete API.
+              deleteConnection(pendingDeleteConnectionId);
               setPendingDeleteConnectionId(null);
             }}
             onCancel={() => setPendingDeleteConnectionId(null)}
@@ -320,6 +356,30 @@ export default function DashboardPage() {
               setSettingsConnectorId(null);
               handleEdit(connector.id);
             }}
+          />
+        );
+      })()}
+
+      {/* Activity Log Modal */}
+      {activityLogConnectorId && (() => {
+        const connector = connectors.find((c) => c.id === activityLogConnectorId);
+        if (!connector) return null;
+        return (
+          <ActivityLogModal
+            connector={connector}
+            onClose={() => setActivityLogConnectorId(null)}
+          />
+        );
+      })()}
+
+      {/* History Modal */}
+      {historyConnectorId && (() => {
+        const connector = connectors.find((c) => c.id === historyConnectorId);
+        if (!connector) return null;
+        return (
+          <HistoryModal
+            connector={connector}
+            onClose={() => setHistoryConnectorId(null)}
           />
         );
       })()}
