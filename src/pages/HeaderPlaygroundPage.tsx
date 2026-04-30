@@ -31,6 +31,10 @@ export default function HeaderPlaygroundPage() {
   const [showSearch, setShowSearch] = useState(true);
   const [showBulkActions, setShowBulkActions] = useState(false);
 
+  // Body layout
+  type BodyLayout = 'dashboard' | 'table' | 'cards' | 'files' | 'detail' | 'split' | 'empty';
+  const [bodyLayout, setBodyLayout] = useState<BodyLayout>('dashboard');
+
   // Variable counts
   const [tabCount, setTabCount] = useState(3);
   const [breadcrumbCount, setBreadcrumbCount] = useState(3);
@@ -144,11 +148,15 @@ export default function HeaderPlaygroundPage() {
         )}
       </div>
 
-      {/* ── Sample Content Area ── */}
+      {/* ── Body Content ── */}
       <div className={styles.contentArea}>
-        <div className={styles.contentPlaceholder}>
-          <p>Page content goes here</p>
-        </div>
+        {bodyLayout === 'dashboard' && <DashboardBody />}
+        {bodyLayout === 'table' && <TableBody />}
+        {bodyLayout === 'cards' && <CardListBody />}
+        {bodyLayout === 'files' && <FileGridBody />}
+        {bodyLayout === 'detail' && <DetailBody />}
+        {bodyLayout === 'split' && <SplitPanelBody />}
+        {bodyLayout === 'empty' && <EmptyStateBody />}
       </div>
 
       {/* ── Control Panel (bottom-right) ── */}
@@ -188,6 +196,23 @@ export default function HeaderPlaygroundPage() {
             ))}
           </select>
         </div>
+
+        <div className={styles.controlSection}>
+          <h4 className={styles.controlSectionTitle}>Body Layout</h4>
+          <select
+            className={styles.controlSelect}
+            value={bodyLayout}
+            onChange={(e) => setBodyLayout(e.target.value as BodyLayout)}
+          >
+            <option value="dashboard">Dashboard (Metric Cards)</option>
+            <option value="table">Data Table (Bulk Actions)</option>
+            <option value="cards">Card List</option>
+            <option value="files">File Grid</option>
+            <option value="detail">Detail / Form</option>
+            <option value="split">Split Panel</option>
+            <option value="empty">Empty State</option>
+          </select>
+        </div>
       </div>
     </div>
   );
@@ -215,6 +240,206 @@ function CountRow({ label, value, min, max, onChange }: { label: string; value: 
         <span className={styles.countValue}>{value}</span>
         <button type="button" className={styles.countBtn} onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max}>+</button>
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Body Layout Components
+// ---------------------------------------------------------------------------
+
+function DashboardBody() {
+  const metrics = [
+    { label: 'Total Contacts', value: '45,280', change: '+12%' },
+    { label: 'Active Journeys', value: '8', change: '+2' },
+    { label: 'Emails Sent (MTD)', value: '12,450', change: '+8%' },
+    { label: 'Open Rate', value: '34.2%', change: '-1.2%' },
+    { label: 'Automations', value: '20', change: '+3' },
+    { label: 'Form Submissions', value: '892', change: '+15%' },
+  ];
+
+  return (
+    <div className={styles.dashboardGrid}>
+      {metrics.map((m) => (
+        <div key={m.label} className={styles.metricCard}>
+          <span className={styles.metricLabel}>{m.label}</span>
+          <span className={styles.metricValue}>{m.value}</span>
+          <span className={styles.metricChange}>{m.change}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TableBody() {
+  const rows = [
+    { id: 1, name: 'Daily Contact Import', type: 'Import', status: 'Active', lastRun: '2 min ago', records: '1,240' },
+    { id: 2, name: 'Treatment History Sync', type: 'Import', status: 'Active', lastRun: '15 min ago', records: '890' },
+    { id: 3, name: 'Product Catalogue Import', type: 'Import', status: 'Paused', lastRun: '3 days ago', records: '450' },
+    { id: 4, name: 'Loyalty Members Sync', type: 'Import', status: 'Active', lastRun: '1 hour ago', records: '2,100' },
+    { id: 5, name: 'Booking Data Import', type: 'Import', status: 'Error', lastRun: '5 min ago', records: '0' },
+    { id: 6, name: 'Customer Feedback Import', type: 'Import', status: 'Active', lastRun: '30 min ago', records: '320' },
+  ];
+
+  return (
+    <table className={styles.dataTable}>
+      <thead>
+        <tr>
+          <th className={styles.tableCheckCol}><input type="checkbox" /></th>
+          <th className={styles.tableHeader}>Name</th>
+          <th className={styles.tableHeader}>Type</th>
+          <th className={styles.tableHeader}>Status</th>
+          <th className={styles.tableHeader}>Last Run</th>
+          <th className={styles.tableHeaderRight}>Records</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr key={row.id} className={styles.tableRow}>
+            <td className={styles.tableCheckCol}><input type="checkbox" /></td>
+            <td className={styles.tableCell}><strong>{row.name}</strong></td>
+            <td className={styles.tableCell}>{row.type}</td>
+            <td className={styles.tableCell}>
+              <span className={`${styles.tableBadge} ${styles[`tableBadge${row.status}`]}`}>{row.status}</span>
+            </td>
+            <td className={styles.tableCell}>{row.lastRun}</td>
+            <td className={styles.tableCellRight}>{row.records}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function CardListBody() {
+  const items = [
+    { name: 'Summer Glow Campaign', status: 'Active', journeys: 3, sent: '4,200' },
+    { name: 'New Member Welcome Series', status: 'Active', journeys: 4, sent: '1,800' },
+    { name: 'Win-Back Campaign', status: 'Completed', journeys: 4, sent: '3,100' },
+    { name: 'Loyalty Programme Launch', status: 'Draft', journeys: 2, sent: '0' },
+    { name: 'End of Year Appeal', status: 'Active', journeys: 2, sent: '5,600' },
+  ];
+
+  return (
+    <div className={styles.cardList}>
+      {items.map((item) => (
+        <div key={item.name} className={styles.listCard}>
+          <div className={styles.listCardMain}>
+            <span className={styles.listCardName}>{item.name}</span>
+            <span className={`${styles.tableBadge} ${styles[`tableBadge${item.status}`]}`}>{item.status}</span>
+          </div>
+          <div className={styles.listCardMeta}>
+            <span>{item.journeys} journeys</span>
+            <span>{item.sent} sent</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function FileGridBody() {
+  const files = [
+    { name: 'hero-banner.png', type: 'Image', size: '2.4 MB' },
+    { name: 'logo-dark.svg', type: 'Image', size: '12 KB' },
+    { name: 'brand-guidelines.pdf', type: 'Document', size: '4.8 MB' },
+    { name: 'email-footer.html', type: 'Template', size: '3 KB' },
+    { name: 'promo-video.mp4', type: 'Video', size: '18 MB' },
+    { name: 'social-icons.svg', type: 'Image', size: '8 KB' },
+    { name: 'terms-conditions.pdf', type: 'Document', size: '1.2 MB' },
+    { name: 'header-pattern.png', type: 'Image', size: '890 KB' },
+  ];
+
+  return (
+    <div className={styles.fileGrid}>
+      {files.map((file) => (
+        <div key={file.name} className={styles.fileCard}>
+          <div className={styles.fileThumb}>
+            <span className={styles.fileExt}>{file.name.split('.').pop()?.toUpperCase()}</span>
+          </div>
+          <div className={styles.fileInfo}>
+            <span className={styles.fileName}>{file.name}</span>
+            <span className={styles.fileMeta}>{file.type} · {file.size}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function DetailBody() {
+  return (
+    <div className={styles.detailLayout}>
+      <div className={styles.detailSection}>
+        <h3 className={styles.detailSectionTitle}>General Information</h3>
+        <div className={styles.detailField}>
+          <label className={styles.detailLabel}>Name</label>
+          <input type="text" className={styles.detailInput} defaultValue="Summer Glow Campaign" />
+        </div>
+        <div className={styles.detailField}>
+          <label className={styles.detailLabel}>Description</label>
+          <textarea className={styles.detailTextarea} defaultValue="Drive summer bookings and product sales across all locations" rows={3} />
+        </div>
+        <div className={styles.detailRow}>
+          <div className={styles.detailField}>
+            <label className={styles.detailLabel}>Start Date</label>
+            <input type="date" className={styles.detailInput} defaultValue="2025-11-15" />
+          </div>
+          <div className={styles.detailField}>
+            <label className={styles.detailLabel}>End Date</label>
+            <input type="date" className={styles.detailInput} defaultValue="2026-02-28" />
+          </div>
+        </div>
+      </div>
+      <div className={styles.detailSection}>
+        <h3 className={styles.detailSectionTitle}>Tags</h3>
+        <div className={styles.detailTags}>
+          <span className={styles.detailTag}>seasonal</span>
+          <span className={styles.detailTag}>summer</span>
+          <span className={styles.detailTag}>national</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SplitPanelBody() {
+  return (
+    <div className={styles.splitLayout}>
+      <div className={styles.splitSidebar}>
+        <h4 className={styles.splitSidebarTitle}>Navigation</h4>
+        {['General', 'Permissions', 'Notifications', 'Integrations', 'Advanced'].map((item, i) => (
+          <button key={item} type="button" className={`${styles.splitNavItem} ${i === 0 ? styles.splitNavItemActive : ''}`}>
+            {item}
+          </button>
+        ))}
+      </div>
+      <div className={styles.splitContent}>
+        <h3 className={styles.detailSectionTitle}>General Settings</h3>
+        <p className={styles.splitText}>This is the main content area of a split-panel layout. The sidebar provides navigation between sections while the content area shows the active section's details.</p>
+        <div className={styles.detailField}>
+          <label className={styles.detailLabel}>Workspace Name</label>
+          <input type="text" className={styles.detailInput} defaultValue="Serenity Spa Group" />
+        </div>
+        <div className={styles.detailField}>
+          <label className={styles.detailLabel}>Default Timezone</label>
+          <select className={styles.detailInput}><option>Pacific/Auckland</option></select>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EmptyStateBody() {
+  return (
+    <div className={styles.emptyBody}>
+      <div className={styles.emptyIcon}>📭</div>
+      <h3 className={styles.emptyTitle}>No items yet</h3>
+      <p className={styles.emptyText}>Get started by creating your first item. It only takes a moment.</p>
+      <button type="button" className={styles.primaryBtn}>
+        <Plus size={16} weight="bold" />
+        Create First Item
+      </button>
     </div>
   );
 }
