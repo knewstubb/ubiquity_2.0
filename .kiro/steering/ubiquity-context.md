@@ -29,7 +29,7 @@ The PO and UX/UI designer. This prototype is the bridge between Figma designs an
 - React 19 + TypeScript + Vite
 - CSS Modules (no Tailwind, no CSS-in-JS)
 - React Router for page navigation
-- Local state only (no backend, no API calls)
+- Supabase for data persistence and auth (seed data via `npx tsx scripts/seed.ts`)
 - Vitest for tests
 
 ## Design System
@@ -65,8 +65,47 @@ UbiQuity is built on three equal pillars:
 
 ## Figma References
 
-- Design System: https://www.figma.com/design/X09yFfjMsaiph3v71kggQO/Ubiquity-Design-System
-- Pages: Cover, Icons, Atoms (typography, colours, shadows), Molecules (chips, split buttons, day picker, buttons), Patterns, Templates
+- Design System (UDS): https://www.figma.com/design/X09yFfjMsaiph3v71kggQO/UDS?node-id=4-3
+- UDS Variables/Tokens: https://www.figma.com/design/X09yFfjMsaiph3v71kggQO/UDS?node-id=4-3&p=f
+- Pages: Cover, Icons, Atoms (typography, colours, shadows), Molecules (chips, split buttons, day picker, buttons, text fields, checkboxes, radio buttons, toggles, tags, toasts, nav items, icon buttons, menu items, dropdown menus, account selector, search bar, tab bar, filter bar, page title bar), Patterns, Templates
+
+## UDS Component Tokens (from Figma Molecules)
+
+### Page Title Bar
+- Title: 24px Inter SemiBold, rgb(24, 24, 27)
+- Status pills: 9999px radius, 3px 8px padding, 0.5px border
+  - Active: bg rgb(230, 249, 245), border rgb(20, 184, 138)
+  - Invited: bg rgb(239, 246, 255), border rgb(59, 130, 246)
+  - Inactive: bg rgb(244, 244, 245), border rgb(212, 212, 216)
+- Actions gap: 8px
+- Title-to-actions spacer: flex
+
+### Filter Bar
+- Search: bg rgb(244, 244, 245), 8px radius, 0.5px border rgb(228, 228, 231), padding 8px 10px
+- Filter buttons: bg white, 8px radius, 0.5px inset border rgb(228, 228, 231), padding 6px 12px, gap 6px
+- Filter label: 12px Inter SemiBold, rgb(113, 113, 122)
+- View toggles: 7px padding, 8px radius, active bg rgb(244, 244, 245)
+- Bar gap: 8px
+
+### Tab Bar
+- Tab padding: 10px 14px
+- Active tab: 2px bottom border rgb(24, 24, 27), text rgb(24, 24, 27)
+- Default tab: no border, text rgb(113, 113, 122)
+- Count badge: 9999px radius, 1px 6px padding
+  - Active: bg rgb(24, 24, 27), text white
+  - Default: bg rgb(244, 244, 245), text zinc
+- Tab font: 12px Inter, ~15px line height
+
+### Buttons (from UDS)
+- Primary: bg rgb(20, 184, 138), 8px radius, padding 8px 16px (medium) or 8px 10px (with icon)
+- Secondary: bg white, 0.5px border rgb(228, 228, 231), 8px radius, padding 6px 12px
+- Button text: 12px Inter SemiBold
+- Icon + text gap: 6–10px
+- Hover: opacity 0.8
+- Click: scale(0.95)
+
+### Menu Items
+- Divider: 1px solid rgb(228, 228, 231)
 
 ## Design Tokens (from Figma Atoms)
 
