@@ -156,3 +156,10 @@ UbiQuity is built on three equal pillars:
 
 - Default: 4px
 - Components use 4px radius consistently
+
+
+## When to Include Additional Context
+
+- Working on UI/interactions → add `#ux-decisions`
+- Starting a new feature spec → add `#research-references`
+- Touching token values → add `#design-tokens`
