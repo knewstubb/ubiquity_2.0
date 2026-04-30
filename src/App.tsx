@@ -41,6 +41,7 @@ import ReportsPage from './pages/ReportsPage';
 import ActivityPage from './pages/ActivityPage';
 import BillingReportPage from './pages/BillingReportPage';
 import PricingPage from './pages/PricingPage';
+import HeaderPlaygroundPage from './pages/HeaderPlaygroundPage';
 import SettingsPage from './pages/SettingsPage';
 import PermissionsPage from './pages/PermissionsPage';
 import AssetsPage from './pages/AssetsPage';
@@ -105,6 +106,7 @@ function App() {
                                             <Route path="/analytics/activity" element={<ActivityPage />} />
                                             <Route path="/admin/billing" element={<BillingReportPage />} />
                                             <Route path="/admin/pricing" element={<PricingPage />} />
+                                            <Route path="/admin/header-playground" element={<HeaderPlaygroundPage />} />
                                             <Route path="/settings" element={<SettingsPage />} />
                                             <Route path="/settings/permissions" element={<PermissionsPage />} />
                                             <Route path="/admin/brand" element={<SettingsPage />} />
