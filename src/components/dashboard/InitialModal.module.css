@@ -6,19 +6,14 @@
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.4);
-  animation: fadeIn var(--transition-base) ease;
 }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
 .dialog {
-  background: var(--color-bg);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0px 15px 30px -5px rgba(0, 0, 0, 0.12);
   width: 100%;
-  max-width: 560px;
-  animation: slideUp var(--transition-base) ease;
+  max-width: 520px;
   display: flex;
   flex-direction: column;
 }
@@ -26,17 +21,22 @@
 /* Title bar */
 .titleBar {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  padding: var(--space-5) var(--space-6);
-  border-bottom: 1px solid var(--color-border);
+  padding: 24px 28px 20px;
+  gap: 16px;
 }
 
 .title {
   margin: 0;
-  font-size: var(--font-lg);
-  font-weight: var(--weight-semibold);
+  font-size: 20px;
+  font-weight: 600;
   color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+.titleConnectionName {
+  color: var(--color-primary-500);
 }
 
 .closeButton {
@@ -45,37 +45,41 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: var(--radius-md);
-  color: var(--color-text-muted);
+  border: none;
+  background: none;
+  border-radius: 4px;
+  color: var(--color-zinc-400);
   cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
-.closeButton:hover { background-color: var(--color-grey-100); color: var(--color-text-primary); }
+
+.closeButton:hover {
+  background-color: var(--color-zinc-100);
+  color: var(--color-text-primary);
+}
 
 /* Body */
 .body {
-  padding: var(--space-5) var(--space-6);
+  padding: 20px 28px 24px;
+  background: var(--color-zinc-50, #FAFAFA);
+  border-top: 1px solid var(--color-zinc-200);
+  border-bottom: 1px solid var(--color-zinc-200);
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
-}
-
-.connectionName {
-  text-align: center;
-  font-size: var(--font-sm);
-  font-weight: var(--weight-semibold);
-  color: var(--color-primary-500);
+  gap: 20px;
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 8px;
 }
 
 .sectionLabel {
-  font-size: var(--font-sm);
-  font-weight: var(--weight-semibold);
+  font-size: 14px;
+  font-weight: 600;
   color: var(--color-text-primary);
 }
 
@@ -83,7 +87,7 @@
 .typeCards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-3);
+  gap: 12px;
 }
 
 .typeCard {
@@ -91,101 +95,107 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-5) var(--space-4);
-  border: 2px solid var(--color-grey-200);
-  border-radius: var(--radius-lg);
-  background: var(--color-grey-50);
+  gap: 8px;
+  padding: 20px 16px;
+  border: 1.5px solid var(--color-zinc-200);
+  border-radius: 8px;
+  background: #fff;
   cursor: pointer;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
-  color: var(--color-grey-500);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  position: relative;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+  color: var(--color-zinc-400);
 }
+
 .typeCard:hover:not(.typeCardActive) {
-  border-color: var(--color-primary-300);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  color: var(--color-primary-500);
+  border-color: var(--color-zinc-300);
+  color: var(--color-zinc-500);
 }
+
 .typeCardActive {
   border-color: var(--color-primary-500);
   color: var(--color-primary-500);
-  background: var(--color-bg);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
-.typeCardActive::after {
-  content: '✓';
-  position: absolute;
-  top: -7px;
-  right: -7px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--color-primary-500);
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
+
 .typeCardLabel {
-  font-size: var(--font-xs);
-  font-weight: var(--weight-semibold);
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   text-align: center;
-  line-height: 1.3;
 }
 
 /* Name input */
 .nameInput {
   width: 100%;
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--font-sm);
+  padding: 10px 14px;
+  border: 1px solid var(--color-zinc-200);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: var(--font-family-primary);
   color: var(--color-text-primary);
-  background: var(--color-surface);
+  background: #fff;
   outline: none;
   box-sizing: border-box;
+  transition: border-color var(--transition-fast);
 }
-.nameInput::placeholder { color: var(--color-text-muted); }
-.nameInput:focus { border-color: var(--color-primary-500); box-shadow: var(--shadow-focus); background: var(--color-bg); }
+
+.nameInput::placeholder {
+  color: var(--color-zinc-400);
+}
+
+.nameInput:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 2px rgba(20, 184, 138, 0.15);
+}
 
 /* Footer */
 .footer {
   display: flex;
   justify-content: flex-end;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-6);
-  border-top: 1px solid var(--color-border);
-  background: var(--color-surface);
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  gap: 10px;
+  padding: 16px 28px;
 }
 
 .cancelButton {
-  padding: var(--space-2) var(--space-5);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-bg);
-  font-size: var(--font-sm);
-  font-weight: var(--weight-semibold);
+  padding: 8px 20px;
+  border: 1px solid var(--color-zinc-200);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+  font-family: var(--font-family-primary);
+  font-weight: 600;
   color: var(--color-text-primary);
   cursor: pointer;
+  transition: background-color var(--transition-fast);
 }
-.cancelButton:hover { background-color: var(--color-grey-50); }
+
+.cancelButton:hover {
+  background-color: var(--color-zinc-50);
+}
 
 .nextButton {
-  padding: var(--space-2) var(--space-5);
+  padding: 8px 20px;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: 6px;
   background: var(--color-primary-500);
-  font-size: var(--font-sm);
-  font-weight: var(--weight-semibold);
-  color: var(--color-text-inverse);
+  font-size: 14px;
+  font-family: var(--font-family-primary);
+  font-weight: 600;
+  color: #fff;
   cursor: pointer;
+  transition: background-color var(--transition-fast);
 }
-.nextButton:hover:not(:disabled) { background-color: var(--color-primary-600); }
-.nextButton:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.nextButton:hover:not(:disabled) {
+  background-color: var(--color-primary-600, #0d9e76);
+}
+
+.nextButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancelButton:focus-visible,
+.nextButton:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}

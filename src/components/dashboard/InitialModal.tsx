@@ -40,7 +40,11 @@ export function InitialModal({ connection, onProceed, onClose }: InitialModalPro
       <div className={styles.dialog}>
         {/* Title bar */}
         <div className={styles.titleBar}>
-          <h2 id="initial-modal-title" className={styles.title}>New Automation</h2>
+          <h2 id="initial-modal-title" className={styles.title}>
+            New Automation using the{' '}
+            <span className={styles.titleConnectionName}>{connection.name}</span>{' '}
+            Connection
+          </h2>
           <button type="button" className={styles.closeButton} onClick={onClose} aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -49,9 +53,6 @@ export function InitialModal({ connection, onProceed, onClose }: InitialModalPro
         </div>
 
         <div className={styles.body}>
-          {/* Connection name — centred, teal */}
-          <div className={styles.connectionName}>{connection.name}</div>
-
           {/* Automation Type — card selector */}
           <div className={styles.section}>
             <span className={styles.sectionLabel}>Automation Type</span>
@@ -88,7 +89,7 @@ export function InitialModal({ connection, onProceed, onClose }: InitialModalPro
               id="automation-name-input"
               className={styles.nameInput}
               type="text"
-              placeholder="Enter automation name"
+              placeholder="Onboarding 2026"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
