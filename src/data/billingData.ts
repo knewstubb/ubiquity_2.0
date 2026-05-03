@@ -42,7 +42,7 @@ function seededUser(seed: string): string {
 function offsetDate(base: Date, offsetDays: number): string {
   const d = new Date(base);
   d.setDate(d.getDate() + offsetDays);
-  return d.toISOString().split('T')[0];
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 /** Get a date within the last ~90 days, seeded by a string */
