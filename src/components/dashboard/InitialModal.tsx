@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { DownloadSimple, UploadSimple } from '@phosphor-icons/react';
 import type { Connection } from '../../models/connection';
 import styles from './InitialModal.module.css';
 
@@ -62,10 +63,7 @@ export function InitialModal({ connection, onProceed, onClose }: InitialModalPro
                 className={`${styles.typeCard} ${direction === 'import' ? styles.typeCardActive : ''}`}
                 onClick={() => setDirection('import')}
               >
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                  <path d="M16 6v14M10 14l6 6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M6 24h20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                </svg>
+                <DownloadSimple size={32} weight="regular" />
                 <span className={styles.typeCardLabel}>IMPORTER</span>
               </button>
               <button
@@ -73,10 +71,7 @@ export function InitialModal({ connection, onProceed, onClose }: InitialModalPro
                 className={`${styles.typeCard} ${direction === 'export' ? styles.typeCardActive : ''}`}
                 onClick={() => setDirection('export')}
               >
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                  <path d="M16 20V6M10 12l6-6 6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M6 24h20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                </svg>
+                <UploadSimple size={32} weight="regular" />
                 <span className={styles.typeCardLabel}>EXPORTER</span>
               </button>
             </div>
