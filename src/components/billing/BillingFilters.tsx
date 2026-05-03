@@ -84,29 +84,8 @@ export function BillingFilters({
         </select>
       </div>
 
-      <div className={styles.group}>
-        <span className={styles.label}>Category</span>
-        <div className={styles.segmentedControl} role="radiogroup" aria-label="Category filter">
-          <button
-            type="button"
-            role="radio"
-            aria-checked={categoryFilter === 'all'}
-            className={`${styles.segment} ${categoryFilter === 'all' ? styles.segmentActive : ''}`}
-            onClick={() => onCategoryFilterChange('all')}
-          >
-            All
-          </button>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={categoryFilter === 'Integration'}
-            className={`${styles.segment} ${categoryFilter === 'Integration' ? styles.segmentActive : ''}`}
-            onClick={() => onCategoryFilterChange('Integration')}
-          >
-            Integration
-          </button>
-        </div>
-      </div>
+      {/* Category filter hidden — hardcoded to Integration for now.
+          Uncomment when additional billing categories are migrated in. */}
 
       <button type="button" className={styles.resetBtn} onClick={onReset}>
         Reset

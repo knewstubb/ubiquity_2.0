@@ -280,7 +280,7 @@ export function useBillingReport(): UseBillingReportReturn {
   const [startDate, setStartDate] = useState(cycle.start);
   const [endDate, setEndDate] = useState(cycle.end);
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
-  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('Integration');
   const [sortColumn, setSortColumn] = useState<string>('account');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
