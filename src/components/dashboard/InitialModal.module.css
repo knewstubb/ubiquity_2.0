@@ -98,7 +98,7 @@
   padding: 20px 16px;
   border: 1.5px solid var(--color-zinc-200);
   border-radius: 8px;
-  background: #fff;
+  background: var(--color-zinc-100, #F4F4F5);
   cursor: pointer;
   transition: border-color var(--transition-fast), color var(--transition-fast);
   color: var(--color-zinc-400);
@@ -151,7 +151,7 @@
   font-size: 14px;
   font-family: var(--font-family-primary);
   color: var(--color-text-primary);
-  background: #fff;
+  background: var(--color-zinc-50, #FAFAFA);
   outline: none;
   box-sizing: border-box;
   transition: border-color var(--transition-fast);
