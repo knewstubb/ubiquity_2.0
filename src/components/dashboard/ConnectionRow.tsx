@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, type ReactNode } from 'react';
 import type { Connection } from '../../models/connection';
 import type { Connector } from '../../models/connector';
-import { DotsThree, PencilSimple, Trash } from '@phosphor-icons/react';
+import { DotsThree, PencilSimple, Trash, Plus } from '@phosphor-icons/react';
 import { ProtocolIcon } from '../shared/ProtocolIcon';
 import styles from './ConnectionRow.module.css';
 
@@ -81,23 +81,10 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
           {!isError && (
             <span className={styles.connectorCount}>
               {connectorCount === 0
-                ? 'No Automations'
+                ? 'No automations yet. Create one to start importing data.'
                 : `${activeCount} of ${connectorCount} Automations Active`}
             </span>
           )}
-          <button
-            type="button"
-            className={`${styles.addButton} ${isError ? styles.addButtonDisabled : ''}`}
-            disabled={isError}
-            title={isError ? 'Fix connection error before adding automations' : 'Add Automation'}
-            aria-label="Add Automation"
-            onClick={(e) => {
-              e.stopPropagation();
-              onAddConnector(connection.id);
-            }}
-          >
-            +
-          </button>
           <div className={styles.meatballWrapper} ref={menuRef}>
             <button
               type="button"
@@ -114,6 +101,20 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
             </button>
             {menuOpen && (
               <div className={styles.contextMenu} role="menu">
+                {!isError && (
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className={styles.menuItem}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMenuOpen(false);
+                      onAddConnector(connection.id);
+                    }}
+                  >
+                    <Plus size={16} weight="regular" /> Add Automation
+                  </button>
+                )}
                 <button
                   type="button"
                   role="menuitem"
@@ -151,11 +152,6 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
         className={`${styles.childrenWrapper} ${expanded ? styles.childrenWrapperExpanded : ''}`}
       >
         <div className={styles.childrenInner}>
-          {connectorCount === 0 && expanded && (
-            <div className={styles.emptyAutomations}>
-              No automations yet. Create one to start importing data.
-            </div>
-          )}
           {children && <div className={styles.children}>{children}</div>}
         </div>
       </div>

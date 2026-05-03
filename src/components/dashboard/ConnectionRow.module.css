@@ -83,12 +83,6 @@
   color: var(--color-text-muted);
   cursor: pointer;
   transition: background-color var(--transition-fast), color var(--transition-fast);
-  opacity: 0;
-}
-
-.header:hover .meatballButton,
-.meatballButton[aria-expanded="true"] {
-  opacity: 1;
 }
 
 .meatballButton:hover {
