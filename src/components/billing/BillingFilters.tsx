@@ -86,10 +86,6 @@ export function BillingFilters({
 
       {/* Category filter hidden — hardcoded to Integration for now.
           Uncomment when additional billing categories are migrated in. */}
-
-      <button type="button" className={styles.resetBtn} onClick={onReset}>
-        Reset
-      </button>
     </div>
   );
 }
