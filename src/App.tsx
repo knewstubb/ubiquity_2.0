@@ -46,6 +46,7 @@ import PermissionsPage from './pages/PermissionsPage';
 import AssetsPage from './pages/AssetsPage';
 import ActivityLogPage from './pages/ActivityLogPage';
 import UserManagementPage from './pages/UserManagementPage';
+import ComponentLibraryPage from './pages/ComponentLibraryPage';
 import { usePlatformAdmin } from './contexts/PlatformAdminContext';
 
 /** Redirects non-admin users to /dashboard */
@@ -114,6 +115,7 @@ function App() {
                                             <Route path="/admin/api" element={<SettingsPage />} />
                                             <Route path="/admin/activity" element={<ActivityLogPage />} />
                                             <Route path="/admin/users" element={<AdminRoute><UserManagementPage /></AdminRoute>} />
+                                            <Route path="/admin/components" element={<AdminRoute><ComponentLibraryPage /></AdminRoute>} />
                                           </Routes>
                                           <FeedbackWidget />
                                         </DataProvider>

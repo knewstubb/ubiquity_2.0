@@ -274,6 +274,7 @@ export function AppNavBar() {
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { setOpenDropdown(null); setShowPasswordModal(true); }}>Password</button>
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { navigate('/admin/pricing'); setOpenDropdown(null); }}>Prices</button>
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { navigate('/admin/header-playground'); setOpenDropdown(null); }}>Header Playground</button>
+                <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { navigate('/admin/components'); setOpenDropdown(null); }}>Component Library</button>
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => setOpenDropdown(null)}>Help</button>
                 <div className={styles.dropdownDivider} />
                 <button type="button" role="menuitem" className={styles.dropdownItem} onClick={() => { setOpenDropdown(null); setShowFlagsModal(true); }}>Feature Flags</button>
