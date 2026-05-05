@@ -65,7 +65,9 @@ UbiQuity is built on three equal pillars:
 
 ## Figma References
 
-- Design System (UDS): https://www.figma.com/design/X09yFfjMsaiph3v71kggQO/UDS?node-id=4-3
+- UDS Atoms: https://www.figma.com/design/X09yFfjMsaiph3v71kggQO/UDS?node-id=4-2
+- UDS Molecules: https://www.figma.com/design/X09yFfjMsaiph3v71kggQO/UDS?node-id=4-3
+- UDS Organisms: https://www.figma.com/design/X09yFfjMsaiph3v71kggQO/UDS?node-id=206-2
 - UDS Variables/Tokens: https://www.figma.com/design/X09yFfjMsaiph3v71kggQO/UDS?node-id=4-3&p=f
 - Pages: Cover, Icons, Atoms (typography, colours, shadows), Molecules (chips, split buttons, day picker, buttons, text fields, checkboxes, radio buttons, toggles, tags, toasts, nav items, icon buttons, menu items, dropdown menus, account selector, search bar, tab bar, filter bar, page title bar), Patterns, Templates
 

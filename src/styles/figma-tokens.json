@@ -1,0 +1,10 @@
+{
+  "_readme": "Drop your exported Figma variables JSON here. This file is read by the token generation script to update tokens.css. Export from Figma using Variables > Export or a plugin like 'Variables to JSON'.",
+  "_lastUpdated": null,
+  "_modes": ["light", "dark"],
+  "colors": {},
+  "spacing": {},
+  "typography": {},
+  "borderRadius": {},
+  "shadows": {}
+}
