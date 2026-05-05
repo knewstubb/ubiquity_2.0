@@ -248,7 +248,7 @@ export function ImporterWizardModal({
               <DownloadIcon />
             </div>
             <h2 id="importer-wizard-title" className={styles.sidebarConnectionName}>
-              {connection?.name ?? connectorName}
+              {connectorName}
             </h2>
             <span className={styles.sidebarLabel}>Importer</span>
           </div>
