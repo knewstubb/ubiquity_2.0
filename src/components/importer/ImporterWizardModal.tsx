@@ -250,7 +250,7 @@ export function ImporterWizardModal({
             <h2 id="importer-wizard-title" className={styles.sidebarConnectionName}>
               {connectorName}
             </h2>
-            <span className={styles.sidebarLabel}>Importer</span>
+            <span className={styles.sidebarLabel}>{connection?.name ?? ''}</span>
           </div>
           <WizardStepper
             steps={steps}
