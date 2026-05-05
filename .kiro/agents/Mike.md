@@ -1,5 +1,5 @@
 ---
-name: prototype-to-ticket
+name: Mike
 description: Examines a feature in the prototype and produces ADO Feature tickets for the development team. Reverse-engineers the prototype into user-centric Features with user stories, expected behaviours, and acceptance criteria. No technical details.
 tools: ["read", "@mcp"]
 ---
