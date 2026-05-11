@@ -1,12 +1,12 @@
 import { useState, useCallback, useMemo } from 'react';
+import { cn } from '../../lib/utils';
 import { Checkbox } from '../shared/Checkbox';
 import { DragHandle } from '../shared/DragHandle';
 import { DataPreview } from './DataPreview';
 import { getFieldsForDataType } from '../../data/fieldRegistry';
 import type { FieldDefinition } from '../../data/fieldRegistry';
 import type { WizardDraft } from '../../models/wizard';
-import type { SelectedField } from '../../models/connector';
-import styles from './FieldMappingStep.module.css';
+import type { SelectedField } from '../../models/automation';
 
 interface FieldMappingStepProps {
   draft: WizardDraft;
@@ -94,61 +94,60 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
   const hasFields = draft.selectedFields.length > 0;
 
   return (
-    <div className={styles.step} data-testid="field-mapping-step">
-      <h3 className={styles.title}>Field Mapping</h3>
-      <p className={styles.subtitle}>Select fields and drag to reorder. Selected fields appear at the top.</p>
+    <div className="flex flex-col gap-8" data-testid="field-mapping-step">
+      <h3 className="m-0 text-lg font-semibold text-primary">Field Mapping</h3>
+      <p className="-mt-5 text-sm text-tertiary-foreground">Select fields and drag to reorder. Selected fields appear at the top.</p>
 
-      <div className={styles.section}>
-
-        <div className={styles.fieldList} role="group" aria-label="Export fields">
+      <div className="flex flex-col gap-2">
+        <div className="border border-border rounded-md overflow-hidden" role="group" aria-label="Export fields">
           {/* Select all header */}
-          <div className={styles.selectAllRow}>
+          <div className="flex items-center py-2 px-3 border-b border-border bg-secondary">
             <Checkbox label="Select All" checked={allSelected} onChange={handleSelectAll} />
           </div>
 
           {/* Selected fields — draggable */}
-          {draft.selectedFields.map((field, index) => {
-            let itemClass = styles.fieldItem + ' ' + styles.fieldItemSelected;
-            if (dragIndex === index) itemClass += ` ${styles.fieldItemDragging}`;
-            if (dragOverIndex === index) itemClass += ` ${styles.fieldItemOver}`;
-            return (
-              <div
-                key={field.key}
-                className={itemClass}
-                draggable
-                onDragStart={() => handleDragStart(index)}
-                onDragOver={(e) => handleDragOver(e, index)}
-                onDrop={(e) => handleDrop(e, index)}
-                onDragEnd={handleDragEnd}
-              >
-                <DragHandle />
-                <span className={styles.orderNumber}>{index + 1}</span>
-                <Checkbox
-                  label={field.label}
-                  checked={true}
-                  onChange={() => handleToggleField({ key: field.key, label: field.label, source: field.source })}
-                />
-                <span className={styles.fieldSource}>{field.source}</span>
-              </div>
-            );
-          })}
+          {draft.selectedFields.map((field, index) => (
+            <div
+              key={field.key}
+              className={cn(
+                "flex items-center gap-2 py-2 px-3 border-b border-border last:border-b-0 transition-colors duration-150 cursor-grab bg-accent border-l-[3px] border-l-primary pl-[calc(0.75rem-3px)]",
+                "hover:bg-accent active:cursor-grabbing",
+                dragIndex === index && "opacity-50 shadow-md scale-[1.02] z-[1] relative",
+                dragOverIndex === index && "border-t-2 border-t-primary pt-[calc(0.5rem-2px)]"
+              )}
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
+            >
+              <DragHandle />
+              <span className="text-xs text-accent-foreground font-semibold min-w-5 text-center shrink-0">{index + 1}</span>
+              <Checkbox
+                label={field.label}
+                checked={true}
+                onChange={() => handleToggleField({ key: field.key, label: field.label, source: field.source })}
+              />
+              <span className="text-xs text-tertiary-foreground ml-auto py-1 px-2 bg-secondary rounded-full shrink-0">{field.source}</span>
+            </div>
+          ))}
 
           {/* Unselected fields — not draggable */}
           {unselectedFields.map((field) => (
-            <div key={field.key} className={styles.fieldItem}>
-              <div className={styles.dragPlaceholder} />
-              <span className={styles.orderPlaceholder} />
+            <div key={field.key} className="flex items-center gap-2 py-2 px-3 border-b border-border last:border-b-0 bg-background transition-colors duration-150 hover:bg-background">
+              <div className="w-4 shrink-0" />
+              <span className="min-w-5 shrink-0" />
               <Checkbox
                 label={field.label}
                 checked={false}
                 onChange={() => handleToggleField(field)}
               />
-              <span className={styles.fieldSource}>{field.source}</span>
+              <span className="text-xs text-tertiary-foreground ml-auto py-1 px-2 bg-secondary rounded-full shrink-0">{field.source}</span>
             </div>
           ))}
         </div>
 
-        {!hasFields && <span className={styles.hintError}>Select at least one field</span>}
+        {!hasFields && <span className="text-xs text-destructive">Select at least one field</span>}
       </div>
 
       <DataPreview draft={draft} />

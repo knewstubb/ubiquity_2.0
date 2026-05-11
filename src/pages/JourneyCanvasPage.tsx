@@ -13,7 +13,6 @@ import { InspectorPanel } from '../components/journey/InspectorPanel';
 import { CanvasToolbar } from '../components/journey/CanvasToolbar';
 import { ValidationSummary } from '../components/journey/ValidationSummary';
 import { ContentModal } from '../components/journey/ContentModal';
-import styles from './JourneyCanvasPage.module.css';
 
 /* ------------------------------------------------------------------ */
 /*  Undo / Redo snapshot type                                          */
@@ -249,10 +248,10 @@ function JourneyCanvasInner() {
 
   if (!journey) {
     return (
-      <div className={styles.notFound}>
-        <h2>Journey not found</h2>
-        <p>The journey you're looking for doesn't exist or has been removed.</p>
-        <Link to="/automations/journeys" className={styles.backLink}>
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-56px)] gap-2 text-muted-foreground">
+        <h2 className="text-xl font-semibold text-foreground m-0">Journey not found</h2>
+        <p className="text-sm m-0">The journey you're looking for doesn't exist or has been removed.</p>
+        <Link to="/automations/journeys" className="mt-3 text-sm font-medium text-primary no-underline hover:underline">
           ← Back to Journeys
         </Link>
       </div>
@@ -263,7 +262,7 @@ function JourneyCanvasInner() {
   const hasTrigger = journey.nodes.some((n) => n.type === 'trigger');
 
   return (
-    <div className={styles.page}>
+    <div className="flex flex-col h-[calc(100vh-56px)] overflow-hidden relative">
       {/* Toolbar */}
       <CanvasToolbar
         journeyName={journey.name}
@@ -278,7 +277,7 @@ function JourneyCanvasInner() {
 
       {/* Validation summary dropdown */}
       {showValidationSummary && (
-        <div className={styles.validationDropdown}>
+        <div className="absolute top-12 right-4 z-20 w-[360px] max-h-[400px] overflow-y-auto rounded border border-border bg-background shadow-lg">
           <ValidationSummary
             errors={validationErrors}
             onSelectNode={handleValidationSelectNode}
@@ -288,10 +287,10 @@ function JourneyCanvasInner() {
       )}
 
       {/* Main canvas area: palette + canvas + inspector */}
-      <div className={styles.canvasRow}>
+      <div className="flex flex-1 min-h-0 overflow-hidden">
         <NodePalette hasTrigger={hasTrigger} />
 
-        <div className={styles.canvasCenter}>
+        <div className="flex-1 min-w-0 relative">
           <JourneyCanvas
             journey={journey}
             onNodeSelect={handleNodeSelect}

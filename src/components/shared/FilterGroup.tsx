@@ -2,7 +2,7 @@ import type { FilterGroup as FilterGroupType, FilterRule } from '../../models/se
 import type { FieldDefinition } from '../../data/fieldRegistry';
 import { FilterRuleRow } from './FilterRuleRow';
 import { CombinatorToggle } from './CombinatorToggle';
-import styles from './FilterGroup.module.css';
+import { cn } from '../../lib/utils';
 
 interface FilterGroupProps {
   group: FilterGroupType;
@@ -72,10 +72,13 @@ export function FilterGroupComponent({
   const showRootRemove = !isRoot || group.groups.length > 0;
 
   return (
-    <div className={`${styles.group} ${isNested ? styles.nested : ''}`}>
+    <div className={cn(
+      "flex flex-col gap-0",
+      isNested && "ml-6 pl-4 border-l-2 border-accent bg-background rounded-r-sm pt-2 pb-2 pr-2"
+    )}>
       {/* Rules */}
       {group.rules.map((rule, i) => (
-        <div key={i} className={styles.ruleItem}>
+        <div key={i} className="flex flex-col gap-0">
           <FilterRuleRow
             rule={rule}
             onChange={(r) => handleRuleChange(i, r)}
@@ -86,7 +89,7 @@ export function FilterGroupComponent({
           />
           {/* Combinator between rules */}
           {i < group.rules.length - 1 && (
-            <div className={styles.combinatorRow}>
+            <div className="flex items-center py-1">
               <CombinatorToggle
                 value={group.combinator}
                 onChange={handleCombinatorChange}
@@ -99,7 +102,7 @@ export function FilterGroupComponent({
 
       {/* Combinator between rules section and nested groups */}
       {group.groups.length > 0 && group.rules.length > 0 && (
-        <div className={styles.combinatorRow}>
+        <div className="flex items-center py-1">
           <CombinatorToggle
             value={group.combinator}
             onChange={handleCombinatorChange}
@@ -110,7 +113,7 @@ export function FilterGroupComponent({
 
       {/* Nested groups */}
       {group.groups.map((childGroup, i) => (
-        <div key={`group-${i}`} className={styles.nestedGroupItem}>
+        <div key={`group-${i}`} className="flex flex-col gap-0">
           <FilterGroupComponent
             group={childGroup}
             onChange={(g) => handleChildGroupChange(i, g)}
@@ -121,7 +124,7 @@ export function FilterGroupComponent({
           />
           {/* Combinator between sibling groups */}
           {i < group.groups.length - 1 && (
-            <div className={styles.combinatorRow}>
+            <div className="flex items-center py-1">
               <CombinatorToggle
                 value={group.combinator}
                 onChange={handleCombinatorChange}
@@ -134,15 +137,23 @@ export function FilterGroupComponent({
 
       {/* Actions */}
       {!readOnly && (
-        <div className={styles.actions}>
-          <button type="button" className={styles.addBtn} onClick={handleAddRule}>
+        <div className="flex items-center gap-3 pt-2">
+          <button
+            type="button"
+            className="inline-flex items-center gap-1 px-2 py-1 text-sm font-medium text-primary bg-transparent border-none rounded-sm cursor-pointer transition-colors duration-150 hover:text-accent-hover hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handleAddRule}
+          >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M7 2V12M2 7H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
             Add filter
           </button>
           {depth < MAX_DEPTH && (
-            <button type="button" className={styles.addBtn} onClick={handleAddGroup}>
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 px-2 py-1 text-sm font-medium text-primary bg-transparent border-none rounded-sm cursor-pointer transition-colors duration-150 hover:text-accent-hover hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleAddGroup}
+            >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M7 2V12M2 7H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
@@ -154,10 +165,10 @@ export function FilterGroupComponent({
 
       {/* Remove group button (for nested groups) */}
       {onRemove && !readOnly && showRootRemove && (
-        <div className={styles.nestedGroupHeader}>
+        <div className="flex items-center justify-between py-1">
           <button
             type="button"
-            className={styles.removeGroupBtn}
+            className="flex items-center justify-center w-6 h-6 border-none bg-transparent text-tertiary-foreground rounded-sm cursor-pointer transition-colors duration-150 hover:text-destructive hover:bg-red-50"
             onClick={onRemove}
             aria-label="Remove group"
           >

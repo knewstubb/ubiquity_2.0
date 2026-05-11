@@ -1,13 +1,21 @@
-import { useState, useRef, useEffect, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import type { Connection } from '../../models/connection';
-import type { Connector } from '../../models/connector';
-import { DotsThree, PencilSimple, Trash, Plus } from '@phosphor-icons/react';
+import type { Automation } from '../../models/automation';
+import { DotsThree, PencilSimple, Trash, Plus, CaretRight } from '@phosphor-icons/react';
 import { ProtocolIcon } from '../shared/ProtocolIcon';
-import styles from './ConnectionRow.module.css';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
 
 interface ConnectionRowProps {
   connection: Connection;
-  connectors: Connector[];
+  connectors: Automation[];
   onAddConnector: (connectionId: string) => void;
   onEditConnection?: (connectionId: string) => void;
   onDeleteConnection?: (connectionId: string) => void;
@@ -16,145 +24,108 @@ interface ConnectionRowProps {
 
 export function ConnectionRow({ connection, connectors, onAddConnector, onEditConnection, onDeleteConnection, children }: ConnectionRowProps) {
   const [expanded, setExpanded] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   const connectorCount = connectors.length;
   const activeCount = connectors.filter((c) => c.status === 'active').length;
   const isError = connection.status === 'error';
 
-  useEffect(() => {
-    if (!menuOpen) return;
-    function handleClickOutside(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [menuOpen]);
-
   return (
-    <div className={`${styles.row} ${isError ? styles.rowError : ''}`}>
-      <div
-        className={styles.header}
-        role="button"
-        tabIndex={0}
-        aria-expanded={expanded}
-        onClick={() => setExpanded((prev) => !prev)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            setExpanded((prev) => !prev);
-          }
-        }}
-      >
-        <div className={styles.headerLeft}>
-          <span
-            className={`${styles.chevron} ${expanded ? styles.chevronExpanded : ''}`}
-            aria-hidden="true"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M6 4l4 4-4 4"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
+    <Collapsible open={expanded} onOpenChange={setExpanded}>
+      <div className="border border-border rounded-lg p-4 mb-6 bg-surface/50 transition-all">
+        <CollapsibleTrigger asChild>
+          <div className="flex items-center justify-between gap-3 min-h-8 cursor-pointer select-none relative focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 rounded-md">
+            {/* Left: Chevron + Connection info */}
+            <div className="flex items-center gap-2.5">
+              <span
+                className={cn(
+                  'inline-flex items-center justify-center text-tertiary-foreground shrink-0 transition-transform duration-200',
+                  expanded && 'rotate-90'
+                )}
+                aria-hidden="true"
+              >
+                <CaretRight size={16} weight="bold" />
+              </span>
 
-          <div className={styles.connectionInfo}>
-            <ProtocolIcon protocol={connection.protocol} size={20} className={isError ? styles.iconError : ''} />
-            <span className={styles.name}>{connection.name}</span>
-          </div>
-        </div>
+              <div className="flex items-center gap-2">
+                <ProtocolIcon protocol={connection.protocol} size={20} error={isError} />
+                <span className="text-[14px] font-medium text-muted-foreground">{connection.protocol === 'S3' ? 'AWS S3' : connection.protocol}:</span>
+                <span className={cn('text-[16px] font-semibold text-foreground', isError && 'text-destructive')}>{connection.name}</span>
+              </div>
+            </div>
 
-        {isError && (
-          <span className={styles.errorMessage}>
-            Connection Error. <em>Automations Cannot Run</em>
-          </span>
-        )}
+            {/* Centre: Status text */}
+            {isError ? (
+              <span className="absolute left-1/2 -translate-x-1/2 text-sm text-destructive">
+                Connection Error. <em>Automations Cannot Run</em>
+              </span>
+            ) : (
+              <span className="absolute left-1/2 -translate-x-1/2 text-sm text-muted-foreground">
+                {connectorCount === 0
+                  ? 'No automations yet. Create one to start importing data.'
+                  : `${activeCount} of ${connectorCount} Automations Active`}
+              </span>
+            )}
 
-        <div className={styles.meta}>
-          {!isError && (
-            <span className={styles.connectorCount}>
-              {connectorCount === 0
-                ? 'No automations yet. Create one to start importing data.'
-                : `${activeCount} of ${connectorCount} Automations Active`}
-            </span>
-          )}
-          <div className={styles.meatballWrapper} ref={menuRef}>
-            <button
-              type="button"
-              className={styles.meatballButton}
-              aria-label="Connection actions"
-              aria-haspopup="true"
-              aria-expanded={menuOpen}
-              onClick={(e) => {
-                e.stopPropagation();
-                setMenuOpen((prev) => !prev);
-              }}
-            >
-              <DotsThree size={20} weight="bold" />
-            </button>
-            {menuOpen && (
-              <div className={styles.contextMenu} role="menu">
-                {!isError && (
+            {/* Right: Actions menu */}
+            <div className="flex items-center">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
                   <button
                     type="button"
-                    role="menuitem"
-                    className={styles.menuItem}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setMenuOpen(false);
-                      onAddConnector(connection.id);
-                    }}
+                    className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-secondary transition-colors"
+                    aria-label="Connection actions"
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    <Plus size={16} weight="regular" /> Add Automation
+                    <DotsThree size={20} weight="bold" />
                   </button>
-                )}
-                <button
-                  type="button"
-                  role="menuitem"
-                  className={styles.menuItem}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setMenuOpen(false);
-                    onEditConnection?.(connection.id);
-                  }}
-                >
-                  <PencilSimple size={16} weight="regular" /> Edit Connection
-                </button>
-                <div className={styles.menuDivider} />
-                <button
-                  type="button"
-                  role="menuitem"
-                  className={`${styles.menuItem} ${styles.menuItemDestructive}`}
-                  disabled={connectorCount > 0}
-                  title={connectorCount > 0 ? 'Remove all Automations before deleting connection' : undefined}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setMenuOpen(false);
-                    onDeleteConnection?.(connection.id);
-                  }}
-                >
-                  <Trash size={16} weight="regular" /> Delete Connection
-                </button>
-              </div>
-            )}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[220px] p-1.5">
+                  {!isError && (
+                    <DropdownMenuItem
+                      className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md"
+                      onSelect={() => onAddConnector(connection.id)}
+                    >
+                      <Plus size={16} weight="regular" /> Add Automation
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem
+                    className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md"
+                    onSelect={() => onEditConnection?.(connection.id)}
+                  >
+                    <PencilSimple size={16} weight="regular" /> Edit Connection
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md text-destructive focus:text-destructive focus:bg-destructive/5"
+                    disabled={connectorCount > 0}
+                    title={connectorCount > 0 ? 'Remove all Automations before deleting connection' : undefined}
+                    onSelect={() => onDeleteConnection?.(connection.id)}
+                  >
+                    <Trash size={16} weight="regular" /> Delete Connection
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
-        </div>
-      </div>
+        </CollapsibleTrigger>
 
-      <div
-        className={`${styles.childrenWrapper} ${expanded ? styles.childrenWrapperExpanded : ''}`}
-      >
-        <div className={styles.childrenInner}>
-          {children && <div className={styles.children}>{children}</div>}
-        </div>
+        <CollapsibleContent forceMount className={cn(expanded ? "overflow-visible" : "overflow-hidden")}>
+          <div
+            className={cn(
+              'grid transition-[grid-template-rows] duration-300',
+              expanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+            )}
+          >
+            <div className="min-h-0 overflow-hidden">
+              {children && (
+                <div className="pt-4 pb-1 px-1 -mx-1 flex flex-col gap-3">
+                  {children}
+                </div>
+              )}
+            </div>
+          </div>
+        </CollapsibleContent>
       </div>
-    </div>
+    </Collapsible>
   );
 }

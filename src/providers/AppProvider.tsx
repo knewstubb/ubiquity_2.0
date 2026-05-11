@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { ToastProvider } from '../components/shared/Toast';
 import { DataLayerProvider } from './DataLayerProvider';
 import { ConnectionsProvider } from '../contexts/ConnectionsContext';
-import { ConnectorsProvider } from '../contexts/ConnectorsContext';
+import { AutomationsProvider } from '../contexts/AutomationsContext';
 import { DataProvider } from '../contexts/DataContext';
 
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -10,11 +10,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <ToastProvider>
       <DataLayerProvider>
         <ConnectionsProvider>
-          <ConnectorsProvider>
+          <AutomationsProvider>
             <DataProvider>
               {children}
             </DataProvider>
-          </ConnectorsProvider>
+          </AutomationsProvider>
         </ConnectionsProvider>
       </DataLayerProvider>
     </ToastProvider>

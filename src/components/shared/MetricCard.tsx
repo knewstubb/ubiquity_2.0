@@ -1,5 +1,3 @@
-import styles from './MetricCard.module.css';
-
 interface MetricCardProps {
   label: string;
   value: string | number;
@@ -8,10 +6,10 @@ interface MetricCardProps {
 
 export function MetricCard({ label, value, subtitle }: MetricCardProps) {
   return (
-    <div className={styles.card}>
-      <p className={styles.label}>{label}</p>
-      <p className={styles.value}>{value}</p>
-      {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+    <div className="bg-background border border-border rounded-md shadow-sm px-6 py-5 flex flex-col gap-1">
+      <p className="text-sm font-medium text-tertiary-foreground m-0">{label}</p>
+      <p className="text-2xl font-semibold text-muted-foreground m-0">{value}</p>
+      {subtitle && <p className="text-xs text-tertiary-foreground m-0">{subtitle}</p>}
     </div>
   );
 }

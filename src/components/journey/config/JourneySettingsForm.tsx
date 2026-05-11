@@ -3,7 +3,6 @@ import { useJourneys } from '../../../contexts/JourneysContext';
 import { segments } from '../../../data/segments';
 import type { JourneySettings, ReEntryRule } from '../../../models/journey';
 import type { CampaignStatus, JourneyType } from '../../../models/campaign';
-import styles from './configStyles.module.css';
 
 export interface JourneySettingsFormProps {
   journeyId: string;
@@ -54,14 +53,14 @@ export function JourneySettingsForm({ journeyId }: JourneySettingsFormProps) {
   return (
     <div>
       {/* Name */}
-      <div className={styles.formGroup}>
-        <label className={styles.label} htmlFor="journey-name">
+      <div className="flex flex-col gap-1 mb-4 last:mb-0">
+        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="journey-name">
           Name
         </label>
         <input
           id="journey-name"
           type="text"
-          className={styles.input}
+          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15"
           value={settings.name}
           onChange={(e) => handleSettingsChange({ name: e.target.value })}
           placeholder="Journey name…"
@@ -69,13 +68,13 @@ export function JourneySettingsForm({ journeyId }: JourneySettingsFormProps) {
       </div>
 
       {/* Description */}
-      <div className={styles.formGroup}>
-        <label className={styles.label} htmlFor="journey-description">
+      <div className="flex flex-col gap-1 mb-4 last:mb-0">
+        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="journey-description">
           Description
         </label>
         <textarea
           id="journey-description"
-          className={styles.textarea}
+          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 resize-y min-h-[72px]"
           value={settings.description}
           onChange={(e) => handleSettingsChange({ description: e.target.value })}
           placeholder="Describe this journey…"
@@ -83,13 +82,13 @@ export function JourneySettingsForm({ journeyId }: JourneySettingsFormProps) {
       </div>
 
       {/* Journey Type */}
-      <div className={styles.formGroup}>
-        <label className={styles.label} htmlFor="journey-type">
+      <div className="flex flex-col gap-1 mb-4 last:mb-0">
+        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="journey-type">
           Journey Type
         </label>
         <select
           id="journey-type"
-          className={styles.select}
+          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20d%3D%22M3%204.5L6%207.5L9%204.5%22%20fill%3D%22none%22%20stroke%3D%22%2371717A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7 cursor-pointer"
           value={settings.journeyType}
           onChange={(e) =>
             handleSettingsChange({ journeyType: e.target.value as JourneyType })
@@ -104,13 +103,13 @@ export function JourneySettingsForm({ journeyId }: JourneySettingsFormProps) {
       </div>
 
       {/* Entry Criteria — Segment Picker */}
-      <div className={styles.formGroup}>
-        <label className={styles.label} htmlFor="entry-segment">
+      <div className="flex flex-col gap-1 mb-4 last:mb-0">
+        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="entry-segment">
           Entry Segment
         </label>
         <select
           id="entry-segment"
-          className={styles.select}
+          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20d%3D%22M3%204.5L6%207.5L9%204.5%22%20fill%3D%22none%22%20stroke%3D%22%2371717A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7 cursor-pointer"
           value={settings.entryCriteria.segmentId}
           onChange={(e) =>
             handleSettingsChange({
@@ -125,19 +124,19 @@ export function JourneySettingsForm({ journeyId }: JourneySettingsFormProps) {
             </option>
           ))}
         </select>
-        <span className={styles.hint}>
+        <span className="text-xs text-muted-foreground leading-tight">
           Contacts matching this segment are eligible to enter the journey.
         </span>
       </div>
 
       {/* Re-entry Rule */}
-      <div className={styles.formGroup}>
-        <label className={styles.label} htmlFor="reentry-rule">
+      <div className="flex flex-col gap-1 mb-4 last:mb-0">
+        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="reentry-rule">
           Re-entry Rule
         </label>
         <select
           id="reentry-rule"
-          className={styles.select}
+          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20d%3D%22M3%204.5L6%207.5L9%204.5%22%20fill%3D%22none%22%20stroke%3D%22%2371717A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7 cursor-pointer"
           value={settings.reEntryRule}
           onChange={(e) =>
             handleSettingsChange({ reEntryRule: e.target.value as ReEntryRule })
@@ -152,13 +151,13 @@ export function JourneySettingsForm({ journeyId }: JourneySettingsFormProps) {
       </div>
 
       {/* Status */}
-      <div className={styles.formGroup}>
-        <label className={styles.label} htmlFor="journey-status">
+      <div className="flex flex-col gap-1 mb-4 last:mb-0">
+        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="journey-status">
           Status
         </label>
         <select
           id="journey-status"
-          className={styles.select}
+          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20d%3D%22M3%204.5L6%207.5L9%204.5%22%20fill%3D%22none%22%20stroke%3D%22%2371717A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7 cursor-pointer"
           value={settings.status}
           onChange={(e) =>
             handleSettingsChange({ status: e.target.value as CampaignStatus })
@@ -170,7 +169,7 @@ export function JourneySettingsForm({ journeyId }: JourneySettingsFormProps) {
             </option>
           ))}
         </select>
-        <span className={styles.hint}>
+        <span className="text-xs text-muted-foreground leading-tight">
           Changing status updates the badge in the canvas header.
         </span>
       </div>

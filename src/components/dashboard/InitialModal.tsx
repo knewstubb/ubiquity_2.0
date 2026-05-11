@@ -1,7 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { DownloadSimple, UploadSimple } from '@phosphor-icons/react';
 import type { Connection } from '../../models/connection';
-import styles from './InitialModal.module.css';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { CardSelector } from '@/components/composed/card-selector';
+import { ModalHeader } from '@/components/composed/modal-header';
+import { ModalFooter } from '@/components/composed/modal-footer';
 
 interface InitialModalProps {
   connection: Connection;
@@ -10,93 +13,43 @@ interface InitialModalProps {
 }
 
 export function InitialModal({ connection, onProceed, onClose }: InitialModalProps) {
-  const [name, setName] = useState('');
   const [direction, setDirection] = useState<'import' | 'export' | null>(null);
 
-  const canProceed = direction !== null && name.trim().length > 0;
-
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    },
-    [onClose],
-  );
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
-
-  function handleBackdropClick(e: React.MouseEvent) {
-    if (e.target === e.currentTarget) onClose();
-  }
+  const canProceed = direction !== null;
 
   function handleProceed() {
-    if (canProceed) onProceed(name.trim(), direction!);
+    if (canProceed) onProceed('', direction!);
   }
 
   return (
-    <div className={styles.backdrop} onClick={handleBackdropClick}
-      role="dialog" aria-modal="true" aria-labelledby="initial-modal-title">
-      <div className={styles.dialog}>
-        {/* Title bar */}
-        <div className={styles.titleBar}>
-          <h2 id="initial-modal-title" className={styles.title}>
-            New Automation using the{' '}
-            <span className={styles.titleConnectionName}>{connection.name}</span>{' '}
-            Connection
-          </h2>
-          <button type="button" className={styles.closeButton} onClick={onClose} aria-label="Close">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </button>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent className="max-w-[520px] p-0 gap-0">
+        <DialogTitle className="sr-only">Select Automation Type</DialogTitle>
+        <DialogDescription className="sr-only">Choose whether to import or export data</DialogDescription>
+        <ModalHeader title="Select Automation Type" onClose={onClose} />
 
-        <div className={styles.body}>
-          {/* Automation Type — card selector */}
-          <div className={styles.section}>
-            <span className={styles.sectionLabel}>Automation Type</span>
-            <div className={styles.typeCards}>
-              <button
-                type="button"
-                className={`${styles.typeCard} ${direction === 'import' ? styles.typeCardActive : ''}`}
-                onClick={() => setDirection('import')}
-              >
-                <DownloadSimple size={32} weight="regular" />
-                <span className={styles.typeCardLabel}>IMPORTER</span>
-              </button>
-              <button
-                type="button"
-                className={`${styles.typeCard} ${direction === 'export' ? styles.typeCardActive : ''}`}
-                onClick={() => setDirection('export')}
-              >
-                <UploadSimple size={32} weight="regular" />
-                <span className={styles.typeCardLabel}>EXPORTER</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Automation Name */}
-          <div className={styles.section}>
-            <label className={styles.sectionLabel} htmlFor="automation-name-input">Automation Name</label>
-            <input
-              id="automation-name-input"
-              className={styles.nameInput}
-              type="text"
-              placeholder="Onboarding 2026"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+        <div className="px-6 py-5">
+          <div className="grid grid-cols-2 gap-3">
+            <CardSelector
+              icon={<DownloadSimple size={24} weight="regular" />}
+              label="Importer"
+              selected={direction === 'import'}
+              onClick={() => setDirection('import')}
+            />
+            <CardSelector
+              icon={<UploadSimple size={24} weight="regular" />}
+              label="Exporter"
+              selected={direction === 'export'}
+              onClick={() => setDirection('export')}
             />
           </div>
         </div>
 
-        {/* Footer */}
-        <div className={styles.footer}>
-          <button type="button" className={styles.cancelButton} onClick={onClose}>Cancel</button>
-          <button type="button" className={styles.nextButton} disabled={!canProceed} onClick={handleProceed}>Next</button>
-        </div>
-      </div>
-    </div>
+        <ModalFooter
+          primaryAction={{ label: 'Next', onClick: handleProceed, disabled: !canProceed }}
+          secondaryAction={{ label: 'Cancel', onClick: onClose, variant: 'ghost' }}
+        />
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,365 +1,291 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react'
+import { NavLink, Outlet, useParams, useLocation, Link } from 'react-router-dom'
+import { CaretRight, CaretDown } from '@phosphor-icons/react'
+import { componentRegistry } from '../data/componentRegistry'
+import type { ComponentCategory, PropDefinition } from '../data/componentRegistry'
+import { cn } from '../lib/utils'
+import { useControlValues } from '../lib/useControlValues'
+import { ControlsPanel } from '../components/component-library/ControlsPanel'
 import {
-  Plus, X, DownloadSimple, UploadSimple, DotsThree, GearSix,
-  PencilSimple, Trash, CaretRight, CaretLeft, CaretDown,
-  MagnifyingGlass, CalendarBlank, FunnelSimple, Check, CheckCircle,
-  XCircle, Clock, ArrowsClockwise, ListBullets, ClockCounterClockwise,
-  Play, Pause, GlobeSimple,
-} from '@phosphor-icons/react';
-import { Toggle } from '../components/shared/Toggle';
-import { DeleteConfirmModal } from '../components/dashboard/DeleteConfirmModal';
-import { InitialModal } from '../components/dashboard/InitialModal';
-import type { Connection } from '../models/connection';
-import styles from './ComponentLibraryPage.module.css';
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '../components/ui/breadcrumb'
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from '../components/ui/sidebar'
 
-const SECTIONS = [
-  { id: 'typography', label: 'Typography' },
-  { id: 'colours', label: 'Colours' },
-  { id: 'buttons', label: 'Buttons' },
-  { id: 'card-selectors', label: 'Card Selectors' },
+interface CategoryDef {
+  id: ComponentCategory
+  label: string
+}
+
+const CATEGORIES: CategoryDef[] = [
+  { id: 'tokens', label: 'Tokens' },
   { id: 'inputs', label: 'Inputs' },
-  { id: 'toggle', label: 'Toggle' },
-  { id: 'chips-tags', label: 'Chips & Tags' },
-  { id: 'modals', label: 'Modals' },
-  { id: 'icons', label: 'Icons' },
-  { id: 'shadows', label: 'Shadows' },
-];
+  { id: 'display', label: 'Display' },
+  { id: 'feedback', label: 'Feedback' },
+  { id: 'navigation', label: 'Navigation' },
+  { id: 'composed', label: 'Composed' },
+]
 
-const MOCK_CONNECTION: Connection = {
-  id: 'conn-demo',
-  name: 'Demo SFTP',
-  protocol: 'SFTP',
-  status: 'connected',
-  basePath: '/uploads',
-  accountId: 'acc-master',
-  config: { host: 'sftp.example.com', port: 22, path: '/data' },
-};
+function ComponentBreadcrumbs() {
+  const location = useLocation()
+  const path = location.pathname.replace('/admin/components', '').replace(/^\//, '')
+  const segments = path.split('/').filter(Boolean)
+
+  // No breadcrumbs on the root
+  if (segments.length === 0) return null
+
+  const category = segments[0]
+  const slug = segments[1]
+
+  // Find category label
+  const categoryMeta = CATEGORIES.find((c) => c.id === category)
+  const categoryLabel = categoryMeta?.label ?? category.charAt(0).toUpperCase() + category.slice(1)
+
+  // Find component name from slug
+  let componentName: string | undefined
+  if (slug) {
+    const entry = componentRegistry.find((c) => c.slug === slug)
+    componentName = entry?.name ?? slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ')
+  }
+
+  return (
+    <Breadcrumb className="mb-4">
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link to="/admin/components">Components</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          {slug ? (
+            <BreadcrumbLink asChild>
+              <Link to={`/admin/components/${category}`}>{categoryLabel}</Link>
+            </BreadcrumbLink>
+          ) : (
+            <BreadcrumbPage>{categoryLabel}</BreadcrumbPage>
+          )}
+        </BreadcrumbItem>
+        {componentName && (
+          <>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{componentName}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </>
+        )}
+      </BreadcrumbList>
+    </Breadcrumb>
+  )
+}
+
+function SidebarNav() {
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(
+    () => Object.fromEntries(CATEGORIES.map((cat) => [cat.id, true]))
+  )
+
+  function toggleGroup(id: string) {
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  return (
+    <SidebarContent>
+      {CATEGORIES.map((cat) => {
+        const items = componentRegistry.filter((c) => c.category === cat.id)
+        if (items.length === 0) return null
+        const isExpanded = expanded[cat.id] ?? true
+
+        return (
+          <SidebarGroup key={cat.id}>
+            <SidebarGroupLabel
+              className="cursor-pointer select-none gap-1 uppercase tracking-wide text-[11px]"
+              onClick={() => toggleGroup(cat.id)}
+            >
+              {isExpanded ? (
+                <CaretDown size={12} weight="bold" />
+              ) : (
+                <CaretRight size={12} weight="bold" />
+              )}
+              {cat.label}
+            </SidebarGroupLabel>
+            {isExpanded && (
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {items.map((item) => {
+                    const to =
+                      cat.id === 'tokens'
+                        ? `/admin/components/tokens/${item.slug}`
+                        : `/admin/components/${cat.id}/${item.slug}`
+
+                    return (
+                      <SidebarMenuItem key={item.slug}>
+                        <SidebarMenuButton asChild className="h-auto p-0 hover:bg-transparent data-[active=true]:bg-transparent">
+                          <NavLink
+                            to={to}
+                            className={({ isActive }) =>
+                              cn(
+                                "block py-1.5 px-4 pl-6 text-sm text-muted-foreground transition-all duration-150",
+                                "hover:text-primary",
+                                isActive && "text-primary font-medium"
+                              )
+                            }
+                          >
+                            {item.name}
+                          </NavLink>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    )
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            )}
+          </SidebarGroup>
+        )
+      })}
+    </SidebarContent>
+  )
+}
 
 export default function ComponentLibraryPage() {
-  const [toggleOn, setToggleOn] = useState(true);
-  const [toggleOff, setToggleOff] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showInitialModal, setShowInitialModal] = useState(false);
-
   return (
-    <div className={styles.page}>
-      {/* Sidebar */}
-      <aside className={styles.sidebar}>
-        <div className={styles.sidebarTitle}>Components</div>
-        {SECTIONS.map((s) => (
-          <a key={s.id} href={`#${s.id}`} className={styles.sidebarLink}>
-            {s.label}
-          </a>
-        ))}
-      </aside>
+    <SidebarProvider
+      defaultOpen={true}
+      style={{ "--sidebar-width": "220px" } as React.CSSProperties}
+    >
+      <div className="flex min-h-[calc(100vh-56px)] w-full bg-background">
+        <Sidebar collapsible="none" className="fixed top-[56px] left-0 h-[calc(100vh-56px)] border-r border-border bg-secondary z-10">
+          <SidebarNav />
+        </Sidebar>
 
-      {/* Main Content */}
-      <main className={styles.content}>
-        <h1 className={styles.pageTitle}>Component Library</h1>
-        <p className={styles.pageSubtitle}>
-          Visual reference of all shared components in their various states.
+        <main className="ml-[220px] flex-1 flex justify-center">
+          <div className="w-full max-w-[1440px] py-8 px-10">
+            <ComponentBreadcrumbs />
+            <Suspense fallback={<div className="p-10 text-sm text-tertiary-foreground">Loading…</div>}>
+              <Outlet />
+            </Suspense>
+          </div>
+        </main>
+      </div>
+    </SidebarProvider>
+  )
+}
+
+/** Renders the demo for a specific component based on URL params */
+const EMPTY_CONTROLS: PropDefinition[] = []
+
+export function ComponentDemoView() {
+  const { category, slug } = useParams<{ category: string; slug: string }>()
+  const entry = componentRegistry.find(
+    (c) => c.category === category && c.slug === slug
+  )
+
+  // Hook called unconditionally (React rules of hooks)
+  const { values, setValue, resetAll, isDirty } = useControlValues(entry?.propControls ?? EMPTY_CONTROLS)
+
+  if (!entry) {
+    return (
+      <div className="py-15 px-10 text-center">
+        <h2 className="text-xl font-semibold text-foreground mb-2">Component not found</h2>
+        <p className="text-sm text-muted-foreground">
+          Select a component from the sidebar to view its demo.
         </p>
+      </div>
+    )
+  }
 
-        {/* 1. Typography */}
-        <section id="typography" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Typography</h2>
-          <div className={styles.card}>
-            <TypographyRow label="Display L" size="48px" weight="700" />
-            <TypographyRow label="Display M" size="36px" weight="700" />
-            <TypographyRow label="Heading H1" size="30px" weight="600" />
-            <TypographyRow label="Heading H2" size="24px" weight="600" />
-            <TypographyRow label="Heading H3" size="20px" weight="600" />
-            <TypographyRow label="Heading H4" size="18px" weight="600" />
-            <TypographyRow label="Heading H5" size="16px" weight="600" />
-            <TypographyRow label="Body L" size="18px" weight="400" />
-            <TypographyRow label="Body Base" size="16px" weight="400" />
-            <TypographyRow label="Body S" size="14px" weight="400" />
-            <TypographyRow label="Body XS" size="12px" weight="400" />
-            <TypographyRow label="Body XXS" size="10px" weight="500" />
-            <TypographyRow label="Button Standard" size="16px" weight="600" />
-            <TypographyRow label="Button Small" size="14px" weight="700" />
+  const DemoComponent = entry.component
+  const hasPropControls = entry.propControls && entry.propControls.length > 0
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2 pb-4 border-b border-border">
+        <h1 className="text-2xl font-semibold text-foreground m-0">{entry.name}</h1>
+        <p className="text-sm text-muted-foreground m-0">{entry.description}</p>
+        <span className="inline-flex self-start px-2 py-0.5 rounded-full text-[11px] font-medium bg-secondary text-tertiary-foreground border border-border capitalize">{entry.category}</span>
+      </div>
+
+      {/* Preview + Controls at top (side by side) */}
+      {hasPropControls && (
+        <div className="grid grid-cols-[1fr_280px] gap-4 items-start">
+          {/* Live Preview */}
+          <div className="flex items-center justify-center p-6 border border-border rounded-lg bg-background min-h-[120px]">
+            <Suspense fallback={<div className="text-sm text-tertiary-foreground">Loading…</div>}>
+              <DemoComponent {...values} />
+            </Suspense>
           </div>
-        </section>
-
-        {/* 2. Colours */}
-        <section id="colours" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Colours</h2>
-          <div className={styles.card}>
-            <div className={styles.colourGrid}>
-              <ColourSwatch name="Primary (Teal)" variable="--color-mint-500" hex="#14B88A" />
-              <ColourSwatch name="Warning (Amber)" variable="--color-amber-500" hex="#F59E0B" />
-              <ColourSwatch name="Error (Red)" variable="--color-red-500" hex="#EF4444" />
-              <ColourSwatch name="Info (Sky)" variable="--color-sky-400" hex="#38BDF8" />
-              <ColourSwatch name="Text Primary" variable="--color-zinc-800" hex="#27272A" />
-              <ColourSwatch name="Text Secondary" variable="--color-zinc-600" hex="#52525B" />
-              <ColourSwatch name="Text Muted" variable="--color-zinc-400" hex="#A1A1AA" />
-              <ColourSwatch name="Surface" variable="--color-zinc-100" hex="#F4F4F5" />
-              <ColourSwatch name="Background" variable="--color-zinc-50" hex="#FAFAFA" />
-              <ColourSwatch name="Border" variable="--color-zinc-200" hex="#E4E4E7" />
-            </div>
-          </div>
-        </section>
-
-        {/* 3. Buttons */}
-        <section id="buttons" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Buttons</h2>
-          <div className={styles.card}>
-            <div className={styles.buttonRow}>
-              <span className={styles.buttonLabel}>Primary</span>
-              <button type="button" className={styles.btnPrimary}>Default</button>
-              <button type="button" className={styles.btnPrimary} disabled>Disabled</button>
-            </div>
-            <div className={styles.buttonRow}>
-              <span className={styles.buttonLabel}>Secondary</span>
-              <button type="button" className={styles.btnSecondary}>Default</button>
-              <button type="button" className={styles.btnSecondary} disabled>Disabled</button>
-            </div>
-            <div className={styles.buttonRow}>
-              <span className={styles.buttonLabel}>Danger</span>
-              <button type="button" className={styles.btnDanger}>Delete</button>
-            </div>
-            <div className={styles.buttonRow}>
-              <span className={styles.buttonLabel}>Icon Button</span>
-              <button type="button" className={styles.btnIcon}><Plus size={16} /></button>
-              <button type="button" className={styles.btnIcon}><PencilSimple size={16} /></button>
-              <button type="button" className={styles.btnIcon}><Trash size={16} /></button>
-              <button type="button" className={styles.btnIcon}><DotsThree size={16} /></button>
-            </div>
-            <div className={styles.buttonRow}>
-              <span className={styles.buttonLabel}>Text / Link</span>
-              <button type="button" className={styles.btnText}>View details</button>
-              <button type="button" className={styles.btnText}>Cancel</button>
-            </div>
-          </div>
-        </section>
-
-        {/* 4. Card Selectors */}
-        <section id="card-selectors" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Card Selectors</h2>
-          <div className={styles.card}>
-            <div className={styles.cardLabel}>Automation Type Selector</div>
-            <div className={styles.cardSelectorGrid}>
-              <div className={styles.selectorCard}>
-                <DownloadSimple size={32} />
-                <span className={styles.selectorLabel}>Default</span>
-              </div>
-              <div className={`${styles.selectorCard} ${styles.selectorCardSelected}`}>
-                <span className={styles.selectorBadge}><Check size={12} weight="bold" /></span>
-                <UploadSimple size={32} />
-                <span className={styles.selectorLabel}>Selected</span>
-              </div>
-              <div className={styles.selectorCard}>
-                <DownloadSimple size={32} />
-                <span className={styles.selectorLabel}>Hover (zinc-200 border)</span>
-              </div>
-              <div className={`${styles.selectorCard} ${styles.selectorCardDisabled}`}>
-                <UploadSimple size={32} />
-                <span className={styles.selectorLabel}>Disabled</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 5. Inputs */}
-        <section id="inputs" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Inputs</h2>
-          <div className={styles.card}>
-            <div className={styles.inputsGrid}>
-              <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Text Input (default)</label>
-                <input type="text" className={styles.input} placeholder="Enter value…" />
-              </div>
-              <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Text Input (error)</label>
-                <input type="text" className={`${styles.input} ${styles.inputError}`} defaultValue="Invalid" />
-                <span className={styles.inputErrorText}>This field is required</span>
-              </div>
-              <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Text Input (disabled)</label>
-                <input type="text" className={styles.input} disabled placeholder="Disabled" />
-              </div>
-              <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Select Dropdown</label>
-                <select className={styles.select}>
-                  <option>Option 1</option>
-                  <option>Option 2</option>
-                  <option>Option 3</option>
-                </select>
-              </div>
-              <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Date Input</label>
-                <input type="date" className={styles.input} />
-              </div>
-              <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Textarea</label>
-                <textarea className={styles.textarea} placeholder="Enter description…" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 6. Toggle */}
-        <section id="toggle" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Toggle</h2>
-          <div className={styles.card}>
-            <div className={styles.toggleRow}>
-              <div className={styles.toggleItem}>
-                <Toggle checked={toggleOn} onChange={setToggleOn} label="Active" />
-                <span className={styles.toggleItemLabel}>On</span>
-              </div>
-              <div className={styles.toggleItem}>
-                <Toggle checked={toggleOff} onChange={setToggleOff} label="Paused" />
-                <span className={styles.toggleItemLabel}>Off</span>
-              </div>
-              <div className={styles.toggleItem}>
-                <Toggle checked={true} onChange={() => {}} label="Locked" disabled />
-                <span className={styles.toggleItemLabel}>Disabled</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 7. Chips & Tags */}
-        <section id="chips-tags" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Chips & Tags</h2>
-          <div className={styles.card}>
-            <div className={styles.cardLabel}>Chips</div>
-            <div className={styles.chipRow}>
-              <span className={styles.chipSelected}>Selected <X size={12} /></span>
-              <span className={styles.chipDefault}>Default</span>
-              <span className={styles.chipDefault}>Another Chip</span>
-            </div>
-            <div className={styles.cardLabel}>Tags</div>
-            <div className={styles.chipRow}>
-              <span className={`${styles.tag} ${styles.tagGreen}`}>Active</span>
-              <span className={`${styles.tag} ${styles.tagGrey}`}>Draft</span>
-              <span className={`${styles.tag} ${styles.tagRed}`}>Error</span>
-              <span className={`${styles.tag} ${styles.tagBlue}`}>Info</span>
-              <span className={`${styles.tag} ${styles.tagAmber}`}>Warning</span>
-            </div>
-          </div>
-        </section>
-
-        {/* 8. Modals */}
-        <section id="modals" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Modals</h2>
-          <div className={styles.card}>
-            <div className={styles.buttonRow}>
-              <button type="button" className={styles.btnDanger} onClick={() => setShowDeleteModal(true)}>
-                Open Delete Confirm
-              </button>
-              <button type="button" className={styles.btnPrimary} onClick={() => setShowInitialModal(true)}>
-                Open Card Selector
-              </button>
-            </div>
-            <p className={styles.modalDescription}>
-              Modal patterns: overlay with backdrop click to close, Escape key to close,
-              focus trap within dialog, aria-modal and role="dialog" for accessibility.
-            </p>
-          </div>
-        </section>
-
-        {/* 9. Icons */}
-        <section id="icons" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Icons</h2>
-          <div className={styles.card}>
-            <div className={styles.iconGrid}>
-              <IconItem icon={<Plus size={20} />} name="Plus" />
-              <IconItem icon={<X size={20} />} name="X" />
-              <IconItem icon={<DownloadSimple size={20} />} name="DownloadSimple" />
-              <IconItem icon={<UploadSimple size={20} />} name="UploadSimple" />
-              <IconItem icon={<DotsThree size={20} />} name="DotsThree" />
-              <IconItem icon={<GearSix size={20} />} name="GearSix" />
-              <IconItem icon={<PencilSimple size={20} />} name="PencilSimple" />
-              <IconItem icon={<Trash size={20} />} name="Trash" />
-              <IconItem icon={<CaretRight size={20} />} name="CaretRight" />
-              <IconItem icon={<CaretLeft size={20} />} name="CaretLeft" />
-              <IconItem icon={<CaretDown size={20} />} name="CaretDown" />
-              <IconItem icon={<MagnifyingGlass size={20} />} name="MagnifyingGlass" />
-              <IconItem icon={<CalendarBlank size={20} />} name="CalendarBlank" />
-              <IconItem icon={<FunnelSimple size={20} />} name="FunnelSimple" />
-              <IconItem icon={<Check size={20} />} name="Check" />
-              <IconItem icon={<CheckCircle size={20} />} name="CheckCircle" />
-              <IconItem icon={<XCircle size={20} />} name="XCircle" />
-              <IconItem icon={<Clock size={20} />} name="Clock" />
-              <IconItem icon={<ArrowsClockwise size={20} />} name="ArrowsClockwise" />
-              <IconItem icon={<ListBullets size={20} />} name="ListBullets" />
-              <IconItem icon={<ClockCounterClockwise size={20} />} name="ClockCounterClockwise" />
-              <IconItem icon={<Play size={20} />} name="Play" />
-              <IconItem icon={<Pause size={20} />} name="Pause" />
-              <IconItem icon={<GlobeSimple size={20} />} name="GlobeSimple" />
-            </div>
-          </div>
-        </section>
-
-        {/* 10. Shadows */}
-        <section id="shadows" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Shadows</h2>
-          <div className={styles.card}>
-            <div className={styles.shadowGrid}>
-              <div className={styles.shadowBox} style={{ boxShadow: '0 1px 2px 0 rgba(0,0,0,0.05), 0 0 0 1px #E4E4E7' }}>
-                Shadow S
-              </div>
-              <div className={styles.shadowBox} style={{ boxShadow: '0 3px 4px -1px rgba(0,0,0,0.08), 0 0 0 1px #E4E4E7' }}>
-                Shadow M
-              </div>
-              <div className={styles.shadowBox} style={{ boxShadow: '0 7px 10px -3px rgba(0,0,0,0.08), 0 0 0 1px #E4E4E7' }}>
-                Shadow L
-              </div>
-              <div className={styles.shadowBox} style={{ boxShadow: '0 15px 20px -5px rgba(0,0,0,0.08), 0 0 0 1px #E4E4E7' }}>
-                Shadow XL
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      {/* Modals */}
-      {showDeleteModal && (
-        <DeleteConfirmModal
-          objectType="Connection"
-          objectName="Demo SFTP Connection"
-          onConfirm={() => setShowDeleteModal(false)}
-          onCancel={() => setShowDeleteModal(false)}
-        />
+          {/* Controls */}
+          <ControlsPanel
+            propControls={entry.propControls!}
+            values={values}
+            onChange={setValue}
+            onReset={resetAll}
+            isDirty={isDirty}
+            usedIn={entry.usedIn}
+          />
+        </div>
       )}
-      {showInitialModal && (
-        <InitialModal
-          connection={MOCK_CONNECTION}
-          onProceed={() => setShowInitialModal(false)}
-          onClose={() => setShowInitialModal(false)}
-        />
-      )}
+
+      {/* Full demo showcase below */}
+      <div className="bg-background p-6 overflow-visible">
+        <Suspense fallback={<div className="p-10 text-sm text-tertiary-foreground">Loading demo…</div>}>
+          <DemoComponent />
+        </Suspense>
+      </div>
     </div>
-  );
+  )
 }
 
-function TypographyRow({ label, size, weight }: { label: string; size: string; weight: string }) {
-  return (
-    <div className={styles.typeRow}>
-      <span className={styles.typeMeta}>{label} · {size} / {weight}</span>
-      <span style={{ fontSize: size, fontWeight: Number(weight), color: '#27272A' }}>
-        The quick brown fox
-      </span>
-    </div>
-  );
-}
+/** Shows a category overview listing all components in that category */
+export function CategoryOverview() {
+  const { category } = useParams<{ category: string }>()
+  const items = componentRegistry.filter((c) => c.category === category)
+  const categoryMeta = CATEGORIES.find((c) => c.id === category)
 
-function ColourSwatch({ name, variable, hex }: { name: string; variable: string; hex: string }) {
-  return (
-    <div className={styles.colourSwatch}>
-      <div className={styles.swatchBox} style={{ background: hex }} />
-      <span className={styles.swatchName}>{name}</span>
-      <span className={styles.swatchValue}>{variable} · {hex}</span>
-    </div>
-  );
-}
+  if (!categoryMeta || items.length === 0) {
+    return (
+      <div className="py-15 px-10 text-center">
+        <h2 className="text-xl font-semibold text-foreground mb-2">Category not found</h2>
+        <p className="text-sm text-muted-foreground">
+          Select a category from the sidebar.
+        </p>
+      </div>
+    )
+  }
 
-function IconItem({ icon, name }: { icon: React.ReactNode; name: string }) {
   return (
-    <div className={styles.iconItem}>
-      {icon}
-      <span className={styles.iconName}>{name}</span>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2 pb-4 border-b border-border">
+        <h1 className="text-2xl font-semibold text-foreground m-0">{categoryMeta.label}</h1>
+        <p className="text-sm text-muted-foreground m-0">
+          {items.length} component{items.length !== 1 ? 's' : ''} in this category
+        </p>
+      </div>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-3">
+        {items.map((item) => (
+          <NavLink
+            key={item.slug}
+            to={`/admin/components/${category}/${item.slug}`}
+            className="flex flex-col gap-1 p-4 border border-border rounded-md no-underline transition-all duration-150 hover:border-primary hover:bg-accent"
+          >
+            <span className="text-sm font-semibold text-foreground">{item.name}</span>
+            <span className="text-xs text-muted-foreground leading-relaxed">{item.description}</span>
+          </NavLink>
+        ))}
+      </div>
     </div>
-  );
+  )
 }

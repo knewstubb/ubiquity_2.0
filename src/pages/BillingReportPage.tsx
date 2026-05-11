@@ -7,7 +7,6 @@ import { useBillingReport } from '../components/billing/useBillingReport';
 import { usePricing } from '../contexts/PricingContext';
 import { downloadBillingCsv } from '../utils/billingCsv';
 import { getCurrentBillingCycle } from '../models/billing';
-import styles from './BillingReportPage.module.css';
 
 export default function BillingReportPage() {
   const {
@@ -44,7 +43,7 @@ export default function BillingReportPage() {
       title="Billing Report"
       subtitle="Cross-account billing data for the current period"
       action={
-        <button type="button" className={styles.downloadButton} onClick={handleDownloadCsv}>
+        <button type="button" className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground border-none rounded font-semibold text-sm cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2" onClick={handleDownloadCsv}>
           <DownloadSimple size={16} weight="bold" />
           Download CSV
         </button>

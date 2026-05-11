@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { JourneyType } from '../../models/campaign';
-import styles from './CreateJourneyDialog.module.css';
+import { cn } from '../../lib/utils';
 
 const JOURNEY_TYPES: { value: JourneyType; label: string }[] = [
   { value: 'welcome', label: 'Welcome' },
@@ -55,24 +55,28 @@ export function CreateJourneyDialog({
 
   return (
     <div
-      className={styles.backdrop}
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 animate-in fade-in duration-200"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-journey-title"
     >
-      <form className={styles.dialog} onSubmit={handleSubmit}>
-        <h2 id="create-journey-title" className={styles.title}>
+      <form className="bg-background rounded-lg shadow-xl p-6 w-full max-w-[480px] animate-in slide-in-from-bottom-2 duration-200" onSubmit={handleSubmit}>
+        <h2 id="create-journey-title" className="m-0 mb-4 text-lg font-semibold text-foreground">
           Create Journey
         </h2>
 
-        <div className={styles.field}>
-          <label className={styles.label} htmlFor="journey-name">
-            Journey Name<span className={styles.required}>*</span>
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium text-foreground" htmlFor="journey-name">
+            Journey Name<span className="text-destructive ml-0.5">*</span>
           </label>
           <input
             id="journey-name"
-            className={`${styles.input} ${showValidation && !isNameValid ? styles.inputError : ''}`}
+            className={cn(
+              "w-full px-3 py-2 border border-border rounded-md text-sm text-foreground bg-background outline-none transition-colors duration-150 box-border",
+              "focus:border-primary focus:ring-2 focus:ring-primary/15",
+              showValidation && !isNameValid && "border-destructive focus:border-destructive focus:ring-destructive/15"
+            )}
             type="text"
             value={name}
             onChange={(e) => {
@@ -85,17 +89,17 @@ export function CreateJourneyDialog({
             autoFocus
           />
           {showValidation && !isNameValid && (
-            <p className={styles.validationMessage}>Journey name is required</p>
+            <p className="mt-1 text-xs text-destructive">Journey name is required</p>
           )}
         </div>
 
-        <div className={styles.field}>
-          <label className={styles.label} htmlFor="journey-type">
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium text-foreground" htmlFor="journey-type">
             Journey Type
           </label>
           <select
             id="journey-type"
-            className={styles.select}
+            className="w-full px-3 py-2 border border-border rounded-md text-sm text-foreground bg-background outline-none transition-colors duration-150 box-border cursor-pointer appearance-auto focus:border-primary focus:ring-2 focus:ring-primary/15"
             value={type}
             onChange={(e) => setType(e.target.value as JourneyType)}
           >
@@ -107,13 +111,17 @@ export function CreateJourneyDialog({
           </select>
         </div>
 
-        <div className={styles.actions}>
-          <button type="button" className={styles.cancelButton} onClick={onClose}>
+        <div className="flex justify-end gap-3 mt-6">
+          <button
+            type="button"
+            className="px-4 py-2 border border-border rounded-md bg-transparent text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+            onClick={onClose}
+          >
             Cancel
           </button>
           <button
             type="submit"
-            className={styles.createButton}
+            className="px-4 py-2 border-none rounded-md bg-primary text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 hover:not-disabled:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!isNameValid}
           >
             Create

@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import styles from './LoginPage.module.css';
 
 export default function LoginPage() {
   const { signIn } = useAuth();
@@ -31,23 +30,27 @@ export default function LoginPage() {
   }
 
   return (
-    <div className={styles.page}>
-      <div className={styles.card}>
-        <div className={styles.logoRow}>
-          <div className={styles.logoIcon}>U</div>
-          <span className={styles.logoText}>biquity</span>
+    <div className="flex items-center justify-center min-h-screen bg-background font-sans">
+      <div className="w-full max-w-[380px] bg-background border border-border rounded-md shadow-md p-8">
+        <div className="flex items-center justify-center gap-2 mb-6">
+          <div className="w-9 h-9 rounded-sm bg-primary flex items-center justify-center text-primary-foreground text-xl font-bold leading-none">
+            U
+          </div>
+          <span className="text-xl font-bold text-foreground">biquity</span>
         </div>
 
-        <h1 className={styles.heading}>Sign in to your account</h1>
+        <h1 className="text-lg font-semibold text-foreground text-center mb-6">
+          Sign in to your account
+        </h1>
 
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="login-email">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-muted-foreground" htmlFor="login-email">
               Email
             </label>
             <input
               id="login-email"
-              className={styles.input}
+              className="h-10 px-2 border border-border-strong rounded-sm text-base font-sans text-foreground bg-background outline-none transition-colors duration-150 focus:border-primary focus:ring-2 focus:ring-primary/15"
               type="email"
               autoComplete="email"
               required
@@ -56,13 +59,13 @@ export default function LoginPage() {
             />
           </div>
 
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="login-password">
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-muted-foreground" htmlFor="login-password">
               Password
             </label>
             <input
               id="login-password"
-              className={styles.input}
+              className="h-10 px-2 border border-border-strong rounded-sm text-base font-sans text-foreground bg-background outline-none transition-colors duration-150 focus:border-primary focus:ring-2 focus:ring-primary/15"
               type="password"
               autoComplete="current-password"
               required
@@ -71,11 +74,11 @@ export default function LoginPage() {
             />
           </div>
 
-          {error && <p className={styles.error} role="alert">{error}</p>}
+          {error && <p className="text-sm text-destructive text-center m-0" role="alert">{error}</p>}
 
           <button
             type="submit"
-            className={styles.submitButton}
+            className="h-10 border-none rounded-sm bg-primary text-primary-foreground text-base font-semibold font-sans cursor-pointer transition-colors duration-150 hover:not-disabled:bg-accent-hover disabled:opacity-70 disabled:cursor-not-allowed"
             disabled={loading}
           >
             {loading ? 'Signing in…' : 'Sign In'}

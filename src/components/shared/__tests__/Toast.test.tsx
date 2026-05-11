@@ -72,7 +72,7 @@ describe('Toast', () => {
 
     await user.click(screen.getByText('Show Toast'));
     const toastEl = screen.getByText('Error toast').closest('div');
-    expect(toastEl?.className).toContain('error');
+    expect(toastEl?.className).toContain('destructive');
   });
 
   it('has an accessible status container', async () => {

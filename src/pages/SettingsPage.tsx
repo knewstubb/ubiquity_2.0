@@ -3,7 +3,6 @@ import { PageShell } from '../components/layout/PageShell';
 import { DataTable, type Column } from '../components/shared/DataTable';
 import { users } from '../data/users';
 import type { PermissionUser } from '../models/permissions';
-import styles from './pages.module.css';
 
 interface SettingsField {
   label: string;
@@ -31,9 +30,9 @@ const userColumns: Column<PermissionUser>[] = [
     key: 'name',
     header: 'Name',
     render: (u) => (
-      <div className={styles.userRow}>
-        <span className={styles.userAvatar}>{u.initials}</span>
-        <span className={styles.userName}>{u.name}</span>
+      <div className="flex items-center gap-3">
+        <span className="w-8 h-8 rounded-full bg-accent text-primary flex items-center justify-center text-xs font-semibold shrink-0">{u.initials}</span>
+        <span className="text-sm text-foreground">{u.name}</span>
       </div>
     ),
   },
@@ -44,21 +43,21 @@ const userColumns: Column<PermissionUser>[] = [
 export default function SettingsPage() {
   return (
     <PageShell title="Settings" subtitle="Workspace configuration and user management">
-      <div className={styles.section}>
-        <h2 className={styles.sectionHeading}>Workspace Configuration</h2>
-        <div className={styles.configCard}>
+      <div className="mb-6">
+        <h2 className="text-base font-semibold text-foreground mb-4">Workspace Configuration</h2>
+        <div className="bg-white border border-border rounded-md shadow-sm p-5">
           {workspaceSettings.map((field) => (
-            <div key={field.label} className={styles.configRow}>
-              <span className={styles.configLabel}>{field.label}</span>
-              <span className={styles.configValue}>{field.value}</span>
+            <div key={field.label} className="flex items-center justify-between py-3 border-b border-border last:border-b-0">
+              <span className="text-sm font-medium text-muted-foreground">{field.label}</span>
+              <span className="text-sm text-foreground">{field.value}</span>
             </div>
           ))}
         </div>
       </div>
-      <div className={styles.section}>
-        <h2 className={styles.sectionHeading}>Users &amp; Permissions</h2>
+      <div className="mb-6 last:mb-0">
+        <h2 className="text-base font-semibold text-foreground mb-4">Users &amp; Permissions</h2>
         <DataTable columns={userColumns} data={users} emptyMessage="No users found" />
-        <Link to="/settings/permissions" className={styles.managePermissionsLink}>
+        <Link to="/settings/permissions" className="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-primary no-underline transition-colors duration-150 hover:text-accent-hover">
           Manage Permissions →
         </Link>
       </div>

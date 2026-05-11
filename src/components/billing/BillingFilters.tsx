@@ -2,7 +2,6 @@ import { accounts } from '../../data/accounts';
 import type { Account } from '../../models/account';
 import type { CategoryFilter } from './useBillingReport';
 import { DateRangePicker } from './DateRangePicker';
-import styles from './BillingFilters.module.css';
 
 export interface BillingFiltersProps {
   startDate: string;
@@ -56,9 +55,9 @@ export function BillingFilters({
   onReset,
 }: BillingFiltersProps) {
   return (
-    <div className={styles.filters} role="group" aria-label="Billing report filters">
-      <div className={styles.group}>
-        <span className={styles.label}>Date Range</span>
+    <div className="flex items-end gap-6 flex-wrap" role="group" aria-label="Billing report filters">
+      <div className="flex flex-col gap-1">
+        <span className="text-base font-normal text-muted-foreground leading-[17px]">Date Range</span>
         <DateRangePicker
           startDate={startDate}
           endDate={endDate}
@@ -67,11 +66,11 @@ export function BillingFilters({
         />
       </div>
 
-      <div className={styles.group}>
-        <label className={styles.label} htmlFor="billing-account-filter">Account</label>
+      <div className="flex flex-col gap-1">
+        <label className="text-base font-normal text-muted-foreground leading-[17px]" htmlFor="billing-account-filter">Account</label>
         <select
           id="billing-account-filter"
-          className={styles.select}
+          className="px-3 py-2 text-base font-sans border border-border rounded-sm bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 min-w-[220px] focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
           value={selectedAccountId ?? ''}
           onChange={(e) => onAccountChange(e.target.value || null)}
         >

@@ -7,13 +7,13 @@ import { spaContacts } from '../data/spaContacts';
 import { transactionalDatabases, type TransactionalRecord } from '../data/transactionalData';
 import { accounts } from '../data/accounts';
 import type { Contact } from '../models/contact';
-import styles from './DatabasesPage.module.css';
+import { cn } from '../lib/utils';
 
 const TIER_CLASS: Record<string, string> = {
-  Bronze: 'bronze',
-  Silver: 'silver',
-  Gold: 'gold',
-  Platinum: 'platinum',
+  Bronze: 'bg-warning-subtle text-warning-foreground',
+  Silver: 'bg-secondary text-muted-foreground',
+  Gold: 'bg-warning-subtle text-warning-foreground',
+  Platinum: 'bg-accent text-accent-foreground',
 };
 
 const accountNameMap = new Map(accounts.map((a) => [a.id, a.name]));
@@ -26,7 +26,7 @@ const contactColumns: Column<Contact>[] = [
     header: 'Membership Tier',
     width: '150px',
     render: (c) => (
-      <span className={`${styles.tierBadge} ${styles[TIER_CLASS[c.membershipTier] ?? '']}`}>
+      <span className={cn("inline-flex items-center px-3 py-1 rounded-full text-xs font-medium leading-tight whitespace-nowrap", TIER_CLASS[c.membershipTier] ?? '')}>
         {c.membershipTier}
       </span>
     ),
@@ -60,7 +60,7 @@ export default function DatabasesPage() {
   return (
     <PageShell title="Databases" subtitle="Contact and transactional databases">
       <TabBar tabs={tabs} activeKey={activeTab} onTabChange={setActiveTab} />
-      <div className={styles.tableArea}>
+      <div className="mt-4">
         {activeTab === 'contacts' ? (
           <DataTable columns={contactColumns} data={contactData} emptyMessage="No contacts found" />
         ) : (

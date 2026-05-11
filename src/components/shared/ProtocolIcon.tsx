@@ -1,22 +1,27 @@
-import styles from './ProtocolIcon.module.css';
+import { cn } from '../../lib/utils';
 
 interface ProtocolIconProps {
   protocol: 'S3' | 'SFTP' | 'Azure Blob';
   size?: number;
   className?: string;
+  error?: boolean;
 }
 
-export function ProtocolIcon({ protocol, size = 24, className = '' }: ProtocolIconProps) {
+export function ProtocolIcon({ protocol, size = 24, className, error = false }: ProtocolIconProps) {
   return (
     <span
-      className={`${styles.icon} ${className}`}
+      className={cn(
+        'inline-flex items-center justify-center text-primary',
+        error && 'text-destructive',
+        className,
+      )}
       role="img"
-      aria-label={protocol === 'S3' ? 'S3 bucket' : protocol === 'Azure Blob' ? 'Azure Blob storage' : 'SFTP server'}
+      aria-label={protocol === 'S3' ? 'AWS S3 bucket' : protocol === 'Azure Blob' ? 'Azure Blob storage' : 'SFTP server'}
     >
       {protocol === 'S3' ? (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" fill="currentColor"/>
-          <path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12" stroke="var(--background)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       ) : protocol === 'Azure Blob' ? (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

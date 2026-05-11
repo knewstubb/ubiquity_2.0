@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { toast } from 'sonner';
 import { useConnections } from '../../contexts/ConnectionsContext';
 import { WizardStepper } from '../wizard/WizardStepper';
 import { WizardNavButtons } from '../wizard/WizardNavButtons';
@@ -9,7 +10,6 @@ import { ImportMappingStep } from './ImportMappingStep';
 import { ImporterReviewStep } from './ImporterReviewStep';
 import type { ImporterConfig, ImportDataType } from '../../models/importer';
 import { DEFAULT_FILE_PATH_CONFIG } from '../../models/importer';
-import styles from './ImporterWizardModal.module.css';
 
 interface ImporterWizardModalProps {
   connectionId: string;
@@ -166,6 +166,7 @@ export function ImporterWizardModal({
   const handleNext = () => {
     if (currentStep === lastStepIndex) {
       onSave(config);
+      toast.success('Automation saved successfully');
       onClose();
       return;
     }
@@ -175,11 +176,19 @@ export function ImporterWizardModal({
     setCurrentStep(currentStep + 1);
   };
 
+  const handleStepDirty = useCallback(
+    (stepIndex: number) => {
+      setCompletedSteps((prev) => prev.filter((s) => s <= stepIndex));
+    },
+    [],
+  );
+
   const handleConfigUpdate = useCallback(
     (patch: Partial<ImporterConfig>) => {
       setConfig((prev) => ({ ...prev, ...patch }));
+      handleStepDirty(currentStep);
     },
-    [],
+    [currentStep, handleStepDirty],
   );
 
   // When dataType changes, clamp currentStep if it exceeds new step count
@@ -234,23 +243,25 @@ export function ImporterWizardModal({
 
   return (
     <div
-      className={styles.backdrop}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 animate-[fadeIn_200ms_ease]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="importer-wizard-title"
       data-testid="importer-wizard-modal"
     >
-      <div className={styles.modal}>
+      <div className="w-[60vw] min-w-[860px] max-w-[1080px] h-[80vh] bg-background rounded-lg shadow-xl flex overflow-hidden animate-[slideUp_200ms_ease]">
         {/* Left sidebar */}
-        <div className={styles.sidebar}>
-          <div className={styles.sidebarHeader}>
-            <div className={styles.sidebarIcon}>
+        <div className="w-[239px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto z-[2] relative shadow-[2px_0_8px_rgba(0,0,0,0.04)]">
+          <div className="flex flex-col items-center text-center gap-1">
+            <div className="w-10 h-10 flex items-center justify-center text-primary mb-1">
               <DownloadIcon />
             </div>
-            <h2 id="importer-wizard-title" className={styles.sidebarConnectionName}>
+            <h2 id="importer-wizard-title" className="m-0 text-base font-bold text-foreground leading-snug">
               {connectorName}
             </h2>
-            <span className={styles.sidebarLabel}>{connection?.name ?? ''}</span>
+            <span className="text-[11px] font-medium text-tertiary-foreground uppercase tracking-wider">
+              {connection?.name ?? ''}
+            </span>
           </div>
           <WizardStepper
             steps={steps}
@@ -261,11 +272,11 @@ export function ImporterWizardModal({
         </div>
 
         {/* Right content area */}
-        <div className={styles.contentArea}>
-          <div className={styles.contentHeader}>
+        <div className="flex-1 flex flex-col min-w-0 bg-background">
+          <div className="flex items-center justify-end py-4 px-6 shrink-0">
             <button
               type="button"
-              className={styles.closeButton}
+              className="flex items-center justify-center w-8 h-8 border-none rounded-md bg-transparent text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-background-sunken hover:text-foreground focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               onClick={handleCloseClick}
               aria-label="Close wizard"
               data-testid="importer-close-button"
@@ -274,11 +285,11 @@ export function ImporterWizardModal({
             </button>
           </div>
 
-          <div className={styles.contentBody}>
+          <div className="flex-1 overflow-y-auto py-4 px-10 pb-10 flex flex-col gap-6 scrollbar-gutter-stable [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-border-strong [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar-thumb]:border-4 [&::-webkit-scrollbar-thumb]:border-solid [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-clip-padding">
             {stepContent}
           </div>
 
-          <div className={styles.navBar}>
+          <div className="shrink-0 p-4 px-6 shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
             <WizardNavButtons
               onBack={handleBack}
               onNext={handleNext}
@@ -292,30 +303,30 @@ export function ImporterWizardModal({
 
       {showDiscardConfirm && (
         <div
-          className={styles.confirmBackdrop}
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40"
           role="dialog"
           aria-modal="true"
           aria-labelledby="discard-confirm-title"
           data-testid="importer-discard-confirm"
         >
-          <div className={styles.confirmDialog}>
-            <h2 id="discard-confirm-title" className={styles.confirmTitle}>
+          <div className="bg-background rounded-lg shadow-xl p-6 w-full max-w-[420px] animate-[slideUp_200ms_ease]">
+            <h2 id="discard-confirm-title" className="m-0 mb-3 text-lg font-semibold text-foreground">
               Discard changes?
             </h2>
-            <p className={styles.confirmMessage}>
+            <p className="m-0 mb-6 text-sm text-muted-foreground leading-normal">
               You have unsaved changes. Are you sure you want to discard them?
             </p>
-            <div className={styles.confirmActions}>
+            <div className="flex justify-end gap-3">
               <button
                 type="button"
-                className={styles.confirmCancel}
+                className="py-2 px-4 border border-border rounded-md bg-transparent text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-background"
                 onClick={() => setShowDiscardConfirm(false)}
               >
                 Keep editing
               </button>
               <button
                 type="button"
-                className={styles.confirmDiscard}
+                className="py-2 px-4 border-none rounded-md bg-destructive text-sm font-medium text-text-inverse cursor-pointer transition-colors duration-150 hover:bg-danger-hover"
                 onClick={onClose}
               >
                 Discard

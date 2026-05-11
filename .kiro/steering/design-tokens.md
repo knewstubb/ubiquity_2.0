@@ -17,7 +17,10 @@ When building or updating components, reference these token files to ensure colo
 
 ## Updating Tokens
 
-1. Export updated tokens from Figma
+1. Export updated variables from Figma (both Light Mode and Dark Mode)
 2. Replace the JSON files in `src/styles/`
-3. Update CSS custom properties if any values changed
+3. Update `src/styles/globals.css` directly with the new token values
 4. Note any changes in the UX decisions log (`#ux-decisions`)
+
+All design tokens are defined directly in `src/styles/globals.css` as CSS custom properties in `:root` and `[data-theme="dark"]` selectors, exposed to Tailwind via the `@theme inline` block.
+ 

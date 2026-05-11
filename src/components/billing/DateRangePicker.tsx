@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { CaretLeft, CaretRight, CalendarBlank } from '@phosphor-icons/react';
+import { cn } from '../../lib/utils';
 import { getCurrentBillingCycle } from '../../models/billing';
-import styles from './DateRangePicker.module.css';
 
 interface DateRangePickerProps {
   startDate: string;
@@ -239,49 +239,49 @@ export function DateRangePicker({
   const displayLabel = `${formatDisplayDate(startDate)} — ${formatDisplayDate(endDate)}`;
 
   return (
-    <div className={styles.wrapper} ref={wrapperRef}>
+    <div className="relative" ref={wrapperRef}>
       <button
         type="button"
-        className={styles.trigger}
+        className="inline-flex items-center gap-2 px-3 py-2 text-base font-sans font-medium text-foreground bg-background border border-border rounded-sm cursor-pointer transition-colors duration-150 whitespace-nowrap hover:border-border-strong focus-visible:border-primary focus-visible:shadow-[0_0_0_2px_rgba(20,184,138,0.15)] focus-visible:outline-none"
         onClick={() => setOpen((o) => !o)}
         aria-label="Select date range"
       >
-        <CalendarBlank size={16} weight="regular" className={styles.calIcon} />
-        <span className={styles.triggerText}>{displayLabel}</span>
+        <CalendarBlank size={16} weight="regular" className="text-tertiary-foreground shrink-0" />
+        <span className="tabular-nums">{displayLabel}</span>
       </button>
 
       {open && (
-        <div className={styles.dropdown}>
-          <div className={styles.calendarSide}>
+        <div className="absolute top-[calc(100%+4px)] left-0 z-[100] flex bg-background border border-border rounded-lg shadow-[0px_7px_10px_-3px_rgba(0,0,0,0.08),0px_0px_0px_1px_rgba(0,0,0,0.04)] overflow-hidden">
+          <div className="p-4 min-w-[280px]">
             {/* Month header */}
-            <div className={styles.monthHeader}>
-              <span className={styles.monthLabel}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-base font-semibold text-foreground">
                 {MONTH_NAMES[calMonth]} {calYear}
               </span>
-              <div className={styles.monthNav}>
-                <button type="button" className={styles.navBtn} onClick={prevMonth} aria-label="Previous month">
+              <div className="flex gap-1">
+                <button type="button" className="inline-flex items-center justify-center w-7 h-7 border-none bg-transparent rounded-sm text-muted-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary" onClick={prevMonth} aria-label="Previous month">
                   <CaretLeft size={14} weight="bold" />
                 </button>
-                <button type="button" className={styles.navBtn} onClick={nextMonth} aria-label="Next month">
+                <button type="button" className="inline-flex items-center justify-center w-7 h-7 border-none bg-transparent rounded-sm text-muted-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary" onClick={nextMonth} aria-label="Next month">
                   <CaretRight size={14} weight="bold" />
                 </button>
               </div>
             </div>
 
             {/* Day headers */}
-            <div className={styles.dayHeaders}>
+            <div className="grid grid-cols-7 mb-1">
               {DAY_HEADERS.map((d, i) => (
-                <span key={i} className={styles.dayHeader}>{d}</span>
+                <span key={i} className="text-sm font-medium text-tertiary-foreground text-center py-1">{d}</span>
               ))}
             </div>
 
             {/* Calendar grid */}
-            <div className={styles.calGrid}>
+            <div className="flex flex-col">
               {grid.map((week, wi) => (
-                <div key={wi} className={styles.week}>
+                <div key={wi} className="grid grid-cols-7">
                   {week.map((day, di) => {
                     if (day === null) {
-                      return <span key={di} className={styles.emptyDay} />;
+                      return <span key={di} className="w-9 h-9" />;
                     }
 
                     const iso = toIso(new Date(calYear, calMonth, day));
@@ -289,16 +289,16 @@ export function DateRangePicker({
                     const isRangeEdge = iso === highlightStart || iso === highlightEnd;
                     const isToday = iso === toIso(new Date());
 
-                    let cls = styles.day;
-                    if (isRangeEdge) cls += ` ${styles.dayEdge}`;
-                    else if (isInRange) cls += ` ${styles.dayInRange}`;
-                    if (isToday && !isRangeEdge) cls += ` ${styles.dayToday}`;
-
                     return (
                       <button
                         key={di}
                         type="button"
-                        className={cls}
+                        className={cn(
+                          "w-9 h-9 inline-flex items-center justify-center text-[13px] font-sans text-foreground bg-transparent border-none cursor-pointer transition-colors duration-100 hover:bg-secondary",
+                          isRangeEdge && "bg-primary text-primary-foreground rounded-full font-semibold hover:bg-accent-hover",
+                          !isRangeEdge && isInRange && "bg-[rgba(20,184,138,0.1)] hover:bg-[rgba(20,184,138,0.18)]",
+                          isToday && !isRangeEdge && "font-semibold text-primary"
+                        )}
                         onClick={() => handleDayClick(day)}
                         onMouseEnter={() => setHoverDate(iso)}
                         onMouseLeave={() => setHoverDate(null)}
@@ -313,14 +313,17 @@ export function DateRangePicker({
           </div>
 
           {/* Presets side */}
-          <div className={styles.presetsSide}>
+          <div className="border-l border-border py-3 min-w-[180px] max-h-[340px] overflow-y-auto flex flex-col [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-border-strong [&::-webkit-scrollbar-thumb]:rounded-sm [&::-webkit-scrollbar-track]:bg-transparent">
             {presets.map((preset) => {
               const isActive = preset.start === startDate && preset.end === endDate;
               return (
                 <button
                   key={preset.label}
                   type="button"
-                  className={`${styles.presetBtn} ${isActive ? styles.presetBtnActive : ''}`}
+                  className={cn(
+                    "block w-full text-left px-4 py-2 text-[13px] font-sans font-normal text-foreground bg-transparent border-none cursor-pointer transition-colors duration-150 whitespace-nowrap hover:bg-background",
+                    isActive && "text-primary font-semibold bg-[rgba(20,184,138,0.06)]"
+                  )}
                   onClick={() => handlePresetClick(preset)}
                 >
                   {preset.label}

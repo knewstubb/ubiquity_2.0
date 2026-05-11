@@ -1,5 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
-import styles from './ValueInput.module.css';
+import { cn } from '../../lib/utils';
+
+const inputStyles = cn(
+  'w-full min-w-[140px] px-3 py-2 text-sm text-foreground bg-background',
+  'border border-border rounded-sm leading-normal',
+  'transition-[border-color,box-shadow] duration-150',
+  'hover:border-tertiary-foreground',
+  'focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30',
+  'disabled:opacity-50 disabled:cursor-not-allowed',
+);
 
 interface ValueInputProps {
   fieldDataType: string | undefined;
@@ -64,7 +73,7 @@ export function ValueInput({ fieldDataType, operator, value, enumValues, onChang
     return (
       <input
         type="date"
-        className={styles.input}
+        className={inputStyles}
         value={typeof value === 'string' ? value : ''}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
@@ -78,7 +87,7 @@ export function ValueInput({ fieldDataType, operator, value, enumValues, onChang
     return (
       <input
         type="number"
-        className={styles.input}
+        className={inputStyles}
         value={typeof value === 'number' ? value : ''}
         onChange={(e) => onChange(e.target.value ? Number(e.target.value) : '')}
         disabled={disabled}
@@ -92,7 +101,7 @@ export function ValueInput({ fieldDataType, operator, value, enumValues, onChang
   return (
     <input
       type="text"
-      className={styles.input}
+      className={inputStyles}
       value={typeof value === 'string' ? value : ''}
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
@@ -126,20 +135,20 @@ function BetweenInput({
   };
 
   return (
-    <div className={styles.betweenRow}>
+    <div className="flex items-center gap-2">
       <input
         type={inputType}
-        className={styles.input}
+        className={inputStyles}
         value={parts[0] ?? ''}
         onChange={(e) => handleChange(0, e.target.value)}
         disabled={disabled}
         placeholder={labels[0]}
         aria-label={labels[0]}
       />
-      <span className={styles.betweenLabel}>and</span>
+      <span className="text-xs text-muted-foreground whitespace-nowrap">and</span>
       <input
         type={inputType}
-        className={styles.input}
+        className={inputStyles}
         value={parts[1] ?? ''}
         onChange={(e) => handleChange(1, e.target.value)}
         disabled={disabled}
@@ -161,10 +170,10 @@ function InTheLastInput({
   disabled: boolean;
 }) {
   return (
-    <div className={styles.inLastRow}>
+    <div className="flex items-center gap-2">
       <input
         type="number"
-        className={styles.input}
+        className={inputStyles}
         value={typeof value === 'number' ? value : ''}
         onChange={(e) => onChange(e.target.value ? Number(e.target.value) : 0)}
         disabled={disabled}
@@ -172,7 +181,7 @@ function InTheLastInput({
         placeholder="30"
         aria-label="Number of days"
       />
-      <span className={styles.daysLabel}>days</span>
+      <span className="text-sm text-muted-foreground whitespace-nowrap">days</span>
     </div>
   );
 }
@@ -190,21 +199,20 @@ function EnumSelectInput({
   disabled: boolean;
 }) {
   return (
-    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', minWidth: 160 }}>
+    <div className="relative flex items-center min-w-[160px]">
       <select
-        className={styles.input}
+        className={cn(inputStyles, 'appearance-none pr-8')}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
         aria-label="Value"
-        style={{ appearance: 'none', paddingRight: 32 }}
       >
         <option value="" disabled>Select value…</option>
         {enumValues.map((v) => (
           <option key={v} value={v}>{v}</option>
         ))}
       </select>
-      <span style={{ position: 'absolute', right: 12, pointerEvents: 'none', color: 'var(--color-zinc-500)', display: 'flex', alignItems: 'center' }} aria-hidden="true">
+      <span className="absolute right-3 pointer-events-none text-muted-foreground flex items-center" aria-hidden="true">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
           <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -246,10 +254,16 @@ function MultiSelectInput({
   const displayText = value.length > 0 ? value.join(', ') : undefined;
 
   return (
-    <div className={styles.multiSelect} ref={ref}>
+    <div className="relative" ref={ref}>
       <button
         type="button"
-        className={styles.multiSelectTrigger}
+        className={cn(
+          'flex items-center justify-between w-full min-w-[160px] px-3 py-2',
+          'text-sm text-foreground bg-background border border-border rounded-sm',
+          'cursor-pointer transition-[border-color] duration-150',
+          'hover:border-tertiary-foreground',
+          'disabled:opacity-50 disabled:cursor-not-allowed',
+        )}
         onClick={() => !disabled && setOpen(!open)}
         disabled={disabled}
         aria-label="Select values"
@@ -257,18 +271,21 @@ function MultiSelectInput({
         {displayText ? (
           <span>{displayText}</span>
         ) : (
-          <span className={styles.placeholder}>Select values…</span>
+          <span className="text-tertiary-foreground">Select values…</span>
         )}
-        <span className={styles.chevron} aria-hidden="true">
+        <span className="text-muted-foreground flex items-center ml-2" aria-hidden="true">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
       </button>
       {open && (
-        <div className={styles.multiSelectDropdown}>
+        <div className="absolute top-[calc(100%+4px)] left-0 right-0 bg-background border border-border rounded-sm shadow-md z-10 max-h-[200px] overflow-y-auto">
           {enumValues.map((v) => (
-            <label key={v} className={styles.multiSelectOption}>
+            <label
+              key={v}
+              className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer transition-colors duration-150 hover:bg-secondary"
+            >
               <input
                 type="checkbox"
                 checked={value.includes(v)}

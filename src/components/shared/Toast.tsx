@@ -6,7 +6,7 @@ import {
   useRef,
   type ReactNode,
 } from 'react';
-import styles from './Toast.module.css';
+import { cn } from '../../lib/utils';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -42,12 +42,25 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className={styles.container} role="status" aria-live="polite">
+      <div
+        className="fixed bottom-4 right-4 z-[9999] flex flex-col-reverse gap-2 pointer-events-none"
+        role="status"
+        aria-live="polite"
+      >
         {toasts.map((toast) => (
-          <div key={toast.id} className={`${styles.toast} ${styles[toast.type]}`}>
-            <span className={styles.message}>{toast.message}</span>
+          <div
+            key={toast.id}
+            className={cn(
+              'flex items-center gap-2.5 px-4 py-3 rounded-[4px] font-sans text-sm leading-[17px] text-foreground bg-background border border-border shadow-md pointer-events-auto min-w-[280px] max-w-[420px] animate-[slideIn_0.2s_ease-out]',
+              toast.type === 'success' && 'border-l-[3px] border-l-primary',
+              toast.type === 'error' && 'border-l-[3px] border-l-destructive',
+              toast.type === 'info' && 'border-l-[3px] border-l-info',
+              toast.type === 'warning' && 'border-l-[3px] border-l-warning',
+            )}
+          >
+            <span className="flex-1">{toast.message}</span>
             <button
-              className={styles.dismiss}
+              className="bg-transparent border-none cursor-pointer text-tertiary-foreground text-base px-0.5 py-0 leading-none hover:text-muted-foreground"
               onClick={() => removeToast(toast.id)}
               aria-label="Dismiss"
             >

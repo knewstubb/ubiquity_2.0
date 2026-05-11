@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import { PageShell } from '../components/layout/PageShell';
 import { usePricing } from '../contexts/PricingContext';
 import type { BillingCategory } from '../models/billing';
-import styles from './PricingPage.module.css';
 
 const CATEGORY_DESCRIPTIONS: Record<BillingCategory, string> = {
   'Database Records': 'Per contact record stored in your databases each billing cycle',
@@ -36,17 +35,21 @@ export default function PricingPage() {
       title="Pricing"
       subtitle="Unit prices for all billable items in your account"
       action={
-        <button type="button" className={styles.resetBtn} onClick={resetPrices}>
+        <button
+          type="button"
+          className="px-4 py-2 text-sm font-semibold font-sans text-muted-foreground bg-background border border-border rounded-[4px] cursor-pointer transition-colors duration-150 hover:bg-background hover:border-border-strong focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+          onClick={resetPrices}
+        >
           Reset to Defaults
         </button>
       }
     >
-      <table className={styles.table}>
+      <table className="w-full border-collapse font-sans max-w-[800px]">
         <thead>
           <tr>
-            <th className={styles.headerCell}>Billing Category</th>
-            <th className={styles.headerCell}>Description</th>
-            <th className={styles.headerCellPrice}>Unit Price (NZD)</th>
+            <th className="bg-background font-semibold text-sm text-left px-4 py-3 border-b-2 border-border text-foreground whitespace-nowrap">Billing Category</th>
+            <th className="bg-background font-semibold text-sm text-left px-4 py-3 border-b-2 border-border text-foreground whitespace-nowrap">Description</th>
+            <th className="bg-background font-semibold text-sm text-right px-4 py-3 border-b-2 border-border text-foreground whitespace-nowrap">Unit Price (NZD)</th>
           </tr>
         </thead>
         <tbody>
@@ -100,18 +103,18 @@ function PriceRow({ category, description, price, onPriceChange }: PriceRowProps
   const displayPrice = price >= 1 ? `$${price.toFixed(2)}` : `$${price.toFixed(3)}`;
 
   return (
-    <tr className={styles.row}>
-      <td className={styles.bodyCell}>
-        <span className={styles.categoryName}>{category}</span>
+    <tr className="border-b border-secondary hover:bg-background">
+      <td className="px-4 py-3 text-sm text-foreground align-middle">
+        <span className="font-medium">{category}</span>
       </td>
-      <td className={styles.bodyCell}>{description}</td>
-      <td className={styles.bodyCellPrice}>
+      <td className="px-4 py-3 text-sm text-foreground align-middle">{description}</td>
+      <td className="px-4 py-3 text-sm text-foreground align-middle text-right tabular-nums whitespace-nowrap">
         {editing ? (
-          <div className={styles.editWrapper}>
-            <span className={styles.dollarSign}>$</span>
+          <div className="inline-flex items-center gap-0.5">
+            <span className="text-sm font-semibold text-muted-foreground">$</span>
             <input
               type="number"
-              className={styles.priceInput}
+              className="w-20 px-2 py-1 text-sm font-sans font-semibold border border-primary rounded-[4px] text-right outline-none shadow-[0_0_0_2px_rgba(20,184,138,0.15)] tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               onBlur={commitEdit}
@@ -124,7 +127,7 @@ function PriceRow({ category, description, price, onPriceChange }: PriceRowProps
         ) : (
           <button
             type="button"
-            className={styles.priceButton}
+            className="bg-none border border-transparent rounded-[4px] px-2 py-1 text-sm font-sans font-semibold text-foreground cursor-pointer text-right tabular-nums transition-colors duration-150 hover:border-border-strong hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
             onClick={startEdit}
             title="Click to edit"
           >

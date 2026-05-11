@@ -5,7 +5,6 @@ import { FilterGroupComponent } from './FilterGroup';
 import { evaluateFilterGroup } from '../../utils/filterEngine';
 import { useAccount } from '../../contexts/AccountContext';
 import { spaContacts } from '../../data/spaContacts';
-import styles from './FilterBuilder.module.css';
 
 interface FilterBuilderProps {
   value: FilterGroup;
@@ -40,7 +39,7 @@ export function FilterBuilder({ value, onChange, readOnly = false, fields }: Fil
     : accountContacts;
 
   return (
-    <div className={styles.filterBuilder}>
+    <div className="flex flex-col gap-3">
       <FilterGroupComponent
         group={value}
         onChange={onChange}
@@ -48,8 +47,8 @@ export function FilterBuilder({ value, onChange, readOnly = false, fields }: Fil
         fields={fields}
         isRoot
       />
-      <div className={styles.matchCount}>
-        <strong>{matchedContacts.length}</strong>
+      <div className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground bg-background border border-border rounded-sm">
+        <strong className="text-primary font-semibold">{matchedContacts.length}</strong>
         {matchedContacts.length === 1 ? ' contact matches' : ' contacts match'}
         {!hasCompleteRules && ' (all contacts)'}
       </div>

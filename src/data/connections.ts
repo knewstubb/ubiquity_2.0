@@ -13,6 +13,8 @@ export const connections: Connection[] = [
       region: 'us-east-1',
       bucket: 'serenity-spa-exports',
       prefix: 'data/outbound/',
+      accessKeyId: 'AKIAIOSFODNN7EXAMPLE',
+      secretAccessKey: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
     },
   },
   {
@@ -26,6 +28,8 @@ export const connections: Connection[] = [
       host: 'sftp.serenity-spa.com',
       port: 22,
       path: '/uploads/exports/',
+      username: 'spa_data_user',
+      password: 'Sp4D4t4!2026',
     },
   },
   {
@@ -38,11 +42,12 @@ export const connections: Connection[] = [
     config: {
       accountName: 'serenityspastore',
       containerName: 'spa-data',
+      sasToken: 'sv=2023-01-03&ss=b&srt=sco&sp=rwdlacitfx&se=2027-01-01T00:00:00Z&sig=EXAMPLE',
     },
   },
   {
     id: 'conn-spa-s3-broken',
-    name: 'Spa Legacy S3 Import',
+    name: 'Spa Legacy AWS S3 Import',
     protocol: 'S3',
     status: 'error',
     basePath: '/legacy/imports/',

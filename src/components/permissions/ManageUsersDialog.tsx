@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import type { PermissionUser, PermissionGroup } from '../../models/permissions';
 import { Checkbox } from '../shared/Checkbox';
 import { Dropdown } from '../shared/Dropdown';
-import styles from './ManageUsersDialog.module.css';
 
 interface ManageUsersDialogProps {
   open: boolean;
@@ -95,47 +94,53 @@ export function ManageUsersDialog({
 
   return (
     <div
-      className={styles.backdrop}
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 animate-in fade-in duration-200"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
       aria-labelledby="manage-users-title"
     >
-      <div className={styles.dialog}>
-        <h2 id="manage-users-title" className={styles.title}>
+      <div className="bg-background rounded-lg shadow-xl p-6 w-full max-w-[520px] flex flex-col max-h-[80vh] animate-in slide-in-from-bottom-2 duration-200">
+        <h2 id="manage-users-title" className="m-0 mb-1 text-lg font-semibold text-foreground">
           Manage Users
         </h2>
-        <p className={styles.subtitle}>
+        <p className="m-0 mb-4 text-sm text-muted-foreground">
           Add or remove user access to {accountName}
         </p>
 
         {allChecked ? (
-          <div className={styles.allAssigned}>
+          <div className="py-6 px-3 text-center text-sm text-muted-foreground">
             All users already have access
           </div>
         ) : null}
 
-        <ul className={styles.userList}>
+        <ul className="list-none m-0 p-0 overflow-y-auto flex-1 min-h-0 flex flex-col gap-2">
           {allUsers.map((user) => {
             const assignment = localState.get(user.id);
             const isChecked = assignment?.checked ?? false;
 
             return (
-              <li key={user.id} className={styles.userRow}>
+              <li key={user.id} className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors duration-150 hover:bg-background">
                 <Checkbox
                   checked={isChecked}
                   onChange={(e) => handleCheckChange(user.id, e.target.checked)}
                   aria-label={`Grant access to ${user.name}`}
                 />
-                <div className={styles.userInfo}>
-                  <div className={styles.avatar}>{user.initials}</div>
-                  <div className={styles.userDetails}>
-                    <span className={styles.userName}>{user.name}</span>
-                    <span className={styles.userEmail}>{user.email}</span>
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-semibold shrink-0">
+                    {user.initials}
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-sm font-medium text-foreground whitespace-nowrap overflow-hidden text-ellipsis">
+                      {user.name}
+                    </span>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis">
+                      {user.email}
+                    </span>
                   </div>
                 </div>
                 {isChecked && (
-                  <div className={styles.groupDropdown}>
+                  <div className="shrink-0 w-[140px]">
                     <Dropdown
                       options={groupOptions}
                       value={assignment?.groupId ?? defaultGroupId}
@@ -149,11 +154,17 @@ export function ManageUsersDialog({
           })}
         </ul>
 
-        <div className={styles.actions}>
-          <button className={styles.cancelButton} onClick={onClose}>
+        <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-border">
+          <button
+            className="px-4 py-2 border border-border rounded-md bg-transparent text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+            onClick={onClose}
+          >
             Cancel
           </button>
-          <button className={styles.saveButton} onClick={handleSave}>
+          <button
+            className="px-4 py-2 border-none rounded-md bg-primary text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+            onClick={handleSave}
+          >
             Save
           </button>
         </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import styles from './CreateCampaignDialog.module.css';
+import { cn } from '../../lib/utils';
 
 interface CreateCampaignDialogProps {
   open: boolean;
@@ -46,24 +46,28 @@ export function CreateCampaignDialog({
 
   return (
     <div
-      className={styles.backdrop}
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 animate-in fade-in duration-200"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-campaign-title"
     >
-      <form className={styles.dialog} onSubmit={handleSubmit}>
-        <h2 id="create-campaign-title" className={styles.title}>
+      <form className="bg-background rounded-lg shadow-xl p-6 w-full max-w-[480px] animate-in slide-in-from-bottom-2 duration-200" onSubmit={handleSubmit}>
+        <h2 id="create-campaign-title" className="m-0 mb-4 text-lg font-semibold text-foreground">
           Create Campaign
         </h2>
 
-        <div className={styles.field}>
-          <label className={styles.label} htmlFor="campaign-name">
-            Campaign Name<span className={styles.required}>*</span>
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium text-foreground" htmlFor="campaign-name">
+            Campaign Name<span className="text-destructive ml-0.5">*</span>
           </label>
           <input
             id="campaign-name"
-            className={`${styles.input} ${showValidation && !isNameValid ? styles.inputError : ''}`}
+            className={cn(
+              "w-full px-3 py-2 border border-border rounded-md text-sm text-foreground bg-background outline-none transition-colors duration-150 box-border",
+              "focus:border-primary focus:ring-2 focus:ring-primary/15",
+              showValidation && !isNameValid && "border-destructive focus:border-destructive focus:ring-destructive/15"
+            )}
             type="text"
             value={name}
             onChange={(e) => {
@@ -76,30 +80,34 @@ export function CreateCampaignDialog({
             autoFocus
           />
           {showValidation && !isNameValid && (
-            <p className={styles.validationMessage}>Campaign name is required</p>
+            <p className="mt-1 text-xs text-destructive">Campaign name is required</p>
           )}
         </div>
 
-        <div className={styles.field}>
-          <label className={styles.label} htmlFor="campaign-goal">
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium text-foreground" htmlFor="campaign-goal">
             Goal
           </label>
           <textarea
             id="campaign-goal"
-            className={styles.textarea}
+            className="w-full px-3 py-2 border border-border rounded-md text-sm text-foreground bg-background outline-none transition-colors duration-150 resize-y min-h-[80px] font-[inherit] box-border focus:border-primary focus:ring-2 focus:ring-primary/15"
             value={goal}
             onChange={(e) => setGoal(e.target.value)}
             placeholder="Describe the campaign goal (optional)"
           />
         </div>
 
-        <div className={styles.actions}>
-          <button type="button" className={styles.cancelButton} onClick={onClose}>
+        <div className="flex justify-end gap-3 mt-6">
+          <button
+            type="button"
+            className="px-4 py-2 border border-border rounded-md bg-transparent text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+            onClick={onClose}
+          >
             Cancel
           </button>
           <button
             type="submit"
-            className={styles.createButton}
+            className="px-4 py-2 border-none rounded-md bg-primary text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 hover:not-disabled:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!isNameValid}
           >
             Create

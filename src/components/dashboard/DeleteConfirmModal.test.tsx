@@ -84,6 +84,6 @@ describe('DeleteConfirmModal', () => {
     render(<DeleteConfirmModal {...defaultProps} />);
     const dialog = screen.getByRole('dialog');
     expect(dialog).toHaveAttribute('aria-modal', 'true');
-    expect(dialog).toHaveAttribute('aria-labelledby', 'delete-modal-title');
+    expect(dialog).toHaveAttribute('aria-labelledby', 'modal-title');
   });
 });

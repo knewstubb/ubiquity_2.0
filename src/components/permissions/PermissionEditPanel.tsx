@@ -2,7 +2,6 @@ import { X } from '@phosphor-icons/react';
 import { FUNCTIONAL_GROUPS } from '../../data/permissions';
 import { usePermissions } from '../../contexts/PermissionsContext';
 import { PermissionCard } from './PermissionCard';
-import styles from './PermissionEditPanel.module.css';
 
 interface PermissionEditPanelProps {
   open: boolean;
@@ -38,23 +37,25 @@ export function PermissionEditPanel({
 
   return (
     <div
-      className={styles.backdrop}
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 animate-in fade-in duration-200"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
       aria-labelledby="permission-edit-title"
     >
-      <div className={styles.panel}>
-        <div className={styles.header}>
-          <div className={styles.headerInfo}>
-            <h2 id="permission-edit-title" className={styles.title}>Edit Permissions</h2>
-            <p className={styles.subtitle}>
+      <div className="bg-background rounded-lg shadow-xl p-6 w-full max-w-[720px] max-h-[80vh] flex flex-col animate-in slide-in-from-bottom-2 duration-200">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex flex-col gap-1">
+            <h2 id="permission-edit-title" className="m-0 text-lg font-semibold text-foreground">Edit Permissions</h2>
+            <p className="m-0 text-sm text-muted-foreground leading-normal">
               {userName} — {accountName}
             </p>
-            <span className={styles.groupBadge}>{resolvedLabel}</span>
+            <span className="inline-block mt-1 px-2 py-1 rounded-sm text-xs font-medium bg-secondary text-muted-foreground">
+              {resolvedLabel}
+            </span>
           </div>
           <button
-            className={styles.closeButton}
+            className="flex items-center justify-center w-8 h-8 border-none rounded-md bg-transparent text-muted-foreground cursor-pointer shrink-0 transition-colors duration-150 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
             onClick={onClose}
             aria-label="Close"
           >
@@ -62,7 +63,7 @@ export function PermissionEditPanel({
           </button>
         </div>
 
-        <div className={styles.cardGrid}>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 overflow-y-auto pr-1">
           {FUNCTIONAL_GROUPS.map((fg) => (
             <PermissionCard
               key={fg}

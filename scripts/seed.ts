@@ -60,7 +60,7 @@ const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROL
 import { accounts } from '../src/data/accounts.js';
 import { campaigns, journeys } from '../src/data/campaigns.js';
 import { connections } from '../src/data/connections.js';
-import { connectors } from '../src/data/connectors.js';
+import { automations as connectors } from '../src/data/automations.js';
 import { contacts } from '../src/data/contacts.js';
 import { segments } from '../src/data/segments.js';
 import { seedAssets } from '../src/data/assets.js';

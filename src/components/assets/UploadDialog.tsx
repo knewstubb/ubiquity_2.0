@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
+import { cn } from '../../lib/utils';
 import type { Asset, AssetType, AssetScope } from '../../models/asset';
 import type { Campaign } from '../../models/campaign';
 import { Dropdown } from '../shared/Dropdown';
-import styles from './UploadDialog.module.css';
 
 interface UploadDialogProps {
   open: boolean;
@@ -75,33 +75,36 @@ export function UploadDialog({ open, onClose, onUpload, campaigns, currentAccoun
 
   return (
     <div
-      className={styles.backdrop}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 animate-[fadeIn_200ms_ease]"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
       aria-labelledby="upload-dialog-title"
     >
-      <div className={styles.dialog}>
-        <h2 id="upload-dialog-title" className={styles.title}>Upload Asset</h2>
+      <div className="bg-background rounded-lg shadow-xl p-6 w-full max-w-[480px] animate-[slideUp_200ms_ease]">
+        <h2 id="upload-dialog-title" className="m-0 mb-5 text-lg font-semibold text-foreground">Upload Asset</h2>
 
-        <div className={styles.form}>
+        <div className="flex flex-col gap-4">
           {/* Name input */}
-          <div className={styles.field}>
-            <label htmlFor="asset-name" className={styles.label}>Name</label>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="asset-name" className="text-sm font-medium text-muted-foreground">Name</label>
             <input
               id="asset-name"
               type="text"
-              className={`${styles.input} ${nameInvalid ? styles.inputError : ''}`}
+              className={cn(
+                "py-2 px-3 text-sm text-foreground bg-background border border-border rounded-md transition-[border-color,box-shadow] duration-150 leading-normal focus:outline-none focus:border-primary focus:shadow-[0_0_0_2px_var(--accent)]",
+                nameInvalid && "border-destructive"
+              )}
               value={name}
               onChange={(e) => setName(e.target.value)}
               onBlur={() => setTouched(true)}
               placeholder="Enter asset name"
             />
-            {nameInvalid && <span className={styles.errorText}>Name is required</span>}
+            {nameInvalid && <span className="text-xs text-destructive">Name is required</span>}
           </div>
 
           {/* Type dropdown */}
-          <div className={styles.field}>
+          <div className="flex flex-col gap-1">
             <Dropdown
               label="Type"
               options={TYPE_OPTIONS}
@@ -111,17 +114,18 @@ export function UploadDialog({ open, onClose, onUpload, campaigns, currentAccoun
           </div>
 
           {/* Scope radio group */}
-          <div className={styles.field}>
-            <span className={styles.label}>Scope</span>
-            <div className={styles.radioGroup}>
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium text-muted-foreground">Scope</span>
+            <div className="flex gap-4">
               {(['global', 'campaign', 'account'] as AssetScope[]).map((s) => (
-                <label key={s} className={styles.radioLabel}>
+                <label key={s} className="flex items-center gap-1 text-sm text-foreground cursor-pointer">
                   <input
                     type="radio"
                     name="asset-scope"
                     value={s}
                     checked={scope === s}
                     onChange={() => setScope(s)}
+                    className="accent-primary"
                   />
                   {s.charAt(0).toUpperCase() + s.slice(1)}
                 </label>
@@ -131,7 +135,7 @@ export function UploadDialog({ open, onClose, onUpload, campaigns, currentAccoun
 
           {/* Campaign picker (shown when scope is campaign) */}
           {scope === 'campaign' && (
-            <div className={styles.field}>
+            <div className="flex flex-col gap-1">
               <Dropdown
                 label="Campaign"
                 options={campaignOptions}
@@ -144,12 +148,12 @@ export function UploadDialog({ open, onClose, onUpload, campaigns, currentAccoun
 
           {/* Hex colour input (shown when type is colour) */}
           {type === 'colour' && (
-            <div className={styles.field}>
-              <label htmlFor="asset-colour" className={styles.label}>Hex Colour</label>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="asset-colour" className="text-sm font-medium text-muted-foreground">Hex Colour</label>
               <input
                 id="asset-colour"
                 type="text"
-                className={styles.input}
+                className="py-2 px-3 text-sm text-foreground bg-background border border-border rounded-md transition-[border-color,box-shadow] duration-150 leading-normal focus:outline-none focus:border-primary focus:shadow-[0_0_0_2px_var(--accent)]"
                 value={colourValue}
                 onChange={(e) => setColourValue(e.target.value)}
                 placeholder="#000000"
@@ -158,13 +162,17 @@ export function UploadDialog({ open, onClose, onUpload, campaigns, currentAccoun
           )}
 
           {/* Actions */}
-          <div className={styles.actions}>
-            <button type="button" className={styles.cancelButton} onClick={handleClose}>
+          <div className="flex justify-end gap-3 mt-2">
+            <button
+              type="button"
+              className="py-2 px-4 border border-border rounded-md bg-transparent text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+              onClick={handleClose}
+            >
               Cancel
             </button>
             <button
               type="button"
-              className={styles.uploadButton}
+              className="py-2 px-4 border-none rounded-md bg-primary text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!canSubmit}
               onClick={handleSubmit}
             >

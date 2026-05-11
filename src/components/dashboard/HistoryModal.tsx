@@ -1,10 +1,9 @@
 import { useEffect, useCallback } from 'react';
 import { X, Plus, Play, Pause, PencilSimple } from '@phosphor-icons/react';
-import type { Connector } from '../../models/connector';
-import styles from './HistoryModal.module.css';
+import type { Automation } from '../../models/automation';
 
 interface HistoryModalProps {
-  connector: Connector;
+  connector: Automation;
   onClose: () => void;
 }
 
@@ -16,7 +15,7 @@ interface HistoryEntry {
   date: string;
 }
 
-function generateHistoryEntries(connector: Connector): HistoryEntry[] {
+function generateHistoryEntries(connector: Automation): HistoryEntry[] {
   const createdDate = new Date(connector.createdAt);
   const updatedDate = new Date(connector.updatedAt);
 
@@ -88,37 +87,37 @@ export function HistoryModal({ connector, onClose }: HistoryModalProps) {
   }, [handleKeyDown]);
 
   return (
-    <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="history-title">
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[200]" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="history-title">
+      <div className="bg-background rounded-lg shadow-xl w-[480px] max-w-[90vw] max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-border">
           <div>
-            <h2 id="history-title" className={styles.title}>History</h2>
-            <p className={styles.subtitle}>{connector.name}</p>
+            <h2 id="history-title" className="text-lg font-semibold text-foreground m-0">History</h2>
+            <p className="text-[13px] text-muted-foreground mt-1 mb-0">{connector.name}</p>
           </div>
-          <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="Close">
+          <button type="button" className="inline-flex items-center justify-center w-7 h-7 bg-transparent border-none rounded-md text-muted-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary hover:text-foreground" onClick={onClose} aria-label="Close">
             <X size={18} weight="bold" />
           </button>
         </div>
 
-        <div className={styles.body}>
-          <div className={styles.timeline}>
+        <div className="flex-1 overflow-y-auto px-6 py-5">
+          <div className="flex flex-col">
             {entries.map((entry, idx) => {
               const cfg = ICON_CONFIG[entry.icon];
               const IconComponent = cfg.Icon;
               return (
-                <div key={entry.id} className={styles.entry}>
-                  <div className={styles.timelineTrack}>
-                    <div className={styles.iconCircle} style={{ backgroundColor: cfg.bg }}>
+                <div key={entry.id} className="flex gap-3">
+                  <div className="flex flex-col items-center shrink-0">
+                    <div className="flex items-center justify-center w-7 h-7 rounded-full shrink-0" style={{ backgroundColor: cfg.bg }}>
                       <IconComponent size={14} weight="bold" color={cfg.color} />
                     </div>
-                    {idx < entries.length - 1 && <div className={styles.timelineLine} />}
+                    {idx < entries.length - 1 && <div className="w-0.5 flex-1 min-h-4 bg-border" />}
                   </div>
-                  <div className={styles.entryContent}>
-                    <div className={styles.entryMain}>
-                      <span className={styles.entryUser}>{entry.user}</span>
-                      <span className={styles.entryAction}>{entry.action}</span>
+                  <div className="flex-1 min-w-0 pb-5">
+                    <div className="flex flex-wrap gap-1 text-[13px] leading-relaxed">
+                      <span className="font-semibold text-foreground">{entry.user}</span>
+                      <span className="text-muted-foreground">{entry.action}</span>
                     </div>
-                    <span className={styles.entryDate}>{entry.date}</span>
+                    <span className="text-xs text-tertiary-foreground mt-0.5 block">{entry.date}</span>
                   </div>
                 </div>
               );
@@ -126,8 +125,8 @@ export function HistoryModal({ connector, onClose }: HistoryModalProps) {
           </div>
         </div>
 
-        <div className={styles.footer}>
-          <button type="button" className={styles.closeButton} onClick={onClose}>Close</button>
+        <div className="px-6 py-3 border-t border-border flex justify-end">
+          <button type="button" className="px-4 py-2 text-sm font-medium text-muted-foreground bg-background border border-border rounded cursor-pointer transition-colors duration-150 hover:bg-secondary" onClick={onClose}>Close</button>
         </div>
       </div>
     </div>

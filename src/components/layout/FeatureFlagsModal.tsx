@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { X, Plus, Trash } from '@phosphor-icons/react';
 import { useFeatureFlags } from '../../contexts/FeatureFlagContext';
 import type { FeatureFlag } from '../../contexts/FeatureFlagContext';
-import styles from './FeatureFlagsModal.module.css';
+import { cn } from '../../lib/utils';
 
 interface FeatureFlagsModalProps {
   onClose: () => void;
@@ -15,22 +15,27 @@ export function FeatureFlagsModal({ onClose }: FeatureFlagsModalProps) {
   const flagList = Object.values(flags).sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>Feature Flags</h2>
-          <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="Close">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[200]" onClick={onClose}>
+      <div className="bg-background rounded-lg shadow-xl w-[560px] max-w-[90vw] max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 pt-5">
+          <h2 className="text-lg font-semibold text-foreground m-0">Feature Flags</h2>
+          <button
+            type="button"
+            className="inline-flex items-center justify-center w-8 h-8 border-none bg-none rounded text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary hover:text-foreground"
+            onClick={onClose}
+            aria-label="Close"
+          >
             <X size={18} weight="bold" />
           </button>
         </div>
 
-        <p className={styles.subtitle}>
+        <p className="px-6 pt-2 text-[13px] text-muted-foreground m-0">
           Control which pages and features are visible to users. Disabled flags hide the associated page or component.
         </p>
 
-        <div className={styles.body}>
+        <div className="px-6 py-4 overflow-y-auto flex-1 flex flex-col">
           {flagList.length === 0 && !showAddForm && (
-            <p className={styles.emptyState}>
+            <p className="text-center py-6 text-sm text-tertiary-foreground">
               No feature flags configured. All pages are visible by default.
             </p>
           )}
@@ -55,10 +60,10 @@ export function FeatureFlagsModal({ onClose }: FeatureFlagsModalProps) {
           )}
         </div>
 
-        <div className={styles.footer}>
+        <div className="px-6 py-3 pb-4 border-t border-border">
           <button
             type="button"
-            className={styles.addBtn}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-sans font-semibold text-primary bg-none border border-primary rounded cursor-pointer transition-colors duration-150 hover:bg-[rgba(20,184,138,0.06)] disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() => setShowAddForm(true)}
             disabled={showAddForm}
           >
@@ -81,30 +86,36 @@ interface FlagRowProps {
 
 function FlagRow({ flag, onToggle, onDelete }: FlagRowProps) {
   return (
-    <div className={styles.flagRow}>
-      <div className={styles.flagInfo}>
-        <div className={styles.flagNameRow}>
-          <span className={styles.flagName}>{flag.name}</span>
-          <span className={styles.flagScope}>{flag.scope}</span>
+    <div className="flex items-center justify-between gap-4 py-3 border-b border-border last:border-b-0">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-foreground">{flag.name}</span>
+          <span className="text-[11px] font-medium text-tertiary-foreground bg-secondary px-1.5 py-px rounded-[3px] uppercase tracking-[0.03em]">{flag.scope}</span>
         </div>
-        {flag.description && <p className={styles.flagDesc}>{flag.description}</p>}
-        {flag.target && <p className={styles.flagTarget}>Target: {flag.target}</p>}
+        {flag.description && <p className="text-[13px] text-muted-foreground mt-0.5 mb-0">{flag.description}</p>}
+        {flag.target && <p className="text-xs text-tertiary-foreground mt-0.5 mb-0 font-mono">{flag.target}</p>}
       </div>
-      <div className={styles.flagActions}>
-        <label className={styles.toggle}>
+      <div className="flex items-center gap-2 shrink-0">
+        <label className="relative inline-flex cursor-pointer">
           <input
             type="checkbox"
             checked={flag.enabled}
             onChange={(e) => onToggle(e.target.checked)}
-            className={styles.toggleInput}
+            className="absolute opacity-0 w-0 h-0"
           />
-          <span className={`${styles.toggleTrack} ${flag.enabled ? styles.toggleTrackOn : ''}`}>
-            <span className={styles.toggleThumb} />
+          <span className={cn(
+            "w-9 h-5 rounded-[10px] relative transition-colors duration-200",
+            flag.enabled ? "bg-primary" : "bg-border-strong"
+          )}>
+            <span className={cn(
+              "absolute top-0.5 left-0.5 w-4 h-4 bg-background rounded-full transition-transform duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.15)]",
+              flag.enabled && "translate-x-4"
+            )} />
           </span>
         </label>
         <button
           type="button"
-          className={styles.deleteBtn}
+          className="inline-flex items-center justify-center w-7 h-7 border-none bg-none rounded text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-[rgba(239,68,68,0.08)] hover:text-destructive"
           onClick={onDelete}
           aria-label={`Delete ${flag.name}`}
           title="Delete flag"
@@ -140,17 +151,17 @@ function AddFlagForm({ onAdd, onCancel }: AddFlagFormProps) {
   );
 
   return (
-    <form className={styles.addForm} onSubmit={handleSubmit}>
-      <div className={styles.addFormRow}>
+    <form className="py-3 border-t border-border flex flex-col gap-2" onSubmit={handleSubmit}>
+      <div className="flex gap-2">
         <input
-          className={styles.addInput}
+          className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
           placeholder="Flag name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           autoFocus
         />
         <select
-          className={styles.addSelect}
+          className="px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none cursor-pointer bg-background text-foreground"
           value={scope}
           onChange={(e) => setScope(e.target.value as 'page' | 'component')}
         >
@@ -159,19 +170,19 @@ function AddFlagForm({ onAdd, onCancel }: AddFlagFormProps) {
         </select>
       </div>
       <input
-        className={styles.addInput}
+        className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
         placeholder="Route path or component target (e.g. /admin/billing)"
         value={target}
         onChange={(e) => setTarget(e.target.value)}
       />
       <input
-        className={styles.addInput}
+        className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
         placeholder="Description (optional)"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-      <div className={styles.addFormActions}>
-        <label className={styles.addCheckLabel}>
+      <div className="flex items-center justify-between">
+        <label className="flex items-center gap-1.5 text-[13px] text-muted-foreground cursor-pointer">
           <input
             type="checkbox"
             checked={enabled}
@@ -179,9 +190,21 @@ function AddFlagForm({ onAdd, onCancel }: AddFlagFormProps) {
           />
           Enabled
         </label>
-        <div className={styles.addFormBtns}>
-          <button type="button" className={styles.cancelFormBtn} onClick={onCancel}>Cancel</button>
-          <button type="submit" className={styles.saveFormBtn} disabled={!name.trim()}>Add</button>
+        <div className="flex gap-1.5">
+          <button
+            type="button"
+            className="px-3 py-1.5 text-[13px] font-sans font-medium text-muted-foreground bg-background border border-border rounded cursor-pointer hover:bg-secondary"
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-3 py-1.5 text-[13px] font-sans font-semibold text-primary-foreground bg-primary border-none rounded cursor-pointer hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!name.trim()}
+          >
+            Add
+          </button>
         </div>
       </div>
     </form>

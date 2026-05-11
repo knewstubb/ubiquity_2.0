@@ -1,11 +1,11 @@
 import { useState, useCallback, useMemo } from 'react';
+import { cn } from '../../lib/utils';
 import { Checkbox } from '../shared/Checkbox';
 import { DragHandle } from '../shared/DragHandle';
 import { getFieldsForDataType } from '../../data/fieldRegistry';
 import type { FieldDefinition } from '../../data/fieldRegistry';
 import type { WizardDraft } from '../../models/wizard';
-import type { SelectedField } from '../../models/connector';
-import styles from './FieldSelectionStep.module.css';
+import type { SelectedField } from '../../models/automation';
 
 interface FieldSelectionStepProps {
   draft: WizardDraft;
@@ -101,13 +101,13 @@ export function FieldSelectionStep({ draft, onUpdate }: FieldSelectionStepProps)
   const hasFields = draft.selectedFields.length > 0;
 
   return (
-    <div className={styles.step} data-testid="field-selection-step">
+    <div className="flex flex-col gap-6" data-testid="field-selection-step">
       {/* Available fields with checkboxes */}
-      <div className={styles.section}>
-        <span className={styles.sectionLabel}>Available Fields</span>
-        <span className={styles.hint}>Select the fields to include in your export</span>
-        <div className={styles.fieldList} role="group" aria-label="Available fields">
-          <div className={styles.selectAllRow}>
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-semibold text-foreground">Available Fields</span>
+        <span className="text-xs text-tertiary-foreground">Select the fields to include in your export</span>
+        <div className="border border-border rounded-md overflow-hidden" role="group" aria-label="Available fields">
+          <div className="flex items-center py-2 px-3 border-b border-border bg-secondary rounded-t-md">
             <Checkbox
               label="Select All"
               checked={allSelected}
@@ -116,51 +116,49 @@ export function FieldSelectionStep({ draft, onUpdate }: FieldSelectionStepProps)
             />
           </div>
           {availableFields.map((field) => (
-            <div key={field.key} className={styles.fieldItem}>
+            <div key={field.key} className="flex items-center gap-2 py-2 px-3 border-b border-border last:border-b-0 bg-background transition-colors duration-150 hover:bg-background">
               <Checkbox
                 label={field.label}
                 checked={selectedKeySet.has(field.key)}
                 onChange={() => handleToggleField(field)}
                 data-testid={`field-checkbox-${field.key}`}
               />
-              <span className={styles.fieldSource}>{field.source}</span>
+              <span className="text-xs text-tertiary-foreground ml-auto py-1 px-2 bg-secondary rounded-full">{field.source}</span>
             </div>
           ))}
         </div>
         {!hasFields && (
-          <span className={styles.hintError}>Select at least one field</span>
+          <span className="text-xs text-destructive">Select at least one field</span>
         )}
       </div>
 
       {/* Selected fields with drag-to-reorder */}
       {hasFields && (
-        <div className={styles.reorderSection}>
-          <span className={styles.sectionLabel}>Column Order</span>
-          <span className={styles.hint}>Drag to reorder the export columns</span>
-          <ul className={styles.reorderList} data-testid="reorder-list">
-            {draft.selectedFields.map((field, index) => {
-              let itemClass = styles.reorderItem;
-              if (dragIndex === index) itemClass += ` ${styles.reorderItemDragging}`;
-              if (dragOverIndex === index) itemClass += ` ${styles.reorderItemOver}`;
-
-              return (
-                <li
-                  key={field.key}
-                  className={itemClass}
-                  draggable
-                  onDragStart={() => handleDragStart(index)}
-                  onDragOver={(e) => handleDragOver(e, index)}
-                  onDrop={(e) => handleDrop(e, index)}
-                  onDragEnd={handleDragEnd}
-                  data-testid={`reorder-item-${field.key}`}
-                >
-                  <DragHandle />
-                  <span className={styles.orderNumber}>{index + 1}</span>
-                  <span className={styles.fieldLabel}>{field.label}</span>
-                  <span className={styles.fieldSource}>{field.source}</span>
-                </li>
-              );
-            })}
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-semibold text-foreground">Column Order</span>
+          <span className="text-xs text-tertiary-foreground">Drag to reorder the export columns</span>
+          <ul className="list-none m-0 p-0 border border-border rounded-md overflow-hidden" data-testid="reorder-list">
+            {draft.selectedFields.map((field, index) => (
+              <li
+                key={field.key}
+                className={cn(
+                  "flex items-center gap-2 py-2 px-3 border-b border-border last:border-b-0 bg-background cursor-grab transition-all duration-150 hover:bg-background active:cursor-grabbing active:bg-accent",
+                  dragIndex === index && "opacity-50 bg-accent shadow-md scale-[1.02] z-[1] relative",
+                  dragOverIndex === index && "border-t-2 border-t-primary pt-[calc(0.5rem-2px)]"
+                )}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDrop={(e) => handleDrop(e, index)}
+                onDragEnd={handleDragEnd}
+                data-testid={`reorder-item-${field.key}`}
+              >
+                <DragHandle />
+                <span className="text-xs text-tertiary-foreground min-w-5 text-center">{index + 1}</span>
+                <span className="text-sm text-foreground flex-1">{field.label}</span>
+                <span className="text-xs text-tertiary-foreground ml-auto py-1 px-2 bg-secondary rounded-full">{field.source}</span>
+              </li>
+            ))}
           </ul>
         </div>
       )}

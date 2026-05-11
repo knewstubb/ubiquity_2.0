@@ -7,7 +7,6 @@ import { CreateCampaignDialog } from '../components/campaign/CreateCampaignDialo
 import { DeleteConfirmDialog } from '../components/campaign/DeleteConfirmDialog';
 import { useAccount } from '../contexts/AccountContext';
 import { useCampaigns } from '../contexts/CampaignsContext';
-import styles from './CampaignsPage.module.css';
 
 export default function CampaignsPage() {
   const navigate = useNavigate();
@@ -80,14 +79,14 @@ export default function CampaignsPage() {
       title="Campaigns"
       subtitle="Campaign containers grouping related journeys"
       action={
-        <button className={styles.newCampaignButton} onClick={() => setCreateOpen(true)}>
+        <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground border-none rounded font-semibold text-sm cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2" onClick={() => setCreateOpen(true)}>
           <Plus size={16} weight="bold" />
           New Campaign
         </button>
       }
     >
       {filtered.length > 0 ? (
-        <div className={styles.grid}>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
           {filtered.map((campaign) => (
             <CampaignFolderCard
               key={campaign.id}
@@ -100,10 +99,10 @@ export default function CampaignsPage() {
           ))}
         </div>
       ) : (
-        <div className={styles.emptyState}>
-          <FolderOpen size={48} weight="duotone" className={styles.emptyIcon} />
-          <p className={styles.emptyTitle}>No campaigns found</p>
-          <p className={styles.emptyMessage}>
+        <div className="flex flex-col items-center justify-center py-12 px-6 text-center text-tertiary-foreground">
+          <FolderOpen size={48} weight="duotone" className="text-tertiary-foreground mb-3" />
+          <p className="text-base font-semibold text-muted-foreground m-0 mb-2">No campaigns found</p>
+          <p className="text-sm text-tertiary-foreground m-0">
             Create your first campaign to start organising journeys.
           </p>
         </div>

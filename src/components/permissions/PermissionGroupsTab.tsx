@@ -5,7 +5,6 @@ import { FUNCTIONAL_GROUPS } from '../../data/permissions';
 import { GroupSidebar } from './GroupSidebar';
 import { PermissionCard } from './PermissionCard';
 import { DeleteGroupDialog } from './DeleteGroupDialog';
-import styles from './PermissionGroupsTab.module.css';
 
 type CrudKey = 'create' | 'read' | 'update' | 'delete';
 
@@ -172,7 +171,7 @@ export function PermissionGroupsTab() {
 
   function renderEmptyState() {
     return (
-      <div className={styles.emptyState}>
+      <div className="flex items-center justify-center h-full font-sans text-base text-tertiary-foreground">
         Select a permission group or create a new one
       </div>
     );
@@ -180,15 +179,15 @@ export function PermissionGroupsTab() {
 
   function renderForm(mode: 'create' | 'edit') {
     return (
-      <div className={styles.detail}>
-        <div className={styles.form}>
-          <div className={styles.formField}>
-            <label className={styles.formLabel} htmlFor="group-name">
+      <div className="p-6 overflow-y-auto">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="font-sans text-sm font-medium text-foreground" htmlFor="group-name">
               Name
             </label>
             <input
               id="group-name"
-              className={styles.formInput}
+              className="px-3 py-2 border border-border rounded-md font-sans text-sm text-foreground bg-background transition-colors duration-150 focus:outline-none focus:border-primary focus:ring-2 focus:ring-accent placeholder:text-tertiary-foreground"
               type="text"
               value={draftName}
               onChange={(e) => {
@@ -197,22 +196,22 @@ export function PermissionGroupsTab() {
               }}
               placeholder="e.g. Marketing Team"
             />
-            {nameError && <p className={styles.validationError}>{nameError}</p>}
+            {nameError && <p className="font-sans text-xs text-destructive m-0">{nameError}</p>}
           </div>
-          <div className={styles.formField}>
-            <label className={styles.formLabel} htmlFor="group-description">
+          <div className="flex flex-col gap-1">
+            <label className="font-sans text-sm font-medium text-foreground" htmlFor="group-description">
               Description
             </label>
             <input
               id="group-description"
-              className={styles.formInput}
+              className="px-3 py-2 border border-border rounded-md font-sans text-sm text-foreground bg-background transition-colors duration-150 focus:outline-none focus:border-primary focus:ring-2 focus:ring-accent placeholder:text-tertiary-foreground"
               type="text"
               value={draftDescription}
               onChange={(e) => setDraftDescription(e.target.value)}
               placeholder="Describe this permission group"
             />
           </div>
-          <div className={styles.cardGrid}>
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
             {FUNCTIONAL_GROUPS.map((fg) => (
               <PermissionCard
                 key={fg}
@@ -223,14 +222,17 @@ export function PermissionGroupsTab() {
               />
             ))}
           </div>
-          <div className={styles.formActions}>
+          <div className="flex gap-3 mt-2">
             <button
-              className={styles.saveButton}
+              className="px-4 py-2 border-none rounded-md bg-primary font-sans text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={mode === 'create' ? handleSaveCreate : handleSaveEdit}
             >
               {mode === 'create' ? 'Create Group' : 'Save Changes'}
             </button>
-            <button className={styles.cancelButton} onClick={handleCancel}>
+            <button
+              className="px-4 py-2 border border-border rounded-md bg-transparent font-sans text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+              onClick={handleCancel}
+            >
               Cancel
             </button>
           </div>
@@ -243,20 +245,26 @@ export function PermissionGroupsTab() {
     if (!selectedGroup) return renderEmptyState();
 
     return (
-      <div className={styles.detail}>
-        <div className={styles.detailHeader}>
-          <h2 className={styles.groupName}>{selectedGroup.name}</h2>
-          <p className={styles.groupDescription}>{selectedGroup.description}</p>
-          <div className={styles.actions}>
-            <button className={styles.editButton} onClick={handleEditClick}>
+      <div className="p-6 overflow-y-auto">
+        <div className="mb-6">
+          <h2 className="font-sans text-xl font-semibold text-foreground m-0 mb-1">{selectedGroup.name}</h2>
+          <p className="font-sans text-sm text-muted-foreground m-0 mb-4 leading-normal">{selectedGroup.description}</p>
+          <div className="flex gap-3">
+            <button
+              className="px-4 py-2 border border-border rounded-md bg-transparent font-sans text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+              onClick={handleEditClick}
+            >
               Edit
             </button>
-            <button className={styles.deleteButton} onClick={handleDeleteClick}>
+            <button
+              className="px-4 py-2 border-none rounded-md bg-destructive font-sans text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 hover:bg-danger-hover focus-visible:outline-2 focus-visible:outline-destructive focus-visible:outline-offset-2"
+              onClick={handleDeleteClick}
+            >
               Delete
             </button>
           </div>
         </div>
-        <div className={styles.cardGrid}>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 mt-6">
           {FUNCTIONAL_GROUPS.map((fg) => (
             <PermissionCard
               key={fg}
@@ -275,7 +283,7 @@ export function PermissionGroupsTab() {
   // --- Main render ---
 
   return (
-    <div className={styles.container}>
+    <div className="grid grid-cols-[280px_1fr] h-full overflow-hidden">
       <GroupSidebar
         groups={permissionGroups}
         selectedGroupId={selectedGroupId}

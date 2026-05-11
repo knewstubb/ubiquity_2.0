@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useData } from '../../contexts/DataContext';
 import type { WizardDraft } from '../../models/wizard';
-import styles from './DataPreview.module.css';
 
 interface DataPreviewProps {
   draft: WizardDraft;
@@ -46,24 +45,24 @@ export function DataPreview({ draft }: DataPreviewProps) {
 
   if (draft.selectedFields.length === 0) {
     return (
-      <div className={styles.container} data-testid="data-preview">
-        <span className={styles.label}>Preview</span>
-        <div className={styles.emptyTable}>
-          <span className={styles.emptyText}>Select fields</span>
+      <div className="mt-2" data-testid="data-preview">
+        <span className="block text-sm font-semibold text-foreground mb-2">Preview</span>
+        <div className="border border-border rounded-md py-6 px-4 flex items-center justify-center bg-secondary">
+          <span className="text-sm text-tertiary-foreground">Select fields</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.container} data-testid="data-preview">
-      <span className={styles.label}>Preview</span>
-      <div className={styles.tableWrapper}>
-        <table className={styles.table}>
+    <div className="mt-2" data-testid="data-preview">
+      <span className="block text-sm font-semibold text-foreground mb-2">Preview</span>
+      <div className="overflow-x-auto border border-border rounded-md">
+        <table className="w-full border-collapse text-xs">
           <thead>
             <tr>
               {draft.selectedFields.map((f) => (
-                <th key={f.key} className={styles.th}>{f.label}</th>
+                <th key={f.key} className="text-left py-2 px-3 bg-secondary font-semibold text-muted-foreground border-b border-border whitespace-nowrap">{f.label}</th>
               ))}
             </tr>
           </thead>
@@ -71,7 +70,7 @@ export function DataPreview({ draft }: DataPreviewProps) {
             {rows.map((row, i) => (
               <tr key={i}>
                 {draft.selectedFields.map((f) => (
-                  <td key={f.key} className={styles.td}>{row[f.key]}</td>
+                  <td key={f.key} className="py-2 px-3 text-foreground border-b border-border whitespace-nowrap max-w-[200px] overflow-hidden text-ellipsis last:border-b-0">{row[f.key]}</td>
                 ))}
               </tr>
             ))}

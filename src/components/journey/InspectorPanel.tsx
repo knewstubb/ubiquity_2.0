@@ -19,6 +19,7 @@ import {
   ArrowsIn,
   GearSix,
 } from '@phosphor-icons/react';
+import { cn } from '../../lib/utils';
 import { useJourneys } from '../../contexts/JourneysContext';
 import type { JourneyNode, NodeType } from '../../models/journey';
 import { TriggerConfig } from './config/TriggerConfig';
@@ -27,7 +28,6 @@ import { WaitConfig } from './config/WaitConfig';
 import { BranchConfig } from './config/BranchConfig';
 import { EndConfig } from './config/EndConfig';
 import { JourneySettingsForm } from './config/JourneySettingsForm';
-import styles from './InspectorPanel.module.css';
 
 export interface InspectorPanelProps {
   journeyId: string;
@@ -64,6 +64,16 @@ const nodeTypeIcons: Record<string, React.ComponentType<{ size?: number; weight?
   'move-to-journey': ArrowSquareRight,
   // Join
   'join': ArrowsIn,
+};
+
+const headerIconClasses: Record<string, string> = {
+  trigger: 'text-mint-500 bg-[color-mix(in_srgb,var(--mint-500)_10%,transparent)]',
+  action: 'text-blue-500 bg-[color-mix(in_srgb,var(--color-blue-500)_10%,transparent)]',
+  wait: 'text-amber-500 bg-[color-mix(in_srgb,var(--color-amber-500)_10%,transparent)]',
+  branch: 'text-purple-500 bg-[color-mix(in_srgb,var(--color-purple-500)_10%,transparent)]',
+  end: 'text-tertiary-foreground bg-[color-mix(in_srgb,var(--tertiary-foreground)_10%,transparent)]',
+  join: 'text-border-strong bg-[color-mix(in_srgb,var(--border-strong)_10%,transparent)]',
+  settings: 'text-muted-foreground bg-secondary',
 };
 
 function getNodeIcon(node: JourneyNode): React.ComponentType<{ size?: number; weight?: string }> {
@@ -122,21 +132,23 @@ export function InspectorPanel({
   // Settings mode
   if (settingsMode) {
     return (
-      <aside className={styles.panel}>
-        <div className={styles.header}>
-          <div className={`${styles.headerIcon} ${styles.settings}`}>
+      <aside className="relative w-[300px] min-w-[300px] h-full bg-background border-l border-border font-sans flex flex-col animate-in slide-in-from-right duration-150">
+        <div className="flex items-center gap-2 p-4 border-b border-border min-h-[52px]">
+          <div className={cn('flex items-center justify-center shrink-0 w-7 h-7 rounded-sm', headerIconClasses.settings)}>
             <GearSix size={18} weight="duotone" />
           </div>
-          <span className={styles.headerLabel}>Journey Settings</span>
+          <span className="flex-1 text-sm font-semibold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+            Journey Settings
+          </span>
           <button
-            className={styles.closeButton}
+            className="flex items-center justify-center shrink-0 w-7 h-7 border-none bg-transparent rounded-sm text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary hover:text-foreground"
             onClick={onClose}
             aria-label="Close inspector"
           >
             <X size={16} weight="bold" />
           </button>
         </div>
-        <div className={styles.content}>
+        <div className="flex-1 overflow-y-auto p-4">
           <JourneySettingsForm journeyId={journeyId} />
         </div>
       </aside>
@@ -150,26 +162,28 @@ export function InspectorPanel({
   const nodeType = selectedNode.type;
 
   return (
-    <aside className={styles.panel}>
-      <div className={styles.header}>
-        <div className={`${styles.headerIcon} ${styles[nodeType]}`}>
+    <aside className="relative w-[300px] min-w-[300px] h-full bg-background border-l border-border font-sans flex flex-col animate-in slide-in-from-right duration-150">
+      <div className="flex items-center gap-2 p-4 border-b border-border min-h-[52px]">
+        <div className={cn('flex items-center justify-center shrink-0 w-7 h-7 rounded-sm', headerIconClasses[nodeType] ?? '')}>
           <Icon size={18} weight="duotone" />
         </div>
-        <span className={styles.headerLabel}>{selectedNode.label}</span>
+        <span className="flex-1 text-sm font-semibold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+          {selectedNode.label}
+        </span>
         <button
-          className={styles.closeButton}
+          className="flex items-center justify-center shrink-0 w-7 h-7 border-none bg-transparent rounded-sm text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary hover:text-foreground"
           onClick={onClose}
           aria-label="Close inspector"
         >
           <X size={16} weight="bold" />
         </button>
       </div>
-      <div className={styles.content}>
+      <div className="flex-1 overflow-y-auto p-4">
         {getConfigForm(nodeType, journeyId, selectedNode, onEditContent)}
       </div>
-      <div className={styles.footer}>
+      <div className="p-4 border-t border-border">
         <button
-          className={styles.deleteButton}
+          className="flex items-center justify-center gap-1 w-full px-4 py-2 border border-red-500 rounded-sm bg-transparent text-red-500 font-sans text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-red-500 hover:text-primary-foreground"
           onClick={() => onDeleteNode(selectedNode.id)}
         >
           <Trash size={16} weight="bold" />

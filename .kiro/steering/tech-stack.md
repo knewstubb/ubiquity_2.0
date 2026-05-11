@@ -6,7 +6,12 @@ inclusion: always
 
 React 19 + TypeScript + Vite
 
-CSS Modules ONLY — never Tailwind, never CSS-in-JS, never inline styles
+Styling — single system:
+- Tailwind CSS is the single styling mechanism for all components
+- `cn()` utility from `src/lib/utils.ts` for conditional class composition
+- `src/styles/globals.css` is the single source of truth for design tokens
+- No CSS Modules, no CSS-in-JS, no inline styles
+- Preflight disabled — no global resets from Tailwind
 
 Phosphor Icons from @phosphor-icons/react
 

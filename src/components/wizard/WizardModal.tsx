@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useConnectors } from '../../contexts/ConnectorsContext';
+import { useAutomations } from '../../contexts/AutomationsContext';
 import { useConnections } from '../../contexts/ConnectionsContext';
 import { WizardStepper } from './WizardStepper';
 import { WizardNavButtons } from './WizardNavButtons';
@@ -16,7 +16,6 @@ import {
   DEFAULT_SCHEDULE_CONFIG,
   DEFAULT_NOTIFICATIONS,
 } from '../../models/wizard';
-import styles from './WizardModal.module.css';
 
 interface WizardModalProps {
   connectionId: string;
@@ -62,14 +61,14 @@ export function WizardModal({
   onSave,
   onClose,
 }: WizardModalProps) {
-  const { connectors } = useConnectors();
+  const { automations } = useAutomations();
   const { getConnectionById } = useConnections();
   const connection = getConnectionById(connectionId);
 
   // Build initial draft — from existing connector in edit mode, or defaults
   const initialDraft = useMemo<WizardDraft>(() => {
     if (editConnectorId) {
-      const existing = connectors.find((c) => c.id === editConnectorId);
+      const existing = automations.find((c) => c.id === editConnectorId);
       if (existing) {
         return {
           connectionId: existing.connectionId,
@@ -89,7 +88,7 @@ export function WizardModal({
       }
     }
     return createDefaultDraft(connectionId, connectorName);
-  }, [editConnectorId, connectors, connectionId, connectorName]);
+  }, [editConnectorId, automations, connectionId, connectorName]);
 
   const [draft, setDraft] = useState<WizardDraft>(initialDraft);
   const [currentStep, setCurrentStep] = useState(0);
@@ -203,23 +202,23 @@ export function WizardModal({
 
   return (
     <div
-      className={styles.backdrop}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 animate-[fadeIn_200ms_ease]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="wizard-modal-title"
       data-testid="wizard-modal"
     >
-      <div className={styles.modal}>
+      <div className="w-[60vw] max-w-[1080px] h-[80vh] bg-background rounded-lg shadow-xl flex overflow-hidden animate-[slideUp_200ms_ease]">
         {/* Left sidebar */}
-        <div className={styles.sidebar}>
-          <div className={styles.sidebarHeader}>
-            <div className={styles.sidebarIcon}>
+        <div className="w-[239px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto z-[2] relative shadow-[2px_0_8px_rgba(0,0,0,0.04)]">
+          <div className="flex flex-col items-center text-center gap-1">
+            <div className="w-10 h-10 flex items-center justify-center text-primary mb-1">
               <UploadIcon />
             </div>
-            <h2 id="wizard-modal-title" className={styles.sidebarConnectionName}>
+            <h2 id="wizard-modal-title" className="m-0 text-base font-bold text-foreground leading-tight">
               {connection?.name ?? connectorName}
             </h2>
-            <span className={styles.sidebarLabel}>Exporter</span>
+            <span className="text-[11px] font-medium text-tertiary-foreground uppercase tracking-wider">Exporter</span>
           </div>
           <WizardStepper
             steps={STEPS}
@@ -230,11 +229,11 @@ export function WizardModal({
         </div>
 
         {/* Right content area */}
-        <div className={styles.contentArea}>
-          <div className={styles.contentHeader}>
+        <div className="flex-1 flex flex-col min-w-0 bg-background">
+          <div className="flex items-center justify-end py-4 px-6 shrink-0">
             <button
               type="button"
-              className={styles.closeButton}
+              className="flex items-center justify-center w-8 h-8 border-none rounded-md bg-transparent text-tertiary-foreground cursor-pointer transition-all duration-150 hover:bg-background-sunken hover:text-foreground focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               onClick={handleCloseClick}
               aria-label="Close wizard"
               data-testid="wizard-close-button"
@@ -243,11 +242,11 @@ export function WizardModal({
             </button>
           </div>
 
-          <div className={styles.contentBody} data-testid="wizard-step-content">
+          <div className="flex-1 overflow-y-auto py-4 px-10 pb-10 flex flex-col gap-8 scrollbar-gutter-stable" data-testid="wizard-step-content">
             {stepContent}
           </div>
 
-          <div className={styles.navBar}>
+          <div className="shrink-0 py-4 px-6 shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
             <WizardNavButtons
               onBack={handleBack}
               onNext={handleNext}
@@ -262,30 +261,30 @@ export function WizardModal({
       {/* Discard changes confirmation */}
       {showDiscardConfirm && (
         <div
-          className={styles.confirmBackdrop}
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40"
           role="dialog"
           aria-modal="true"
           aria-labelledby="discard-confirm-title"
           data-testid="discard-confirm"
         >
-          <div className={styles.confirmDialog}>
-            <h2 id="discard-confirm-title" className={styles.confirmTitle}>
+          <div className="bg-background rounded-lg shadow-xl p-6 w-full max-w-[420px] animate-[slideUp_200ms_ease]">
+            <h2 id="discard-confirm-title" className="m-0 mb-3 text-lg font-semibold text-foreground">
               Discard changes?
             </h2>
-            <p className={styles.confirmMessage}>
+            <p className="m-0 mb-6 text-sm text-muted-foreground leading-normal">
               You have unsaved changes. Are you sure you want to discard them?
             </p>
-            <div className={styles.confirmActions}>
+            <div className="flex justify-end gap-3">
               <button
                 type="button"
-                className={styles.confirmCancel}
+                className="py-2 px-4 border border-border rounded-md bg-transparent text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                 onClick={() => setShowDiscardConfirm(false)}
               >
                 Keep editing
               </button>
               <button
                 type="button"
-                className={styles.confirmDiscard}
+                className="py-2 px-4 border-none rounded-md bg-destructive text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 hover:bg-danger-hover focus-visible:outline-2 focus-visible:outline-destructive focus-visible:outline-offset-2"
                 onClick={onClose}
               >
                 Discard

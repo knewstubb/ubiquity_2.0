@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Plus, DownloadSimple, MagnifyingGlass, FunnelSimple, CaretLeft } from '@phosphor-icons/react';
-import styles from './HeaderPlaygroundPage.module.css';
+import { cn } from '../lib/utils';
 
 // ---------------------------------------------------------------------------
 // Sample data
@@ -14,6 +14,26 @@ const SAMPLE_BREADCRUMBS = [
 ];
 const SAMPLE_FILTERS = ['Status', 'Type', 'Date Range', 'Account'];
 const SAMPLE_STATUS_OPTIONS = ['Active', 'Draft', 'Paused', 'Completed', 'Error'];
+
+// ---------------------------------------------------------------------------
+// Badge class map
+// ---------------------------------------------------------------------------
+
+const badgeClasses: Record<string, string> = {
+  Active: 'bg-[rgba(20,184,138,0.12)] text-primary',
+  Draft: 'bg-[rgba(161,161,170,0.15)] text-muted-foreground',
+  Paused: 'bg-[rgba(245,158,11,0.12)] text-warning',
+  Completed: 'bg-[rgba(56,189,248,0.12)] text-info',
+  Error: 'bg-[rgba(239,68,68,0.12)] text-destructive',
+};
+
+const tableBadgeClasses: Record<string, string> = {
+  Active: 'bg-[rgba(20,184,138,0.12)] text-primary',
+  Paused: 'bg-[rgba(161,161,170,0.12)] text-muted-foreground',
+  Error: 'bg-[rgba(239,68,68,0.12)] text-destructive',
+  Completed: 'bg-[rgba(56,189,248,0.12)] text-info',
+  Draft: 'bg-[rgba(161,161,170,0.12)] text-tertiary-foreground',
+};
 
 // ---------------------------------------------------------------------------
 // Component
@@ -50,17 +70,17 @@ export default function HeaderPlaygroundPage() {
   const visibleFilters = SAMPLE_FILTERS.slice(0, filterCount);
 
   return (
-    <div className={styles.page}>
+    <div className="w-full max-w-[1440px] mx-auto min-h-[calc(100vh-85px)] p-0 bg-background relative">
       {/* ── The Header Preview ── */}
-      <div className={styles.headerPreview}>
+      <div className="bg-background border-b border-border px-8 pt-4">
         {/* Row 1: Breadcrumbs */}
         {showBreadcrumbs && (
-          <div className={styles.breadcrumbRow}>
-            <CaretLeft size={14} weight="bold" className={styles.breadcrumbBack} />
+          <div className="flex items-center gap-1 mb-2 text-[13px]">
+            <CaretLeft size={14} weight="bold" className="text-tertiary-foreground mr-1" />
             {visibleBreadcrumbs.map((crumb, i) => (
-              <span key={i} className={styles.breadcrumbItem}>
-                {i > 0 && <span className={styles.breadcrumbSep}>/</span>}
-                <span className={i === visibleBreadcrumbs.length - 1 ? styles.breadcrumbCurrent : styles.breadcrumbLink}>
+              <span key={i} className="inline-flex items-center">
+                {i > 0 && <span className="mx-1.5 text-border-strong">/</span>}
+                <span className={i === visibleBreadcrumbs.length - 1 ? 'text-muted-foreground' : 'text-primary cursor-pointer hover:underline'}>
                   {crumb.label}
                 </span>
               </span>
@@ -69,29 +89,29 @@ export default function HeaderPlaygroundPage() {
         )}
 
         {/* Row 2: Title + Actions */}
-        <div className={styles.titleRow}>
-          <div className={styles.titleGroup}>
-            <div className={styles.titleWithBadge}>
-              <h1 className={styles.title}>Page Title</h1>
+        <div className="flex items-start justify-between gap-6 pb-4">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-[22px] font-semibold text-foreground m-0">Page Title</h1>
               {showStatusBadge && (
-                <span className={`${styles.badge} ${styles[`badge${statusBadge}`] || styles.badgeActive}`}>
+                <span className={cn('text-xs font-semibold px-2 py-0.5 rounded-[10px] whitespace-nowrap', badgeClasses[statusBadge] || badgeClasses.Active)}>
                   {statusBadge}
                 </span>
               )}
             </div>
             {showSubtitle && (
-              <p className={styles.subtitle}>A brief description of what this page does and why it exists.</p>
+              <p className="text-sm text-tertiary-foreground m-0">A brief description of what this page does and why it exists.</p>
             )}
           </div>
-          <div className={styles.actions}>
+          <div className="flex gap-2 shrink-0">
             {showSecondaryAction && (
-              <button type="button" className={styles.secondaryBtn}>
+              <button type="button" className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-sans font-medium text-foreground bg-background border border-border rounded cursor-pointer hover:bg-background">
                 <DownloadSimple size={16} weight="bold" />
                 Export
               </button>
             )}
             {showPrimaryAction && (
-              <button type="button" className={styles.primaryBtn}>
+              <button type="button" className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-sans font-semibold text-primary-foreground bg-primary border-none rounded cursor-pointer hover:bg-accent-hover">
                 <Plus size={16} weight="bold" />
                 Create New
               </button>
@@ -101,12 +121,15 @@ export default function HeaderPlaygroundPage() {
 
         {/* Row 3: Tabs */}
         {showTabs && (
-          <div className={styles.tabRow}>
+          <div className="flex gap-0 border-b-2 border-border -mx-8 px-8">
             {visibleTabs.map((tab) => (
               <button
                 key={tab}
                 type="button"
-                className={`${styles.tab} ${activeTab === tab ? styles.tabActive : ''}`}
+                className={cn(
+                  'px-4 py-2.5 text-sm font-sans font-medium text-muted-foreground bg-transparent border-none border-b-2 border-transparent -mb-[2px] cursor-pointer transition-colors duration-150 hover:text-foreground',
+                  activeTab === tab && 'text-primary border-b-primary font-semibold'
+                )}
                 onClick={() => setActiveTab(tab)}
               >
                 {tab}
@@ -117,39 +140,39 @@ export default function HeaderPlaygroundPage() {
 
         {/* Row 4: Filters */}
         {(showFilters || showSearch) && (
-          <div className={styles.filterRow}>
+          <div className="flex items-center gap-2 py-3 flex-wrap">
             {showSearch && (
-              <div className={styles.searchWrap}>
-                <MagnifyingGlass size={14} weight="regular" className={styles.searchIcon} />
-                <input type="text" className={styles.searchInput} placeholder="Search..." />
+              <div className="relative inline-flex items-center">
+                <MagnifyingGlass size={14} weight="regular" className="absolute left-2.5 text-tertiary-foreground pointer-events-none" />
+                <input type="text" className="py-[7px] pr-2.5 pl-[30px] text-[13px] font-sans border border-border rounded outline-none w-[180px] text-foreground focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]" placeholder="Search..." />
               </div>
             )}
             {showFilters && visibleFilters.map((filter) => (
-              <button key={filter} type="button" className={styles.filterBtn}>
+              <button key={filter} type="button" className="inline-flex items-center gap-[5px] py-[7px] px-3 text-[13px] font-sans font-medium text-muted-foreground bg-background border border-border rounded cursor-pointer hover:border-border-strong">
                 <FunnelSimple size={14} weight="regular" />
                 {filter}
               </button>
             ))}
             {showFilters && (
-              <button type="button" className={styles.resetBtn}>Reset</button>
+              <button type="button" className="py-[7px] px-3 text-[13px] font-sans font-medium text-primary bg-transparent border-none cursor-pointer hover:underline">Reset</button>
             )}
           </div>
         )}
 
         {/* Row 5: Bulk Actions */}
         {showBulkActions && (
-          <div className={styles.bulkRow}>
-            <span className={styles.bulkCount}>{selectedCount} items selected</span>
-            <button type="button" className={styles.bulkBtn}>Move</button>
-            <button type="button" className={styles.bulkBtn}>Tag</button>
-            <button type="button" className={styles.bulkBtnDanger}>Delete</button>
-            <button type="button" className={styles.bulkCancel}>Clear selection</button>
+          <div className="flex items-center gap-2.5 py-2.5 border-t border-border">
+            <span className="text-[13px] font-semibold text-foreground mr-2">{selectedCount} items selected</span>
+            <button type="button" className="px-3 py-1.5 text-[13px] font-sans font-medium text-foreground bg-background border border-border rounded cursor-pointer">Move</button>
+            <button type="button" className="px-3 py-1.5 text-[13px] font-sans font-medium text-foreground bg-background border border-border rounded cursor-pointer">Tag</button>
+            <button type="button" className="px-3 py-1.5 text-[13px] font-sans font-medium text-destructive bg-background border border-destructive-border rounded cursor-pointer">Delete</button>
+            <button type="button" className="px-3 py-1.5 text-[13px] font-sans font-medium text-tertiary-foreground bg-transparent border-none cursor-pointer ml-auto">Clear selection</button>
           </div>
         )}
       </div>
 
       {/* ── Body Content ── */}
-      <div className={styles.contentArea}>
+      <div className="p-8">
         {bodyLayout === 'dashboard' && <DashboardBody />}
         {bodyLayout === 'table' && <TableBody />}
         {bodyLayout === 'cards' && <CardListBody />}
@@ -160,11 +183,11 @@ export default function HeaderPlaygroundPage() {
       </div>
 
       {/* ── Control Panel (bottom-right) ── */}
-      <div className={styles.controlPanel}>
-        <h3 className={styles.controlTitle}>Header Controls</h3>
+      <div className="fixed bottom-4 right-4 w-[280px] max-h-[calc(100vh-120px)] overflow-y-auto bg-background border border-border rounded-lg shadow-lg p-4 z-50 [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-thumb]:bg-border-strong [&::-webkit-scrollbar-thumb]:rounded-sm">
+        <h3 className="text-sm font-semibold text-foreground mb-3">Header Controls</h3>
 
-        <div className={styles.controlSection}>
-          <h4 className={styles.controlSectionTitle}>Toggle Elements</h4>
+        <div className="mb-4 pb-3 border-b border-secondary">
+          <h4 className="text-[11px] font-semibold text-tertiary-foreground uppercase tracking-wide mb-2">Toggle Elements</h4>
           <ToggleRow label="Breadcrumbs" checked={showBreadcrumbs} onChange={setShowBreadcrumbs} />
           <ToggleRow label="Subtitle" checked={showSubtitle} onChange={setShowSubtitle} />
           <ToggleRow label="Status Badge" checked={showStatusBadge} onChange={setShowStatusBadge} />
@@ -176,18 +199,18 @@ export default function HeaderPlaygroundPage() {
           <ToggleRow label="Bulk Actions" checked={showBulkActions} onChange={setShowBulkActions} />
         </div>
 
-        <div className={styles.controlSection}>
-          <h4 className={styles.controlSectionTitle}>Counts</h4>
+        <div className="mb-4 pb-3 border-b border-secondary">
+          <h4 className="text-[11px] font-semibold text-tertiary-foreground uppercase tracking-wide mb-2">Counts</h4>
           <CountRow label="Tabs" value={tabCount} min={1} max={5} onChange={setTabCount} />
           <CountRow label="Breadcrumbs" value={breadcrumbCount} min={1} max={3} onChange={setBreadcrumbCount} />
           <CountRow label="Filters" value={filterCount} min={1} max={4} onChange={setFilterCount} />
           <CountRow label="Selected Items" value={selectedCount} min={1} max={50} onChange={setSelectedCount} />
         </div>
 
-        <div className={styles.controlSection}>
-          <h4 className={styles.controlSectionTitle}>Status Badge</h4>
+        <div className="mb-4 pb-3 border-b border-secondary">
+          <h4 className="text-[11px] font-semibold text-tertiary-foreground uppercase tracking-wide mb-2">Status Badge</h4>
           <select
-            className={styles.controlSelect}
+            className="w-full py-1.5 px-2.5 text-[13px] font-sans border border-border rounded outline-none cursor-pointer bg-background text-foreground"
             value={statusBadge}
             onChange={(e) => setStatusBadge(e.target.value)}
           >
@@ -197,10 +220,10 @@ export default function HeaderPlaygroundPage() {
           </select>
         </div>
 
-        <div className={styles.controlSection}>
-          <h4 className={styles.controlSectionTitle}>Body Layout</h4>
+        <div className="mb-0 pb-0 border-b-0">
+          <h4 className="text-[11px] font-semibold text-tertiary-foreground uppercase tracking-wide mb-2">Body Layout</h4>
           <select
-            className={styles.controlSelect}
+            className="w-full py-1.5 px-2.5 text-[13px] font-sans border border-border rounded outline-none cursor-pointer bg-background text-foreground"
             value={bodyLayout}
             onChange={(e) => setBodyLayout(e.target.value as BodyLayout)}
           >
@@ -224,21 +247,21 @@ export default function HeaderPlaygroundPage() {
 
 function ToggleRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <label className={styles.toggleRow}>
-      <span className={styles.toggleLabel}>{label}</span>
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className={styles.toggleCheckbox} />
+    <label className="flex items-center justify-between py-1 cursor-pointer">
+      <span className="text-[13px] text-foreground">{label}</span>
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="w-4 h-4 accent-primary cursor-pointer" />
     </label>
   );
 }
 
 function CountRow({ label, value, min, max, onChange }: { label: string; value: number; min: number; max: number; onChange: (v: number) => void }) {
   return (
-    <div className={styles.countRow}>
-      <span className={styles.toggleLabel}>{label}</span>
-      <div className={styles.countControls}>
-        <button type="button" className={styles.countBtn} onClick={() => onChange(Math.max(min, value - 1))} disabled={value <= min}>−</button>
-        <span className={styles.countValue}>{value}</span>
-        <button type="button" className={styles.countBtn} onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max}>+</button>
+    <div className="flex items-center justify-between py-1">
+      <span className="text-[13px] text-foreground">{label}</span>
+      <div className="flex items-center gap-1.5">
+        <button type="button" className="w-6 h-6 inline-flex items-center justify-center text-sm font-semibold text-foreground bg-secondary border-none rounded cursor-pointer hover:not-disabled:bg-background-sunken disabled:opacity-30 disabled:cursor-not-allowed" onClick={() => onChange(Math.max(min, value - 1))} disabled={value <= min}>−</button>
+        <span className="text-[13px] font-semibold text-foreground min-w-4 text-center">{value}</span>
+        <button type="button" className="w-6 h-6 inline-flex items-center justify-center text-sm font-semibold text-foreground bg-secondary border-none rounded cursor-pointer hover:not-disabled:bg-background-sunken disabled:opacity-30 disabled:cursor-not-allowed" onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max}>+</button>
       </div>
     </div>
   );
@@ -259,12 +282,12 @@ function DashboardBody() {
   ];
 
   return (
-    <div className={styles.dashboardGrid}>
+    <div className="grid grid-cols-3 gap-4">
       {metrics.map((m) => (
-        <div key={m.label} className={styles.metricCard}>
-          <span className={styles.metricLabel}>{m.label}</span>
-          <span className={styles.metricValue}>{m.value}</span>
-          <span className={styles.metricChange}>{m.change}</span>
+        <div key={m.label} className="bg-background border border-border rounded-lg p-5 flex flex-col gap-1">
+          <span className="text-[13px] text-tertiary-foreground font-medium">{m.label}</span>
+          <span className="text-[28px] font-bold text-foreground">{m.value}</span>
+          <span className="text-[13px] font-medium text-primary">{m.change}</span>
         </div>
       ))}
     </div>
@@ -282,28 +305,28 @@ function TableBody() {
   ];
 
   return (
-    <table className={styles.dataTable}>
+    <table className="w-full border-collapse bg-background border border-border rounded-lg overflow-hidden">
       <thead>
         <tr>
-          <th className={styles.tableCheckCol}><input type="checkbox" /></th>
-          <th className={styles.tableHeader}>Name</th>
-          <th className={styles.tableHeader}>Type</th>
-          <th className={styles.tableHeader}>Status</th>
-          <th className={styles.tableHeader}>Last Run</th>
-          <th className={styles.tableHeaderRight}>Records</th>
+          <th className="w-10 p-2.5 text-center"><input type="checkbox" /></th>
+          <th className="text-left p-2.5 text-[13px] font-semibold text-muted-foreground bg-background border-b border-border">Name</th>
+          <th className="text-left p-2.5 text-[13px] font-semibold text-muted-foreground bg-background border-b border-border">Type</th>
+          <th className="text-left p-2.5 text-[13px] font-semibold text-muted-foreground bg-background border-b border-border">Status</th>
+          <th className="text-left p-2.5 text-[13px] font-semibold text-muted-foreground bg-background border-b border-border">Last Run</th>
+          <th className="text-right p-2.5 text-[13px] font-semibold text-muted-foreground bg-background border-b border-border">Records</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((row) => (
-          <tr key={row.id} className={styles.tableRow}>
-            <td className={styles.tableCheckCol}><input type="checkbox" /></td>
-            <td className={styles.tableCell}><strong>{row.name}</strong></td>
-            <td className={styles.tableCell}>{row.type}</td>
-            <td className={styles.tableCell}>
-              <span className={`${styles.tableBadge} ${styles[`tableBadge${row.status}`]}`}>{row.status}</span>
+          <tr key={row.id} className="border-b border-secondary hover:bg-background">
+            <td className="w-10 p-2.5 text-center"><input type="checkbox" /></td>
+            <td className="p-2.5 text-sm text-foreground"><strong>{row.name}</strong></td>
+            <td className="p-2.5 text-sm text-foreground">{row.type}</td>
+            <td className="p-2.5 text-sm text-foreground">
+              <span className={cn('text-xs font-medium px-2 py-0.5 rounded-[10px]', tableBadgeClasses[row.status] || '')}>{row.status}</span>
             </td>
-            <td className={styles.tableCell}>{row.lastRun}</td>
-            <td className={styles.tableCellRight}>{row.records}</td>
+            <td className="p-2.5 text-sm text-foreground">{row.lastRun}</td>
+            <td className="p-2.5 text-sm text-foreground text-right tabular-nums">{row.records}</td>
           </tr>
         ))}
       </tbody>
@@ -321,14 +344,14 @@ function CardListBody() {
   ];
 
   return (
-    <div className={styles.cardList}>
+    <div className="flex flex-col gap-2">
       {items.map((item) => (
-        <div key={item.name} className={styles.listCard}>
-          <div className={styles.listCardMain}>
-            <span className={styles.listCardName}>{item.name}</span>
-            <span className={`${styles.tableBadge} ${styles[`tableBadge${item.status}`]}`}>{item.status}</span>
+        <div key={item.name} className="bg-background border border-border rounded-lg px-5 py-4 flex items-center justify-between cursor-pointer transition-shadow duration-150 hover:shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <span className="text-sm font-semibold text-foreground">{item.name}</span>
+            <span className={cn('text-xs font-medium px-2 py-0.5 rounded-[10px]', tableBadgeClasses[item.status] || '')}>{item.status}</span>
           </div>
-          <div className={styles.listCardMeta}>
+          <div className="flex gap-4 text-[13px] text-tertiary-foreground">
             <span>{item.journeys} journeys</span>
             <span>{item.sent} sent</span>
           </div>
@@ -351,15 +374,15 @@ function FileGridBody() {
   ];
 
   return (
-    <div className={styles.fileGrid}>
+    <div className="grid grid-cols-4 gap-4">
       {files.map((file) => (
-        <div key={file.name} className={styles.fileCard}>
-          <div className={styles.fileThumb}>
-            <span className={styles.fileExt}>{file.name.split('.').pop()?.toUpperCase()}</span>
+        <div key={file.name} className="bg-background border border-border rounded-lg overflow-hidden cursor-pointer transition-shadow duration-150 hover:shadow-md">
+          <div className="h-[100px] bg-secondary flex items-center justify-center">
+            <span className="text-base font-bold text-tertiary-foreground tracking-wide">{file.name.split('.').pop()?.toUpperCase()}</span>
           </div>
-          <div className={styles.fileInfo}>
-            <span className={styles.fileName}>{file.name}</span>
-            <span className={styles.fileMeta}>{file.type} · {file.size}</span>
+          <div className="px-3 py-2.5 flex flex-col gap-0.5">
+            <span className="text-[13px] font-medium text-foreground whitespace-nowrap overflow-hidden text-ellipsis">{file.name}</span>
+            <span className="text-xs text-tertiary-foreground">{file.type} · {file.size}</span>
           </div>
         </div>
       ))}
@@ -369,34 +392,34 @@ function FileGridBody() {
 
 function DetailBody() {
   return (
-    <div className={styles.detailLayout}>
-      <div className={styles.detailSection}>
-        <h3 className={styles.detailSectionTitle}>General Information</h3>
-        <div className={styles.detailField}>
-          <label className={styles.detailLabel}>Name</label>
-          <input type="text" className={styles.detailInput} defaultValue="Summer Glow Campaign" />
+    <div className="bg-background border border-border rounded-lg p-6 max-w-[640px] flex flex-col gap-6">
+      <div className="flex flex-col gap-3">
+        <h3 className="text-[15px] font-semibold text-foreground m-0">General Information</h3>
+        <div className="flex flex-col gap-1 flex-1">
+          <label className="text-[13px] font-medium text-muted-foreground">Name</label>
+          <input type="text" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]" defaultValue="Summer Glow Campaign" />
         </div>
-        <div className={styles.detailField}>
-          <label className={styles.detailLabel}>Description</label>
-          <textarea className={styles.detailTextarea} defaultValue="Drive summer bookings and product sales across all locations" rows={3} />
+        <div className="flex flex-col gap-1 flex-1">
+          <label className="text-[13px] font-medium text-muted-foreground">Description</label>
+          <textarea className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground resize-y min-h-[60px] focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]" defaultValue="Drive summer bookings and product sales across all locations" rows={3} />
         </div>
-        <div className={styles.detailRow}>
-          <div className={styles.detailField}>
-            <label className={styles.detailLabel}>Start Date</label>
-            <input type="date" className={styles.detailInput} defaultValue="2025-11-15" />
+        <div className="flex gap-4">
+          <div className="flex flex-col gap-1 flex-1">
+            <label className="text-[13px] font-medium text-muted-foreground">Start Date</label>
+            <input type="date" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]" defaultValue="2025-11-15" />
           </div>
-          <div className={styles.detailField}>
-            <label className={styles.detailLabel}>End Date</label>
-            <input type="date" className={styles.detailInput} defaultValue="2026-02-28" />
+          <div className="flex flex-col gap-1 flex-1">
+            <label className="text-[13px] font-medium text-muted-foreground">End Date</label>
+            <input type="date" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]" defaultValue="2026-02-28" />
           </div>
         </div>
       </div>
-      <div className={styles.detailSection}>
-        <h3 className={styles.detailSectionTitle}>Tags</h3>
-        <div className={styles.detailTags}>
-          <span className={styles.detailTag}>seasonal</span>
-          <span className={styles.detailTag}>summer</span>
-          <span className={styles.detailTag}>national</span>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-[15px] font-semibold text-foreground m-0">Tags</h3>
+        <div className="flex gap-1.5">
+          <span className="text-xs font-medium px-2.5 py-[3px] rounded-xl bg-secondary text-muted-foreground">seasonal</span>
+          <span className="text-xs font-medium px-2.5 py-[3px] rounded-xl bg-secondary text-muted-foreground">summer</span>
+          <span className="text-xs font-medium px-2.5 py-[3px] rounded-xl bg-secondary text-muted-foreground">national</span>
         </div>
       </div>
     </div>
@@ -405,25 +428,28 @@ function DetailBody() {
 
 function SplitPanelBody() {
   return (
-    <div className={styles.splitLayout}>
-      <div className={styles.splitSidebar}>
-        <h4 className={styles.splitSidebarTitle}>Navigation</h4>
+    <div className="flex gap-0 bg-background border border-border rounded-lg overflow-hidden min-h-[400px]">
+      <div className="w-[200px] border-r border-border py-4 bg-background">
+        <h4 className="text-[11px] font-semibold text-tertiary-foreground uppercase tracking-wide px-4 mb-2">Navigation</h4>
         {['General', 'Permissions', 'Notifications', 'Integrations', 'Advanced'].map((item, i) => (
-          <button key={item} type="button" className={`${styles.splitNavItem} ${i === 0 ? styles.splitNavItemActive : ''}`}>
+          <button key={item} type="button" className={cn(
+            'block w-full text-left px-4 py-2 text-sm font-sans text-muted-foreground bg-transparent border-none cursor-pointer hover:bg-secondary',
+            i === 0 && 'text-primary font-semibold bg-[rgba(20,184,138,0.06)] border-l-2 border-l-primary'
+          )}>
             {item}
           </button>
         ))}
       </div>
-      <div className={styles.splitContent}>
-        <h3 className={styles.detailSectionTitle}>General Settings</h3>
-        <p className={styles.splitText}>This is the main content area of a split-panel layout. The sidebar provides navigation between sections while the content area shows the active section's details.</p>
-        <div className={styles.detailField}>
-          <label className={styles.detailLabel}>Workspace Name</label>
-          <input type="text" className={styles.detailInput} defaultValue="Serenity Spa Group" />
+      <div className="flex-1 p-6 flex flex-col gap-4">
+        <h3 className="text-[15px] font-semibold text-foreground m-0">General Settings</h3>
+        <p className="text-sm text-muted-foreground leading-normal m-0">This is the main content area of a split-panel layout. The sidebar provides navigation between sections while the content area shows the active section's details.</p>
+        <div className="flex flex-col gap-1 flex-1">
+          <label className="text-[13px] font-medium text-muted-foreground">Workspace Name</label>
+          <input type="text" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]" defaultValue="Serenity Spa Group" />
         </div>
-        <div className={styles.detailField}>
-          <label className={styles.detailLabel}>Default Timezone</label>
-          <select className={styles.detailInput}><option>Pacific/Auckland</option></select>
+        <div className="flex flex-col gap-1 flex-1">
+          <label className="text-[13px] font-medium text-muted-foreground">Default Timezone</label>
+          <select className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground"><option>Pacific/Auckland</option></select>
         </div>
       </div>
     </div>
@@ -432,11 +458,11 @@ function SplitPanelBody() {
 
 function EmptyStateBody() {
   return (
-    <div className={styles.emptyBody}>
-      <div className={styles.emptyIcon}>📭</div>
-      <h3 className={styles.emptyTitle}>No items yet</h3>
-      <p className={styles.emptyText}>Get started by creating your first item. It only takes a moment.</p>
-      <button type="button" className={styles.primaryBtn}>
+    <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+      <div className="text-5xl mb-4">📭</div>
+      <h3 className="text-lg font-semibold text-foreground mb-2">No items yet</h3>
+      <p className="text-sm text-tertiary-foreground mb-6 max-w-[320px]">Get started by creating your first item. It only takes a moment.</p>
+      <button type="button" className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-sans font-semibold text-primary-foreground bg-primary border-none rounded cursor-pointer hover:bg-accent-hover">
         <Plus size={16} weight="bold" />
         Create First Item
       </button>

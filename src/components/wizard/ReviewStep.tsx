@@ -1,10 +1,9 @@
 import { useConnections } from '../../contexts/ConnectionsContext';
 import type { WizardDraft } from '../../models/wizard';
-import type { ExportDataType, ScheduleFrequency, FileType } from '../../models/connector';
+import type { ExportDataType, ScheduleFrequency, FileType } from '../../models/automation';
 import { summariseFilterGroup, hasCompleteRules } from '../../utils/filterSummary';
 import type { GroupSummary, RuleSummary } from '../../utils/filterSummary';
 import { getFieldByKey } from '../../data/fieldRegistry';
-import styles from './ReviewStep.module.css';
 
 interface ReviewStepProps {
   draft: WizardDraft;
@@ -40,7 +39,6 @@ const DATE_FORMAT_LABELS: Record<string, string> = {
 
 function getFileTypeLabel(ft: FileType): string {
   if (ft === 'csv') return 'CSV';
-  // The XLSX option is stored as 'json' due to the FileType union — display as XLSX
   return 'XLSX';
 }
 
@@ -57,7 +55,7 @@ function renderSummaryItems(summary: GroupSummary): React.ReactNode[] {
   summary.items.forEach((item, i) => {
     if (i > 0) {
       nodes.push(
-        <span key={`comb-${i}`} className={styles.combinator}> {summary.combinator} </span>
+        <span key={`comb-${i}`} className="text-xs font-semibold text-tertiary-foreground uppercase"> {summary.combinator} </span>
       );
     }
     if (isGroupSummary(item)) {
@@ -94,36 +92,36 @@ export function ReviewStep({ draft }: ReviewStepProps) {
     .replace(/\{timestamp\}/g, '1746835200');
 
   return (
-    <div className={styles.step} data-testid="review-step">
-      <h3 className={styles.heading}>Review</h3>
-      <p className={styles.description}>Review your automation configuration before saving.</p>
+    <div className="flex flex-col gap-6" data-testid="review-step">
+      <h3 className="text-lg font-semibold text-primary m-0">Review</h3>
+      <p className="text-sm text-tertiary-foreground -mt-5">Review your automation configuration before saving.</p>
 
       {/* Data Source — Step 0 */}
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Data Source</h3>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Connection</span>
-          <span className={styles.optionValue}>{connection ? connection.name : 'None selected'}</span>
+      <div className="bg-background border border-border rounded-md py-4 px-5 transition-shadow duration-150 hover:shadow-sm">
+        <h3 className="text-sm font-semibold text-foreground m-0">Data Source</h3>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Connection</span>
+          <span className="text-sm text-muted-foreground font-medium">{connection ? connection.name : 'None selected'}</span>
         </div>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Exporting From</span>
-          <span className={styles.optionValue}>{draft.dataType ? DATA_TYPE_LABELS[draft.dataType] : 'None selected'}</span>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Exporting From</span>
+          <span className="text-sm text-muted-foreground font-medium">{draft.dataType ? DATA_TYPE_LABELS[draft.dataType] : 'None selected'}</span>
         </div>
         {(draft.dataType === 'contact' || draft.dataType === 'transactional_with_contact') && (
-          <div className={styles.optionRow}>
-            <span className={styles.optionLabel}>Contacts Database</span>
-            <span className={styles.optionValue}>Customer Contacts</span>
+          <div className="flex justify-between py-1">
+            <span className="text-sm text-tertiary-foreground">Contacts Database</span>
+            <span className="text-sm text-muted-foreground font-medium">Customer Contacts</span>
           </div>
         )}
         {draft.enrichmentKeyField && (
-          <div className={styles.optionRow}>
-            <span className={styles.optionLabel}>Key Field</span>
-            <span className={styles.optionValue}>{draft.enrichmentKeyField} → ContactRecord.id</span>
+          <div className="flex justify-between py-1">
+            <span className="text-sm text-tertiary-foreground">Key Field</span>
+            <span className="text-sm text-muted-foreground font-medium">{draft.enrichmentKeyField} → ContactRecord.id</span>
           </div>
         )}
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Filters</span>
-          <span className={styles.optionValue}>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Filters</span>
+          <span className="text-sm text-muted-foreground font-medium">
             {hasCompleteRules(draft.filters)
               ? renderSummaryItems(summariseFilterGroup(draft.filters, getFieldByKey))
               : 'No filters applied'}
@@ -132,88 +130,88 @@ export function ReviewStep({ draft }: ReviewStepProps) {
       </div>
 
       {/* Field Mapping — Step 1 */}
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Field Mapping</h3>
+      <div className="bg-background border border-border rounded-md py-4 px-5 transition-shadow duration-150 hover:shadow-sm">
+        <h3 className="text-sm font-semibold text-foreground m-0">Field Mapping</h3>
         {draft.selectedFields.length > 0 ? (
-          <ol className={styles.fieldList}>
+          <ol className="list-none m-0 p-0 flex flex-col gap-1">
             {draft.selectedFields.map((field, index) => (
-              <li key={field.key} className={styles.fieldItem}>
-                <span className={styles.fieldIndex}>{index + 1}.</span>
+              <li key={field.key} className="text-sm text-muted-foreground">
+                <span className="text-tertiary-foreground mr-2 min-w-5 inline-block">{index + 1}.</span>
                 {field.label}
               </li>
             ))}
           </ol>
         ) : (
-          <p className={styles.sectionValue}>No fields selected</p>
+          <p className="text-sm text-muted-foreground m-0">No fields selected</p>
         )}
       </div>
 
       {/* File Configuration — Step 2 */}
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>File Configuration</h3>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>File Type</span>
-          <span className={styles.optionValue}>{getFileTypeLabel(draft.fileType)}</span>
+      <div className="bg-background border border-border rounded-md py-4 px-5 transition-shadow duration-150 hover:shadow-sm">
+        <h3 className="text-sm font-semibold text-foreground m-0">File Configuration</h3>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">File Type</span>
+          <span className="text-sm text-muted-foreground font-medium">{getFileTypeLabel(draft.fileType)}</span>
         </div>
         {draft.fileType === 'csv' && (
-          <div className={styles.optionRow}>
-            <span className={styles.optionLabel}>Delimiter</span>
-            <span className={styles.optionValue}>{DELIMITER_LABELS[draft.formatOptions.delimiter] ?? draft.formatOptions.delimiter}</span>
+          <div className="flex justify-between py-1">
+            <span className="text-sm text-tertiary-foreground">Delimiter</span>
+            <span className="text-sm text-muted-foreground font-medium">{DELIMITER_LABELS[draft.formatOptions.delimiter] ?? draft.formatOptions.delimiter}</span>
           </div>
         )}
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Header Row</span>
-          <span className={styles.optionValue}>{draft.formatOptions.includeHeader ? 'Enabled' : 'Disabled'}</span>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Header Row</span>
+          <span className="text-sm text-muted-foreground font-medium">{draft.formatOptions.includeHeader ? 'Enabled' : 'Disabled'}</span>
         </div>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Date Format</span>
-          <span className={styles.optionValue}>{DATE_FORMAT_LABELS[draft.formatOptions.dateFormat] ?? draft.formatOptions.dateFormat}</span>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Date Format</span>
+          <span className="text-sm text-muted-foreground font-medium">{DATE_FORMAT_LABELS[draft.formatOptions.dateFormat] ?? draft.formatOptions.dateFormat}</span>
         </div>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Timezone</span>
-          <span className={styles.optionValue}>{draft.formatOptions.timezone}</span>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Timezone</span>
+          <span className="text-sm text-muted-foreground font-medium">{draft.formatOptions.timezone}</span>
         </div>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>File Naming</span>
-          <span className={styles.optionValue}>{draft.fileNamingPattern}</span>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">File Naming</span>
+          <span className="text-sm text-muted-foreground font-medium">{draft.fileNamingPattern}</span>
         </div>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Output Path</span>
-          <span className={styles.optionValueMono}>{defaultFolder}</span>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Output Path</span>
+          <span className="text-sm text-muted-foreground font-medium font-mono break-all">{defaultFolder}</span>
         </div>
       </div>
 
       {/* Schedule — Step 3 */}
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Schedule</h3>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Frequency</span>
-          <span className={styles.optionValue}>{draft.schedule ? SCHEDULE_LABELS[draft.schedule] : 'None selected'}</span>
+      <div className="bg-background border border-border rounded-md py-4 px-5 transition-shadow duration-150 hover:shadow-sm">
+        <h3 className="text-sm font-semibold text-foreground m-0">Schedule</h3>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Frequency</span>
+          <span className="text-sm text-muted-foreground font-medium">{draft.schedule ? SCHEDULE_LABELS[draft.schedule] : 'None selected'}</span>
         </div>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Starting</span>
-          <span className={styles.optionValue}>{draft.scheduleConfig.starting}</span>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Starting</span>
+          <span className="text-sm text-muted-foreground font-medium">{draft.scheduleConfig.starting}</span>
         </div>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Every</span>
-          <span className={styles.optionValue}>{draft.scheduleConfig.every} {UNIT_MAP[draft.scheduleConfig.frequency]}</span>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Every</span>
+          <span className="text-sm text-muted-foreground font-medium">{draft.scheduleConfig.every} {UNIT_MAP[draft.scheduleConfig.frequency]}</span>
         </div>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>At</span>
-          <span className={styles.optionValue}>{draft.scheduleConfig.at}</span>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">At</span>
+          <span className="text-sm text-muted-foreground font-medium">{draft.scheduleConfig.at}</span>
         </div>
         {draft.scheduleConfig.frequency === 'weekly' && (
-          <div className={styles.optionRow}>
-            <span className={styles.optionLabel}>On</span>
-            <span className={styles.optionValue}>
+          <div className="flex justify-between py-1">
+            <span className="text-sm text-tertiary-foreground">On</span>
+            <span className="text-sm text-muted-foreground font-medium">
               {DAY_NAMES.filter((_, i) => draft.scheduleConfig.weeklyDays[i]).join(', ') || 'None'}
             </span>
           </div>
         )}
         {draft.scheduleConfig.frequency === 'monthly' && (
-          <div className={styles.optionRow}>
-            <span className={styles.optionLabel}>On the</span>
-            <span className={styles.optionValue}>
+          <div className="flex justify-between py-1">
+            <span className="text-sm text-tertiary-foreground">On the</span>
+            <span className="text-sm text-muted-foreground font-medium">
               {draft.scheduleConfig.monthlyPattern === 'day'
                 ? `${draft.scheduleConfig.monthlyOrdinal} ${draft.scheduleConfig.monthlyDayOfWeek}`
                 : draft.scheduleConfig.monthlyDates.join(', ')}
@@ -223,19 +221,19 @@ export function ReviewStep({ draft }: ReviewStepProps) {
       </div>
 
       {/* Notifications — Step 3 */}
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Notifications</h3>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Email Address</span>
-          <span className={styles.optionValue}>{draft.notifications.emails.join(', ') || 'None'}</span>
+      <div className="bg-background border border-border rounded-md py-4 px-5 transition-shadow duration-150 hover:shadow-sm">
+        <h3 className="text-sm font-semibold text-foreground m-0">Notifications</h3>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Email Address</span>
+          <span className="text-sm text-muted-foreground font-medium">{draft.notifications.emails.join(', ') || 'None'}</span>
         </div>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Successful Export</span>
-          <span className={styles.optionValue}>{draft.notifications.successEnabled ? 'Enabled' : 'Disabled'}</span>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Successful Export</span>
+          <span className="text-sm text-muted-foreground font-medium">{draft.notifications.successEnabled ? 'Enabled' : 'Disabled'}</span>
         </div>
-        <div className={styles.optionRow}>
-          <span className={styles.optionLabel}>Failed Export</span>
-          <span className={styles.optionValue}>{draft.notifications.failureEnabled ? 'Enabled' : 'Disabled'}</span>
+        <div className="flex justify-between py-1">
+          <span className="text-sm text-tertiary-foreground">Failed Export</span>
+          <span className="text-sm text-muted-foreground font-medium">{draft.notifications.failureEnabled ? 'Enabled' : 'Disabled'}</span>
         </div>
       </div>
     </div>

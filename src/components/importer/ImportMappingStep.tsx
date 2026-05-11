@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
-import styles from './ImportMappingStep.module.css';
+import { Plus } from '@phosphor-icons/react';
+import { cn } from '../../lib/utils';
 
 /* ── Types ── */
 
@@ -183,9 +184,9 @@ function getDataForType(type: 'contact' | 'transactional') {
 
 function DuplicateWarningIcon({ tooltip }: { tooltip: string }) {
   return (
-    <span className={styles.tooltipWrap}>
+    <span className="relative inline-flex cursor-pointer group">
       <svg
-        className={`${styles.warningIcon} ${styles.warningIconDuplicate}`}
+        className="shrink-0 w-[22px] h-[22px] flex items-center justify-center text-destructive"
         width="22"
         height="22"
         viewBox="0 0 18 18"
@@ -197,16 +198,16 @@ function DuplicateWarningIcon({ tooltip }: { tooltip: string }) {
         <path d="M9 7v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         <circle cx="9" cy="12.5" r="0.75" fill="currentColor" />
       </svg>
-      <span className={`${styles.tooltip} ${styles.tooltipError}`}>{tooltip}</span>
+      <span className="hidden group-hover:block absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-[280px] py-2.5 px-3.5 rounded-lg text-[13px] font-medium leading-[18px] text-primary-foreground z-50 pointer-events-none whitespace-normal bg-destructive">{tooltip}</span>
     </span>
   );
 }
 
 function NoMatchWarningIcon() {
   return (
-    <span className={styles.tooltipWrap}>
+    <span className="relative inline-flex cursor-pointer group">
       <svg
-        className={`${styles.warningIcon} ${styles.warningIconNoMatch}`}
+        className="shrink-0 w-[22px] h-[22px] flex items-center justify-center text-warning"
         width="22"
         height="22"
         viewBox="0 0 18 18"
@@ -218,7 +219,7 @@ function NoMatchWarningIcon() {
         <path d="M9 6v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         <circle cx="9" cy="12" r="0.75" fill="currentColor" />
       </svg>
-      <span className={`${styles.tooltip} ${styles.tooltipWarning}`}>No matching UbiQuity field was found. Select one manually or set to [[Ignore Field]].</span>
+      <span className="hidden group-hover:block absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-[280px] py-2.5 px-3.5 rounded-lg text-[13px] font-medium leading-[18px] text-primary-foreground z-50 pointer-events-none whitespace-normal bg-warning">No matching UbiQuity field was found. Select one manually or set to [[Ignore Field]].</span>
     </span>
   );
 }
@@ -245,51 +246,48 @@ export function ImportMappingStep({ type }: ImportMappingStepProps) {
     [],
   );
 
-  const selectClass = (status: MappingStatus) => {
-    const base = styles.select;
-    if (status === 'duplicate') return `${base} ${styles.selectDuplicate}`;
-    if (status === 'no-match') return `${base} ${styles.selectNoMatch}`;
-    return base;
-  };
-
   return (
-    <div className={styles.container}>
-      <h2 className={styles.pageTitle}>{title}</h2>
-      <p className={styles.subtitle}>Map your file columns to UbiQuity fields.</p>
+    <div className="flex flex-col gap-6">
+      <h2 className="m-0 text-lg font-semibold text-primary">{title}</h2>
+      <p className="mt-[-16px] mb-0 text-sm text-tertiary-foreground">Map your file columns to UbiQuity fields.</p>
 
-      <div className={styles.table}>
+      <div className="border border-border rounded-lg bg-background overflow-hidden">
         {/* Header */}
-        <div className={styles.headerRow}>
-          <span className={styles.headerCell}>Data To Be Mapped</span>
-          <span className={styles.headerSpacer} />
-          <span className={styles.headerCell}>Ubiquity Fields</span>
-          <span className={styles.headerSpacer} />
-          <span className={styles.headerCell}>Example Values</span>
+        <div className="grid grid-cols-[1fr_32px_1.2fr_32px_1fr] items-center py-3 px-4 bg-secondary border-b border-border">
+          <span className="text-sm font-semibold text-muted-foreground m-0">Data To Be Mapped</span>
+          <span />
+          <span className="text-sm font-semibold text-muted-foreground m-0">Ubiquity Fields</span>
+          <span />
+          <span className="text-sm font-semibold text-muted-foreground m-0">Example Values</span>
         </div>
 
         {/* Rows */}
         {rows.map((row, idx) => (
-          <div className={styles.mappingRow} key={row.sourceField}>
+          <div className="grid grid-cols-[1fr_40px_1.2fr_40px_1fr] items-center py-2 px-4" key={row.sourceField}>
             {/* Source field */}
             <span
-              className={`${styles.sourceField}${
-                row.status === 'duplicate'
-                  ? ` ${styles.sourceFieldDuplicate}`
-                  : ''
-              }`}
+              className={cn(
+                "text-sm font-normal text-foreground m-0 break-all",
+                row.status === 'duplicate' && "text-destructive font-medium"
+              )}
             >
               {row.sourceField}
             </span>
 
             {/* Arrow */}
-            <span className={styles.symbol} aria-hidden="true">
+            <span className="text-sm text-tertiary-foreground text-center select-none" aria-hidden="true">
               →
             </span>
 
             {/* Dropdown */}
-            <div className={styles.selectWrapper}>
+            <div className="relative w-full">
               <select
-                className={selectClass(row.status)}
+                className={cn(
+                  "w-full py-2 px-3 text-sm border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8",
+                  row.status === 'duplicate' && "border-destructive focus:border-destructive focus:shadow-[0_0_0_2px_rgba(239,68,68,0.15)]",
+                  row.status === 'no-match' && "border-warning focus:border-warning focus:shadow-[0_0_0_2px_rgba(245,158,11,0.15)]",
+                  row.status === 'normal' && "border-border focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
+                )}
                 value={row.targetField}
                 onChange={(e) => handleTargetChange(idx, e.target.value)}
                 aria-label={`Map ${row.sourceField} to UbiQuity field`}
@@ -310,19 +308,19 @@ export function ImportMappingStep({ type }: ImportMappingStepProps) {
             </div>
 
             {/* Equals */}
-            <span className={styles.symbol} aria-hidden="true">
+            <span className="text-sm text-tertiary-foreground text-center select-none" aria-hidden="true">
               =
             </span>
 
             {/* Example value + warning */}
-            <div className={styles.exampleCell}>
+            <div className="flex items-center gap-2 min-h-[20px]">
               {row.status === 'duplicate' && (
                 <DuplicateWarningIcon
                   tooltip={`This field is also mapped to ${row.duplicateSources.map(s => `[${s}]`).join(' and ')}. This can only be mapped to a single field.`}
                 />
               )}
               {row.status === 'no-match' && <NoMatchWarningIcon />}
-              <span className={styles.exampleValue}>
+              <span className="text-sm text-tertiary-foreground m-0 overflow-hidden text-ellipsis whitespace-nowrap">
                 {row.targetField === '[[Ignore Field]]'
                   ? '—'
                   : row.exampleValue || '—'}
@@ -332,8 +330,8 @@ export function ImportMappingStep({ type }: ImportMappingStepProps) {
         ))}
       </div>
 
-      <button type="button" className={styles.addFieldLink}>
-        + Add New Field
+      <button type="button" className="inline-flex items-center gap-1 bg-transparent border-none text-primary text-sm font-medium cursor-pointer p-0 mt-1 hover:text-accent-hover hover:underline">
+        <Plus size={14} weight="bold" /> Add New Field
       </button>
     </div>
   );

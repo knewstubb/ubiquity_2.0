@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 import type { Campaign, Journey, JourneyType, CampaignStatus } from '../models/campaign';
 import type { Connection } from '../models/connection';
-import type { Connector, ExportDataType, TransactionalSource, ScheduleFrequency, ConnectorStatus, FileType, FormatOptions, SelectedField } from '../models/connector';
+import type { Automation, ExportDataType, TransactionalSource, ScheduleFrequency, AutomationStatus, FileType, FormatOptions, SelectedField } from '../models/automation';
 import type { Contact } from '../models/contact';
 import type { ContactRecord } from '../models/data';
 import type { Segment, FilterGroup, FilterRule } from '../models/segment';
@@ -88,7 +88,7 @@ export function arbConnection(): fc.Arbitrary<Connection> {
 const EXPORT_DATA_TYPES: ExportDataType[] = ['contact', 'transactional', 'transactional_with_contact'];
 const TRANSACTIONAL_SOURCES: TransactionalSource[] = ['treatments', 'products'];
 const SCHEDULE_FREQUENCIES: ScheduleFrequency[] = ['every_15_min', 'hourly', 'daily', 'weekly', 'monthly'];
-const CONNECTOR_STATUSES: ConnectorStatus[] = ['active', 'paused'];
+const CONNECTOR_STATUSES: AutomationStatus[] = ['active', 'paused'];
 const FILE_TYPES: FileType[] = ['csv', 'json', 'xml'];
 const DELIMITERS: FormatOptions['delimiter'][] = [',', '|', '\t', ';'];
 const DATE_FORMATS: FormatOptions['dateFormat'][] = ['ISO8601', 'US', 'EU', 'UNIX'];
@@ -126,7 +126,7 @@ export function arbFilterGroup(): fc.Arbitrary<FilterGroup> {
   });
 }
 
-export function arbConnector(): fc.Arbitrary<Connector> {
+export function arbConnector(): fc.Arbitrary<Automation> {
   return fc.record({
     id: fc.uuid().map((u) => `cntr-${u}`),
     connectionId: fc.uuid().map((u) => `conn-${u}`),

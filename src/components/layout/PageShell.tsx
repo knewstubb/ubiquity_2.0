@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import styles from './PageShell.module.css';
 
 interface PageShellProps {
   title: string;
@@ -10,11 +9,11 @@ interface PageShellProps {
 
 export function PageShell({ title, subtitle, action, children }: PageShellProps) {
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <div className={styles.titleGroup}>
-          <h1 className={styles.title}>{title}</h1>
-          {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+    <div className="w-full max-w-[1440px] mx-auto min-h-[calc(100vh-85px)] py-7 px-6 bg-background">
+      <div className="flex items-center justify-between mb-7">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-xl font-semibold text-muted-foreground m-0">{title}</h1>
+          {subtitle && <p className="text-sm text-tertiary-foreground m-0">{subtitle}</p>}
         </div>
         {action}
       </div>

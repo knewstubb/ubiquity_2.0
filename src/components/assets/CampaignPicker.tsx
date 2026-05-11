@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useCampaigns } from '../../contexts/CampaignsContext';
 import { Dropdown } from '../shared/Dropdown';
-import styles from './CampaignPicker.module.css';
 
 interface CampaignPickerProps {
   selectedCampaignId: string | null;
@@ -21,7 +20,7 @@ export function CampaignPicker({ selectedCampaignId, onCampaignChange }: Campaig
   const options = campaigns.map((c) => ({ value: c.id, label: c.name }));
 
   return (
-    <div className={styles.wrapper}>
+    <div className="flex flex-col gap-1 min-w-[200px]">
       <Dropdown
         label="Campaign"
         options={options}

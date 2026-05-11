@@ -1,10 +1,10 @@
 import { X } from '@phosphor-icons/react';
-import type { Connector } from '../../models/connector';
+import { cn } from '../../lib/utils';
+import type { Automation } from '../../models/automation';
 import type { Connection } from '../../models/connection';
-import styles from './AutomationSettingsModal.module.css';
 
 interface AutomationSettingsModalProps {
-  connector: Connector;
+  connector: Automation;
   connection: Connection;
   onClose: () => void;
   onEdit: () => void;
@@ -26,131 +26,134 @@ const DATA_TYPE_LABELS: Record<string, string> = {
 
 export function AutomationSettingsModal({ connector, connection, onClose, onEdit }: AutomationSettingsModalProps) {
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[200]" onClick={onClose}>
+      <div className="bg-background rounded-lg shadow-xl w-[560px] max-w-[90vw] max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className={styles.header}>
+        <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-border">
           <div>
-            <h2 className={styles.title}>{connector.name}</h2>
-            <p className={styles.subtitle}>{connection.name} · {connector.direction === 'import' ? 'Importer' : 'Exporter'}</p>
+            <h2 className="text-lg font-semibold text-foreground m-0">{connector.name}</h2>
+            <p className="text-[13px] text-muted-foreground mt-1 mb-0">{connection.name} · {connector.direction === 'import' ? 'Importer' : 'Exporter'}</p>
           </div>
-          <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="Close">
+          <button type="button" className="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded text-tertiary-foreground cursor-pointer transition-colors duration-150 shrink-0 hover:bg-secondary hover:text-foreground" onClick={onClose} aria-label="Close">
             <X size={18} weight="bold" />
           </button>
         </div>
 
         {/* Content */}
-        <div className={styles.body}>
+        <div className="px-6 py-4 overflow-y-auto flex-1 flex flex-col gap-4">
           {/* File Settings */}
-          <div className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <h4 className={styles.sectionTitle}>File Settings</h4>
+          <div className="bg-background border border-border rounded-md px-4 py-3">
+            <div className="mb-2 pb-1.5 border-b border-border">
+              <h4 className="text-[13px] font-semibold text-foreground m-0">File Settings</h4>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Connection</span>
-              <span className={styles.optionValue}>{connection.name}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Connection</span>
+              <span className="text-[13px] text-foreground font-medium">{connection.name}</span>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Protocol</span>
-              <span className={styles.optionValue}>{connection.protocol}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Protocol</span>
+              <span className="text-[13px] text-foreground font-medium">{connection.protocol}</span>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Base Path</span>
-              <span className={styles.optionValue}>{connection.basePath}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Base Path</span>
+              <span className="text-[13px] text-foreground font-medium">{connection.basePath}</span>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>File Type</span>
-              <span className={styles.optionValue}>{connector.fileType.toUpperCase()}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">File Type</span>
+              <span className="text-[13px] text-foreground font-medium">{connector.fileType.toUpperCase()}</span>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>File Pattern</span>
-              <span className={styles.optionValue}>{connector.fileNamingPattern}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">File Pattern</span>
+              <span className="text-[13px] text-foreground font-medium">{connector.fileNamingPattern}</span>
             </div>
           </div>
 
           {/* Data Configuration */}
-          <div className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <h4 className={styles.sectionTitle}>Data Configuration</h4>
+          <div className="bg-background border border-border rounded-md px-4 py-3">
+            <div className="mb-2 pb-1.5 border-b border-border">
+              <h4 className="text-[13px] font-semibold text-foreground m-0">Data Configuration</h4>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Data Type</span>
-              <span className={styles.optionValue}>{DATA_TYPE_LABELS[connector.dataType] ?? connector.dataType}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Data Type</span>
+              <span className="text-[13px] text-foreground font-medium">{DATA_TYPE_LABELS[connector.dataType] ?? connector.dataType}</span>
             </div>
             {connector.transactionalSource && (
-              <div className={styles.optionRow}>
-                <span className={styles.optionLabel}>Source Table</span>
-                <span className={styles.optionValue}>{connector.transactionalSource}</span>
+              <div className="flex justify-between py-[3px]">
+                <span className="text-[13px] text-tertiary-foreground">Source Table</span>
+                <span className="text-[13px] text-foreground font-medium">{connector.transactionalSource}</span>
               </div>
             )}
             {connector.enrichmentKeyField && (
-              <div className={styles.optionRow}>
-                <span className={styles.optionLabel}>Enrichment Key</span>
-                <span className={styles.optionValue}>{connector.enrichmentKeyField}</span>
+              <div className="flex justify-between py-[3px]">
+                <span className="text-[13px] text-tertiary-foreground">Enrichment Key</span>
+                <span className="text-[13px] text-foreground font-medium">{connector.enrichmentKeyField}</span>
               </div>
             )}
           </div>
 
           {/* Format Options */}
-          <div className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <h4 className={styles.sectionTitle}>Format Options</h4>
+          <div className="bg-background border border-border rounded-md px-4 py-3">
+            <div className="mb-2 pb-1.5 border-b border-border">
+              <h4 className="text-[13px] font-semibold text-foreground m-0">Format Options</h4>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Delimiter</span>
-              <span className={styles.optionValue}>{connector.formatOptions.delimiter === ',' ? 'Comma (,)' : connector.formatOptions.delimiter === '|' ? 'Pipe (|)' : connector.formatOptions.delimiter === '\t' ? 'Tab' : connector.formatOptions.delimiter}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Delimiter</span>
+              <span className="text-[13px] text-foreground font-medium">{connector.formatOptions.delimiter === ',' ? 'Comma (,)' : connector.formatOptions.delimiter === '|' ? 'Pipe (|)' : connector.formatOptions.delimiter === '\t' ? 'Tab' : connector.formatOptions.delimiter}</span>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Header Row</span>
-              <span className={styles.optionValue}>{connector.formatOptions.includeHeader ? 'Yes' : 'No'}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Header Row</span>
+              <span className="text-[13px] text-foreground font-medium">{connector.formatOptions.includeHeader ? 'Yes' : 'No'}</span>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Date Format</span>
-              <span className={styles.optionValue}>{connector.formatOptions.dateFormat}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Date Format</span>
+              <span className="text-[13px] text-foreground font-medium">{connector.formatOptions.dateFormat}</span>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Timezone</span>
-              <span className={styles.optionValue}>{connector.formatOptions.timezone}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Timezone</span>
+              <span className="text-[13px] text-foreground font-medium">{connector.formatOptions.timezone}</span>
             </div>
           </div>
 
           {/* Schedule */}
-          <div className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <h4 className={styles.sectionTitle}>Schedule</h4>
+          <div className="bg-background border border-border rounded-md px-4 py-3">
+            <div className="mb-2 pb-1.5 border-b border-border">
+              <h4 className="text-[13px] font-semibold text-foreground m-0">Schedule</h4>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Frequency</span>
-              <span className={styles.optionValue}>{SCHEDULE_LABELS[connector.schedule] ?? connector.schedule}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Frequency</span>
+              <span className="text-[13px] text-foreground font-medium">{SCHEDULE_LABELS[connector.schedule] ?? connector.schedule}</span>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Status</span>
-              <span className={`${styles.optionValue} ${connector.status === 'active' ? styles.statusActive : styles.statusPaused}`}>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Status</span>
+              <span className={cn(
+                "text-[13px] font-medium",
+                connector.status === 'active' ? "text-primary" : "text-tertiary-foreground"
+              )}>
                 {connector.status === 'active' ? 'Active' : 'Paused'}
               </span>
             </div>
           </div>
 
           {/* Metadata */}
-          <div className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <h4 className={styles.sectionTitle}>Metadata</h4>
+          <div className="bg-background border border-border rounded-md px-4 py-3">
+            <div className="mb-2 pb-1.5 border-b border-border">
+              <h4 className="text-[13px] font-semibold text-foreground m-0">Metadata</h4>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Created</span>
-              <span className={styles.optionValue}>{formatDateTime(connector.createdAt)}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Created</span>
+              <span className="text-[13px] text-foreground font-medium">{formatDateTime(connector.createdAt)}</span>
             </div>
-            <div className={styles.optionRow}>
-              <span className={styles.optionLabel}>Last Updated</span>
-              <span className={styles.optionValue}>{formatDateTime(connector.updatedAt)}</span>
+            <div className="flex justify-between py-[3px]">
+              <span className="text-[13px] text-tertiary-foreground">Last Updated</span>
+              <span className="text-[13px] text-foreground font-medium">{formatDateTime(connector.updatedAt)}</span>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className={styles.footer}>
-          <button type="button" className={styles.cancelBtn} onClick={onClose}>Close</button>
-          <button type="button" className={styles.editBtn} onClick={() => { onClose(); onEdit(); }}>Edit Automation</button>
+        <div className="flex justify-end gap-2 px-6 py-3 pb-4 border-t border-border">
+          <button type="button" className="px-4 py-2 text-sm font-sans font-medium text-muted-foreground bg-background border border-border rounded cursor-pointer transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2" onClick={onClose}>Close</button>
+          <button type="button" className="px-4 py-2 text-sm font-sans font-semibold text-primary-foreground bg-primary border-none rounded cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2" onClick={() => { onClose(); onEdit(); }}>Edit Automation</button>
         </div>
       </div>
     </div>

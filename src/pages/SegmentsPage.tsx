@@ -3,8 +3,8 @@ import { PageShell } from '../components/layout/PageShell';
 import { DataTable, type Column } from '../components/shared/DataTable';
 import { useAccount } from '../contexts/AccountContext';
 import { segments } from '../data/segments';
+import { cn } from '../lib/utils';
 import type { Segment } from '../models/segment';
-import styles from './SegmentsPage.module.css';
 
 const columns: Column<Segment>[] = [
   { key: 'name', header: 'Name', render: (s) => s.name },
@@ -13,7 +13,11 @@ const columns: Column<Segment>[] = [
     header: 'Type',
     width: '120px',
     render: (s) => (
-      <span className={`${styles.typeBadge} ${styles[s.type]}`}>
+      <span className={cn(
+        "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium leading-tight whitespace-nowrap",
+        s.type === 'smart' && "bg-accent text-accent-foreground",
+        s.type === 'manual' && "bg-secondary text-muted-foreground"
+      )}>
         {s.type === 'smart' ? 'Smart' : 'Manual'}
       </span>
     ),

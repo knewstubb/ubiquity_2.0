@@ -1,6 +1,6 @@
 import { useState, type KeyboardEvent } from 'react';
+import { cn } from '../../lib/utils';
 import { Toggle } from '../shared/Toggle';
-import styles from './NotificationsStep.module.css';
 
 /* ── Types ── */
 type Frequency = 'hourly' | 'daily' | 'weekly' | 'monthly';
@@ -44,29 +44,29 @@ function HelpPopover({ title, body }: HelpPopoverProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <span className={styles.popoverWrap}>
+    <span className="relative inline-flex">
       <button
         type="button"
-        className={styles.helpBtn}
+        className="bg-primary text-primary-foreground rounded-full w-4 h-4 text-[10px] font-bold border-none cursor-pointer inline-flex items-center justify-center p-0 shrink-0 leading-none hover:bg-accent-hover"
         onClick={() => setOpen((v) => !v)}
         aria-label={`Help: ${title}`}
       >
         ?
       </button>
       {open && (
-        <div className={styles.popover} role="tooltip">
-          <div className={styles.popoverTitleRow}>
-            <p className={styles.popoverTitle}>{title}</p>
+        <div className="absolute top-[calc(100%+8px)] left-0 z-[100] w-80 bg-accent-foreground text-primary-foreground rounded-md p-4 shadow-[0px_1px_4px_0px_rgba(0,0,0,0.12),0px_4px_16px_0px_rgba(0,0,0,0.1),0px_8px_32px_0px_rgba(0,0,0,0.08)]" role="tooltip">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-base font-semibold m-0">{title}</p>
             <button
               type="button"
-              className={styles.popoverClose}
+              className="bg-transparent border-none text-primary-foreground cursor-pointer text-base p-0 leading-none flex items-center justify-center hover:opacity-80"
               onClick={() => setOpen(false)}
               aria-label="Close help"
             >
               ✕
             </button>
           </div>
-          <p className={styles.popoverBody}>{body}</p>
+          <p className="text-[13px] font-normal leading-[18px] m-0">{body}</p>
         </div>
       )}
     </span>
@@ -108,13 +108,13 @@ function EmailChipInput({ emails, onChange, placeholder }: EmailChipInputProps) 
   }
 
   return (
-    <div className={styles.chipInputWrap}>
+    <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] relative cursor-text bg-background focus-within:border-primary focus-within:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]">
       {emails.map((email) => (
-        <span key={email} className={styles.chip}>
+        <span key={email} className="inline-flex items-center gap-1 border border-primary text-primary rounded-full py-1 px-2 text-xs font-medium leading-none whitespace-nowrap">
           {email}
           <button
             type="button"
-            className={styles.chipRemove}
+            className="bg-transparent border-none text-primary cursor-pointer text-xs p-0 leading-none flex items-center hover:text-accent-foreground"
             onClick={() => onChange(emails.filter((e) => e !== email))}
             aria-label={`Remove ${email}`}
           >
@@ -123,7 +123,7 @@ function EmailChipInput({ emails, onChange, placeholder }: EmailChipInputProps) 
         </span>
       ))}
       <input
-        className={styles.chipInputField}
+        className="border-none outline-none text-sm text-foreground bg-transparent flex-1 min-w-[80px] py-0.5 px-0 placeholder:text-tertiary-foreground"
         type="email"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
@@ -177,40 +177,40 @@ export function NotificationsStep() {
   }
 
   return (
-    <div className={styles.container}>
-      <h3 className={styles.title}>Notifications</h3>
-      <p className={styles.subtitle}>Choose who gets notified when imports run, fail, or files are missing.</p>
+    <div className="flex flex-col gap-8">
+      <h3 className="m-0 text-lg font-semibold text-primary">Notifications</h3>
+      <p className="mt-[-20px] mb-0 text-sm text-tertiary-foreground">Choose who gets notified when imports run, fail, or files are missing.</p>
 
       {/* ── Row 1: Failure (required) ── */}
-      <div className={styles.row}>
-        <div className={styles.labelCol}>
-          <div className={styles.labelRow}>
-            <p className={styles.labelText}>Failure (required)</p>
+      <div className="flex items-start gap-14">
+        <div className="w-40 shrink-0 pt-0 relative">
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm font-semibold text-foreground m-0">Failure (required)</p>
           </div>
-          <p className={styles.labelHint}>
+          <p className="text-xs text-tertiary-foreground mt-1 mb-0">
             Be alerted by email when a connector run fails
           </p>
         </div>
-        <div className={styles.inputCol}>
+        <div className="w-[552px] flex flex-col gap-3">
           <div>
-            <p className={styles.inputLabel}>Email Address</p>
+            <p className="text-xs font-medium text-muted-foreground m-0">Email Address</p>
             <EmailChipInput emails={failureEmails} onChange={setFailureEmails} />
           </div>
         </div>
       </div>
 
       {/* ── Row 2: Success ── */}
-      <div className={styles.row}>
-        <div className={styles.labelCol}>
-          <div className={styles.labelRow}>
-            <p className={styles.labelText}>Success</p>
+      <div className="flex items-start gap-14">
+        <div className="w-40 shrink-0 pt-0 relative">
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm font-semibold text-foreground m-0">Success</p>
           </div>
-          <p className={styles.labelHint}>
+          <p className="text-xs text-tertiary-foreground mt-1 mb-0">
             Be alerted by email when a connector run succeeds
           </p>
         </div>
-        <div className={styles.inputCol}>
-          <div className={styles.toggleRow}>
+        <div className="w-[552px] flex flex-col gap-3">
+          <div className="flex items-center gap-2">
             <Toggle
               checked={successEnabled}
               onChange={setSuccessEnabled}
@@ -219,13 +219,13 @@ export function NotificationsStep() {
             />
           </div>
           {successEnabled && (
-            <div className={styles.subSection}>
+            <div className="flex flex-col gap-3">
               <div>
-                <div className={styles.emailHeaderRow}>
-                  <p className={styles.inputLabel}>Email Address</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-medium text-muted-foreground m-0">Email Address</p>
                   <button
                     type="button"
-                    className={styles.copyLink}
+                    className="bg-transparent border-none text-primary text-xs font-medium cursor-pointer p-0 hover:underline"
                     onClick={() => copyFromFailure(setSuccessEmails)}
                   >
                     copy from above
@@ -239,22 +239,22 @@ export function NotificationsStep() {
       </div>
 
       {/* ── Row 3: No File ── */}
-      <div className={styles.row}>
-        <div className={styles.labelCol}>
-          <div className={styles.labelRow}>
-            <p className={styles.labelText}>No File</p>
+      <div className="flex items-start gap-14">
+        <div className="w-40 shrink-0 pt-0 relative">
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm font-semibold text-foreground m-0">No File</p>
             <HelpPopover
               title="What are no file notifications?"
               body="If you expect files to arrive on a regular schedule, you can set up alerts for when they don't. When enabled, UbiQuity will check on your chosen schedule and send an email if no new file has been found."
             />
           </div>
-          <p className={styles.labelHint}>
+          <p className="text-xs text-tertiary-foreground mt-1 mb-0">
             Set the time you would like to be alerted if a new file is not
             available for upload from your defined source
           </p>
         </div>
-        <div className={styles.inputCol}>
-          <div className={styles.toggleRow}>
+        <div className="w-[552px] flex flex-col gap-3">
+          <div className="flex items-center gap-2">
             <Toggle
               checked={noFileEnabled}
               onChange={setNoFileEnabled}
@@ -263,14 +263,19 @@ export function NotificationsStep() {
             />
           </div>
           {noFileEnabled && (
-            <div className={styles.subSection}>
+            <div className="flex flex-col gap-3">
               {/* Frequency segmented toggle */}
-              <div className={styles.segmented}>
-                {FREQUENCY_OPTIONS.map((opt) => (
+              <div className="flex border border-border rounded-md overflow-hidden w-full">
+                {FREQUENCY_OPTIONS.map((opt, i) => (
                   <button
                     key={opt.value}
                     type="button"
-                    className={`${styles.segmentBtn} ${noFileFrequency === opt.value ? styles.segmentBtnActive : ''}`}
+                    className={cn(
+                      "flex-1 py-2 px-4 text-[13px] font-medium text-tertiary-foreground bg-secondary border-none border-b-2 border-b-transparent cursor-pointer transition-colors duration-150 whitespace-nowrap uppercase flex items-center justify-center",
+                      i < FREQUENCY_OPTIONS.length - 1 && "border-r border-r-border",
+                      noFileFrequency === opt.value && "text-primary font-semibold bg-background border-b-2 border-b-primary",
+                      noFileFrequency !== opt.value && "hover:text-muted-foreground"
+                    )}
                     onClick={() => setNoFileFrequency(opt.value)}
                   >
                     {opt.label}
@@ -280,9 +285,9 @@ export function NotificationsStep() {
 
               {/* Starting date */}
               <div>
-                <p className={styles.inputLabel}>Starting</p>
+                <p className="text-xs font-medium text-muted-foreground m-0">Starting</p>
                 <input
-                  className={styles.textInput}
+                  className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 box-border focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)] placeholder:text-tertiary-foreground"
                   type="text"
                   value={noFileStarting}
                   onChange={(e) => setNoFileStarting(e.target.value)}
@@ -293,13 +298,17 @@ export function NotificationsStep() {
               {/* Weekly: On section — day-of-week buttons */}
               {noFileFrequency === 'weekly' && (
                 <div>
-                  <p className={styles.inputLabel}>On</p>
-                  <div className={styles.dayButtonRow}>
+                  <p className="text-xs font-medium text-muted-foreground m-0">On</p>
+                  <div className="flex items-center gap-2 mt-1">
                     {DAY_LABELS.map((label, i) => (
                       <button
                         key={i}
                         type="button"
-                        className={`${styles.dayButton} ${noFileDays[i] ? styles.dayButtonSelected : ''}`}
+                        className={cn(
+                          "w-9 h-9 rounded-full border-2 border-primary bg-background text-primary text-sm font-semibold cursor-pointer inline-flex items-center justify-center p-0 transition-colors duration-150 leading-none",
+                          noFileDays[i] && "bg-primary text-primary-foreground",
+                          !noFileDays[i] && "hover:bg-accent"
+                        )}
                         onClick={() => toggleDay(i)}
                         aria-label={`${DAY_OF_WEEK_OPTIONS[i]}${noFileDays[i] ? ' selected' : ''}`}
                         aria-pressed={noFileDays[i]}
@@ -315,18 +324,27 @@ export function NotificationsStep() {
               {noFileFrequency === 'monthly' && (
                 <>
                   <div>
-                    <p className={styles.inputLabel}>Pattern</p>
-                    <div className={styles.patternToggle}>
+                    <p className="text-xs font-medium text-muted-foreground m-0">Pattern</p>
+                    <div className="flex border border-border rounded-md overflow-hidden w-fit">
                       <button
                         type="button"
-                        className={`${styles.patternBtn} ${monthlyPattern === 'day' ? styles.patternBtnActive : ''}`}
+                        className={cn(
+                          "py-2 px-6 text-sm font-medium text-tertiary-foreground bg-secondary border-none cursor-pointer transition-colors duration-150 whitespace-nowrap",
+                          "border-r border-r-border",
+                          monthlyPattern === 'day' && "text-primary font-semibold bg-background",
+                          monthlyPattern !== 'day' && "hover:text-muted-foreground"
+                        )}
                         onClick={() => setMonthlyPattern('day')}
                       >
                         Day
                       </button>
                       <button
                         type="button"
-                        className={`${styles.patternBtn} ${monthlyPattern === 'date' ? styles.patternBtnActive : ''}`}
+                        className={cn(
+                          "py-2 px-6 text-sm font-medium text-tertiary-foreground bg-secondary border-none cursor-pointer transition-colors duration-150 whitespace-nowrap",
+                          monthlyPattern === 'date' && "text-primary font-semibold bg-background",
+                          monthlyPattern !== 'date' && "hover:text-muted-foreground"
+                        )}
                         onClick={() => setMonthlyPattern('date')}
                       >
                         Date
@@ -334,11 +352,11 @@ export function NotificationsStep() {
                     </div>
                   </div>
                   <div>
-                    <p className={styles.inputLabel}>On the</p>
+                    <p className="text-xs font-medium text-muted-foreground m-0">On the</p>
                     {monthlyPattern === 'day' ? (
-                      <div className={styles.onTheRow}>
+                      <div className="flex items-center gap-2">
                         <select
-                          className={styles.select}
+                          className="flex-1 py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
                           value={monthlyOrdinal}
                           onChange={(e) => setMonthlyOrdinal(e.target.value)}
                           aria-label="Ordinal"
@@ -348,7 +366,7 @@ export function NotificationsStep() {
                           ))}
                         </select>
                         <select
-                          className={styles.select}
+                          className="flex-1 py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
                           value={monthlyDayOfWeek}
                           onChange={(e) => setMonthlyDayOfWeek(e.target.value)}
                           aria-label="Day of week"
@@ -359,13 +377,13 @@ export function NotificationsStep() {
                         </select>
                       </div>
                     ) : (
-                      <div className={styles.chipInputWrap}>
+                      <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] relative cursor-text bg-background focus-within:border-primary focus-within:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]">
                         {monthlyDates.map((d) => (
-                          <span key={d} className={styles.chip}>
+                          <span key={d} className="inline-flex items-center gap-1 border border-primary text-primary rounded-full py-1 px-2 text-xs font-medium leading-none whitespace-nowrap">
                             {d}
                             <button
                               type="button"
-                              className={styles.chipRemove}
+                              className="bg-transparent border-none text-primary cursor-pointer text-xs p-0 leading-none flex items-center hover:text-accent-foreground"
                               onClick={() => setMonthlyDates((prev) => prev.filter((x) => x !== d))}
                               aria-label={`Remove ${d}`}
                             >
@@ -374,7 +392,7 @@ export function NotificationsStep() {
                           </span>
                         ))}
                         <select
-                          className={styles.chipDropdownInline}
+                          className="border-none outline-none bg-transparent text-xs text-tertiary-foreground cursor-pointer py-0.5 px-0 min-w-[24px] appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-center w-6 ml-auto"
                           value=""
                           onChange={(e) => {
                             if (e.target.value && !monthlyDates.includes(e.target.value)) {
@@ -400,12 +418,12 @@ export function NotificationsStep() {
               )}
 
               {/* Every + At row */}
-              <div className={styles.inlineRow}>
-                <div className={styles.inlineField}>
-                  <p className={styles.inputLabel}>Every</p>
-                  <div className={styles.everyInputGroup}>
+              <div className="flex items-end gap-4">
+                <div className="flex flex-col gap-1 flex-1">
+                  <p className="text-xs font-medium text-muted-foreground m-0">Every</p>
+                  <div className="flex items-stretch">
                     <select
-                      className={`${styles.select} ${styles.everySelect}`}
+                      className="flex-1 py-2 px-3 text-sm border border-border rounded-md rounded-r-none border-r-0 bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
                       value={noFileEvery}
                       onChange={(e) => setNoFileEvery(e.target.value)}
                       aria-label="Every interval"
@@ -416,15 +434,15 @@ export function NotificationsStep() {
                         </option>
                       ))}
                     </select>
-                    <span className={styles.unitSuffix}>
+                    <span className="inline-flex items-center py-0 px-3 text-sm text-muted-foreground bg-secondary border border-border border-l-0 rounded-r-md whitespace-nowrap box-border">
                       {UNIT_MAP[noFileFrequency]}
                     </span>
                   </div>
                 </div>
-                <div className={styles.inlineField}>
-                  <p className={styles.inputLabel}>At</p>
+                <div className="flex flex-col gap-1 flex-1">
+                  <p className="text-xs font-medium text-muted-foreground m-0">At</p>
                   <input
-                    className={styles.textInput}
+                    className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 box-border focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)] placeholder:text-tertiary-foreground"
                     type="text"
                     value={noFileAt}
                     onChange={(e) => setNoFileAt(e.target.value)}
@@ -435,11 +453,11 @@ export function NotificationsStep() {
 
               {/* Email Address with copy from above */}
               <div>
-                <div className={styles.emailHeaderRow}>
-                  <p className={styles.inputLabel}>Email Address</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-medium text-muted-foreground m-0">Email Address</p>
                   <button
                     type="button"
-                    className={styles.copyLink}
+                    className="bg-transparent border-none text-primary text-xs font-medium cursor-pointer p-0 hover:underline"
                     onClick={() => copyFromFailure(setNoFileEmails)}
                   >
                     copy from above

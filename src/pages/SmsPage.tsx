@@ -1,7 +1,7 @@
 import { PageShell } from '../components/layout/PageShell';
 import { DataTable, type Column } from '../components/shared/DataTable';
+import { cn } from '../lib/utils';
 import type { CampaignStatus } from '../models/campaign';
-import styles from './SmsPage.module.css';
 
 interface SmsItem {
   id: string;
@@ -19,6 +19,13 @@ const smsItems: SmsItem[] = [
   { id: 'sms-006', name: 'Birthday Treat Voucher', status: 'active', sendCount: 327 },
 ];
 
+const statusStyles: Record<CampaignStatus, string> = {
+  active: 'bg-accent text-primary',
+  paused: 'bg-warning-subtle text-warning',
+  draft: 'bg-secondary text-tertiary-foreground',
+  completed: 'bg-success-subtle text-success',
+};
+
 const columns: Column<SmsItem>[] = [
   { key: 'name', header: 'Name', render: (s) => s.name },
   {
@@ -26,7 +33,10 @@ const columns: Column<SmsItem>[] = [
     header: 'Status',
     width: '120px',
     render: (s) => (
-      <span className={`${styles.statusBadge} ${styles[s.status]}`}>
+      <span className={cn(
+        "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium leading-tight whitespace-nowrap",
+        statusStyles[s.status]
+      )}>
         {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
       </span>
     ),

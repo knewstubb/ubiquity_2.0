@@ -1,7 +1,6 @@
 import type { Account } from '../../models/account';
 import type { PermissionGroup } from '../../models/permissions';
 import { AccountTreeNode } from './AccountTreeNode';
-import styles from './AccountTree.module.css';
 
 interface AccountTreeProps {
   accounts: Account[];
@@ -90,7 +89,7 @@ function renderNode(
     >
       {childAccounts.length > 0
         ? childAccounts.map((child) => (
-            <div key={child.id} className={styles.childItem}>
+            <div key={child.id} className="relative before:content-[''] before:absolute before:-left-2.5 before:top-[18px] before:w-2.5 before:h-px before:bg-border">
               {renderNode(
                 child,
                 accounts,
@@ -122,7 +121,7 @@ export function AccountTree({
   const rootAccounts = accounts.filter((a) => a.parentId === null);
 
   return (
-    <div className={styles.tree} role="tree" aria-label="Account hierarchy">
+    <div className="flex flex-col gap-1" role="tree" aria-label="Account hierarchy">
       {rootAccounts.map((root) =>
         renderNode(
           root,

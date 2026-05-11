@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { PageShell } from '../components/layout/PageShell';
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import styles from './ActivityLogPage.module.css';
-import pageStyles from './pages.module.css';
+import { isSupabaseConfigured } from '../lib/supabase';
+import { getActivityLog } from '../lib/adapters/activity-adapter';
+import { cn } from '../lib/utils';
 
 type DateRange = '7d' | '30d' | 'all';
 
@@ -48,75 +48,59 @@ export default function ActivityLogPage() {
   const configured = isSupabaseConfigured();
 
   useEffect(() => {
-    if (!configured || !supabase) return;
+    if (!configured) return;
 
     let cancelled = false;
     setLoading(true);
 
     async function fetchData() {
-      try {
-        const dateFilter = getDateFilter(range);
+      const dateFilter = getDateFilter(range);
+      const rows = await getActivityLog(dateFilter);
 
-        // Fetch raw activity log rows and aggregate client-side
-        let query = supabase!.from('activity_log').select('page_route, interaction_type, created_at');
-        if (dateFilter) {
-          query = query.gte('created_at', dateFilter);
-        }
-        const { data, error } = await query;
+      if (cancelled) return;
 
-        if (cancelled) return;
-
-        if (error || !data) {
-          setPageVisits([]);
-          setInteractions([]);
-          return;
-        }
-
-        // Aggregate page visits
-        const visitMap = new Map<string, { count: number; lastVisited: string }>();
-        for (const row of data) {
-          const route = row.page_route as string;
-          const createdAt = row.created_at as string;
-          const existing = visitMap.get(route);
-          if (existing) {
-            existing.count++;
-            if (createdAt > existing.lastVisited) {
-              existing.lastVisited = createdAt;
-            }
-          } else {
-            visitMap.set(route, { count: 1, lastVisited: createdAt });
-          }
-        }
-
-        const visits: PageVisit[] = Array.from(visitMap.entries())
-          .map(([pageRoute, { count, lastVisited }]) => ({
-            pageRoute,
-            visitCount: count,
-            lastVisited,
-          }))
-          .sort((a, b) => b.visitCount - a.visitCount);
-
-        // Aggregate interactions by type
-        const interactionMap = new Map<string, number>();
-        for (const row of data) {
-          const type = (row.interaction_type as string) || 'page_view';
-          interactionMap.set(type, (interactionMap.get(type) ?? 0) + 1);
-        }
-
-        const interactionStats: InteractionStat[] = Array.from(interactionMap.entries())
-          .map(([interactionType, count]) => ({ interactionType, count }))
-          .sort((a, b) => b.count - a.count);
-
-        setPageVisits(visits);
-        setInteractions(interactionStats);
-      } catch {
-        if (!cancelled) {
-          setPageVisits([]);
-          setInteractions([]);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
+      if (rows.length === 0) {
+        setPageVisits([]);
+        setInteractions([]);
+        setLoading(false);
+        return;
       }
+
+      // Aggregate page visits
+      const visitMap = new Map<string, { count: number; lastVisited: string }>();
+      for (const row of rows) {
+        const existing = visitMap.get(row.pageRoute);
+        if (existing) {
+          existing.count++;
+          if (row.createdAt > existing.lastVisited) {
+            existing.lastVisited = row.createdAt;
+          }
+        } else {
+          visitMap.set(row.pageRoute, { count: 1, lastVisited: row.createdAt });
+        }
+      }
+
+      const visits: PageVisit[] = Array.from(visitMap.entries())
+        .map(([pageRoute, { count, lastVisited }]) => ({
+          pageRoute,
+          visitCount: count,
+          lastVisited,
+        }))
+        .sort((a, b) => b.visitCount - a.visitCount);
+
+      // Aggregate interactions by type
+      const interactionMap = new Map<string, number>();
+      for (const row of rows) {
+        interactionMap.set(row.interactionType, (interactionMap.get(row.interactionType) ?? 0) + 1);
+      }
+
+      const interactionStats: InteractionStat[] = Array.from(interactionMap.entries())
+        .map(([interactionType, count]) => ({ interactionType, count }))
+        .sort((a, b) => b.count - a.count);
+
+      setPageVisits(visits);
+      setInteractions(interactionStats);
+      setLoading(false);
     }
 
     fetchData();
@@ -135,7 +119,7 @@ export default function ActivityLogPage() {
   if (!configured) {
     return (
       <PageShell title="Activity Log" subtitle="Usage analytics for the prototype">
-        <div className={styles.notConfigured}>
+        <div className="flex items-center justify-center min-h-[300px] font-sans text-sm text-tertiary-foreground">
           Activity logging requires Supabase
         </div>
       </PageShell>
@@ -144,12 +128,15 @@ export default function ActivityLogPage() {
 
   return (
     <PageShell title="Activity Log" subtitle="Usage analytics for the prototype">
-      <div className={styles.filters}>
+      <div className="flex gap-3 mb-5">
         {rangeOptions.map((opt) => (
           <button
             key={opt.value}
             type="button"
-            className={`${styles.filterBtn} ${range === opt.value ? styles.filterBtnActive : ''}`}
+            className={cn(
+              "px-3.5 py-1.5 font-sans text-[13px] font-semibold border border-border rounded-md bg-background text-muted-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary",
+              range === opt.value && "bg-accent text-primary border-primary"
+            )}
             onClick={() => setRange(opt.value)}
           >
             {opt.label}
@@ -158,33 +145,33 @@ export default function ActivityLogPage() {
       </div>
 
       {loading ? (
-        <div className={styles.notConfigured}>Loading…</div>
+        <div className="flex items-center justify-center min-h-[300px] font-sans text-sm text-tertiary-foreground">Loading…</div>
       ) : (
         <>
-          <div className={pageStyles.section}>
-            <h2 className={pageStyles.sectionHeading}>Page Visits</h2>
-            <div className={styles.tableCard}>
-              <table className={styles.table}>
+          <div className="mb-6 last:mb-0">
+            <h2 className="text-base font-semibold text-foreground mb-4">Page Visits</h2>
+            <div className="bg-background border border-border rounded-lg overflow-hidden">
+              <table className="w-full border-collapse font-sans text-[13px]">
                 <thead>
                   <tr>
-                    <th>Page Route</th>
-                    <th>Visit Count</th>
-                    <th>Last Visited</th>
+                    <th className="text-left px-3 py-2.5 font-semibold text-muted-foreground border-b-2 border-border text-xs uppercase tracking-wide">Page Route</th>
+                    <th className="text-left px-3 py-2.5 font-semibold text-muted-foreground border-b-2 border-border text-xs uppercase tracking-wide">Visit Count</th>
+                    <th className="text-left px-3 py-2.5 font-semibold text-muted-foreground border-b-2 border-border text-xs uppercase tracking-wide">Last Visited</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pageVisits.length === 0 ? (
                     <tr>
-                      <td colSpan={3} className={styles.emptyRow}>
+                      <td colSpan={3} className="text-center text-tertiary-foreground py-6 px-3">
                         No activity recorded yet
                       </td>
                     </tr>
                   ) : (
                     pageVisits.map((pv) => (
                       <tr key={pv.pageRoute}>
-                        <td>{pv.pageRoute}</td>
-                        <td>{pv.visitCount}</td>
-                        <td>{formatDate(pv.lastVisited)}</td>
+                        <td className="px-3 py-2.5 text-foreground border-b border-border last:border-b-0">{pv.pageRoute}</td>
+                        <td className="px-3 py-2.5 text-foreground border-b border-border last:border-b-0">{pv.visitCount}</td>
+                        <td className="px-3 py-2.5 text-foreground border-b border-border last:border-b-0">{formatDate(pv.lastVisited)}</td>
                       </tr>
                     ))
                   )}
@@ -193,28 +180,28 @@ export default function ActivityLogPage() {
             </div>
           </div>
 
-          <div className={pageStyles.section}>
-            <h2 className={pageStyles.sectionHeading}>Interaction Frequency</h2>
-            <div className={styles.tableCard}>
-              <table className={styles.table}>
+          <div className="mb-6 last:mb-0">
+            <h2 className="text-base font-semibold text-foreground mb-4">Interaction Frequency</h2>
+            <div className="bg-background border border-border rounded-lg overflow-hidden">
+              <table className="w-full border-collapse font-sans text-[13px]">
                 <thead>
                   <tr>
-                    <th>Interaction Type</th>
-                    <th>Count</th>
+                    <th className="text-left px-3 py-2.5 font-semibold text-muted-foreground border-b-2 border-border text-xs uppercase tracking-wide">Interaction Type</th>
+                    <th className="text-left px-3 py-2.5 font-semibold text-muted-foreground border-b-2 border-border text-xs uppercase tracking-wide">Count</th>
                   </tr>
                 </thead>
                 <tbody>
                   {interactions.length === 0 ? (
                     <tr>
-                      <td colSpan={2} className={styles.emptyRow}>
+                      <td colSpan={2} className="text-center text-tertiary-foreground py-6 px-3">
                         No interactions recorded yet
                       </td>
                     </tr>
                   ) : (
                     interactions.map((stat) => (
                       <tr key={stat.interactionType}>
-                        <td>{stat.interactionType}</td>
-                        <td>{stat.count}</td>
+                        <td className="px-3 py-2.5 text-foreground border-b border-border last:border-b-0">{stat.interactionType}</td>
+                        <td className="px-3 py-2.5 text-foreground border-b border-border last:border-b-0">{stat.count}</td>
                       </tr>
                     ))
                   )}

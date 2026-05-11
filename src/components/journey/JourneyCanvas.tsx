@@ -17,6 +17,7 @@ import {
   type NodeTypes,
   type OnNodesDelete,
 } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
 import { useJourneys } from '../../contexts/JourneysContext';
 import { detectCycle, autoConnect, autoHeal } from '../../utils/journeyGraph';
 import type { ValidationError } from '../../utils/journeyValidation';
@@ -33,7 +34,6 @@ import { WaitNode } from './nodes/WaitNode';
 import { BranchNode } from './nodes/BranchNode';
 import { EndNode } from './nodes/EndNode';
 import { JoinNode } from './nodes/JoinNode';
-import styles from './JourneyCanvas.module.css';
 
 /* ------------------------------------------------------------------ */
 /*  Custom node type registry                                         */
@@ -304,11 +304,13 @@ export function JourneyCanvas({
   const isEmpty = journey.nodes.length === 0;
 
   return (
-    <div className={styles.canvasContainer} ref={reactFlowWrapper}>
+    <div className="w-full h-full relative" ref={reactFlowWrapper}>
       {isEmpty && (
-        <div className={styles.emptyState}>
-          <h3>No nodes yet</h3>
-          <p>Drag a trigger node from the palette to start building your journey.</p>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3 text-muted-foreground font-sans text-center pointer-events-none z-[1]">
+          <h3 className="text-lg font-semibold text-foreground m-0">No nodes yet</h3>
+          <p className="text-sm leading-normal m-0 max-w-80">
+            Drag a trigger node from the palette to start building your journey.
+          </p>
         </div>
       )}
       <ReactFlow

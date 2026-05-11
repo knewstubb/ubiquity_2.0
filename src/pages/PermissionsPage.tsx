@@ -4,7 +4,6 @@ import { TabBar } from '../components/permissions/TabBar';
 import { PermissionGroupsTab } from '../components/permissions/PermissionGroupsTab';
 import { UserPermissionsTab } from '../components/permissions/UserPermissionsTab';
 import { AccountPermissionsTab } from '../components/permissions/AccountPermissionsTab';
-import styles from './PermissionsPage.module.css';
 
 type TabKey = 'groups' | 'users' | 'accounts';
 
@@ -20,7 +19,7 @@ export default function PermissionsPage() {
   return (
     <PageShell title="Permissions">
       <TabBar tabs={tabs} activeKey={activeTab} onTabChange={(key) => setActiveTab(key as TabKey)} />
-      <div className={styles.tabContent}>
+      <div className="h-[calc(100vh-240px)] min-h-[480px] overflow-hidden">
         {activeTab === 'groups' && <PermissionGroupsTab />}
         {activeTab === 'users' && <UserPermissionsTab />}
         {activeTab === 'accounts' && <AccountPermissionsTab />}

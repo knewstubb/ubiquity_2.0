@@ -160,6 +160,25 @@ UbiQuity is built on three equal pillars:
 - Components use 4px radius consistently
 
 
+## Form Rhythm Pattern (Modals & Panels)
+
+All sectioned forms in modals follow a three-tier spacing system:
+
+1. **Intra-field** (label → input): `space-y-2` (8px)
+2. **Inter-field** (field → field within a section): `space-y-3` (12px)
+3. **Inter-section** (section → section): `pt-5` or `pt-6` (20–24px) with visual break
+
+### Structure:
+- General/identity fields at top, separated by `pb-5 border-b border-border`
+- Each section wrapped in its own `div` with internal `space-y-4`
+- Section headings: `text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3`
+- Headings "own" their fields — tight gap below (12px via `mb-3`), larger gap above (20–24px via `pt-5`/`pt-6`)
+- Terminal action rows (e.g. "Test Connection"): `pt-4 border-t border-border`
+
+### Modal body:
+- Container: `px-6 py-5` with no uniform `space-y` — sections manage their own gaps
+- Footer: `gap-3` between buttons
+
 ## When to Include Additional Context
 
 - Working on UI/interactions → add `#ux-decisions`

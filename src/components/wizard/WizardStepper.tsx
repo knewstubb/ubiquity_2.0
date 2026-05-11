@@ -1,4 +1,4 @@
-import styles from './WizardStepper.module.css';
+import { cn } from '../../lib/utils';
 
 interface WizardStepperProps {
   steps: { label: string }[];
@@ -19,41 +19,11 @@ export function WizardStepper({
   const isLast = (index: number) => index === steps.length - 1;
 
   return (
-    <nav className={styles.stepper} aria-label="Wizard progress">
+    <nav className="flex flex-col gap-0 py-4" aria-label="Wizard progress">
       {steps.map((step, index) => {
         const completed = isCompleted(index);
         const current = isCurrent(index);
         const clickable = isClickable(index);
-
-        const circleClass = [
-          styles.circle,
-          current ? styles.circleCurrent : '',
-          completed && !current ? styles.circleCompleted : '',
-        ]
-          .filter(Boolean)
-          .join(' ');
-
-        const labelClass = [
-          styles.label,
-          current ? styles.labelCurrent : '',
-          completed && !current ? styles.labelCompleted : '',
-        ]
-          .filter(Boolean)
-          .join(' ');
-
-        const stepClass = [
-          styles.step,
-          clickable ? styles.stepClickable : '',
-        ]
-          .filter(Boolean)
-          .join(' ');
-
-        const lineClass = [
-          styles.line,
-          completed ? styles.lineCompleted : '',
-        ]
-          .filter(Boolean)
-          .join(' ');
 
         const handleClick = () => {
           if (clickable) {
@@ -71,25 +41,53 @@ export function WizardStepper({
         return (
           <div
             key={index}
-            className={stepClass}
+            className={cn(
+              "flex items-start gap-3 relative p-0 cursor-default",
+              clickable && "cursor-pointer group"
+            )}
             role={clickable ? 'button' : undefined}
             tabIndex={clickable ? 0 : undefined}
             aria-current={current ? 'step' : undefined}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
           >
-            <div className={styles.indicator}>
-              <div className={circleClass} aria-hidden="true">
+            <div className="flex flex-col items-center shrink-0 w-9">
+              <div
+                className={cn(
+                  "w-9 h-9 rounded-md flex items-center justify-center text-sm font-semibold shrink-0 transition-all duration-200",
+                  "border-2 border-border-strong bg-background text-tertiary-foreground",
+                  current && "border-primary bg-primary text-primary-foreground",
+                  completed && !current && "border-primary bg-background text-primary",
+                  clickable && "group-hover:border-primary"
+                )}
+                aria-hidden="true"
+              >
                 {completed && !current ? (
                   <CheckIcon />
                 ) : (
                   index + 1
                 )}
               </div>
-              {!isLast(index) && <div className={lineClass} />}
+              {!isLast(index) && (
+                <div
+                  className={cn(
+                    "w-0 border-l-2 border-dashed border-border-strong flex-1 min-h-4 transition-colors duration-200",
+                    completed && "border-l-primary"
+                  )}
+                />
+              )}
             </div>
-            <div className={styles.content}>
-              <span className={labelClass}>{step.label}</span>
+            <div className="flex items-center min-h-9">
+              <span
+                className={cn(
+                  "text-sm font-semibold text-tertiary-foreground leading-tight transition-colors duration-150",
+                  current && "text-accent-hover font-bold",
+                  completed && !current && "text-muted-foreground",
+                  clickable && "group-hover:text-accent-hover"
+                )}
+              >
+                {step.label}
+              </span>
             </div>
           </div>
         );

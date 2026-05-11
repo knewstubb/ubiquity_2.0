@@ -4,7 +4,6 @@ import { useAccount } from '../contexts/AccountContext';
 import { spaContacts } from '../data/spaContacts';
 import { campaigns, journeys } from '../data/campaigns';
 import { segments } from '../data/segments';
-import styles from './OverviewDashboardPage.module.css';
 
 export default function OverviewDashboardPage() {
   const { filterByAccount } = useAccount();
@@ -19,7 +18,7 @@ export default function OverviewDashboardPage() {
 
   return (
     <PageShell title="Dashboard" subtitle="Overview of your workspace">
-      <div className={styles.metricsGrid}>
+      <div className="grid grid-cols-4 gap-5">
         <MetricCard label="Total Contacts" value={filteredContacts.length} />
         <MetricCard label="Active Campaigns" value={activeCampaigns} />
         <MetricCard label="Active Journeys" value={activeJourneys} />

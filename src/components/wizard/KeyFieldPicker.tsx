@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import type { TransactionalSource } from '../../models/connector';
-import styles from './KeyFieldPicker.module.css';
+import type { TransactionalSource } from '../../models/automation';
 
 interface KeyFieldPickerProps {
   transactionalSource: TransactionalSource;
@@ -11,10 +10,10 @@ interface KeyFieldPickerProps {
 export function KeyFieldPicker({ value, onChange }: KeyFieldPickerProps) {
   const [contactField, setContactField] = useState('id');
   return (
-    <div className={styles.container}>
-      <div className={styles.fieldRow}>
+    <div>
+      <div className="flex items-center gap-3">
         <select
-          className={styles.select}
+          className="flex-1 py-2 px-3 border border-border rounded-md text-sm text-foreground bg-background outline-none focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
           value={value ?? ''}
           onChange={(e) => onChange(e.target.value)}
           aria-label="Key field"
@@ -25,9 +24,9 @@ export function KeyFieldPicker({ value, onChange }: KeyFieldPickerProps) {
           <option value="phone">Phone Number (phone)</option>
           <option value="membershipTier">Membership Tier</option>
         </select>
-        <span className={styles.arrow}>→</span>
+        <span className="text-sm text-tertiary-foreground">→</span>
         <select
-          className={styles.select}
+          className="flex-1 py-2 px-3 border border-border rounded-md text-sm text-foreground bg-background outline-none focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
           value={contactField}
           onChange={(e) => setContactField(e.target.value)}
           aria-label="Contact matching field"

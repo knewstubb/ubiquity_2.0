@@ -8,7 +8,6 @@ import { DeleteConfirmDialog } from '../components/campaign/DeleteConfirmDialog'
 import { useAccount } from '../contexts/AccountContext';
 import { useCampaigns } from '../contexts/CampaignsContext';
 import { useJourneys } from '../contexts/JourneysContext';
-import styles from './JourneysPage.module.css';
 
 export default function JourneysPage() {
   const navigate = useNavigate();
@@ -85,7 +84,7 @@ export default function JourneysPage() {
       subtitle="All journey flows across campaigns"
     >
       {distinctTypes.length > 0 && (
-        <div className={styles.filterRow}>
+        <div className="mb-4">
           <TagFilter
             tags={distinctTypes}
             selectedTags={selectedTags}
@@ -95,7 +94,7 @@ export default function JourneysPage() {
       )}
 
       {filteredJourneys.length > 0 ? (
-        <div className={styles.grid}>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
           {filteredJourneys.map((journey) => (
             <JourneyCard
               key={journey.id}
@@ -108,10 +107,10 @@ export default function JourneysPage() {
           ))}
         </div>
       ) : (
-        <div className={styles.emptyState}>
-          <Path size={48} weight="duotone" className={styles.emptyIcon} />
-          <p className={styles.emptyTitle}>No journeys found</p>
-          <p className={styles.emptyMessage}>
+        <div className="flex flex-col items-center justify-center py-12 px-6 text-center text-tertiary-foreground">
+          <Path size={48} weight="duotone" className="text-tertiary-foreground mb-3" />
+          <p className="text-base font-semibold text-muted-foreground mb-2">No journeys found</p>
+          <p className="text-sm text-tertiary-foreground m-0">
             Journeys will appear here once created within a campaign.
           </p>
         </div>

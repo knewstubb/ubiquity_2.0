@@ -1,7 +1,7 @@
 import { PageShell } from '../components/layout/PageShell';
 import { DataTable, type Column } from '../components/shared/DataTable';
+import { cn } from '../lib/utils';
 import type { CampaignStatus } from '../models/campaign';
-import styles from './EmailsPage.module.css';
 
 interface EmailItem {
   id: string;
@@ -19,6 +19,13 @@ const emailItems: EmailItem[] = [
   { id: 'em-006', name: 'Queenstown Winter Retreat Promo', status: 'completed', lastModified: '2024-09-01' },
 ];
 
+const statusClasses: Record<CampaignStatus, string> = {
+  active: 'bg-accent text-primary',
+  paused: 'bg-warning-subtle text-warning',
+  draft: 'bg-secondary text-tertiary-foreground',
+  completed: 'bg-success-subtle text-success',
+};
+
 const columns: Column<EmailItem>[] = [
   { key: 'name', header: 'Name', render: (e) => e.name },
   {
@@ -26,7 +33,10 @@ const columns: Column<EmailItem>[] = [
     header: 'Status',
     width: '120px',
     render: (e) => (
-      <span className={`${styles.statusBadge} ${styles[e.status]}`}>
+      <span className={cn(
+        'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium leading-tight whitespace-nowrap',
+        statusClasses[e.status]
+      )}>
         {e.status.charAt(0).toUpperCase() + e.status.slice(1)}
       </span>
     ),

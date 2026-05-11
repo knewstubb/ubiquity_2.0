@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useConnections } from '../contexts/ConnectionsContext';
-import { useConnectors } from '../contexts/ConnectorsContext';
+import { useAutomations } from '../contexts/AutomationsContext';
 import { useAccount } from '../contexts/AccountContext';
 import { ConnectionRow } from '../components/dashboard/ConnectionRow';
-import { ConnectorCard } from '../components/dashboard/ConnectorCard';
+import { AutomationCard } from '../components/dashboard/AutomationCard';
 import { DeleteConfirmModal } from '../components/dashboard/DeleteConfirmModal';
 import { CreateConnectionModal } from '../components/dashboard/CreateConnectionModal';
 import { InitialModal } from '../components/dashboard/InitialModal';
@@ -12,10 +12,9 @@ import { ImporterWizardModal } from '../components/importer/ImporterWizardModal'
 import { AutomationSettingsModal } from '../components/dashboard/AutomationSettingsModal';
 import { ActivityLogModal } from '../components/dashboard/ActivityLogModal';
 import { HistoryModal } from '../components/dashboard/HistoryModal';
-import type { Connector } from '../models/connector';
+import type { Automation } from '../models/automation';
 import type { WizardDraft } from '../models/wizard';
 import type { ImporterConfig } from '../models/importer';
-import styles from './DashboardPage.module.css';
 
 interface WizardModalState {
   open: boolean;
@@ -32,20 +31,20 @@ interface ImporterModalState {
 
 export default function DashboardPage() {
   const { connections, getConnectionById, addConnection, updateConnection, deleteConnection } = useConnections();
-  const { connectors, addConnector, addConnectorDirect, updateConnector, toggleConnectorStatus, deleteConnector } =
-    useConnectors();
+  const { automations, addAutomation, addAutomationDirect, updateAutomation, toggleAutomationStatus, deleteAutomation } =
+    useAutomations();
   const { selectedAccountId } = useAccount();
 
   const filteredConnections = connections.filter((c) => c.accountId === selectedAccountId);
 
-  const totalAutomations = connectors.filter((c) =>
+  const totalAutomations = automations.filter((c) =>
     filteredConnections.some((conn) => conn.id === c.connectionId),
   ).length;
 
   const [showCreateConnection, setShowCreateConnection] = useState(false);
   const [editingConnection, setEditingConnection] = useState<string | null>(null);
   const [pendingEditConnectionId, setPendingEditConnectionId] = useState<string | null>(null);
-  const [pendingDelete, setPendingDelete] = useState<Connector | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<Automation | null>(null);
   const [pendingDeleteConnectionId, setPendingDeleteConnectionId] = useState<string | null>(null);
   const [initialModalConnectionId, setInitialModalConnectionId] = useState<string | null>(null);
   const [wizardModalState, setWizardModalState] = useState<WizardModalState | null>(null);
@@ -86,7 +85,7 @@ export default function DashboardPage() {
 
   // --- Edit flow (WizardModal directly, skip InitialModal) ---
   function handleEdit(connectorId: string) {
-    const connector = connectors.find((c) => c.id === connectorId);
+    const connector = automations.find((c) => c.id === connectorId);
     if (!connector) return;
 
     if (connector.direction === 'import') {
@@ -108,9 +107,9 @@ export default function DashboardPage() {
   // --- WizardModal save ---
   function handleWizardSave(draft: WizardDraft) {
     if (wizardModalState?.editConnectorId) {
-      updateConnector(wizardModalState.editConnectorId, draft);
+      updateAutomation(wizardModalState.editConnectorId, draft);
     } else {
-      addConnector(draft);
+      addAutomation(draft);
     }
   }
 
@@ -125,7 +124,7 @@ export default function DashboardPage() {
       : config.dataType === 'transactional' ? 'transactional' as const
       : 'contact' as const;
 
-    const connector: Connector = {
+    const connector: Automation = {
       id: crypto.randomUUID(),
       connectionId: config.connectionId,
       name: config.name,
@@ -142,7 +141,7 @@ export default function DashboardPage() {
       updatedAt: now,
     };
 
-    addConnectorDirect(connector);
+    addAutomationDirect(connector);
   }
 
   function handleImporterClose() {
@@ -150,13 +149,13 @@ export default function DashboardPage() {
   }
 
   // --- Delete flow ---
-  function handleDeleteRequest(connector: Connector) {
+  function handleDeleteRequest(connector: Automation) {
     setPendingDelete(connector);
   }
 
   function handleDeleteConfirm() {
     if (pendingDelete) {
-      deleteConnector(pendingDelete.id);
+      deleteAutomation(pendingDelete.id);
       setPendingDelete(null);
     }
   }
@@ -171,17 +170,17 @@ export default function DashboardPage() {
     : undefined;
 
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
+    <div className="w-full max-w-[1440px] mx-auto min-h-[calc(100vh-85px)] py-7 px-6 bg-background">
+      <div className="flex items-center justify-between mb-7">
         <div>
-          <h1 className={styles.title}>Integrations</h1>
-          <p className={styles.subtitle}>
+          <h1 className="text-2xl font-semibold text-foreground m-0">Connectors</h1>
+          <p className="text-sm text-tertiary-foreground mt-1 mb-0 font-normal">
             {filteredConnections.length} connection{filteredConnections.length !== 1 ? 's' : ''} · {totalAutomations} automation{totalAutomations !== 1 ? 's' : ''}
           </p>
         </div>
         <button
           type="button"
-          className={styles.newButton}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-text-inverse border-none rounded-md text-sm font-medium cursor-pointer no-underline transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 active:bg-accent-hover"
           onClick={() => {
             setShowCreateConnection(true);
           }}
@@ -193,11 +192,11 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      <div className={styles.connectionList}>
+      <div className="flex flex-col">
         {filteredConnections.length === 0 ? (
           <EmptyConnectionState onCreateConnection={() => setShowCreateConnection(true)} />
         ) : filteredConnections.map((connection) => {
-          const childConnectors = connectors.filter(
+          const childConnectors = automations.filter(
             (c) => c.connectionId === connection.id,
           );
 
@@ -211,11 +210,11 @@ export default function DashboardPage() {
               onDeleteConnection={(id) => setPendingDeleteConnectionId(id)}
             >
               {childConnectors.map((connector) => (
-                <ConnectorCard
+                <AutomationCard
                   key={connector.id}
                   connector={connector}
                   connectionError={connection.status === 'error'}
-                  onToggleStatus={() => toggleConnectorStatus(connector.id)}
+                  onToggleStatus={() => toggleAutomationStatus(connector.id)}
                   onViewSettings={() => setSettingsConnectorId(connector.id)}
                   onEditWizard={() => handleEdit(connector.id)}
                   onDelete={() => handleDeleteRequest(connector)}
@@ -226,7 +225,7 @@ export default function DashboardPage() {
               {!connection.status.includes('error') && (
                 <button
                   type="button"
-                  className={styles.addAutomationCard}
+                  className="flex items-center justify-center h-11 border border-dashed border-primary/40 rounded-lg bg-transparent text-primary text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-[rgba(20,184,138,0.04)] hover:border-primary"
                   onClick={() => handleAddConnector(connection.id)}
                 >
                   + Add Automation
@@ -250,17 +249,17 @@ export default function DashboardPage() {
 
       {/* Edit Connection Warning — shown before opening the edit modal */}
       {pendingEditConnectionId && (
-        <div className={styles.warningOverlay} onClick={() => setPendingEditConnectionId(null)}>
-          <div className={styles.warningModal} onClick={(e) => e.stopPropagation()}>
-            <h3 className={styles.warningTitle}>Edit Connection</h3>
-            <p className={styles.warningText}>
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[200]" onClick={() => setPendingEditConnectionId(null)}>
+          <div className="bg-background rounded-lg shadow-xl p-6 w-[400px] max-w-[90vw]" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-base font-semibold text-foreground m-0 mb-2">Edit Connection</h3>
+            <p className="text-sm text-muted-foreground m-0 mb-5 leading-relaxed">
               Changes to a connection may affect all linked automations. Proceed only if you understand the impact.
             </p>
-            <div className={styles.warningActions}>
-              <button type="button" className={styles.warningCancel} onClick={() => setPendingEditConnectionId(null)}>Cancel</button>
+            <div className="flex justify-end gap-2">
+              <button type="button" className="px-4 py-2 text-sm font-medium text-muted-foreground bg-background border border-border rounded cursor-pointer transition-colors duration-150 hover:bg-secondary" onClick={() => setPendingEditConnectionId(null)}>Cancel</button>
               <button
                 type="button"
-                className={styles.warningProceed}
+                className="px-4 py-2 text-sm font-semibold text-primary-foreground bg-warning border-none rounded cursor-pointer transition-colors duration-150 hover:bg-warning-foreground"
                 onClick={() => {
                   setEditingConnection(pendingEditConnectionId);
                   setPendingEditConnectionId(null);
@@ -344,7 +343,7 @@ export default function DashboardPage() {
 
       {/* Automation Settings Modal — shown when user clicks an automation card */}
       {settingsConnectorId && (() => {
-        const connector = connectors.find((c) => c.id === settingsConnectorId);
+        const connector = automations.find((c) => c.id === settingsConnectorId);
         const connection = connector ? getConnectionById(connector.connectionId) : undefined;
         if (!connector || !connection) return null;
         return (
@@ -354,7 +353,7 @@ export default function DashboardPage() {
             onClose={() => setSettingsConnectorId(null)}
             onEdit={() => {
               setSettingsConnectorId(null);
-              handleEdit(connector.id);
+              setTimeout(() => handleEdit(connector.id), 150);
             }}
           />
         );
@@ -362,7 +361,7 @@ export default function DashboardPage() {
 
       {/* Activity Log Modal */}
       {activityLogConnectorId && (() => {
-        const connector = connectors.find((c) => c.id === activityLogConnectorId);
+        const connector = automations.find((c) => c.id === activityLogConnectorId);
         if (!connector) return null;
         return (
           <ActivityLogModal
@@ -374,7 +373,7 @@ export default function DashboardPage() {
 
       {/* History Modal */}
       {historyConnectorId && (() => {
-        const connector = connectors.find((c) => c.id === historyConnectorId);
+        const connector = automations.find((c) => c.id === historyConnectorId);
         if (!connector) return null;
         return (
           <HistoryModal
@@ -393,56 +392,56 @@ function EmptyConnectionState({ onCreateConnection }: { onCreateConnection: () =
   const [showRequirements, setShowRequirements] = useState(false);
 
   return (
-    <div className={styles.emptyState}>
-      <p className={styles.emptyTitle}>
+    <div className="flex flex-col items-center justify-center pt-[120px] pb-20 px-6 text-center">
+      <p className="text-base text-tertiary-foreground m-0 mb-6 max-w-[400px] leading-relaxed">
         An active connection is required before your first automation can be created.
       </p>
-      <div className={styles.emptyInfoBox}>
-        <p className={styles.emptyInfoText}>
+      <div className="bg-[rgba(245,158,11,0.06)] border border-[rgba(245,158,11,0.2)] rounded-lg py-5 px-8 mb-6 max-w-[480px]">
+        <p className="text-sm text-tertiary-foreground m-0 mb-2 leading-relaxed">
           Specific access credentials for your external database will be required to establish a connection to UbiQuity.
         </p>
-        <p className={styles.emptyInfoText}>
+        <p className="text-sm text-tertiary-foreground m-0 mb-2 leading-relaxed">
           Specific requirements can be found{' '}
           <button
             type="button"
-            className={styles.emptyLink}
+            className="bg-none border-none text-primary text-sm font-medium cursor-pointer p-0 underline hover:text-accent-hover"
             onClick={() => setShowRequirements(true)}
           >
             here
           </button>
         </p>
-        <p className={styles.emptyInfoText}>
+        <p className="text-sm text-tertiary-foreground m-0 leading-relaxed">
           Speak to your technical admin if you need support.
         </p>
       </div>
-      <button type="button" className={styles.emptyCreateBtn} onClick={onCreateConnection}>
+      <button type="button" className="px-6 py-2.5 text-sm font-semibold text-primary-foreground bg-primary border-none rounded cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2" onClick={onCreateConnection}>
         Create Your First Connection
       </button>
 
       {showRequirements && (
-        <div className={styles.reqOverlay} onClick={() => setShowRequirements(false)}>
-          <div className={styles.reqPopover} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.reqTitleRow}>
-              <h3 className={styles.reqTitle}>Connection Requirements</h3>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center" onClick={() => setShowRequirements(false)}>
+          <div className="bg-primary text-primary-foreground rounded-lg py-5 px-6 w-[580px] max-w-[90vw] text-left shadow-[0px_1px_4px_0px_rgba(0,0,0,0.12),0px_4px_16px_0px_rgba(0,0,0,0.1),0px_8px_32px_0px_rgba(0,0,0,0.08)]" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base font-semibold text-primary-foreground m-0">Connection Requirements</h3>
               <button
                 type="button"
-                className={styles.reqClose}
+                className="bg-none border-none text-primary-foreground cursor-pointer text-lg p-0 leading-none flex items-center justify-center opacity-80 hover:opacity-100"
                 onClick={() => setShowRequirements(false)}
                 aria-label="Close"
               >
                 ✕
               </button>
             </div>
-            <p className={styles.reqSubtitle}>Before setting up a connection, ensure you have:</p>
-            <ul className={styles.reqList}>
-              <li>Access credentials (hostname, username, password or access key)</li>
-              <li>The file path or bucket location where your data resides</li>
-              <li>Network access from UbiQuity's IP range to your server (firewall/whitelist)</li>
-              <li>A sample file in the expected format (CSV, JSON, or delimited text)</li>
-              <li>Knowledge of the file naming pattern used by your system</li>
+            <p className="text-sm text-[rgba(250,250,250,0.9)] m-0 mb-3">Before setting up a connection, ensure you have:</p>
+            <ul className="m-0 mb-4 pl-5 flex flex-col gap-1.5 list-disc">
+              <li className="text-sm text-[rgba(250,250,250,0.9)] leading-relaxed">Access credentials (hostname, username, password or access key)</li>
+              <li className="text-sm text-[rgba(250,250,250,0.9)] leading-relaxed">The file path or bucket location where your data resides</li>
+              <li className="text-sm text-[rgba(250,250,250,0.9)] leading-relaxed">Network access from UbiQuity's IP range to your server (firewall/whitelist)</li>
+              <li className="text-sm text-[rgba(250,250,250,0.9)] leading-relaxed">A sample file in the expected format (CSV, JSON, or delimited text)</li>
+              <li className="text-sm text-[rgba(250,250,250,0.9)] leading-relaxed">Knowledge of the file naming pattern used by your system</li>
             </ul>
-            <p className={styles.reqNote}>
-              Your technical admin or IT team can provide these details. Each protocol (SFTP, S3, Azure Blob) has specific requirements.
+            <p className="text-[13px] text-[rgba(250,250,250,0.7)] m-0 leading-relaxed">
+              Your technical admin or IT team can provide these details. Each protocol (SFTP, AWS S3, Azure Blob) has specific requirements.
             </p>
           </div>
         </div>

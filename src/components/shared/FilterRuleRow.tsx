@@ -8,7 +8,7 @@ import {
 } from '../../data/fieldRegistry';
 import { OperatorDropdown } from './OperatorDropdown';
 import { ValueInput } from './ValueInput';
-import styles from './FilterRuleRow.module.css';
+import { cn } from '../../lib/utils';
 
 interface FilterRuleRowProps {
   rule: FilterRule;
@@ -60,11 +60,11 @@ export function FilterRuleRow({
     : FIELD_GROUPS;
 
   return (
-    <div className={styles.row}>
+    <div className="flex items-center gap-2">
       {/* Field Picker */}
-      <div className={styles.fieldPicker}>
+      <div className="relative flex items-center min-w-[180px]">
         <select
-          className={styles.fieldSelect}
+          className="w-full appearance-none py-2 pr-8 pl-3 text-sm text-foreground bg-background border border-border rounded-sm cursor-pointer transition-[border-color,box-shadow] duration-150 leading-normal hover:border-tertiary-foreground focus:outline-none focus:border-primary focus:shadow-[0_0_0_2px_var(--ring)/0.2] disabled:opacity-50 disabled:cursor-not-allowed"
           value={rule.field}
           onChange={(e) => handleFieldChange(e.target.value)}
           disabled={readOnly}
@@ -83,7 +83,7 @@ export function FilterRuleRow({
             </optgroup>
           ))}
         </select>
-        <span className={styles.chevron} aria-hidden="true">
+        <span className="absolute right-3 pointer-events-none text-muted-foreground flex items-center" aria-hidden="true">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -113,7 +113,11 @@ export function FilterRuleRow({
       {/* Remove button */}
       <button
         type="button"
-        className={styles.removeBtn}
+        className={cn(
+          "flex items-center justify-center w-7 h-7 border-none bg-transparent text-tertiary-foreground rounded-sm cursor-pointer transition-colors duration-150 shrink-0",
+          "hover:text-destructive hover:bg-red-50",
+          "disabled:opacity-0 disabled:cursor-default disabled:pointer-events-none"
+        )}
         onClick={onRemove}
         disabled={!canRemove || readOnly}
         aria-label="Remove rule"

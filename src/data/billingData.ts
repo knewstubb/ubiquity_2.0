@@ -4,7 +4,7 @@ import { accounts } from './accounts';
 import { contacts } from './contacts';
 import { transactionalDatabases } from './transactionalData';
 import { connections } from './connections';
-import { connectors } from './connectors';
+import { automations } from './automations';
 import { journeys } from './campaigns';
 import { users } from './users';
 
@@ -402,7 +402,7 @@ function generateIntegrations(): BillingLineItem[] {
   const cycle = getCurrentBillingCycle();
 
   for (const conn of connections) {
-    const connAutomations = connectors.filter((a) => a.connectionId === conn.id);
+    const connAutomations = automations.filter((a) => a.connectionId === conn.id);
 
     if (connAutomations.length === 0) {
       // Connection with no automations — still bill as one integration

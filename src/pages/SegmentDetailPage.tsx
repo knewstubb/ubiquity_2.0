@@ -7,9 +7,9 @@ import { useAccount } from '../contexts/AccountContext';
 import { segments } from '../data/segments';
 import { spaContacts } from '../data/spaContacts';
 import { evaluateFilterGroup } from '../utils/filterEngine';
+import { cn } from '../lib/utils';
 import type { FilterGroup } from '../models/segment';
 import type { Contact } from '../models/contact';
-import styles from './SegmentDetailPage.module.css';
 
 const memberColumns: Column<Contact>[] = [
   {
@@ -49,8 +49,11 @@ export default function SegmentDetailPage() {
   if (!segment) {
     return (
       <PageShell title="Segment Not Found">
-        <p className={styles.notFound}>The segment you're looking for doesn't exist.</p>
-        <button className={styles.backLink} onClick={() => navigate('/audiences/segments')}>
+        <p className="text-center py-10 text-tertiary-foreground text-base">The segment you're looking for doesn't exist.</p>
+        <button
+          className="inline-flex items-center gap-1 text-sm text-primary no-underline cursor-pointer bg-none border-none p-0 font-[inherit] hover:underline"
+          onClick={() => navigate('/audiences/segments')}
+        >
           ← Back to Segments
         </button>
       </PageShell>
@@ -64,20 +67,27 @@ export default function SegmentDetailPage() {
 
   return (
     <PageShell title="Segment Detail">
-      <button className={styles.backLink} onClick={() => navigate('/audiences/segments')}>
+      <button
+        className="inline-flex items-center gap-1 text-sm text-primary no-underline mb-4 cursor-pointer bg-none border-none p-0 font-[inherit] hover:underline"
+        onClick={() => navigate('/audiences/segments')}
+      >
         ← Back to Segments
       </button>
 
-      <div className={styles.segmentHeader}>
-        <h2 className={styles.segmentName}>{segment.name}</h2>
-        <span className={`${styles.typeBadge} ${styles[segment.type]}`}>
+      <div className="flex items-center gap-3 mb-6">
+        <h2 className="text-xl font-semibold text-foreground m-0">{segment.name}</h2>
+        <span className={cn(
+          "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium leading-tight whitespace-nowrap",
+          segment.type === 'smart' && "bg-accent text-accent-foreground",
+          segment.type === 'manual' && "bg-secondary text-muted-foreground"
+        )}>
           {segment.type === 'smart' ? 'Smart' : 'Manual'}
         </span>
-        <span className={styles.memberCount}>{matchedContacts.length} members</span>
+        <span className="text-sm text-tertiary-foreground">{matchedContacts.length} members</span>
       </div>
 
       {isManual && (
-        <p className={styles.manualLabel}>
+        <p className="text-sm text-tertiary-foreground italic mb-3">
           This is a manual segment. Membership is managed manually, not by filter rules.
         </p>
       )}
@@ -88,8 +98,8 @@ export default function SegmentDetailPage() {
         readOnly={isManual}
       />
 
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Members Preview</h3>
+      <div className="mt-6">
+        <h3 className="text-base font-semibold text-muted-foreground m-0 mb-3">Members Preview</h3>
         <DataTable
           columns={memberColumns}
           data={previewContacts}

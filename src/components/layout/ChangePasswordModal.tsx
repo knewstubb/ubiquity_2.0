@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { X } from '@phosphor-icons/react';
 import { supabase } from '../../lib/supabase';
-import styles from './ChangePasswordModal.module.css';
 
 interface ChangePasswordModalProps {
   onClose: () => void;
@@ -58,64 +57,77 @@ export function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
   );
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>Change Password</h2>
-          <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="Close">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[200]" onClick={onClose}>
+      <div className="bg-background rounded-lg shadow-xl w-[400px] max-w-[90vw]" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 pt-5">
+          <h2 className="text-lg font-semibold text-foreground m-0">Change Password</h2>
+          <button
+            type="button"
+            className="inline-flex items-center justify-center w-8 h-8 border-none bg-none rounded text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary hover:text-foreground"
+            onClick={onClose}
+            aria-label="Close"
+          >
             <X size={18} weight="bold" />
           </button>
         </div>
 
         {success ? (
-          <div className={styles.successMessage}>
+          <div className="p-6 text-center text-sm font-medium text-primary">
             Password updated successfully.
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="cp-current">Current Password</label>
+          <form onSubmit={handleSubmit} className="px-6 pt-5 pb-6 flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-muted-foreground" htmlFor="cp-current">Current Password</label>
               <input
                 id="cp-current"
                 type="password"
-                className={styles.input}
+                className="px-3 py-2 text-sm font-sans border border-border rounded bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 autoComplete="current-password"
               />
             </div>
 
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="cp-new">New Password</label>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-muted-foreground" htmlFor="cp-new">New Password</label>
               <input
                 id="cp-new"
                 type="password"
-                className={styles.input}
+                className="px-3 py-2 text-sm font-sans border border-border rounded bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 autoComplete="new-password"
               />
             </div>
 
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="cp-confirm">Confirm New Password</label>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-muted-foreground" htmlFor="cp-confirm">Confirm New Password</label>
               <input
                 id="cp-confirm"
                 type="password"
-                className={styles.input}
+                className="px-3 py-2 text-sm font-sans border border-border rounded bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 autoComplete="new-password"
               />
             </div>
 
-            {error && <p className={styles.error}>{error}</p>}
+            {error && <p className="text-[13px] text-destructive m-0">{error}</p>}
 
-            <div className={styles.actions}>
-              <button type="button" className={styles.cancelBtn} onClick={onClose}>
+            <div className="flex justify-end gap-2 mt-1">
+              <button
+                type="button"
+                className="px-4 py-2 text-sm font-sans font-medium text-muted-foreground bg-background border border-border rounded cursor-pointer transition-colors duration-150 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                onClick={onClose}
+              >
                 Cancel
               </button>
-              <button type="submit" className={styles.saveBtn} disabled={saving}>
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-sans font-semibold text-primary-foreground bg-primary border-none rounded cursor-pointer transition-colors duration-150 hover:bg-accent-hover disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                disabled={saving}
+              >
                 {saving ? 'Saving…' : 'Update Password'}
               </button>
             </div>

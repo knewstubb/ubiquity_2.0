@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
+import { cn } from '../../lib/utils';
 import { KeyFieldPicker } from './KeyFieldPicker';
 import { FilterBuilder } from '../shared/FilterBuilder';
 import { getFieldsForDataType } from '../../data/fieldRegistry';
 import type { FilterGroup } from '../../models/segment';
 import type { WizardDraft } from '../../models/wizard';
-import type { ExportDataType, TransactionalSource } from '../../models/connector';
-import styles from './DataSourceStep.module.css';
+import type { ExportDataType, TransactionalSource } from '../../models/automation';
 
 interface DataSourceStepProps {
   draft: WizardDraft;
@@ -68,25 +68,30 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
     (draft.dataType === 'transactional' || draft.dataType === 'transactional_with_contact');
 
   return (
-    <div className={styles.container} data-testid="data-source-step">
-      <h3 className={styles.title}>Data Source</h3>
-      <p className={styles.subtitle}>Choose what data to export and configure source options.</p>
+    <div className="flex flex-col gap-8" data-testid="data-source-step">
+      <h3 className="m-0 text-lg font-semibold text-primary">Data Source</h3>
+      <p className="-mt-5 text-sm text-tertiary-foreground">Choose what data to export and configure source options.</p>
 
       {/* Row 1: Exporting From */}
-      <div className={styles.row}>
-        <div className={styles.labelCol}>
-          <div className={styles.labelRow}>
-            <p className={styles.labelText}>Exporting From</p>
+      <div className="flex items-start gap-14">
+        <div className="w-40 shrink-0">
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm font-semibold text-foreground m-0">Exporting From</p>
           </div>
-          <p className={styles.labelHint}>Select the type of data to export</p>
+          <p className="text-xs text-tertiary-foreground mt-1 m-0">Select the type of data to export</p>
         </div>
-        <div className={styles.inputCol}>
-          <div className={styles.segmented}>
-            {DATA_TYPE_OPTIONS.map((opt) => (
+        <div className="w-[552px] flex flex-col gap-3">
+          <div className="flex border border-border rounded-md overflow-hidden w-full">
+            {DATA_TYPE_OPTIONS.map((opt, i) => (
               <button
                 key={opt.value}
                 type="button"
-                className={`${styles.segmentBtn} ${draft.dataType === opt.value ? styles.segmentBtnActive : ''}`}
+                className={cn(
+                  "flex-1 py-2 px-4 text-[13px] font-medium text-tertiary-foreground bg-secondary border-none border-b-2 border-b-transparent cursor-pointer transition-all duration-150 whitespace-nowrap uppercase flex items-center justify-center",
+                  i < DATA_TYPE_OPTIONS.length - 1 && "border-r border-r-border",
+                  draft.dataType === opt.value && "text-primary font-semibold bg-background border-b-2 border-b-primary",
+                  draft.dataType !== opt.value && "hover:text-muted-foreground"
+                )}
                 onClick={() => handleDataTypeSelect(opt.value)}
               >
                 {opt.label}
@@ -94,18 +99,18 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
             ))}
           </div>
 
-          {/* Database fields — same pattern as importer */}
+          {/* Database fields */}
           {(draft.dataType === 'contact' || draft.dataType === 'transactional_with_contact') && (
             <div>
-              <p className={styles.inputLabel}>Contacts Database</p>
-              <input className={styles.textInput} type="text" value="Customer Contacts" disabled />
+              <p className="text-xs font-medium text-muted-foreground m-0">Contacts Database</p>
+              <input className="w-full py-2 px-3 text-sm border border-border rounded-md bg-secondary text-tertiary-foreground outline-none box-border cursor-not-allowed" type="text" value="Customer Contacts" disabled />
             </div>
           )}
 
           {(draft.dataType === 'transactional' || draft.dataType === 'transactional_with_contact') && (
             <div>
-              <p className={styles.inputLabel}>Transactional Database</p>
-              <select className={styles.selectInput} defaultValue="" aria-label="Select transactional database">
+              <p className="text-xs font-medium text-muted-foreground m-0">Transactional Database</p>
+              <select className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer box-border appearance-none bg-no-repeat bg-[right_12px_center] pr-8 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")` }} defaultValue="" aria-label="Select transactional database">
                 <option value="" disabled>Select Database</option>
                 <option value="treatments">Treatments</option>
                 <option value="products">Products</option>
@@ -117,14 +122,14 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
 
       {/* Row 2: Key Field */}
       {showKeyFieldPicker && (
-        <div className={styles.row}>
-          <div className={styles.labelCol}>
-            <div className={styles.labelRow}>
-              <p className={styles.labelText}>Key Field</p>
+        <div className="flex items-start gap-14">
+          <div className="w-40 shrink-0">
+            <div className="flex items-center gap-1.5">
+              <p className="text-sm font-semibold text-foreground m-0">Key Field</p>
             </div>
-            <p className={styles.labelHint}>Links transactions to contact records</p>
+            <p className="text-xs text-tertiary-foreground mt-1 m-0">Links transactions to contact records</p>
           </div>
-          <div className={styles.inputCol}>
+          <div className="w-[552px] flex flex-col gap-3">
             <KeyFieldPicker
               transactionalSource={draft.transactionalSource!}
               value={draft.enrichmentKeyField}
@@ -136,14 +141,14 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
 
       {/* Row 4: Filters */}
       {draft.dataType && (
-        <div className={styles.row}>
-          <div className={styles.labelCol}>
-            <div className={styles.labelRow}>
-              <p className={styles.labelText}>Filters</p>
+        <div className="flex items-start gap-14">
+          <div className="w-40 shrink-0">
+            <div className="flex items-center gap-1.5">
+              <p className="text-sm font-semibold text-foreground m-0">Filters</p>
             </div>
-            <p className={styles.labelHint}>Narrow down the records to export</p>
+            <p className="text-xs text-tertiary-foreground mt-1 m-0">Narrow down the records to export</p>
           </div>
-          <div className={styles.inputCol}>
+          <div className="w-[552px] flex flex-col gap-3">
             <FilterBuilder
               value={draft.filters}
               onChange={handleFiltersUpdate}

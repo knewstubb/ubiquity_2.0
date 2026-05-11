@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { useJourneys } from '../../../contexts/JourneysContext';
 import { createDefaultConfig } from '../../../models/journey';
 import type { JourneyNode, EndSubType } from '../../../models/journey';
-import styles from './configStyles.module.css';
 
 export interface EndConfigProps {
   journeyId: string;
@@ -20,6 +19,9 @@ const REASON_OPTIONS: { value: string; label: string }[] = [
   { value: 'unsubscribed', label: 'Unsubscribed' },
   { value: 'goal-met', label: 'Goal Met' },
 ];
+
+const inputClasses = "w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15";
+const selectClasses = `${inputClasses} appearance-none bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20d%3D%22M3%204.5L6%207.5L9%204.5%22%20fill%3D%22none%22%20stroke%3D%22%2371717A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7 cursor-pointer`;
 
 export function EndConfig({ journeyId, node }: EndConfigProps) {
   const { updateNode, journeys } = useJourneys();
@@ -48,13 +50,13 @@ export function EndConfig({ journeyId, node }: EndConfigProps) {
   return (
     <div>
       {/* End type selector */}
-      <div className={styles.formGroup}>
-        <label className={styles.label} htmlFor="end-type">
+      <div className="flex flex-col gap-1 mb-4 last:mb-0">
+        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="end-type">
           End Type
         </label>
         <select
           id="end-type"
-          className={styles.select}
+          className={selectClasses}
           value={node.subType}
           onChange={handleSubTypeChange}
         >
@@ -69,26 +71,26 @@ export function EndConfig({ journeyId, node }: EndConfigProps) {
       {/* Exit Journey fields */}
       {config.subType === 'exit' && (
         <>
-          <div className={styles.formGroup}>
-            <label className={styles.label} htmlFor="exit-label">
+          <div className="flex flex-col gap-1 mb-4 last:mb-0">
+            <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="exit-label">
               Label
             </label>
             <input
               id="exit-label"
               type="text"
-              className={styles.input}
+              className={inputClasses}
               value={config.label}
               onChange={(e) => handleConfigChange({ label: e.target.value })}
               placeholder="e.g. Journey Complete"
             />
           </div>
-          <div className={styles.formGroup}>
-            <label className={styles.label} htmlFor="exit-reason">
+          <div className="flex flex-col gap-1 mb-4 last:mb-0">
+            <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="exit-reason">
               Reason
             </label>
             <select
               id="exit-reason"
-              className={styles.select}
+              className={selectClasses}
               value={config.reason}
               onChange={(e) => handleConfigChange({ reason: e.target.value })}
             >
@@ -98,7 +100,7 @@ export function EndConfig({ journeyId, node }: EndConfigProps) {
                 </option>
               ))}
             </select>
-            <span className={styles.hint}>
+            <span className="text-xs text-muted-foreground leading-tight">
               Optional reason for why contacts exit at this point.
             </span>
           </div>
@@ -107,13 +109,13 @@ export function EndConfig({ journeyId, node }: EndConfigProps) {
 
       {/* Move to Journey fields */}
       {config.subType === 'move-to-journey' && (
-        <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="target-journey">
+        <div className="flex flex-col gap-1 mb-4 last:mb-0">
+          <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="target-journey">
             Target Journey
           </label>
           <select
             id="target-journey"
-            className={styles.select}
+            className={selectClasses}
             value={config.targetJourneyId}
             onChange={(e) => handleConfigChange({ targetJourneyId: e.target.value })}
           >
@@ -125,7 +127,7 @@ export function EndConfig({ journeyId, node }: EndConfigProps) {
             ))}
           </select>
           {otherJourneys.length === 0 && (
-            <span className={styles.hint}>
+            <span className="text-xs text-muted-foreground leading-tight">
               No other journeys available. Create another journey first.
             </span>
           )}

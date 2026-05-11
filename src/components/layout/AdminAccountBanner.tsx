@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAccount } from '../../contexts/AccountContext';
-import styles from './AdminAccountBanner.module.css';
 
 /**
  * Routes that support All Accounts Mode (cross-account aggregate views).
@@ -26,13 +25,17 @@ export function AdminAccountBanner() {
   if (routeSupportsAllAccounts) return null;
 
   return (
-    <div className={styles.banner} role="status" aria-label="Account selection required">
-      <span className={styles.message}>
+    <div
+      className="flex items-center justify-between gap-3 px-4 py-3 bg-info-subtle border border-info-border rounded text-sm text-info-foreground mx-5 mt-3"
+      role="status"
+      aria-label="Account selection required"
+    >
+      <span className="flex-1">
         Select a specific account to view this page
       </span>
       <button
         type="button"
-        className={styles.selectBtn}
+        className="bg-transparent border border-info-border rounded px-3.5 py-1.5 text-[13px] font-semibold text-info-foreground cursor-pointer whitespace-nowrap hover:bg-[rgba(56,189,248,0.15)]"
         onClick={() => navigate('/dashboard')}
       >
         Select Account

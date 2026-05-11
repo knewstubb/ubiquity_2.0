@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { ConnectionRow } from './ConnectionRow';
 import type { Connection } from '../../models/connection';
-import type { Connector } from '../../models/connector';
+import type { Automation } from '../../models/automation';
 
 const mockConnection: Connection = {
   id: 'conn-1',
@@ -14,7 +14,7 @@ const mockConnection: Connection = {
   config: { region: 'us-east-1', bucket: 'spa-exports', prefix: 'data/' },
 };
 
-const mockConnectors: Connector[] = [
+const mockConnectors: Automation[] = [
   {
     id: 'c1',
     connectionId: 'conn-1',

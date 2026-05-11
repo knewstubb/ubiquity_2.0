@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
 import { CaretRight } from '@phosphor-icons/react';
+import { cn } from '../../lib/utils';
 import type { AccountTreeNode } from './useBillingReport';
 import type { BillingLineItem } from '../../models/billing';
 import type { BillingCategory } from '../../models/billing';
 import { usePricing } from '../../contexts/PricingContext';
-import styles from './BillingTreeTable.module.css';
 
 export interface BillingTreeTableProps {
   tree: AccountTreeNode[];
@@ -83,25 +83,28 @@ export function BillingTreeTable({
 
   if (tree.length === 0) {
     return (
-      <div className={styles.emptyState}>
+      <div className="text-center py-12 px-6 text-muted-foreground text-base">
         No billing data found for the selected criteria.
       </div>
     );
   }
 
   return (
-    <table className={styles.table}>
+    <table className="w-full border-collapse font-sans">
       <thead>
         <tr>
           {COLUMNS.map((col) => (
             <th
               key={col.key}
-              className={col.align === 'right' ? styles.headerCellItems : styles.headerCell}
+              className={cn(
+                "bg-background font-semibold text-base text-left px-3 py-2.5 border-b-2 border-border cursor-pointer select-none text-foreground whitespace-nowrap hover:text-primary",
+                col.align === 'right' && "text-right"
+              )}
               onClick={() => onToggleSort(col.key)}
             >
               {col.label}
               {sortColumn === col.key && (
-                <span className={styles.sortArrow}>
+                <span className="ml-1 text-sm text-tertiary-foreground">
                   {sortDirection === 'asc' ? '▲' : '▼'}
                 </span>
               )}
@@ -131,14 +134,6 @@ function renderNode(
   const isExpanded = expanded.has(node.account.id);
   const hasExpandableContent = node.children.length > 0 || node.items.length > 0;
 
-  // Determine row class based on level
-  const rowClass =
-    node.level === 0
-      ? styles.accountRowLevel0
-      : node.level === 1
-        ? styles.accountRowLevel1
-        : styles.accountRowLevel2;
-
   const indent = node.level * 24;
 
   const nodeTotal = calcNodeTotal(node, prices);
@@ -147,29 +142,36 @@ function renderNode(
   rows.push(
     <tr
       key={`account-${node.account.id}`}
-      className={rowClass}
+      className={cn(
+        "border-b border-border cursor-pointer hover:bg-background",
+        node.level === 0 && "bg-background font-semibold",
+        node.level === 1 && "bg-zinc-100/50",
+      )}
       onClick={() => hasExpandableContent && toggle(node.account.id)}
     >
-      <td className={styles.bodyCell}>
-        <div className={styles.accountCell} style={{ paddingLeft: indent }}>
+      <td className="px-3 py-2 text-base text-foreground align-middle">
+        <div className="flex items-center gap-1.5" style={{ paddingLeft: indent }}>
           {hasExpandableContent && (
-            <span className={isExpanded ? styles.chevronExpanded : styles.chevron}>
+            <span className={cn(
+              "inline-flex items-center justify-center w-4 h-4 text-tertiary-foreground shrink-0 transition-transform duration-150",
+              isExpanded && "rotate-90"
+            )}>
               <CaretRight size={16} weight="bold" />
             </span>
           )}
           {node.account.name}
         </div>
       </td>
-      <td className={styles.bodyCell} />
-      <td className={styles.bodyCell} />
-      <td className={styles.bodyCell} />
-      <td className={styles.bodyCell} />
-      <td className={styles.bodyCell} />
-      <td className={styles.bodyCellItems}>
+      <td className="px-3 py-2 text-base text-foreground align-middle" />
+      <td className="px-3 py-2 text-base text-foreground align-middle" />
+      <td className="px-3 py-2 text-base text-foreground align-middle" />
+      <td className="px-3 py-2 text-base text-foreground align-middle" />
+      <td className="px-3 py-2 text-base text-foreground align-middle" />
+      <td className="px-3 py-2 text-base text-foreground align-middle text-right">
         {node.rolledUpTotal.toLocaleString()}
       </td>
-      <td className={styles.bodyCell} />
-      <td className={styles.bodyCellItems}>
+      <td className="px-3 py-2 text-base text-foreground align-middle" />
+      <td className="px-3 py-2 text-base text-foreground align-middle text-right">
         {nodeTotal > 0 ? formatCurrency(nodeTotal) : ''}
       </td>
     </tr>,
@@ -197,18 +199,18 @@ function renderLineItem(item: BillingLineItem, parentLevel: number, prices: Reco
   const total = item.items * unitPrice;
 
   return (
-    <tr key={`item-${item.id}`} className={styles.lineItemRow}>
-      <td className={styles.bodyCell}>
+    <tr key={`item-${item.id}`} className="border-b border-border hover:bg-background">
+      <td className="px-3 py-2 text-base text-foreground align-middle">
         <div style={{ paddingLeft: indent }} />
       </td>
-      <td className={styles.bodyCell}>{item.category}</td>
-      <td className={styles.bodyCell}>{item.description}</td>
-      <td className={styles.bodyCell}>{formatDate(item.sendDate)}</td>
-      <td className={styles.bodyCell}>{formatDate(item.createdDate)}</td>
-      <td className={styles.bodyCell}>{item.user}</td>
-      <td className={styles.bodyCellItems}>{item.items.toLocaleString()}</td>
-      <td className={styles.bodyCellItems}>{unitPrice > 0 ? formatUnitPrice(unitPrice) : ''}</td>
-      <td className={styles.bodyCellItems}>{total > 0 ? formatCurrency(total) : ''}</td>
+      <td className="px-3 py-2 text-base text-foreground align-middle">{item.category}</td>
+      <td className="px-3 py-2 text-base text-foreground align-middle">{item.description}</td>
+      <td className="px-3 py-2 text-base text-foreground align-middle">{formatDate(item.sendDate)}</td>
+      <td className="px-3 py-2 text-base text-foreground align-middle">{formatDate(item.createdDate)}</td>
+      <td className="px-3 py-2 text-base text-foreground align-middle">{item.user}</td>
+      <td className="px-3 py-2 text-base text-foreground align-middle text-right">{item.items.toLocaleString()}</td>
+      <td className="px-3 py-2 text-base text-foreground align-middle text-right">{unitPrice > 0 ? formatUnitPrice(unitPrice) : ''}</td>
+      <td className="px-3 py-2 text-base text-foreground align-middle text-right">{total > 0 ? formatCurrency(total) : ''}</td>
     </tr>
   );
 }

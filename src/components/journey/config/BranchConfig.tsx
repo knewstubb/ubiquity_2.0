@@ -11,7 +11,6 @@ import type {
 } from '../../../models/journey';
 import type { FilterGroup } from '../../../models/segment';
 import { FilterBuilder } from '../../shared/FilterBuilder';
-import styles from './configStyles.module.css';
 
 export interface BranchConfigProps {
   journeyId: string;
@@ -29,6 +28,9 @@ const emptyFilterGroup: FilterGroup = {
   rules: [],
   groups: [],
 };
+
+const inputClasses = "w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15";
+const selectClasses = `${inputClasses} appearance-none bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20d%3D%22M3%204.5L6%207.5L9%204.5%22%20fill%3D%22none%22%20stroke%3D%22%2371717A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7 cursor-pointer`;
 
 let conditionIdCounter = 0;
 function generateConditionId(): string {
@@ -136,13 +138,13 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
   return (
     <div>
       {/* Branch type selector */}
-      <div className={styles.formGroup}>
-        <label className={styles.label} htmlFor="branch-type">
+      <div className="flex flex-col gap-1 mb-4 last:mb-0">
+        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="branch-type">
           Branch Type
         </label>
         <select
           id="branch-type"
-          className={styles.select}
+          className={selectClasses}
           value={node.subType}
           onChange={handleSubTypeChange}
         >
@@ -156,8 +158,8 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
 
       {/* If/Else: FilterBuilder for condition */}
       {config.subType === 'if-else' && (
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Condition</label>
+        <div className="flex flex-col gap-1 mb-4 last:mb-0">
+          <label className="text-xs font-semibold text-muted-foreground leading-tight">Condition</label>
           <FilterBuilder
             value={(config as IfElseConfig).condition}
             onChange={handleIfElseConditionChange}
@@ -168,30 +170,30 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
       {/* A/B Split: percentage inputs */}
       {config.subType === 'ab-split' && (
         <>
-          <div className={styles.formGroup}>
-            <label className={styles.label} htmlFor="variant-a-pct">
+          <div className="flex flex-col gap-1 mb-4 last:mb-0">
+            <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="variant-a-pct">
               Variant A (%)
             </label>
             <input
               id="variant-a-pct"
               type="number"
-              className={styles.input}
+              className={inputClasses}
               min={1}
               max={99}
               value={(config as AbSplitConfig).variantAPercent}
               onChange={handleVariantAChange}
             />
           </div>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Variant B (%)</label>
+          <div className="flex flex-col gap-1 mb-4 last:mb-0">
+            <label className="text-xs font-semibold text-muted-foreground leading-tight">Variant B (%)</label>
             <input
               type="number"
-              className={styles.input}
+              className={inputClasses}
               value={100 - (config as AbSplitConfig).variantAPercent}
               readOnly
               disabled
             />
-            <span className={styles.hint}>
+            <span className="text-xs text-muted-foreground leading-tight">
               Variant B is automatically calculated as 100 − Variant A.
             </span>
           </div>
@@ -202,21 +204,14 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
       {config.subType === 'multi-way' && (
         <>
           {(config as MultiWayConfig).conditions.map((cond, idx) => (
-            <div key={cond.id} className={styles.formGroup}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <label className={styles.label} style={{ flex: 1 }}>
+            <div key={cond.id} className="flex flex-col gap-1 mb-4 last:mb-0">
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-semibold text-muted-foreground leading-tight flex-1">
                   Path {idx + 1}
                 </label>
                 <button
                   type="button"
-                  className={styles.hint}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: 'var(--color-error, #EF4444)',
-                    fontSize: 'var(--font-xs)',
-                  }}
+                  className="bg-transparent border-none cursor-pointer text-destructive text-xs"
                   onClick={() => handleRemovePath(cond.id)}
                 >
                   Remove
@@ -224,7 +219,7 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
               </div>
               <input
                 type="text"
-                className={styles.input}
+                className={inputClasses}
                 value={cond.label}
                 onChange={(e) => handleConditionLabelChange(cond.id, e.target.value)}
                 placeholder="Path label…"
@@ -237,22 +232,16 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
           ))}
 
           {/* Everyone Else (always present, read-only) */}
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Everyone Else</label>
-            <span className={styles.hint}>
+          <div className="flex flex-col gap-1 mb-4 last:mb-0">
+            <label className="text-xs font-semibold text-muted-foreground leading-tight">Everyone Else</label>
+            <span className="text-xs text-muted-foreground leading-tight">
               Contacts that don't match any condition above will follow this path.
             </span>
           </div>
 
           <button
             type="button"
-            className={styles.input}
-            style={{
-              cursor: 'pointer',
-              textAlign: 'center',
-              color: 'var(--color-primary-500, #14B88A)',
-              fontWeight: 'var(--weight-semibold, 600)',
-            }}
+            className={`${inputClasses} cursor-pointer text-center text-primary font-semibold`}
             onClick={handleAddPath}
           >
             + Add Path

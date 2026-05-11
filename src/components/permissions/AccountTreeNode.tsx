@@ -3,9 +3,9 @@ import { Buildings, GlobeHemisphereWest, MapPin, PencilSimple } from '@phosphor-
 import type { Account } from '../../models/account';
 import type { PermissionGroup } from '../../models/permissions';
 import { getHierarchyIcon } from '../../data/permissions';
+import { cn } from '../../lib/utils';
 import { Checkbox } from '../shared/Checkbox';
 import { Dropdown } from '../shared/Dropdown';
-import styles from './AccountTreeNode.module.css';
 
 interface AccountTreeNodeProps {
   account: Account;
@@ -54,18 +54,15 @@ export function AccountTreeNode({
 
   const isClickableMode = !showCheckbox;
 
-  const rowClassName = [
-    styles.nodeRow,
-    isClickableMode && styles.clickable,
-    isClickableMode && selected && styles.selectedClickable,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   return (
-    <div className={styles.node}>
+    <div className="flex flex-col">
       <div
-        className={rowClassName}
+        className={cn(
+          "flex items-center gap-2 px-1 py-2 rounded-md min-h-9",
+          "hover:bg-background",
+          isClickableMode && "cursor-pointer hover:bg-accent",
+          isClickableMode && selected && "bg-accent"
+        )}
         onClick={isClickableMode ? onSelect : undefined}
         role={isClickableMode ? 'button' : undefined}
         tabIndex={isClickableMode ? 0 : undefined}
@@ -80,7 +77,7 @@ export function AccountTreeNode({
             : undefined
         }
       >
-        <span className={styles.hierarchyIcon}>
+        <span className="flex items-center justify-center shrink-0 text-muted-foreground w-5 h-5">
           <IconComponent size={18} weight="regular" />
         </span>
 
@@ -93,19 +90,21 @@ export function AccountTreeNode({
           />
         )}
 
-        <span className={styles.accountName}>{account.name}</span>
+        <span className="font-sans text-sm font-medium text-foreground whitespace-nowrap overflow-hidden text-ellipsis">
+          {account.name}
+        </span>
 
         {showCheckbox && checked && (
-          <div className={styles.assignmentControls}>
+          <div className="flex items-center gap-2 ml-auto shrink-0">
             <Dropdown
-              className={styles.groupDropdown}
+              className="min-w-[140px]"
               options={dropdownOptions}
               value={assignment ?? 'custom'}
               onChange={(e) => onGroupChange(e.target.value)}
               aria-label={`Permission group for ${account.name}`}
             />
             <button
-              className={styles.editButton}
+              className="flex items-center justify-center bg-transparent border-none cursor-pointer text-muted-foreground p-1 rounded-sm transition-colors duration-150 hover:text-primary hover:bg-accent"
               onClick={(e) => {
                 e.stopPropagation();
                 onEditClick();
@@ -119,7 +118,11 @@ export function AccountTreeNode({
         )}
       </div>
 
-      {children && <div className={styles.children}>{children}</div>}
+      {children && (
+        <div className="relative pl-6 before:content-[''] before:absolute before:left-3.5 before:top-0 before:bottom-3 before:w-px before:bg-border">
+          {children}
+        </div>
+      )}
     </div>
   );
 }

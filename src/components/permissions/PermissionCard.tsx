@@ -1,5 +1,4 @@
 import { Toggle } from '../shared/Toggle';
-import styles from './PermissionCard.module.css';
 
 type CrudKey = 'create' | 'read' | 'update' | 'delete';
 
@@ -19,11 +18,11 @@ const CRUD_LABELS: { key: CrudKey; label: string }[] = [
 
 export function PermissionCard({ functionalGroup, permissions, editable, onToggle }: PermissionCardProps) {
   return (
-    <div className={styles.card}>
-      <h3 className={styles.heading}>{functionalGroup}</h3>
+    <div className="bg-background border border-border rounded-sm shadow-sm p-4 flex flex-col gap-2">
+      <h3 className="font-sans text-base font-semibold text-foreground m-0 mb-1">{functionalGroup}</h3>
       {CRUD_LABELS.map(({ key, label }) => (
-        <div key={key} className={styles.toggleRow}>
-          <span className={styles.toggleLabel}>{label}</span>
+        <div key={key} className="flex items-center justify-between py-1">
+          <span className="font-sans text-sm text-muted-foreground">{label}</span>
           <Toggle
             checked={permissions[key]}
             onChange={(value) => onToggle?.(key, value)}

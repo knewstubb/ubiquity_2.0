@@ -13,7 +13,7 @@ import { useCampaigns } from '../contexts/CampaignsContext';
 import { useAccount } from '../contexts/AccountContext';
 import { accounts } from '../data/accounts';
 import type { AssetScope, Asset } from '../models/asset';
-import styles from './AssetsPage.module.css';
+
 
 const ASSET_TYPES = ['image', 'colour', 'font', 'footer'];
 
@@ -111,13 +111,13 @@ export default function AssetsPage() {
     <PageShell
       title="Assets"
       action={
-        <button className={styles.uploadButton} onClick={() => setUploadDialogOpen(true)}>
+        <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground border-none rounded font-semibold text-sm cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2" onClick={() => setUploadDialogOpen(true)}>
           <Plus size={16} weight="bold" />
           Upload Asset
         </button>
       }
     >
-      <div className={styles.toolbar}>
+      <div className="flex flex-wrap items-center gap-3 mb-4">
         <ScopeSelector activeScope={activeScope} onScopeChange={handleScopeChange} />
         {activeScope === 'campaign' && (
           <CampaignPicker
@@ -127,24 +127,24 @@ export default function AssetsPage() {
         )}
       </div>
 
-      <div className={styles.toolbar}>
-        <div className={styles.filterRow}>
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           <SearchInput value={searchQuery} onChange={setSearchQuery} />
           <TypeFilter types={ASSET_TYPES} selectedTypes={selectedTypes} onToggle={handleTypeToggle} />
         </div>
       </div>
 
       {filteredAssets.length > 0 ? (
-        <div className={styles.grid}>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
           {filteredAssets.map((asset) => (
             <AssetCard key={asset.id} asset={asset} onClick={handleCardClick} />
           ))}
         </div>
       ) : (
-        <div className={styles.emptyState}>
-          <ImageSquare size={48} weight="duotone" className={styles.emptyIcon} />
-          <p className={styles.emptyTitle}>No assets found</p>
-          <p className={styles.emptyMessage}>
+        <div className="flex flex-col items-center justify-center py-12 px-6 text-center text-tertiary-foreground">
+          <ImageSquare size={48} weight="duotone" className="text-tertiary-foreground mb-3" />
+          <p className="text-base font-semibold text-muted-foreground m-0 mb-2">No assets found</p>
+          <p className="text-sm text-tertiary-foreground m-0">
             Try adjusting your filters or upload a new asset to get started.
           </p>
         </div>

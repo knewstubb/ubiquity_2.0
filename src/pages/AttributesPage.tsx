@@ -6,7 +6,6 @@ import {
   PRODUCT_FIELDS,
   type FieldDefinition,
 } from '../data/fieldRegistry';
-import styles from './AttributesPage.module.css';
 
 const DATA_TYPE_LABEL: Record<string, string> = {
   string: 'Text',
@@ -34,7 +33,7 @@ const columns: Column<FieldDefinition>[] = [
     header: 'Data Type',
     width: '140px',
     render: (f) => (
-      <span className={styles.dataType}>{DATA_TYPE_LABEL[f.dataType] ?? 'Text'}</span>
+      <span className="text-xs text-muted-foreground font-mono">{DATA_TYPE_LABEL[f.dataType] ?? 'Text'}</span>
     ),
   },
   {

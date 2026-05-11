@@ -1,4 +1,4 @@
-import type { ExportDataType, TransactionalSource } from '../models/connector';
+import type { ExportDataType, TransactionalSource } from '../models/automation';
 
 export interface FieldDefinition {
   key: string;

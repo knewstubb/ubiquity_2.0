@@ -13,15 +13,16 @@ src/
 ├── components/
 │   ├── layout/
 │   │   ├── AppNavBar.tsx            # Primary nav bar — top-level only, no sub-nav
-│   │   ├── AppNavBar.module.css
 │   │   ├── AccountSwitcher.tsx      # Account context switcher in nav
 │   │   └── PageShell.tsx            # Standard page wrapper (title + subtitle + action)
+│   ├── ui/                          # shadcn/ui component registry (Tailwind-styled)
+│   │   ├── dialog.tsx
+│   │   ├── tabs.tsx
+│   │   └── ...                      # Added via `npx shadcn@latest add <component>`
 │   └── {feature}/                   # Feature-scoped components
-│       ├── ComponentName.tsx
-│       └── ComponentName.module.css
+│       └── ComponentName.tsx
 ├── pages/                           # One file per route (flat, not nested)
-│   ├── PageName.tsx
-│   └── PageName.module.css
+│   └── PageName.tsx
 ├── contexts/                        # React context providers
 │   ├── AccountContext.tsx           # Currently selected account
 │   ├── PlatformAdminContext.tsx     # Role resolution
@@ -35,12 +36,13 @@ src/
 ├── data/                            # Static seed data files
 │   └── {entity}.ts
 ├── lib/                             # Utility functions and adapters
+│   ├── utils.ts                     # cn() utility — conditional class merging (clsx + tailwind-merge)
 │   ├── supabase.ts                  # Supabase client
 │   └── adapters/                    # Data layer adapters
 ├── providers/                       # Composite providers (DataLayerProvider)
 │   └── DataLayerProvider.tsx
 ├── styles/
-│   └── tokens.css                   # All CSS custom properties — source of truth
+│   └── globals.css                  # Tailwind CSS entry point — single source of truth for design tokens
 └── utils/                           # Pure utility functions
 
 scripts/
@@ -63,24 +65,34 @@ scripts/
 |---|---|---|
 | Components | PascalCase | `ContactCard.tsx` |
 | Pages | PascalCase | `SegmentsPage.tsx` |
-| CSS Modules | Same name as component | `ContactCard.module.css` |
-| CSS classes | camelCase | `.cardWrapper`, `.primaryLabel` |
 | Contexts | PascalCase + Context suffix | `AccountContext.tsx` |
 | Data files | camelCase plural | `contacts.ts`, `campaigns.ts` |
 | Model interfaces | PascalCase singular | `Contact`, `Campaign` |
 | IDs in data | prefixed kebab-case | `acc-master`, `seg-gold-members` |
 | Routes | kebab-case | `/audiences/segments` |
 
-## Co-location Rule
+## Styling Approach
 
-Every component owns its CSS module. They live together in the same directory. Never put styles in a shared or global stylesheet unless it truly applies everywhere (use `tokens.css` for that).
+All components use Tailwind utility classes applied directly in JSX. There are no CSS Module files in the project.
 
-```
-components/billing/
-├── BillingTreeTable.tsx        ✅
-├── BillingTreeTable.module.css ✅
-├── BillingFilters.tsx          ✅
-└── BillingFilters.module.css   ✅
+- Use Tailwind utilities for all styling (layout, colour, spacing, typography, borders, shadows)
+- Use the `cn()` utility from `src/lib/utils.ts` for conditional class composition (e.g. active states, variants, dynamic styling)
+- Design tokens are defined as CSS custom properties in `src/styles/globals.css` and exposed to Tailwind via `@theme inline`
+- Use semantic token utilities (`bg-primary`, `text-muted-foreground`, `border-border`) rather than raw colour values
+- Use Tailwind state variants for interactivity (`hover:`, `focus-visible:`, `active:`, `disabled:`)
+- Use `dark:` variant for dark-mode-specific overrides when the token system doesn't handle it automatically
+
+```tsx
+// ✅ Correct — Tailwind utilities with cn() for conditional styling
+<button className={cn(
+  "px-3 py-2 text-sm font-semibold rounded-md transition-colors",
+  "hover:bg-muted",
+  isActive && "text-primary"
+)}>
+
+// ❌ Wrong — no CSS Modules, no inline styles
+<button className={styles.primaryButton}>
+<button style={{ color: 'var(--primary)' }}>
 ```
 
 ## Component Anatomy
@@ -91,7 +103,7 @@ Every component follows this structure — in this order:
 // 1. Imports
 import { useState } from 'react'
 import { PhosphorIcon } from '@phosphor-icons/react'
-import styles from './ComponentName.module.css'
+import { cn } from '../../lib/utils'
 
 // 2. Types
 interface ComponentNameProps {

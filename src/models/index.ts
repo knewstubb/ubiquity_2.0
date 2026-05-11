@@ -1,15 +1,15 @@
 // Existing models
 export type { Connection, S3Config, SFTPConfig, AzureBlobConfig } from './connection';
 export type {
-  Connector,
+  Automation,
   SelectedField,
   FormatOptions,
-  ConnectorStatus,
+  AutomationStatus,
   ExportDataType,
   TransactionalSource,
   ScheduleFrequency,
   FileType,
-} from './connector';
+} from './automation';
 export type { ContactRecord, TreatmentRecord, ProductRecord } from './data';
 export type { PathMode, ImportDataType, FilePathConfig, ImporterConfig } from './importer';
 export { DEFAULT_FILE_PATH_CONFIG } from './importer';

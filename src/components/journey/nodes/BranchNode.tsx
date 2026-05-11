@@ -1,6 +1,7 @@
 import { Handle, Position } from '@xyflow/react';
 import type { NodeProps } from '@xyflow/react';
 import { GitBranch, WarningCircle } from '@phosphor-icons/react';
+import { cn } from '../../../lib/utils';
 import { getNodeSummaryLabel } from '../../../models/journey';
 import type {
   JourneyNode,
@@ -9,7 +10,6 @@ import type {
   MultiWayConfig,
   AbSplitConfig,
 } from '../../../models/journey';
-import styles from './nodeStyles.module.css';
 
 export interface BranchNodeData {
   journeyNode: JourneyNode;
@@ -71,32 +71,33 @@ export function BranchNode({ data, selected }: NodeProps & { data: BranchNodeDat
   const incomplete = isIncomplete(journeyNode);
   const outputHandles = getOutputHandles(journeyNode.config as BranchConfig);
 
-  const nodeClasses = [
-    styles.node,
-    styles.branch,
-    selected ? styles.selected : '',
-    incomplete && !hasError ? styles.incomplete : '',
-    hasError ? styles.error : '',
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   return (
-    <div className={nodeClasses}>
+    <div
+      className={cn(
+        'relative min-w-[180px] max-w-[240px] rounded-sm border border-border border-l-[3px] border-l-purple-500 bg-background shadow-sm font-sans cursor-grab transition-[border-color,box-shadow] duration-150 hover:shadow-md',
+        selected && 'border-purple-500 shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-purple-500)_25%,transparent)]',
+        incomplete && !hasError && 'border-dashed border-border-strong border-l-dashed',
+        hasError && 'border-red-500 border-l-red-500',
+      )}
+    >
       {hasError && (
-        <div className={styles.errorIcon}>
+        <div className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-4 h-4 rounded-full bg-red-500 text-primary-foreground text-[10px] leading-none">
           <WarningCircle size={10} weight="fill" />
         </div>
       )}
       <Handle type="target" position={Position.Top} />
-      <div className={styles.body}>
-        <div className={styles.header}>
-          <div className={styles.icon}>
+      <div className="px-4 py-2">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center shrink-0 w-6 h-6 text-purple-500">
             <GitBranch size={20} weight="duotone" />
           </div>
-          <div className={styles.label}>{journeyNode.label}</div>
+          <div className="text-sm font-semibold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+            {journeyNode.label}
+          </div>
         </div>
-        <div className={styles.summary}>{summary}</div>
+        <div className="mt-1 pl-8 text-xs text-muted-foreground leading-normal whitespace-nowrap overflow-hidden text-ellipsis">
+          {summary}
+        </div>
       </div>
       {outputHandles.map((handle, index) => {
         const count = outputHandles.length;
@@ -121,7 +122,9 @@ export function BranchNode({ data, selected }: NodeProps & { data: BranchNodeDat
               style={{ position: 'relative', left: 0, transform: 'none' }}
             />
             {handle.label && (
-              <span className={styles.handleLabel}>{handle.label}</span>
+              <span className="text-[10px] font-medium text-muted-foreground whitespace-nowrap">
+                {handle.label}
+              </span>
             )}
           </div>
         );

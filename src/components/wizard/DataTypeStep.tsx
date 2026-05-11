@@ -3,8 +3,7 @@ import { useConnections } from '../../contexts/ConnectionsContext';
 import { Dropdown } from '../shared/Dropdown';
 import { RadioCard } from '../shared/RadioCard';
 import type { WizardDraft } from '../../models/wizard';
-import type { ExportDataType, TransactionalSource } from '../../models/connector';
-import styles from './DataTypeStep.module.css';
+import type { ExportDataType, TransactionalSource } from '../../models/automation';
 
 interface DataTypeStepProps {
   draft: WizardDraft;
@@ -75,7 +74,6 @@ export function DataTypeStep({ draft, onUpdate }: DataTypeStepProps) {
   const handleDataTypeSelect = useCallback(
     (dataType: ExportDataType) => {
       if (dataType === draft.dataType) return;
-      // Clear transactionalSource and selectedFields when dataType changes
       onUpdate({
         dataType,
         transactionalSource: null,
@@ -88,7 +86,6 @@ export function DataTypeStep({ draft, onUpdate }: DataTypeStepProps) {
   const handleTransactionalSourceSelect = useCallback(
     (source: TransactionalSource) => {
       if (source === draft.transactionalSource) return;
-      // Clear selectedFields when source changes
       onUpdate({ transactionalSource: source, selectedFields: [] });
     },
     [draft.transactionalSource, onUpdate],
@@ -98,9 +95,9 @@ export function DataTypeStep({ draft, onUpdate }: DataTypeStepProps) {
     draft.dataType === 'transactional' || draft.dataType === 'transactional_with_contact';
 
   return (
-    <div className={styles.step} data-testid="data-type-step">
+    <div className="flex flex-col gap-6" data-testid="data-type-step">
       {/* Connection selector */}
-      <div className={styles.section}>
+      <div className="flex flex-col gap-2">
         <Dropdown
           label="Connection"
           placeholder="Select a connection…"
@@ -111,14 +108,14 @@ export function DataTypeStep({ draft, onUpdate }: DataTypeStepProps) {
       </div>
 
       {/* Connector name */}
-      <div className={styles.section}>
-        <label className={styles.sectionLabel} htmlFor="connector-name">
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-semibold text-foreground leading-5" htmlFor="connector-name">
           Connector Name
         </label>
         <input
           id="connector-name"
           type="text"
-          className={styles.nameInput}
+          className="w-full py-2 px-3 text-sm font-normal text-foreground bg-background border border-border rounded-md leading-5 transition-all duration-150 placeholder:text-tertiary-foreground hover:border-tertiary-foreground focus:outline-none focus:border-ring focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
           placeholder="Enter connector name…"
           value={draft.name}
           onChange={handleNameChange}
@@ -126,9 +123,9 @@ export function DataTypeStep({ draft, onUpdate }: DataTypeStepProps) {
       </div>
 
       {/* Data type selection */}
-      <div className={styles.section}>
-        <span className={styles.sectionLabel}>Data Type</span>
-        <div className={styles.radioGroup}>
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-semibold text-foreground leading-5">Data Type</span>
+        <div className="flex flex-row flex-wrap gap-3">
           {DATA_TYPE_OPTIONS.map((opt) => (
             <RadioCard
               key={opt.value}
@@ -145,9 +142,9 @@ export function DataTypeStep({ draft, onUpdate }: DataTypeStepProps) {
 
       {/* Transactional source sub-selector */}
       {showTransactionalSource && (
-        <div className={styles.subSelector}>
-          <span className={styles.subSelectorLabel}>Transactional Source</span>
-          <div className={styles.subRadioGroup}>
+        <div className="flex flex-col gap-2 pl-4 border-l-2 border-accent mt-1">
+          <span className="text-xs font-medium text-muted-foreground">Transactional Source</span>
+          <div className="flex gap-3">
             {TRANSACTIONAL_SOURCE_OPTIONS.map((opt) => (
               <RadioCard
                 key={opt.value}

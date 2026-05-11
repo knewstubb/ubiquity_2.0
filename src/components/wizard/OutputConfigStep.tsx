@@ -1,9 +1,9 @@
 import { useState } from 'react';
+import { cn } from '../../lib/utils';
 import { Toggle } from '../shared/Toggle';
 import { FileNamingInput } from './FileNamingInput';
 import type { WizardDraft } from '../../models/wizard';
-import type { FormatOptions, FileType } from '../../models/connector';
-import styles from './OutputConfigStep.module.css';
+import type { FormatOptions, FileType } from '../../models/automation';
 
 interface OutputConfigStepProps {
   draft: WizardDraft;
@@ -77,47 +77,55 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
     onUpdate({ formatOptions: { ...formatOptions, ...patch } });
   };
 
+  const selectClass = "w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-no-repeat bg-[right_12px_center] pr-8 box-border focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]";
+  const selectStyle = { backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")` };
+
   return (
-    <div className={styles.container} data-testid="output-config-step">
-      <h3 className={styles.title}>File Configuration</h3>
-      <p className={styles.subtitle}>Configure file format, destination folder, and output settings.</p>
+    <div className="flex flex-col gap-8" data-testid="output-config-step">
+      <h3 className="m-0 text-lg font-semibold text-primary">File Configuration</h3>
+      <p className="-mt-5 text-sm text-tertiary-foreground">Configure file format, destination folder, and output settings.</p>
 
       {/* Destination Folder */}
-      <div className={styles.row}>
-        <div className={styles.labelCol}>
-          <p className={styles.labelText}>Destination Folder</p>
-          <p className={styles.labelHint}>Where exported files will be written</p>
+      <div className="flex items-start gap-14">
+        <div className="w-40 shrink-0">
+          <p className="text-sm font-semibold text-foreground m-0">Destination Folder</p>
+          <p className="text-xs text-tertiary-foreground mt-1 m-0">Where exported files will be written</p>
         </div>
-        <div className={styles.inputCol}>
-          <div className={styles.segmented}>
-            {PATH_MODES.map((mode) => (
+        <div className="w-[552px] flex flex-col gap-3">
+          <div className="flex border border-border rounded-md overflow-hidden w-full">
+            {PATH_MODES.map((mode, i) => (
               <button key={mode.value} type="button"
-                className={`${styles.segmentBtn} ${pathMode === mode.value ? styles.segmentBtnActive : ''}`}
+                className={cn(
+                  "flex-1 py-2 px-4 text-[13px] font-medium text-tertiary-foreground bg-secondary border-none border-b-2 border-b-transparent cursor-pointer transition-all duration-150 whitespace-nowrap uppercase flex items-center justify-center",
+                  i < PATH_MODES.length - 1 && "border-r border-r-border",
+                  pathMode === mode.value && "text-primary font-semibold bg-background border-b-2 border-b-primary",
+                  pathMode !== mode.value && "hover:text-muted-foreground"
+                )}
                 onClick={() => setPathMode(mode.value)}>{mode.label}</button>
             ))}
           </div>
           {pathMode === 'automatic' && (
             <div>
-              <p className={styles.inputLabel}>Folder Name</p>
-              <div className={styles.prefixedInput}>
-                <span className={styles.inputPrefix}>{basePath}</span>
-                <input className={styles.prefixedField} type="text" value={folderName}
+              <p className="text-xs font-medium text-muted-foreground m-0">Folder Name</p>
+              <div className="flex border border-border rounded-md overflow-hidden">
+                <span className="flex items-center py-2 px-3 text-sm text-tertiary-foreground bg-secondary border-r border-border whitespace-nowrap">{basePath}</span>
+                <input className="flex-1 py-2 px-3 text-sm text-foreground bg-background border-none outline-none box-border focus:shadow-[inset_0_0_0_1px_var(--primary)] placeholder:text-tertiary-foreground" type="text" value={folderName}
                   onChange={(e) => setFolderName(e.target.value)} placeholder="e.g. daily-export" />
               </div>
             </div>
           )}
           {pathMode === 'shared' && (
             <div>
-              <p className={styles.inputLabel}>Destination Path</p>
-              <input className={styles.textInput} type="text" value={basePath} disabled />
+              <p className="text-xs font-medium text-muted-foreground m-0">Destination Path</p>
+              <input className="w-full py-2 px-3 text-sm border border-border rounded-md bg-secondary text-tertiary-foreground outline-none transition-colors duration-150 box-border cursor-not-allowed" type="text" value={basePath} disabled />
             </div>
           )}
           {pathMode === 'custom' && (
             <div>
-              <p className={styles.inputLabel}>Destination Path</p>
-              <div className={styles.prefixedInput}>
-                <span className={styles.inputPrefix}>{basePath}</span>
-                <input className={styles.prefixedField} type="text" value={readPath}
+              <p className="text-xs font-medium text-muted-foreground m-0">Destination Path</p>
+              <div className="flex border border-border rounded-md overflow-hidden">
+                <span className="flex items-center py-2 px-3 text-sm text-tertiary-foreground bg-secondary border-r border-border whitespace-nowrap">{basePath}</span>
+                <input className="flex-1 py-2 px-3 text-sm text-foreground bg-background border-none outline-none box-border focus:shadow-[inset_0_0_0_1px_var(--primary)] placeholder:text-tertiary-foreground" type="text" value={readPath}
                   onChange={(e) => setReadPath(e.target.value)} placeholder="custom/outbound/" />
               </div>
             </div>
@@ -126,16 +134,21 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
       </div>
 
       {/* File Type */}
-      <div className={styles.row}>
-        <div className={styles.labelCol}>
-          <p className={styles.labelText}>File Type</p>
-          <p className={styles.labelHint}>The format of the exported file</p>
+      <div className="flex items-start gap-14">
+        <div className="w-40 shrink-0">
+          <p className="text-sm font-semibold text-foreground m-0">File Type</p>
+          <p className="text-xs text-tertiary-foreground mt-1 m-0">The format of the exported file</p>
         </div>
-        <div className={styles.inputCol}>
-          <div className={styles.segmented}>
-            {FILE_TYPES.map((ft) => (
+        <div className="w-[552px] flex flex-col gap-3">
+          <div className="flex border border-border rounded-md overflow-hidden w-full">
+            {FILE_TYPES.map((ft, i) => (
               <button key={ft.value} type="button"
-                className={`${styles.segmentBtn} ${draft.fileType === ft.value ? styles.segmentBtnActive : ''}`}
+                className={cn(
+                  "flex-1 py-2 px-4 text-[13px] font-medium text-tertiary-foreground bg-secondary border-none border-b-2 border-b-transparent cursor-pointer transition-all duration-150 whitespace-nowrap uppercase flex items-center justify-center",
+                  i < FILE_TYPES.length - 1 && "border-r border-r-border",
+                  draft.fileType === ft.value && "text-primary font-semibold bg-background border-b-2 border-b-primary",
+                  draft.fileType !== ft.value && "hover:text-muted-foreground"
+                )}
                 onClick={() => onUpdate({ fileType: ft.value })}>{ft.label}</button>
             ))}
           </div>
@@ -143,21 +156,21 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
       </div>
 
       {/* Output Preview */}
-      <div className={styles.row}>
-        <div className={styles.labelCol}>
-          <p className={styles.labelText}>Output Preview</p>
-          <p className={styles.labelHint}>Full path and filename of the exported file</p>
+      <div className="flex items-start gap-14">
+        <div className="w-40 shrink-0">
+          <p className="text-sm font-semibold text-foreground m-0">Output Preview</p>
+          <p className="text-xs text-tertiary-foreground mt-1 m-0">Full path and filename of the exported file</p>
         </div>
-        <div className={styles.inputCol}>
-          <div className={styles.filePreview}>
-            <p className={styles.filePreviewPath}>{effectiveFolder}{effectiveFileName}</p>
+        <div className="w-[552px] flex flex-col gap-3">
+          <div className="bg-background border border-border rounded-md py-2.5 px-3.5">
+            <p className="text-xs text-foreground font-mono m-0 break-all">{effectiveFolder}{effectiveFileName}</p>
           </div>
         </div>
       </div>
 
       {/* Advanced toggle */}
-      <button type="button" className={styles.advancedToggle} onClick={() => setShowAdvanced(!showAdvanced)}>
-        <span className={styles.advancedChevron} style={{ transform: showAdvanced ? 'rotate(90deg)' : 'none' }}>›</span>
+      <button type="button" className="flex items-center gap-1.5 bg-transparent border-none text-primary text-sm font-medium cursor-pointer p-0 hover:text-accent-hover hover:underline" onClick={() => setShowAdvanced(!showAdvanced)}>
+        <span className="text-base font-bold transition-transform duration-150 inline-block" style={{ transform: showAdvanced ? 'rotate(90deg)' : 'none' }}>›</span>
         Advanced options
       </button>
 
@@ -165,14 +178,15 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
         <>
           {/* Delimiter (CSV only) */}
           {draft.fileType === 'csv' && (
-            <div className={styles.row}>
-              <div className={styles.labelCol}>
-                <p className={styles.labelText}>Delimiter</p>
-                <p className={styles.labelHint}>Character used to separate columns</p>
+            <div className="flex items-start gap-14">
+              <div className="w-40 shrink-0">
+                <p className="text-sm font-semibold text-foreground m-0">Delimiter</p>
+                <p className="text-xs text-tertiary-foreground mt-1 m-0">Character used to separate columns</p>
               </div>
-              <div className={styles.inputCol}>
+              <div className="w-[552px] flex flex-col gap-3">
                 <select
-                  className={styles.select}
+                  className={selectClass}
+                  style={selectStyle}
                   value={formatOptions.delimiter}
                   onChange={(e) => updateFormat({ delimiter: e.target.value as FormatOptions['delimiter'] })}
                   aria-label="Delimiter"
@@ -186,12 +200,12 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
           )}
 
           {/* Header Row */}
-          <div className={styles.row}>
-            <div className={styles.labelCol}>
-              <p className={styles.labelText}>Header Row</p>
-              <p className={styles.labelHint}>Include column names in the first row</p>
+          <div className="flex items-start gap-14">
+            <div className="w-40 shrink-0">
+              <p className="text-sm font-semibold text-foreground m-0">Header Row</p>
+              <p className="text-xs text-tertiary-foreground mt-1 m-0">Include column names in the first row</p>
             </div>
-            <div className={styles.inputCol}>
+            <div className="w-[552px] flex flex-col gap-3">
               <Toggle checked={formatOptions.includeHeader}
                 onChange={(checked) => updateFormat({ includeHeader: checked })}
                 label="Enable" id="header-row-toggle-adv" />
@@ -199,13 +213,13 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
           </div>
 
           {/* Date Format */}
-          <div className={styles.row}>
-            <div className={styles.labelCol}>
-              <p className={styles.labelText}>Date Format</p>
-              <p className={styles.labelHint}>How dates are formatted in the export</p>
+          <div className="flex items-start gap-14">
+            <div className="w-40 shrink-0">
+              <p className="text-sm font-semibold text-foreground m-0">Date Format</p>
+              <p className="text-xs text-tertiary-foreground mt-1 m-0">How dates are formatted in the export</p>
             </div>
-            <div className={styles.inputCol}>
-              <select className={styles.select} value={formatOptions.dateFormat}
+            <div className="w-[552px] flex flex-col gap-3">
+              <select className={selectClass} style={selectStyle} value={formatOptions.dateFormat}
                 onChange={(e) => updateFormat({ dateFormat: e.target.value as FormatOptions['dateFormat'] })} aria-label="Date format">
                 {DATE_FORMAT_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -215,13 +229,13 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
           </div>
 
           {/* Timezone */}
-          <div className={styles.row}>
-            <div className={styles.labelCol}>
-              <p className={styles.labelText}>Timezone</p>
-              <p className={styles.labelHint}>Timezone for date values</p>
+          <div className="flex items-start gap-14">
+            <div className="w-40 shrink-0">
+              <p className="text-sm font-semibold text-foreground m-0">Timezone</p>
+              <p className="text-xs text-tertiary-foreground mt-1 m-0">Timezone for date values</p>
             </div>
-            <div className={styles.inputCol}>
-              <select className={styles.select} value={formatOptions.timezone}
+            <div className="w-[552px] flex flex-col gap-3">
+              <select className={selectClass} style={selectStyle} value={formatOptions.timezone}
                 onChange={(e) => updateFormat({ timezone: e.target.value })} aria-label="Timezone">
                 {TIMEZONE_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -231,12 +245,12 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
           </div>
 
           {/* File Naming */}
-          <div className={styles.row}>
-            <div className={styles.labelCol}>
-              <p className={styles.labelText}>File Naming</p>
-              <p className={styles.labelHint}>Pattern for exported file names</p>
+          <div className="flex items-start gap-14">
+            <div className="w-40 shrink-0">
+              <p className="text-sm font-semibold text-foreground m-0">File Naming</p>
+              <p className="text-xs text-tertiary-foreground mt-1 m-0">Pattern for exported file names</p>
             </div>
-            <div className={styles.inputCol}>
+            <div className="w-[552px] flex flex-col gap-3">
               <FileNamingInput value={draft.fileNamingPattern}
                 onChange={(pattern) => onUpdate({ fileNamingPattern: pattern })} />
             </div>

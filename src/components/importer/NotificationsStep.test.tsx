@@ -23,7 +23,7 @@ describe('NotificationsStep — No File frequency-specific content', () => {
 
     // Hourly tab should be active
     const hourlyBtn = screen.getByRole('button', { name: 'Hourly' });
-    expect(hourlyBtn.className).toContain('segmentBtnActive');
+    expect(hourlyBtn.className).toContain('text-primary');
 
     // Should show Starting, Every, At, Email Address
     expect(screen.getByLabelText('Starting date')).toBeInTheDocument();
@@ -130,12 +130,12 @@ describe('NotificationsStep — No File frequency-specific content', () => {
     const dateBtn = screen.getByRole('button', { name: 'Date' });
 
     // Day is active by default
-    expect(dayBtn.className).toContain('patternBtnActive');
-    expect(dateBtn.className).not.toContain('patternBtnActive');
+    expect(dayBtn.className).toContain('text-primary');
+    expect(dateBtn.className).not.toContain('text-primary');
 
     await user.click(dateBtn);
-    expect(dateBtn.className).toContain('patternBtnActive');
-    expect(dayBtn.className).not.toContain('patternBtnActive');
+    expect(dateBtn.className).toContain('text-primary');
+    expect(dayBtn.className).not.toContain('text-primary');
   });
 
   it('does not show weekly/monthly sections for Hourly or Daily', async () => {

@@ -1,7 +1,7 @@
 import { GlobeSimple, Check } from '@phosphor-icons/react';
 import { useAccount } from '../../contexts/AccountContext';
 import { usePlatformAdmin } from '../../contexts/PlatformAdminContext';
-import styles from './RootAccountSelector.module.css';
+import { cn } from '../../lib/utils';
 
 interface RootAccountSelectorProps {
   onSelect: () => void;
@@ -26,17 +26,23 @@ export function RootAccountSelector({ onSelect }: RootAccountSelectorProps) {
 
   return (
     <div>
-      <div className={styles.sectionHeader}>Switch Account</div>
+      <div className="px-3 pt-2 pb-1 font-sans text-sm font-semibold text-tertiary-foreground uppercase tracking-[0.04em] leading-none">
+        Switch Account
+      </div>
 
       {/* All Accounts option — platform admins only */}
       {isPlatformAdmin && (
         <button
           type="button"
           role="menuitem"
-          className={`${styles.option} ${isAllAccountsMode ? styles.optionActive : ''}`}
+          className={cn(
+            "flex items-center gap-2 w-full px-3 py-2 font-sans text-[13px] font-medium text-foreground",
+            "bg-none border-none rounded-sm cursor-pointer text-left transition-colors duration-150 whitespace-nowrap hover:bg-secondary",
+            isAllAccountsMode && "text-primary"
+          )}
           onClick={() => handleSelect(null)}
         >
-          <span className={styles.icon}>
+          <span className="flex items-center shrink-0 text-inherit">
             <GlobeSimple size={16} weight="regular" />
           </span>
           All Accounts
@@ -54,7 +60,11 @@ export function RootAccountSelector({ onSelect }: RootAccountSelectorProps) {
             key={root.id}
             type="button"
             role="menuitem"
-            className={`${styles.option} ${isActive ? styles.optionActive : ''}`}
+            className={cn(
+              "flex items-center gap-2 w-full px-3 py-2 font-sans text-[13px] font-medium text-foreground",
+              "bg-none border-none rounded-sm cursor-pointer text-left transition-colors duration-150 whitespace-nowrap hover:bg-secondary",
+              isActive && "text-primary"
+            )}
             onClick={() => handleSelect(root.id)}
           >
             {root.name}

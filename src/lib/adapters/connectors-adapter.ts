@@ -1,5 +1,5 @@
 import { supabase, isSupabaseConfigured } from '../supabase';
-import type { Connector } from '../../models/connector';
+import type { Automation } from '../../models/automation';
 import { migrateFilters } from '../../utils/filterMigration';
 
 async function getCurrentUserId(): Promise<string | null> {
@@ -9,7 +9,7 @@ async function getCurrentUserId(): Promise<string | null> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapRowToConnector(row: any): Connector {
+function mapRowToConnector(row: any): Automation {
   return {
     id: row.id,
     connectionId: row.connection_id,
@@ -30,7 +30,7 @@ function mapRowToConnector(row: any): Connector {
   };
 }
 
-function mapConnectorToRow(connector: Connector) {
+function mapConnectorToRow(connector: Automation) {
   return {
     id: connector.id,
     connection_id: connector.connectionId,
@@ -51,7 +51,7 @@ function mapConnectorToRow(connector: Connector) {
   };
 }
 
-export async function getAll(): Promise<Connector[]> {
+export async function getAll(): Promise<Automation[]> {
   if (!isSupabaseConfigured()) return [];
 
   const { data, error } = await supabase!.from('connectors').select('*');
@@ -60,7 +60,7 @@ export async function getAll(): Promise<Connector[]> {
   return data.map(mapRowToConnector);
 }
 
-export async function add(connector: Connector): Promise<Connector> {
+export async function add(connector: Automation): Promise<Automation> {
   if (!isSupabaseConfigured()) return connector;
 
   const userId = await getCurrentUserId();
@@ -72,8 +72,8 @@ export async function add(connector: Connector): Promise<Connector> {
   return mapRowToConnector(data);
 }
 
-export async function update(id: string, updates: Partial<Connector>): Promise<Connector> {
-  if (!isSupabaseConfigured()) return { id, ...updates } as Connector;
+export async function update(id: string, updates: Partial<Automation>): Promise<Automation> {
+  if (!isSupabaseConfigured()) return { id, ...updates } as Automation;
 
   const userId = await getCurrentUserId();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -8,7 +8,6 @@ import { AccountTreeNode } from './AccountTreeNode';
 import { UserAccessCard } from './UserAccessCard';
 import { ManageUsersDialog } from './ManageUsersDialog';
 import { PermissionEditPanel } from './PermissionEditPanel';
-import styles from './AccountPermissionsTab.module.css';
 
 function buildAccountMap(accs: Account[]): Map<string, Account> {
   const map = new Map<string, Account>();
@@ -210,10 +209,10 @@ export function AccountPermissionsTab() {
   );
 
   return (
-    <div className={styles.container}>
+    <div className="grid grid-cols-[280px_1fr] h-full overflow-hidden">
       {/* Left sidebar — account tree without checkboxes */}
-      <div className={styles.sidebar}>
-        <h3 className={styles.sidebarHeading}>Accounts</h3>
+      <div className="border-r border-border overflow-y-auto p-4 flex flex-col gap-2">
+        <h3 className="font-sans text-sm font-semibold text-foreground m-0 mb-2 px-2">Accounts</h3>
         <div role="tree" aria-label="Account hierarchy">
           {rootAccounts.map((root) =>
             renderSidebarNode(root, accountMap, selectedAccountId, setSelectedAccountId),
@@ -223,23 +222,25 @@ export function AccountPermissionsTab() {
 
       {/* Right main area */}
       {selectedAccount ? (
-        <div className={styles.main}>
-          <div className={styles.header}>
-            <div className={styles.headerInfo}>
-              <h2 className={styles.heading}>Users with Access to {selectedAccount.name}</h2>
-              <p className={styles.subtitle}>
+        <div className="p-6 overflow-y-auto">
+          <div className="flex justify-between items-start mb-6">
+            <div className="flex flex-col gap-1">
+              <h2 className="font-sans text-xl font-semibold text-foreground m-0">
+                Users with Access to {selectedAccount.name}
+              </h2>
+              <p className="font-sans text-sm text-muted-foreground m-0 leading-normal">
                 {usersWithAccess.length} user(s) have access.
               </p>
             </div>
             <button
-              className={styles.manageButton}
+              className="inline-flex items-center gap-2 px-4 py-2 border-none rounded-md bg-primary font-sans text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 whitespace-nowrap shrink-0 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               onClick={() => setManageDialogOpen(true)}
             >
               + Manage Users
             </button>
           </div>
 
-          <div className={styles.cardList}>
+          <div className="flex flex-col gap-3">
             {usersWithAccess.map((user) => (
               <UserAccessCard
                 key={user.id}
@@ -276,7 +277,7 @@ export function AccountPermissionsTab() {
           />
         </div>
       ) : (
-        <div className={styles.emptyState}>
+        <div className="flex items-center justify-center h-full font-sans text-base text-tertiary-foreground">
           Select an account to manage user access
         </div>
       )}

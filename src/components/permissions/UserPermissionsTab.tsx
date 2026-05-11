@@ -7,7 +7,6 @@ import { FUNCTIONAL_GROUPS } from '../../data/permissions';
 import { UserSidebar } from './UserSidebar';
 import { AccountTree } from './AccountTree';
 import { PermissionEditPanel } from './PermissionEditPanel';
-import styles from './UserPermissionsTab.module.css';
 
 /**
  * Builds a lookup map from account ID to Account for O(1) access.
@@ -258,7 +257,7 @@ export function UserPermissionsTab() {
   // --- Render ---
 
   return (
-    <div className={styles.container}>
+    <div className="grid grid-cols-[280px_1fr] h-full overflow-hidden">
       <UserSidebar
         users={users}
         selectedUserId={selectedUserId}
@@ -266,19 +265,22 @@ export function UserPermissionsTab() {
       />
 
       {selectedUser ? (
-        <div className={styles.main}>
-          <div className={styles.header}>
-            <div className={styles.headerInfo}>
-              <h2 className={styles.heading}>Permissions for {selectedUser.name}</h2>
-              <p className={styles.subtitle}>Select accounts to grant access.</p>
+        <div className="p-6 overflow-y-auto">
+          <div className="flex justify-between items-start mb-6">
+            <div className="flex flex-col gap-1">
+              <h2 className="font-sans text-xl font-semibold text-foreground m-0">Permissions for {selectedUser.name}</h2>
+              <p className="font-sans text-sm text-muted-foreground m-0 leading-normal">Select accounts to grant access.</p>
             </div>
-            <button className={styles.saveButton} onClick={handleSave}>
+            <button
+              className="inline-flex items-center gap-2 px-4 py-2 border-none rounded-md bg-primary font-sans text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 whitespace-nowrap shrink-0 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+              onClick={handleSave}
+            >
               <FloppyDisk size={16} weight="bold" />
               Save Changes
             </button>
           </div>
 
-          <div className={styles.treeArea}>
+          <div className="mt-2">
             <AccountTree
               accounts={accounts}
               checkedAccountIds={checkedIds}
@@ -302,7 +304,7 @@ export function UserPermissionsTab() {
           )}
         </div>
       ) : (
-        <div className={styles.emptyState}>
+        <div className="flex items-center justify-center h-full font-sans text-base text-tertiary-foreground">
           Select a user to manage their permissions
         </div>
       )}
