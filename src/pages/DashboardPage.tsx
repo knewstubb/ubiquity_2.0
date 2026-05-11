@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PlugsConnected } from '@phosphor-icons/react';
 import { useConnections } from '../contexts/ConnectionsContext';
 import { useAutomations } from '../contexts/AutomationsContext';
 import { useAccount } from '../contexts/AccountContext';
@@ -392,31 +393,43 @@ function EmptyConnectionState({ onCreateConnection }: { onCreateConnection: () =
   const [showRequirements, setShowRequirements] = useState(false);
 
   return (
-    <div className="flex flex-col items-center justify-center pt-[120px] pb-20 px-6 text-center">
-      <p className="text-base text-tertiary-foreground m-0 mb-6 max-w-[400px] leading-relaxed">
-        An active connection is required before your first automation can be created.
-      </p>
-      <div className="bg-[rgba(245,158,11,0.06)] border border-[rgba(245,158,11,0.2)] rounded-lg py-5 px-8 mb-6 max-w-[480px]">
-        <p className="text-sm text-tertiary-foreground m-0 mb-2 leading-relaxed">
-          Specific access credentials for your external database will be required to establish a connection to UbiQuity.
-        </p>
-        <p className="text-sm text-tertiary-foreground m-0 mb-2 leading-relaxed">
-          Specific requirements can be found{' '}
-          <button
-            type="button"
-            className="bg-none border-none text-primary text-sm font-medium cursor-pointer p-0 underline hover:text-accent-hover"
-            onClick={() => setShowRequirements(true)}
-          >
-            here
-          </button>
-        </p>
-        <p className="text-sm text-tertiary-foreground m-0 leading-relaxed">
-          Speak to your technical admin if you need support.
-        </p>
+    <div className="flex flex-col items-center pt-[80px] pb-20 px-6 text-center">
+      {/* Visual anchor */}
+      <div className="text-zinc-300 dark:text-zinc-600 mb-4">
+        <PlugsConnected size={48} weight="light" />
       </div>
-      <button type="button" className="px-6 py-2.5 text-sm font-semibold text-primary-foreground bg-primary border-none rounded cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2" onClick={onCreateConnection}>
+
+      {/* Headline */}
+      <h2 className="text-xl font-medium text-foreground m-0 mb-2">
+        Connect your data source
+      </h2>
+
+      {/* Supporting line */}
+      <p className="text-sm text-muted-foreground m-0 mb-6 max-w-[360px]">
+        Automations require an active connection to your database or file storage.
+      </p>
+
+      {/* CTA */}
+      <button
+        type="button"
+        className="px-6 py-2.5 text-sm font-semibold text-primary-foreground bg-primary border-none rounded-lg cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 active:translate-y-px mb-4"
+        onClick={onCreateConnection}
+      >
         Create Your First Connection
       </button>
+
+      {/* Help links */}
+      <div className="flex items-center gap-3 text-sm text-muted-foreground">
+        <button
+          type="button"
+          className="bg-transparent border-none text-primary text-sm font-medium cursor-pointer p-0 hover:text-accent-hover hover:underline"
+          onClick={() => setShowRequirements(true)}
+        >
+          View connection requirements
+        </button>
+        <span className="text-border">·</span>
+        <span className="text-tertiary-foreground">Need help? Talk to your IT team</span>
+      </div>
 
       {showRequirements && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center" onClick={() => setShowRequirements(false)}>
