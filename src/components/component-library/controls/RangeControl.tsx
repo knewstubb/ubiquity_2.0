@@ -12,9 +12,9 @@ interface RangeControlProps {
 
 export function RangeControl({ value, onChange, label, min = 0, max = 100, step = 1 }: RangeControlProps) {
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between">
-        <Label className="text-xs font-medium text-muted-foreground">
+        <Label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
           {label}
         </Label>
         <span className="text-xs text-muted-foreground">

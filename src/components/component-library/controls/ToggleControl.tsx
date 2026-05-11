@@ -1,5 +1,5 @@
-import { Switch } from '../../ui/switch'
-import { cn } from '../../../lib/utils'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 
 interface ToggleControlProps {
   value: boolean
@@ -9,8 +9,8 @@ interface ToggleControlProps {
 
 export function ToggleControl({ value, onChange, label }: ToggleControlProps) {
   return (
-    <div className={cn('flex items-center justify-between gap-3')}>
-      <label className="text-sm font-medium text-foreground">{label}</label>
+    <div className="flex items-center justify-between gap-3">
+      <Label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</Label>
       <Switch checked={value} onCheckedChange={onChange} />
     </div>
   )

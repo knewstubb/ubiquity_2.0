@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
+import { SegmentedControl } from '@/components/composed/segmented-control';
 import { Toggle } from '../shared/Toggle';
 import { FileNamingInput } from './FileNamingInput';
 import type { WizardDraft } from '../../models/wizard';
@@ -92,18 +93,11 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
           <p className="text-xs text-tertiary-foreground mt-1 m-0">Where exported files will be written</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <div className="flex border border-border rounded-md overflow-hidden w-full">
-            {PATH_MODES.map((mode, i) => (
-              <button key={mode.value} type="button"
-                className={cn(
-                  "flex-1 py-2 px-4 text-[13px] font-medium text-tertiary-foreground bg-secondary border-none border-b-2 border-b-transparent cursor-pointer transition-all duration-150 whitespace-nowrap uppercase flex items-center justify-center",
-                  i < PATH_MODES.length - 1 && "border-r border-r-border",
-                  pathMode === mode.value && "text-primary font-semibold bg-background border-b-2 border-b-primary",
-                  pathMode !== mode.value && "hover:text-muted-foreground"
-                )}
-                onClick={() => setPathMode(mode.value)}>{mode.label}</button>
-            ))}
-          </div>
+          <SegmentedControl
+            options={PATH_MODES}
+            value={pathMode}
+            onValueChange={(v) => setPathMode(v as PathMode)}
+          />
           {pathMode === 'automatic' && (
             <div>
               <p className="text-xs font-medium text-muted-foreground m-0">Folder Name</p>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
 import { useConnections } from '../../contexts/ConnectionsContext';
-import { WizardStepper } from '../wizard/WizardStepper';
+import { Stepper } from '../composed/stepper';
 import { WizardNavButtons } from '../wizard/WizardNavButtons';
 import { FileSettingsStep } from './FileSettingsStep';
 import { NotificationsStep } from './NotificationsStep';
@@ -263,11 +263,12 @@ export function ImporterWizardModal({
               {connection?.name ?? ''}
             </span>
           </div>
-          <WizardStepper
+          <Stepper
             steps={steps}
             currentStep={currentStep}
             completedSteps={completedSteps}
             onStepClick={handleStepClick}
+            orientation="vertical"
           />
         </div>
 

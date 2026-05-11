@@ -43,7 +43,6 @@ const ReportsPage = React.lazy(() => import('./pages/ReportsPage'));
 const ActivityPage = React.lazy(() => import('./pages/ActivityPage'));
 const BillingReportPage = React.lazy(() => import('./pages/BillingReportPage'));
 const PricingPage = React.lazy(() => import('./pages/PricingPage'));
-const HeaderPlaygroundPage = React.lazy(() => import('./pages/HeaderPlaygroundPage'));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage'));
 const PermissionsPage = React.lazy(() => import('./pages/PermissionsPage'));
 const AssetsPage = React.lazy(() => import('./pages/AssetsPage'));
@@ -97,7 +96,6 @@ function App() {
                           <Route path="/analytics/activity" element={<ActivityPage />} />
                           <Route path="/admin/billing" element={<BillingReportPage />} />
                           <Route path="/admin/pricing" element={<PricingPage />} />
-                          <Route path="/admin/header-playground" element={<HeaderPlaygroundPage />} />
                           <Route path="/settings" element={<SettingsPage />} />
                           <Route path="/settings/permissions" element={<PermissionsPage />} />
                           <Route path="/admin/brand" element={<SettingsPage />} />

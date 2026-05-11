@@ -1,22 +1,20 @@
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 
-interface TextControlProps {
+interface TextareaControlProps {
   value: string
   onChange: (value: string) => void
   label: string
-  /** When true, hides the standalone label (used when a parent switch provides context) */
   hideLabel?: boolean
 }
 
-export function TextControl({ value, onChange, label, hideLabel }: TextControlProps) {
+export function TextareaControl({ value, onChange, label, hideLabel }: TextareaControlProps) {
   if (hideLabel) {
     return (
-      <Input
-        type="text"
+      <Textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-8 text-sm"
+        className="min-h-[60px] text-sm resize-y"
         placeholder={label}
       />
     )
@@ -27,11 +25,10 @@ export function TextControl({ value, onChange, label, hideLabel }: TextControlPr
       <Label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
         {label}
       </Label>
-      <Input
-        type="text"
+      <Textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-8 text-sm"
+        className="min-h-[60px] text-sm resize-y"
       />
     </div>
   )

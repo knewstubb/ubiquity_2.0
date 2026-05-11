@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { PlugsConnected } from '@phosphor-icons/react';
+import { PlugsConnected, Plus } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useConnections } from '../contexts/ConnectionsContext';
 import { useAutomations } from '../contexts/AutomationsContext';
 import { useAccount } from '../contexts/AccountContext';
@@ -179,18 +181,10 @@ export default function DashboardPage() {
             {filteredConnections.length} connection{filteredConnections.length !== 1 ? 's' : ''} · {totalAutomations} automation{totalAutomations !== 1 ? 's' : ''}
           </p>
         </div>
-        <button
-          type="button"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-text-inverse border-none rounded-md text-sm font-medium cursor-pointer no-underline transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 active:bg-accent-hover"
-          onClick={() => {
-            setShowCreateConnection(true);
-          }}
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
+        <Button onClick={() => setShowCreateConnection(true)}>
+          <Plus size={14} weight="bold" />
           New Connection
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-col">
@@ -393,7 +387,7 @@ function EmptyConnectionState({ onCreateConnection }: { onCreateConnection: () =
   const [showRequirements, setShowRequirements] = useState(false);
 
   return (
-    <div className="flex flex-col items-center pt-[80px] pb-20 px-6 text-center">
+    <div className="flex flex-col items-center pt-[20vh] px-6 text-center">
       {/* Visual anchor */}
       <div className="text-zinc-300 dark:text-zinc-600 mb-4">
         <PlugsConnected size={48} weight="light" />
@@ -410,55 +404,48 @@ function EmptyConnectionState({ onCreateConnection }: { onCreateConnection: () =
       </p>
 
       {/* CTA */}
-      <button
-        type="button"
-        className="px-6 py-2.5 text-sm font-semibold text-primary-foreground bg-primary border-none rounded-lg cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 active:translate-y-px mb-4"
-        onClick={onCreateConnection}
-      >
+      <Button size="lg" className="mb-4" onClick={onCreateConnection}>
         Create Your First Connection
-      </button>
+      </Button>
 
       {/* Help links */}
       <div className="flex items-center gap-3 text-sm text-muted-foreground">
-        <button
-          type="button"
-          className="bg-transparent border-none text-primary text-sm font-medium cursor-pointer p-0 hover:text-accent-hover hover:underline"
-          onClick={() => setShowRequirements(true)}
-        >
-          View connection requirements
-        </button>
+        <Popover open={showRequirements} onOpenChange={setShowRequirements}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="link"
+              className="p-0 h-auto font-medium"
+            >
+              View connection requirements
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[400px]" sideOffset={8}>
+            <div className="grid gap-3">
+              <h4 className="text-lg font-bold leading-tight">Connection Requirements</h4>
+              <p className="text-sm text-muted-foreground m-0">
+                Before setting up a connection, ensure you have:
+              </p>
+              <ul className="m-0 pl-5 flex flex-col gap-1.5 list-disc">
+                <li className="text-sm text-muted-foreground leading-relaxed">Access credentials (hostname, username, password or access key)</li>
+                <li className="text-sm text-muted-foreground leading-relaxed">The file path or bucket location where your data resides</li>
+                <li className="text-sm text-muted-foreground leading-relaxed">Network access from UbiQuity's IP range to your server (firewall/whitelist)</li>
+                <li className="text-sm text-muted-foreground leading-relaxed">A sample file in the expected format (CSV, JSON, or delimited text)</li>
+                <li className="text-sm text-muted-foreground leading-relaxed">Knowledge of the file naming pattern used by your system</li>
+              </ul>
+              <div className="bg-emerald-50 rounded-md p-3 text-sm text-emerald-800">
+                Your technical admin or IT team can provide these details. Each protocol (SFTP, AWS S3, Azure Blob) has specific requirements.
+              </div>
+              <div className="flex justify-end">
+                <Button size="sm" variant="ghost" className="h-7 text-sm" onClick={() => setShowRequirements(false)}>
+                  Done
+                </Button>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
         <span className="text-border">·</span>
         <span className="text-tertiary-foreground">Need help? Talk to your IT team</span>
       </div>
-
-      {showRequirements && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center" onClick={() => setShowRequirements(false)}>
-          <div className="bg-primary text-primary-foreground rounded-lg py-5 px-6 w-[580px] max-w-[90vw] text-left shadow-[0px_1px_4px_0px_rgba(0,0,0,0.12),0px_4px_16px_0px_rgba(0,0,0,0.1),0px_8px_32px_0px_rgba(0,0,0,0.08)]" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-base font-semibold text-primary-foreground m-0">Connection Requirements</h3>
-              <button
-                type="button"
-                className="bg-none border-none text-primary-foreground cursor-pointer text-lg p-0 leading-none flex items-center justify-center opacity-80 hover:opacity-100"
-                onClick={() => setShowRequirements(false)}
-                aria-label="Close"
-              >
-                ✕
-              </button>
-            </div>
-            <p className="text-sm text-[rgba(250,250,250,0.9)] m-0 mb-3">Before setting up a connection, ensure you have:</p>
-            <ul className="m-0 mb-4 pl-5 flex flex-col gap-1.5 list-disc">
-              <li className="text-sm text-[rgba(250,250,250,0.9)] leading-relaxed">Access credentials (hostname, username, password or access key)</li>
-              <li className="text-sm text-[rgba(250,250,250,0.9)] leading-relaxed">The file path or bucket location where your data resides</li>
-              <li className="text-sm text-[rgba(250,250,250,0.9)] leading-relaxed">Network access from UbiQuity's IP range to your server (firewall/whitelist)</li>
-              <li className="text-sm text-[rgba(250,250,250,0.9)] leading-relaxed">A sample file in the expected format (CSV, JSON, or delimited text)</li>
-              <li className="text-sm text-[rgba(250,250,250,0.9)] leading-relaxed">Knowledge of the file naming pattern used by your system</li>
-            </ul>
-            <p className="text-[13px] text-[rgba(250,250,250,0.7)] m-0 leading-relaxed">
-              Your technical admin or IT team can provide these details. Each protocol (SFTP, AWS S3, Azure Blob) has specific requirements.
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

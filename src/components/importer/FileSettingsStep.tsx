@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
+import { SegmentedControl } from '@/components/composed/segmented-control';
 import type { ImporterConfig, PathMode, ImportDataType } from '../../models/importer';
 
 interface FileSettingsStepProps {
@@ -109,23 +110,11 @@ export function FileSettingsStep({
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <div className="flex border border-border rounded-md overflow-hidden w-full">
-            {PATH_MODES.map((mode, i) => (
-              <button
-                key={mode.value}
-                type="button"
-                className={cn(
-                  "flex-1 py-2 px-4 text-[13px] font-medium text-tertiary-foreground bg-secondary border-none border-b-2 border-b-transparent cursor-pointer transition-colors duration-150 whitespace-nowrap flex items-center justify-center",
-                  i < PATH_MODES.length - 1 && "border-r border-r-border",
-                  pathMode === mode.value && "text-primary font-semibold bg-background border-b-2 border-b-primary",
-                  pathMode !== mode.value && "hover:text-muted-foreground"
-                )}
-                onClick={() => updatePath({ pathMode: mode.value })}
-              >
-                {mode.label}
-              </button>
-            ))}
-          </div>
+          <SegmentedControl
+            options={PATH_MODES}
+            value={pathMode}
+            onValueChange={(v) => updatePath({ pathMode: v as PathMode })}
+          />
 
           {pathMode === 'automatic' && (
             <>
@@ -276,23 +265,11 @@ export function FileSettingsStep({
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">Select the database you want to update</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <div className="flex border border-border rounded-md overflow-hidden w-full">
-            {DATA_TYPES.map((dt, i) => (
-              <button
-                key={dt.value}
-                type="button"
-                className={cn(
-                  "flex-1 py-2 px-4 text-[13px] font-medium text-tertiary-foreground bg-secondary border-none border-b-2 border-b-transparent cursor-pointer transition-colors duration-150 whitespace-nowrap flex items-center justify-center",
-                  i < DATA_TYPES.length - 1 && "border-r border-r-border",
-                  dataType === dt.value && "text-primary font-semibold bg-background border-b-2 border-b-primary",
-                  dataType !== dt.value && "hover:text-muted-foreground"
-                )}
-                onClick={() => onUpdate({ dataType: dt.value })}
-              >
-                {dt.label}
-              </button>
-            ))}
-          </div>
+          <SegmentedControl
+            options={DATA_TYPES}
+            value={dataType ?? 'contact'}
+            onValueChange={(v) => onUpdate({ dataType: v as ImportDataType })}
+          />
 
           {/* Contacts Database — shown for contact and both */}
           {(dataType === 'contact' || dataType === 'both') && (

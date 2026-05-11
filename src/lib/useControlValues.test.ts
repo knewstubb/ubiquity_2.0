@@ -100,4 +100,83 @@ describe('useControlValues', () => {
     expect(result.current.values).toEqual({ colour: '#FF0000' })
     expect(result.current.isDirty).toBe(false)
   })
+
+  describe('string[] (ControlValue) support', () => {
+    const controlsWithArray: PropDefinition[] = [
+      { name: 'tags', label: 'Tags', controlType: 'chip-array', defaultValue: ['alpha', 'beta'], maxItems: 5 },
+      { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Hello' },
+    ]
+
+    it('initialises string[] default values correctly', () => {
+      const { result } = renderHook(() => useControlValues(controlsWithArray))
+
+      expect(result.current.values).toEqual({
+        tags: ['alpha', 'beta'],
+        label: 'Hello',
+      })
+    })
+
+    it('isDirty is false when array value matches default by content', () => {
+      const { result } = renderHook(() => useControlValues(controlsWithArray))
+
+      expect(result.current.isDirty).toBe(false)
+    })
+
+    it('isDirty is true when array value differs from default', () => {
+      const { result } = renderHook(() => useControlValues(controlsWithArray))
+
+      act(() => {
+        result.current.setValue('tags', ['alpha', 'beta', 'gamma'])
+      })
+
+      expect(result.current.isDirty).toBe(true)
+    })
+
+    it('isDirty is true when array elements are reordered', () => {
+      const { result } = renderHook(() => useControlValues(controlsWithArray))
+
+      act(() => {
+        result.current.setValue('tags', ['beta', 'alpha'])
+      })
+
+      expect(result.current.isDirty).toBe(true)
+    })
+
+    it('isDirty is false after resetting array values', () => {
+      const { result } = renderHook(() => useControlValues(controlsWithArray))
+
+      act(() => {
+        result.current.setValue('tags', ['changed'])
+      })
+      expect(result.current.isDirty).toBe(true)
+
+      act(() => {
+        result.current.resetAll()
+      })
+      expect(result.current.isDirty).toBe(false)
+      expect(result.current.values.tags).toEqual(['alpha', 'beta'])
+    })
+
+    it('handles empty array default value', () => {
+      const controls: PropDefinition[] = [
+        { name: 'items', label: 'Items', controlType: 'chip-array', defaultValue: [], maxItems: 3 },
+      ]
+      const { result } = renderHook(() => useControlValues(controls))
+
+      expect(result.current.values.items).toEqual([])
+      expect(result.current.isDirty).toBe(false)
+
+      act(() => {
+        result.current.setValue('items', ['new'])
+      })
+      expect(result.current.isDirty).toBe(true)
+    })
+
+    it('returns empty values and isDirty false for undefined propControls', () => {
+      const { result } = renderHook(() => useControlValues(undefined))
+
+      expect(result.current.values).toEqual({})
+      expect(result.current.isDirty).toBe(false)
+    })
+  })
 })

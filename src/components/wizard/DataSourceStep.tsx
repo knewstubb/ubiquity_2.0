@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { cn } from '../../lib/utils';
+import { SegmentedControl } from '@/components/composed/segmented-control';
 import { KeyFieldPicker } from './KeyFieldPicker';
 import { FilterBuilder } from '../shared/FilterBuilder';
 import { getFieldsForDataType } from '../../data/fieldRegistry';
@@ -81,23 +82,11 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
           <p className="text-xs text-tertiary-foreground mt-1 m-0">Select the type of data to export</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <div className="flex border border-border rounded-md overflow-hidden w-full">
-            {DATA_TYPE_OPTIONS.map((opt, i) => (
-              <button
-                key={opt.value}
-                type="button"
-                className={cn(
-                  "flex-1 py-2 px-4 text-[13px] font-medium text-tertiary-foreground bg-secondary border-none border-b-2 border-b-transparent cursor-pointer transition-all duration-150 whitespace-nowrap uppercase flex items-center justify-center",
-                  i < DATA_TYPE_OPTIONS.length - 1 && "border-r border-r-border",
-                  draft.dataType === opt.value && "text-primary font-semibold bg-background border-b-2 border-b-primary",
-                  draft.dataType !== opt.value && "hover:text-muted-foreground"
-                )}
-                onClick={() => handleDataTypeSelect(opt.value)}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
+          <SegmentedControl
+            options={DATA_TYPE_OPTIONS}
+            value={draft.dataType ?? 'contact'}
+            onValueChange={(v) => handleDataTypeSelect(v as ExportDataType)}
+          />
 
           {/* Database fields */}
           {(draft.dataType === 'contact' || draft.dataType === 'transactional_with_contact') && (

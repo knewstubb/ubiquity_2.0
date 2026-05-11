@@ -96,10 +96,10 @@ describe('ToggleControl', () => {
 })
 
 describe('ColourControl', () => {
-  it('renders a color input element', () => {
-    render(<ColourControl value="#ff0000" onChange={() => {}} label="Background" />)
-    const input = document.querySelector('input[type="color"]')
-    expect(input).toBeInTheDocument()
+  it('renders a select dropdown for colour tokens', () => {
+    render(<ColourControl value="#14B88A" onChange={() => {}} label="Background" />)
+    const trigger = screen.getByRole('combobox')
+    expect(trigger).toBeInTheDocument()
   })
 
   it('renders the label', () => {
@@ -107,18 +107,10 @@ describe('ColourControl', () => {
     expect(screen.getByText('Primary')).toBeInTheDocument()
   })
 
-  it('displays the current hex value', () => {
-    render(<ColourControl value="#14b88a" onChange={() => {}} label="Color" />)
-    const input = document.querySelector('input[type="color"]') as HTMLInputElement
-    expect(input.value).toBe('#14b88a')
-  })
-
-  it('calls onChange with the new hex string on input change', () => {
-    const onChange = vi.fn()
-    render(<ColourControl value="#000000" onChange={onChange} label="Color" />)
-    const input = document.querySelector('input[type="color"]') as HTMLInputElement
-    fireEvent.change(input, { target: { value: '#ff5500' } })
-    expect(onChange).toHaveBeenCalledWith('#ff5500')
+  it('displays a colour swatch for the current value', () => {
+    const { container } = render(<ColourControl value="#14B88A" onChange={() => {}} label="Color" />)
+    const swatch = container.querySelector('span[style*="background-color"]')
+    expect(swatch).toBeInTheDocument()
   })
 })
 

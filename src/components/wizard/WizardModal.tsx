@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAutomations } from '../../contexts/AutomationsContext';
 import { useConnections } from '../../contexts/ConnectionsContext';
-import { WizardStepper } from './WizardStepper';
+import { Stepper } from '../composed/stepper';
 import { WizardNavButtons } from './WizardNavButtons';
 import { DataSourceStep } from './DataSourceStep';
 import { FieldMappingStep } from './FieldMappingStep';
@@ -220,11 +220,12 @@ export function WizardModal({
             </h2>
             <span className="text-[11px] font-medium text-tertiary-foreground uppercase tracking-wider">Exporter</span>
           </div>
-          <WizardStepper
+          <Stepper
             steps={STEPS}
             currentStep={currentStep}
             completedSteps={completedSteps}
             onStepClick={handleStepClick}
+            orientation="vertical"
           />
         </div>
 

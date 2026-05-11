@@ -218,11 +218,11 @@ export function ComponentDemoView() {
         <span className="inline-flex self-start px-2 py-0.5 rounded-full text-[11px] font-medium bg-secondary text-tertiary-foreground border border-border capitalize">{entry.category}</span>
       </div>
 
-      {/* Preview + Controls at top (side by side) */}
+      {/* Preview + Controls (side by side, matching heights) */}
       {hasPropControls && (
-        <div className="grid grid-cols-[1fr_280px] gap-4 items-start">
-          {/* Live Preview */}
-          <div className="flex items-center justify-center p-6 border border-border rounded-lg bg-background min-h-[120px]">
+        <div className="flex gap-4 items-stretch">
+          {/* Live Preview frame */}
+          <div className="flex-1 min-w-0 flex items-center justify-center p-8 border border-border rounded-lg bg-background">
             <Suspense fallback={<div className="text-sm text-tertiary-foreground">Loading…</div>}>
               <DemoComponent {...values} />
             </Suspense>
@@ -235,6 +235,7 @@ export function ComponentDemoView() {
             onReset={resetAll}
             isDirty={isDirty}
             usedIn={entry.usedIn}
+            renderControls={entry.renderControls}
           />
         </div>
       )}
