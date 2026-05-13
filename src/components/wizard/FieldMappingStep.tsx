@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { cn } from '../../lib/utils';
-import { Checkbox } from '../shared/Checkbox';
+import { Checkbox } from '../ui/checkbox';
+import { Label } from '../ui/label';
 import { DragHandle } from '../shared/DragHandle';
 import { DataPreview } from './DataPreview';
 import { getFieldsForDataType } from '../../data/fieldRegistry';
@@ -102,7 +103,14 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
         <div className="border border-border rounded-md overflow-hidden" role="group" aria-label="Export fields">
           {/* Select all header */}
           <div className="flex items-center py-2 px-3 border-b border-border bg-secondary">
-            <Checkbox label="Select All" checked={allSelected} onChange={handleSelectAll} />
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="select-all-fields"
+                checked={allSelected}
+                onCheckedChange={handleSelectAll}
+              />
+              <Label htmlFor="select-all-fields">Select All</Label>
+            </div>
           </div>
 
           {/* Selected fields — draggable */}
@@ -123,11 +131,14 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
             >
               <DragHandle />
               <span className="text-xs text-accent-foreground font-semibold min-w-5 text-center shrink-0">{index + 1}</span>
-              <Checkbox
-                label={field.label}
-                checked={true}
-                onChange={() => handleToggleField({ key: field.key, label: field.label, source: field.source })}
-              />
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={`field-${field.key}`}
+                  checked={true}
+                  onCheckedChange={() => handleToggleField({ key: field.key, label: field.label, source: field.source })}
+                />
+                <Label htmlFor={`field-${field.key}`}>{field.label}</Label>
+              </div>
               <span className="text-xs text-tertiary-foreground ml-auto py-1 px-2 bg-secondary rounded-full shrink-0">{field.source}</span>
             </div>
           ))}
@@ -137,11 +148,14 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
             <div key={field.key} className="flex items-center gap-2 py-2 px-3 border-b border-border last:border-b-0 bg-background transition-colors duration-150 hover:bg-background">
               <div className="w-4 shrink-0" />
               <span className="min-w-5 shrink-0" />
-              <Checkbox
-                label={field.label}
-                checked={false}
-                onChange={() => handleToggleField(field)}
-              />
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={`field-${field.key}`}
+                  checked={false}
+                  onCheckedChange={() => handleToggleField(field)}
+                />
+                <Label htmlFor={`field-${field.key}`}>{field.label}</Label>
+              </div>
               <span className="text-xs text-tertiary-foreground ml-auto py-1 px-2 bg-secondary rounded-full shrink-0">{field.source}</span>
             </div>
           ))}

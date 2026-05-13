@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { cn } from '../../lib/utils';
 import { SegmentedControl } from '@/components/composed/segmented-control';
-import { Toggle } from '../shared/Toggle';
+import { PrefixInput } from '@/components/composed/prefix-input';
+import { Switch } from '../ui/switch';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 import { FileNamingInput } from './FileNamingInput';
 import type { WizardDraft } from '../../models/wizard';
 import type { FormatOptions, FileType } from '../../models/automation';
@@ -78,9 +81,6 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
     onUpdate({ formatOptions: { ...formatOptions, ...patch } });
   };
 
-  const selectClass = "w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-no-repeat bg-[right_12px_center] pr-8 box-border focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]";
-  const selectStyle = { backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")` };
-
   return (
     <div className="flex flex-col gap-8" data-testid="output-config-step">
       <h3 className="m-0 text-lg font-semibold text-primary">File Configuration</h3>
@@ -101,27 +101,21 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
           {pathMode === 'automatic' && (
             <div>
               <p className="text-xs font-medium text-muted-foreground m-0">Folder Name</p>
-              <div className="flex border border-border rounded-md overflow-hidden">
-                <span className="flex items-center py-2 px-3 text-sm text-tertiary-foreground bg-secondary border-r border-border whitespace-nowrap">{basePath}</span>
-                <input className="flex-1 py-2 px-3 text-sm text-foreground bg-background border-none outline-none box-border focus:shadow-[inset_0_0_0_1px_var(--primary)] placeholder:text-tertiary-foreground" type="text" value={folderName}
-                  onChange={(e) => setFolderName(e.target.value)} placeholder="e.g. daily-export" />
-              </div>
+              <PrefixInput prefix={basePath} value={folderName}
+                onChange={(e) => setFolderName(e.target.value)} placeholder="e.g. daily-export" />
             </div>
           )}
           {pathMode === 'shared' && (
             <div>
               <p className="text-xs font-medium text-muted-foreground m-0">Destination Path</p>
-              <input className="w-full py-2 px-3 text-sm border border-border rounded-md bg-secondary text-tertiary-foreground outline-none transition-colors duration-150 box-border cursor-not-allowed" type="text" value={basePath} disabled />
+              <Input value={basePath} disabled />
             </div>
           )}
           {pathMode === 'custom' && (
             <div>
               <p className="text-xs font-medium text-muted-foreground m-0">Destination Path</p>
-              <div className="flex border border-border rounded-md overflow-hidden">
-                <span className="flex items-center py-2 px-3 text-sm text-tertiary-foreground bg-secondary border-r border-border whitespace-nowrap">{basePath}</span>
-                <input className="flex-1 py-2 px-3 text-sm text-foreground bg-background border-none outline-none box-border focus:shadow-[inset_0_0_0_1px_var(--primary)] placeholder:text-tertiary-foreground" type="text" value={readPath}
-                  onChange={(e) => setReadPath(e.target.value)} placeholder="custom/outbound/" />
-              </div>
+              <PrefixInput prefix={basePath} value={readPath}
+                onChange={(e) => setReadPath(e.target.value)} placeholder="custom/outbound/" />
             </div>
           )}
         </div>
@@ -134,18 +128,11 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
           <p className="text-xs text-tertiary-foreground mt-1 m-0">The format of the exported file</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <div className="flex border border-border rounded-md overflow-hidden w-full">
-            {FILE_TYPES.map((ft, i) => (
-              <button key={ft.value} type="button"
-                className={cn(
-                  "flex-1 py-2 px-4 text-[13px] font-medium text-tertiary-foreground bg-secondary border-none border-b-2 border-b-transparent cursor-pointer transition-all duration-150 whitespace-nowrap uppercase flex items-center justify-center",
-                  i < FILE_TYPES.length - 1 && "border-r border-r-border",
-                  draft.fileType === ft.value && "text-primary font-semibold bg-background border-b-2 border-b-primary",
-                  draft.fileType !== ft.value && "hover:text-muted-foreground"
-                )}
-                onClick={() => onUpdate({ fileType: ft.value })}>{ft.label}</button>
-            ))}
-          </div>
+          <SegmentedControl
+            options={FILE_TYPES}
+            value={draft.fileType}
+            onValueChange={(v) => onUpdate({ fileType: v as FileType })}
+          />
         </div>
       </div>
 
@@ -178,17 +165,16 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
                 <p className="text-xs text-tertiary-foreground mt-1 m-0">Character used to separate columns</p>
               </div>
               <div className="w-[552px] flex flex-col gap-3">
-                <select
-                  className={selectClass}
-                  style={selectStyle}
-                  value={formatOptions.delimiter}
-                  onChange={(e) => updateFormat({ delimiter: e.target.value as FormatOptions['delimiter'] })}
-                  aria-label="Delimiter"
-                >
-                  {DELIMITERS.map((d) => (
-                    <option key={d.value} value={d.value}>{d.label}</option>
-                  ))}
-                </select>
+                <Select value={formatOptions.delimiter} onValueChange={(v) => updateFormat({ delimiter: v as FormatOptions['delimiter'] })}>
+                  <SelectTrigger aria-label="Delimiter">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {DELIMITERS.map((d) => (
+                      <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           )}
@@ -200,9 +186,14 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
               <p className="text-xs text-tertiary-foreground mt-1 m-0">Include column names in the first row</p>
             </div>
             <div className="w-[552px] flex flex-col gap-3">
-              <Toggle checked={formatOptions.includeHeader}
-                onChange={(checked) => updateFormat({ includeHeader: checked })}
-                label="Enable" id="header-row-toggle-adv" />
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="header-row-toggle-adv"
+                  checked={formatOptions.includeHeader}
+                  onCheckedChange={(checked) => updateFormat({ includeHeader: checked })}
+                />
+                <Label htmlFor="header-row-toggle-adv">Enable</Label>
+              </div>
             </div>
           </div>
 
@@ -213,12 +204,16 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
               <p className="text-xs text-tertiary-foreground mt-1 m-0">How dates are formatted in the export</p>
             </div>
             <div className="w-[552px] flex flex-col gap-3">
-              <select className={selectClass} style={selectStyle} value={formatOptions.dateFormat}
-                onChange={(e) => updateFormat({ dateFormat: e.target.value as FormatOptions['dateFormat'] })} aria-label="Date format">
-                {DATE_FORMAT_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
+              <Select value={formatOptions.dateFormat} onValueChange={(v) => updateFormat({ dateFormat: v as FormatOptions['dateFormat'] })}>
+                <SelectTrigger aria-label="Date format">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {DATE_FORMAT_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -229,12 +224,16 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
               <p className="text-xs text-tertiary-foreground mt-1 m-0">Timezone for date values</p>
             </div>
             <div className="w-[552px] flex flex-col gap-3">
-              <select className={selectClass} style={selectStyle} value={formatOptions.timezone}
-                onChange={(e) => updateFormat({ timezone: e.target.value })} aria-label="Timezone">
-                {TIMEZONE_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
+              <Select value={formatOptions.timezone} onValueChange={(v) => updateFormat({ timezone: v })}>
+                <SelectTrigger aria-label="Timezone">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {TIMEZONE_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

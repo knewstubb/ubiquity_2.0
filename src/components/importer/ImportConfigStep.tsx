@@ -1,47 +1,11 @@
 import { useState } from 'react';
+import { CaretDown, X } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
+import { HelpPopover } from '@/components/composed/help-popover';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 
 interface ImportConfigStepProps {
   type: 'contact' | 'transactional';
-}
-
-/* ── Reusable Help Popover (same pattern as FileSettingsStep) ── */
-interface HelpPopoverProps {
-  title: string;
-  body: string;
-}
-
-function HelpPopover({ title, body }: HelpPopoverProps) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <span className="relative inline-flex">
-      <button
-        type="button"
-        className="bg-primary text-primary-foreground rounded-full w-4 h-4 text-[10px] font-bold border-none cursor-pointer inline-flex items-center justify-center p-0 shrink-0 leading-none hover:bg-accent-hover"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={`Help: ${title}`}
-      >
-        ?
-      </button>
-      {open && (
-        <div className="absolute top-[calc(100%+8px)] left-0 z-[100] w-80 bg-accent-foreground text-primary-foreground rounded-md p-4 shadow-[0px_1px_4px_0px_rgba(0,0,0,0.12),0px_4px_16px_0px_rgba(0,0,0,0.1),0px_8px_32px_0px_rgba(0,0,0,0.08)]" role="tooltip">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-base font-semibold m-0">{title}</p>
-            <button
-              type="button"
-              className="bg-transparent border-none text-primary-foreground cursor-pointer text-base p-0 leading-none flex items-center justify-center hover:opacity-80"
-              onClick={() => setOpen(false)}
-              aria-label="Close help"
-            >
-              ✕
-            </button>
-          </div>
-          <p className="text-[13px] font-normal leading-[18px] m-0">{body}</p>
-        </div>
-      )}
-    </span>
-  );
 }
 
 /* ── Radio option data ── */
@@ -104,11 +68,11 @@ function ChipInput({ chips, onRemove, onAdd, onClearAll, availableOptions }: Chi
             {chip}
             <button
               type="button"
-              className="bg-transparent border-none text-primary cursor-pointer text-xs p-0 leading-none flex items-center hover:text-accent-foreground"
+              className="bg-transparent border-none text-primary cursor-pointer p-0 leading-none flex items-center hover:text-foreground"
               onClick={() => onRemove(chip)}
               aria-label={`Remove ${chip}`}
             >
-              ✕
+              <X size={10} weight="bold" />
             </button>
           </span>
         ))}
@@ -122,11 +86,11 @@ function ChipInput({ chips, onRemove, onAdd, onClearAll, availableOptions }: Chi
           {chips.length > 0 && (
             <button
               type="button"
-              className="bg-transparent border-none text-tertiary-foreground cursor-pointer text-sm p-0.5 leading-none flex items-center hover:text-muted-foreground"
+              className="bg-transparent border-none text-tertiary-foreground cursor-pointer p-0.5 leading-none flex items-center hover:text-muted-foreground"
               onClick={onClearAll}
               aria-label="Clear all fields"
             >
-              ✕
+              <X size={12} />
             </button>
           )}
           <button
@@ -135,7 +99,7 @@ function ChipInput({ chips, onRemove, onAdd, onClearAll, availableOptions }: Chi
             onClick={() => setDropdownOpen((v) => !v)}
             aria-label="Toggle field dropdown"
           >
-            <ChevronIcon />
+            <CaretDown size={12} />
           </button>
         </div>
         {dropdownOpen && remaining.length > 0 && (
@@ -318,16 +282,4 @@ export function ImportConfigStep({ type }: ImportConfigStepProps) {
   );
 }
 
-function ChevronIcon() {
-  return (
-    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
-      <path
-        d="M1 1.5L6 6.5L11 1.5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+

@@ -1,6 +1,18 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { X, UploadSimple } from '@phosphor-icons/react';
 import { useAutomations } from '../../contexts/AutomationsContext';
 import { useConnections } from '../../contexts/ConnectionsContext';
+import { Button } from '../ui/button';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from '../ui/alert-dialog';
 import { Stepper } from '../composed/stepper';
 import { WizardNavButtons } from './WizardNavButtons';
 import { DataSourceStep } from './DataSourceStep';
@@ -213,7 +225,7 @@ export function WizardModal({
         <div className="w-[239px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto z-[2] relative shadow-[2px_0_8px_rgba(0,0,0,0.04)]">
           <div className="flex flex-col items-center text-center gap-1">
             <div className="w-10 h-10 flex items-center justify-center text-primary mb-1">
-              <UploadIcon />
+              <UploadSimple size={56} />
             </div>
             <h2 id="wizard-modal-title" className="m-0 text-base font-bold text-foreground leading-tight">
               {connection?.name ?? connectorName}
@@ -232,15 +244,15 @@ export function WizardModal({
         {/* Right content area */}
         <div className="flex-1 flex flex-col min-w-0 bg-background">
           <div className="flex items-center justify-end py-4 px-6 shrink-0">
-            <button
-              type="button"
-              className="flex items-center justify-center w-8 h-8 border-none rounded-md bg-transparent text-tertiary-foreground cursor-pointer transition-all duration-150 hover:bg-background-sunken hover:text-foreground focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={handleCloseClick}
               aria-label="Close wizard"
               data-testid="wizard-close-button"
             >
-              <CloseIcon />
-            </button>
+              <X weight="bold" />
+            </Button>
           </div>
 
           <div className="flex-1 overflow-y-auto py-4 px-10 pb-10 flex flex-col gap-8 scrollbar-gutter-stable" data-testid="wizard-step-content">
@@ -251,6 +263,7 @@ export function WizardModal({
             <WizardNavButtons
               onBack={handleBack}
               onNext={handleNext}
+              onCancel={handleCloseClick}
               canProceed={canProceed}
               isLast={currentStep === 4}
               showBack={currentStep > 0}
@@ -260,73 +273,27 @@ export function WizardModal({
       </div>
 
       {/* Discard changes confirmation */}
-      {showDiscardConfirm && (
-        <div
-          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="discard-confirm-title"
-          data-testid="discard-confirm"
-        >
-          <div className="bg-background rounded-lg shadow-xl p-6 w-full max-w-[420px] animate-[slideUp_200ms_ease]">
-            <h2 id="discard-confirm-title" className="m-0 mb-3 text-lg font-semibold text-foreground">
-              Discard changes?
-            </h2>
-            <p className="m-0 mb-6 text-sm text-muted-foreground leading-normal">
+      <AlertDialog open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Discard changes?</AlertDialogTitle>
+            <AlertDialogDescription>
               You have unsaved changes. Are you sure you want to discard them?
-            </p>
-            <div className="flex justify-end gap-3">
-              <button
-                type="button"
-                className="py-2 px-4 border border-border rounded-md bg-transparent text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-                onClick={() => setShowDiscardConfirm(false)}
-              >
-                Keep editing
-              </button>
-              <button
-                type="button"
-                className="py-2 px-4 border-none rounded-md bg-destructive text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 hover:bg-danger-hover focus-visible:outline-2 focus-visible:outline-destructive focus-visible:outline-offset-2"
-                onClick={onClose}
-              >
-                Discard
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep editing</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/80"
+              onClick={onClose}
+            >
+              Discard
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
 
-function UploadIcon() {
-  return (
-    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 20V8M8 12l4-4 4 4"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M4 6h16"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
 
-function CloseIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M4 4l8 8M12 4l-8 8"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}

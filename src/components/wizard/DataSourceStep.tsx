@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
-import { cn } from '../../lib/utils';
 import { SegmentedControl } from '@/components/composed/segmented-control';
+import { Input } from '../ui/input';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 import { KeyFieldPicker } from './KeyFieldPicker';
 import { FilterBuilder } from '../shared/FilterBuilder';
 import { getFieldsForDataType } from '../../data/fieldRegistry';
@@ -73,6 +74,22 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
       <h3 className="m-0 text-lg font-semibold text-primary">Data Source</h3>
       <p className="-mt-5 text-sm text-tertiary-foreground">Choose what data to export and configure source options.</p>
 
+      {/* Row 0: Name */}
+      <div className="flex items-start gap-14">
+        <div className="w-40 shrink-0">
+          <p className="text-sm font-semibold text-foreground m-0">Name</p>
+          <p className="text-xs text-tertiary-foreground mt-1 m-0">A unique name for this automation</p>
+        </div>
+        <div className="w-[552px] flex flex-col gap-3">
+          <Input
+            value={draft.name}
+            onChange={(e) => onUpdate({ name: e.target.value })}
+            placeholder="e.g. Daily Contact Export"
+            aria-label="Automation name"
+          />
+        </div>
+      </div>
+
       {/* Row 1: Exporting From */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
@@ -92,18 +109,23 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
           {(draft.dataType === 'contact' || draft.dataType === 'transactional_with_contact') && (
             <div>
               <p className="text-xs font-medium text-muted-foreground m-0">Contacts Database</p>
-              <input className="w-full py-2 px-3 text-sm border border-border rounded-md bg-secondary text-tertiary-foreground outline-none box-border cursor-not-allowed" type="text" value="Customer Contacts" disabled />
+              <Input value="Customer Contacts" disabled />
             </div>
           )}
 
           {(draft.dataType === 'transactional' || draft.dataType === 'transactional_with_contact') && (
             <div>
               <p className="text-xs font-medium text-muted-foreground m-0">Transactional Database</p>
-              <select className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer box-border appearance-none bg-no-repeat bg-[right_12px_center] pr-8 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")` }} defaultValue="" aria-label="Select transactional database">
-                <option value="" disabled>Select Database</option>
-                <option value="treatments">Treatments</option>
-                <option value="products">Products</option>
-              </select>
+              <Select onValueChange={(v) => handleTransactionalSourceSelect(v as TransactionalSource)} value={draft.transactionalSource ?? undefined}>
+                <SelectTrigger aria-label="Select transactional database">
+                  <SelectValue placeholder="Select Database" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TRANSACTIONAL_SOURCE_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           )}
         </div>

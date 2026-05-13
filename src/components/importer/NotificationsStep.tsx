@@ -1,6 +1,13 @@
-import { useState, type KeyboardEvent } from 'react';
+import { useState } from 'react';
 import { cn } from '../../lib/utils';
-import { Toggle } from '../shared/Toggle';
+import { SegmentedControl } from '@/components/composed/segmented-control';
+import { ChipInput } from '@/components/composed/chip-input';
+import { HelpPopover } from '@/components/composed/help-popover';
+import { DayPicker } from '@/components/composed/day-picker';
+import { Switch } from '../ui/switch';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 
 /* ── Types ── */
 type Frequency = 'hourly' | 'daily' | 'weekly' | 'monthly';
@@ -19,8 +26,6 @@ const UNIT_MAP: Record<Frequency, string> = {
   monthly: 'Months/s',
 };
 
-const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-
 const ORDINAL_OPTIONS = ['1st', '2nd', '3rd', '4th', 'Last'];
 const DAY_OF_WEEK_OPTIONS = [
   'Monday',
@@ -33,108 +38,6 @@ const DAY_OF_WEEK_OPTIONS = [
 ];
 
 const DEFAULT_EMAIL = 'contact@gmail.com';
-
-/* ── Help Popover ── */
-interface HelpPopoverProps {
-  title: string;
-  body: string;
-}
-
-function HelpPopover({ title, body }: HelpPopoverProps) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <span className="relative inline-flex">
-      <button
-        type="button"
-        className="bg-primary text-primary-foreground rounded-full w-4 h-4 text-[10px] font-bold border-none cursor-pointer inline-flex items-center justify-center p-0 shrink-0 leading-none hover:bg-accent-hover"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={`Help: ${title}`}
-      >
-        ?
-      </button>
-      {open && (
-        <div className="absolute top-[calc(100%+8px)] left-0 z-[100] w-80 bg-accent-foreground text-primary-foreground rounded-md p-4 shadow-[0px_1px_4px_0px_rgba(0,0,0,0.12),0px_4px_16px_0px_rgba(0,0,0,0.1),0px_8px_32px_0px_rgba(0,0,0,0.08)]" role="tooltip">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-base font-semibold m-0">{title}</p>
-            <button
-              type="button"
-              className="bg-transparent border-none text-primary-foreground cursor-pointer text-base p-0 leading-none flex items-center justify-center hover:opacity-80"
-              onClick={() => setOpen(false)}
-              aria-label="Close help"
-            >
-              ✕
-            </button>
-          </div>
-          <p className="text-[13px] font-normal leading-[18px] m-0">{body}</p>
-        </div>
-      )}
-    </span>
-  );
-}
-
-/* ── Email Chip Input ── */
-interface EmailChipInputProps {
-  emails: string[];
-  onChange: (emails: string[]) => void;
-  placeholder?: string;
-}
-
-function EmailChipInput({ emails, onChange, placeholder }: EmailChipInputProps) {
-  const [inputValue, setInputValue] = useState('');
-
-  function addEmail(raw: string) {
-    const email = raw.trim();
-    if (email && !emails.includes(email)) {
-      onChange([...emails, email]);
-    }
-    setInputValue('');
-  }
-
-  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault();
-      addEmail(inputValue);
-    }
-    if (e.key === 'Backspace' && inputValue === '' && emails.length > 0) {
-      onChange(emails.slice(0, -1));
-    }
-  }
-
-  function handleBlur() {
-    if (inputValue.trim()) {
-      addEmail(inputValue);
-    }
-  }
-
-  return (
-    <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] relative cursor-text bg-background focus-within:border-primary focus-within:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]">
-      {emails.map((email) => (
-        <span key={email} className="inline-flex items-center gap-1 border border-primary text-primary rounded-full py-1 px-2 text-xs font-medium leading-none whitespace-nowrap">
-          {email}
-          <button
-            type="button"
-            className="bg-transparent border-none text-primary cursor-pointer text-xs p-0 leading-none flex items-center hover:text-accent-foreground"
-            onClick={() => onChange(emails.filter((e) => e !== email))}
-            aria-label={`Remove ${email}`}
-          >
-            ✕
-          </button>
-        </span>
-      ))}
-      <input
-        className="border-none outline-none text-sm text-foreground bg-transparent flex-1 min-w-[80px] py-0.5 px-0 placeholder:text-tertiary-foreground"
-        type="email"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={handleKeyDown}
-        onBlur={handleBlur}
-        placeholder={emails.length === 0 ? (placeholder ?? 'Add email…') : ''}
-        aria-label="Add email address"
-      />
-    </div>
-  );
-}
 
 /* ── Main Component ── */
 export function NotificationsStep() {
@@ -168,14 +71,6 @@ export function NotificationsStep() {
     setter([...failureEmails]);
   }
 
-  function toggleDay(index: number) {
-    setNoFileDays((prev) => {
-      const next = [...prev];
-      next[index] = !next[index];
-      return next;
-    });
-  }
-
   return (
     <div className="flex flex-col gap-8">
       <h3 className="m-0 text-lg font-semibold text-primary">Notifications</h3>
@@ -192,10 +87,7 @@ export function NotificationsStep() {
           </p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <div>
-            <p className="text-xs font-medium text-muted-foreground m-0">Email Address</p>
-            <EmailChipInput emails={failureEmails} onChange={setFailureEmails} />
-          </div>
+          <ChipInput values={failureEmails} onChange={setFailureEmails} label="Email Address" type="email" placeholder="Add email…" aria-label="Add email address" />
         </div>
       </div>
 
@@ -211,28 +103,25 @@ export function NotificationsStep() {
         </div>
         <div className="w-[552px] flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Toggle
-              checked={successEnabled}
-              onChange={setSuccessEnabled}
-              label="Enable"
+            <Switch
               id="toggle-success-enable"
+              checked={successEnabled}
+              onCheckedChange={setSuccessEnabled}
             />
+            <Label htmlFor="toggle-success-enable">Enable</Label>
           </div>
           {successEnabled && (
             <div className="flex flex-col gap-3">
-              <div>
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-medium text-muted-foreground m-0">Email Address</p>
-                  <button
-                    type="button"
-                    className="bg-transparent border-none text-primary text-xs font-medium cursor-pointer p-0 hover:underline"
-                    onClick={() => copyFromFailure(setSuccessEmails)}
-                  >
-                    copy from above
-                  </button>
-                </div>
-                <EmailChipInput emails={successEmails} onChange={setSuccessEmails} />
-              </div>
+              <ChipInput
+                values={successEmails}
+                onChange={setSuccessEmails}
+                label="Email Address"
+                copyLabel="copy from above"
+                onCopy={() => copyFromFailure(setSuccessEmails)}
+                type="email"
+                placeholder="Add email…"
+                aria-label="Add email address"
+              />
             </div>
           )}
         </div>
@@ -255,40 +144,25 @@ export function NotificationsStep() {
         </div>
         <div className="w-[552px] flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Toggle
-              checked={noFileEnabled}
-              onChange={setNoFileEnabled}
-              label="Enable"
+            <Switch
               id="toggle-nofile-enable"
+              checked={noFileEnabled}
+              onCheckedChange={setNoFileEnabled}
             />
+            <Label htmlFor="toggle-nofile-enable">Enable</Label>
           </div>
           {noFileEnabled && (
             <div className="flex flex-col gap-3">
-              {/* Frequency segmented toggle */}
-              <div className="flex border border-border rounded-md overflow-hidden w-full">
-                {FREQUENCY_OPTIONS.map((opt, i) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    className={cn(
-                      "flex-1 py-2 px-4 text-[13px] font-medium text-tertiary-foreground bg-secondary border-none border-b-2 border-b-transparent cursor-pointer transition-colors duration-150 whitespace-nowrap uppercase flex items-center justify-center",
-                      i < FREQUENCY_OPTIONS.length - 1 && "border-r border-r-border",
-                      noFileFrequency === opt.value && "text-primary font-semibold bg-background border-b-2 border-b-primary",
-                      noFileFrequency !== opt.value && "hover:text-muted-foreground"
-                    )}
-                    onClick={() => setNoFileFrequency(opt.value)}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
+              <SegmentedControl
+                options={FREQUENCY_OPTIONS}
+                value={noFileFrequency}
+                onValueChange={(v) => setNoFileFrequency(v as Frequency)}
+              />
 
               {/* Starting date */}
               <div>
                 <p className="text-xs font-medium text-muted-foreground m-0">Starting</p>
-                <input
-                  className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 box-border focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)] placeholder:text-tertiary-foreground"
-                  type="text"
+                <Input
                   value={noFileStarting}
                   onChange={(e) => setNoFileStarting(e.target.value)}
                   aria-label="Starting date"
@@ -299,24 +173,11 @@ export function NotificationsStep() {
               {noFileFrequency === 'weekly' && (
                 <div>
                   <p className="text-xs font-medium text-muted-foreground m-0">On</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    {DAY_LABELS.map((label, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        className={cn(
-                          "w-9 h-9 rounded-full border-2 border-primary bg-background text-primary text-sm font-semibold cursor-pointer inline-flex items-center justify-center p-0 transition-colors duration-150 leading-none",
-                          noFileDays[i] && "bg-primary text-primary-foreground",
-                          !noFileDays[i] && "hover:bg-accent"
-                        )}
-                        onClick={() => toggleDay(i)}
-                        aria-label={`${DAY_OF_WEEK_OPTIONS[i]}${noFileDays[i] ? ' selected' : ''}`}
-                        aria-pressed={noFileDays[i]}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
+                  <DayPicker
+                    value={noFileDays}
+                    onChange={setNoFileDays}
+                    className="mt-1"
+                  />
                 </div>
               )}
 
@@ -355,26 +216,22 @@ export function NotificationsStep() {
                     <p className="text-xs font-medium text-muted-foreground m-0">On the</p>
                     {monthlyPattern === 'day' ? (
                       <div className="flex items-center gap-2">
-                        <select
-                          className="flex-1 py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
-                          value={monthlyOrdinal}
-                          onChange={(e) => setMonthlyOrdinal(e.target.value)}
-                          aria-label="Ordinal"
-                        >
-                          {ORDINAL_OPTIONS.map((o) => (
-                            <option key={o} value={o}>{o}</option>
-                          ))}
-                        </select>
-                        <select
-                          className="flex-1 py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
-                          value={monthlyDayOfWeek}
-                          onChange={(e) => setMonthlyDayOfWeek(e.target.value)}
-                          aria-label="Day of week"
-                        >
-                          {DAY_OF_WEEK_OPTIONS.map((d) => (
-                            <option key={d} value={d}>{d}</option>
-                          ))}
-                        </select>
+                        <Select value={monthlyOrdinal} onValueChange={setMonthlyOrdinal}>
+                          <SelectTrigger aria-label="Ordinal" className="flex-1">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ORDINAL_OPTIONS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <Select value={monthlyDayOfWeek} onValueChange={setMonthlyDayOfWeek}>
+                          <SelectTrigger aria-label="Day of week" className="flex-1">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {DAY_OF_WEEK_OPTIONS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                     ) : (
                       <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] relative cursor-text bg-background focus-within:border-primary focus-within:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]">
@@ -422,18 +279,16 @@ export function NotificationsStep() {
                 <div className="flex flex-col gap-1 flex-1">
                   <p className="text-xs font-medium text-muted-foreground m-0">Every</p>
                   <div className="flex items-stretch">
-                    <select
-                      className="flex-1 py-2 px-3 text-sm border border-border rounded-md rounded-r-none border-r-0 bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
-                      value={noFileEvery}
-                      onChange={(e) => setNoFileEvery(e.target.value)}
-                      aria-label="Every interval"
-                    >
-                      {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
-                        <option key={n} value={String(n)}>
-                          {n}
-                        </option>
-                      ))}
-                    </select>
+                    <Select value={noFileEvery} onValueChange={setNoFileEvery}>
+                      <SelectTrigger aria-label="Every interval" className="rounded-r-none border-r-0">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+                          <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <span className="inline-flex items-center py-0 px-3 text-sm text-muted-foreground bg-secondary border border-border border-l-0 rounded-r-md whitespace-nowrap box-border">
                       {UNIT_MAP[noFileFrequency]}
                     </span>
@@ -441,9 +296,7 @@ export function NotificationsStep() {
                 </div>
                 <div className="flex flex-col gap-1 flex-1">
                   <p className="text-xs font-medium text-muted-foreground m-0">At</p>
-                  <input
-                    className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 box-border focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)] placeholder:text-tertiary-foreground"
-                    type="text"
+                  <Input
                     value={noFileAt}
                     onChange={(e) => setNoFileAt(e.target.value)}
                     aria-label="At time"
@@ -452,19 +305,16 @@ export function NotificationsStep() {
               </div>
 
               {/* Email Address with copy from above */}
-              <div>
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-medium text-muted-foreground m-0">Email Address</p>
-                  <button
-                    type="button"
-                    className="bg-transparent border-none text-primary text-xs font-medium cursor-pointer p-0 hover:underline"
-                    onClick={() => copyFromFailure(setNoFileEmails)}
-                  >
-                    copy from above
-                  </button>
-                </div>
-                <EmailChipInput emails={noFileEmails} onChange={setNoFileEmails} />
-              </div>
+              <ChipInput
+                values={noFileEmails}
+                onChange={setNoFileEmails}
+                label="Email Address"
+                copyLabel="copy from above"
+                onCopy={() => copyFromFailure(setNoFileEmails)}
+                type="email"
+                placeholder="Add email…"
+                aria-label="Add email address"
+              />
             </div>
           )}
         </div>

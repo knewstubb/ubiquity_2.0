@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { UploadSimple } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { SegmentedControl } from '@/components/composed/segmented-control';
+import { PrefixInput } from '@/components/composed/prefix-input';
+import { HelpPopover } from '@/components/composed/help-popover';
+import { Input } from '../ui/input';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 import type { ImporterConfig, PathMode, ImportDataType } from '../../models/importer';
 
 interface FileSettingsStepProps {
@@ -22,45 +27,6 @@ const DATA_TYPES: { value: ImportDataType; label: string }[] = [
   { value: 'both', label: 'Combined' },
 ];
 
-/* ── Reusable Help Popover ── */
-interface HelpPopoverProps {
-  title: string;
-  body: string;
-}
-
-function HelpPopover({ title, body }: HelpPopoverProps) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <span className="relative inline-flex">
-      <button
-        type="button"
-        className="bg-primary text-primary-foreground rounded-full w-4 h-4 text-[10px] font-bold border-none cursor-pointer inline-flex items-center justify-center p-0 shrink-0 leading-none hover:bg-accent-hover"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={`Help: ${title}`}
-      >
-        ?
-      </button>
-      {open && (
-        <div className="absolute top-[calc(100%+8px)] left-0 z-[100] w-80 bg-accent-foreground text-primary-foreground rounded-md p-4 shadow-[0px_1px_4px_0px_rgba(0,0,0,0.12),0px_4px_16px_0px_rgba(0,0,0,0.1),0px_8px_32px_0px_rgba(0,0,0,0.08)]" role="tooltip">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-base font-semibold m-0">{title}</p>
-            <button
-              type="button"
-              className="bg-transparent border-none text-primary-foreground cursor-pointer text-base p-0 leading-none flex items-center justify-center hover:opacity-80"
-              onClick={() => setOpen(false)}
-              aria-label="Close help"
-            >
-              ✕
-            </button>
-          </div>
-          <p className="text-[13px] font-normal leading-[18px] m-0">{body}</p>
-        </div>
-      )}
-    </span>
-  );
-}
-
 export function FileSettingsStep({
   config,
   basePath,
@@ -71,6 +37,19 @@ export function FileSettingsStep({
   const { filePathConfig, dataType } = config;
   const { pathMode, folderName, readPath, errorFolderPath, archiveFolderPath, fileNamePattern } =
     filePathConfig;
+
+  function toKebabCase(str: string): string {
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function handleNameChange(newName: string) {
+    const patch: Partial<ImporterConfig> = { name: newName };
+    // In automatic mode, sync folder name from the name field
+    if (filePathConfig.pathMode === 'automatic') {
+      patch.filePathConfig = { ...filePathConfig, folderName: toKebabCase(newName) };
+    }
+    onUpdate(patch);
+  }
 
   function updatePath(patch: Partial<typeof filePathConfig>) {
     onUpdate({ filePathConfig: { ...filePathConfig, ...patch } });
@@ -97,6 +76,22 @@ export function FileSettingsStep({
       <h3 className="m-0 text-lg font-semibold text-primary">File Settings</h3>
       <p className="mt-[-20px] mb-0 text-sm text-tertiary-foreground">Configure how files are read and where they are stored.</p>
 
+      {/* Name */}
+      <div className="flex items-start gap-14">
+        <div className="w-40 shrink-0 pt-0 relative">
+          <p className="text-sm font-semibold text-foreground m-0">Name</p>
+          <p className="text-xs text-tertiary-foreground mt-1 mb-0">A unique name for this automation</p>
+        </div>
+        <div className="w-[552px] flex flex-col gap-3">
+          <Input
+            value={config.name}
+            onChange={(e) => handleNameChange(e.target.value)}
+            placeholder="e.g. Daily Contact Import"
+            aria-label="Automation name"
+          />
+        </div>
+      </div>
+
       {/* Destination File Path */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
@@ -120,9 +115,7 @@ export function FileSettingsStep({
             <>
               <div>
                 <p className="text-xs font-medium text-muted-foreground m-0">Folder Name</p>
-                <input
-                  className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)] placeholder:text-tertiary-foreground"
-                  type="text"
+                <Input
                   value={folderName}
                   onChange={(e) => updatePath({ folderName: e.target.value })}
                   placeholder="e.g. onboarding-2026"
@@ -142,9 +135,7 @@ export function FileSettingsStep({
             <>
               <div>
                 <p className="text-xs font-medium text-muted-foreground m-0">Read Path</p>
-                <input
-                  className="w-full py-2 px-3 text-sm border border-border rounded-md bg-secondary text-tertiary-foreground outline-none cursor-not-allowed"
-                  type="text"
+                <Input
                   value={effectiveBasePath}
                   disabled
                   aria-label="Read path (inherited from connection)"
@@ -157,9 +148,7 @@ export function FileSettingsStep({
             <>
               <div>
                 <p className="text-xs font-medium text-muted-foreground m-0">Read Path</p>
-                <input
-                  className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)] placeholder:text-tertiary-foreground"
-                  type="text"
+                <Input
                   value={readPath}
                   onChange={(e) => updatePath({ readPath: e.target.value })}
                   placeholder="/custom/inbound/"
@@ -167,9 +156,7 @@ export function FileSettingsStep({
               </div>
               <div>
                 <p className="text-xs font-medium text-muted-foreground m-0">Error Folder Path</p>
-                <input
-                  className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)] placeholder:text-tertiary-foreground"
-                  type="text"
+                <Input
                   value={errorFolderPath}
                   onChange={(e) => updatePath({ errorFolderPath: e.target.value })}
                   placeholder="/custom/inbound/error/"
@@ -177,9 +164,7 @@ export function FileSettingsStep({
               </div>
               <div>
                 <p className="text-xs font-medium text-muted-foreground m-0">Archive Folder Path</p>
-                <input
-                  className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)] placeholder:text-tertiary-foreground"
-                  type="text"
+                <Input
                   value={archiveFolderPath}
                   onChange={(e) => updatePath({ archiveFolderPath: e.target.value })}
                   placeholder="/custom/inbound/archive/"
@@ -207,7 +192,7 @@ export function FileSettingsStep({
         <div className="w-[552px] flex flex-col gap-3">
           <div className="border-2 border-dashed border-border rounded-md py-2 px-4 flex flex-row items-center gap-2 cursor-pointer h-10 transition-colors duration-150 hover:border-primary hover:bg-accent" role="button" tabIndex={0} aria-label="Upload sample file">
             <div className="text-tertiary-foreground flex items-center">
-              <UploadIcon />
+              <UploadSimple size={20} />
             </div>
             <p className="text-sm text-tertiary-foreground m-0 whitespace-nowrap">
               Drag & drop a file here, or{' '}
@@ -231,19 +216,16 @@ export function FileSettingsStep({
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <input
+          <Input
             className={cn(
-              "w-full py-2 px-3 text-sm border rounded-md bg-background text-foreground outline-none transition-colors duration-150 placeholder:text-tertiary-foreground",
-              patternError
-                ? "border-destructive focus:border-destructive focus:shadow-[0_0_0_2px_rgba(239,68,68,0.15)]"
-                : "border-border focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
+              patternError && "border-destructive focus-visible:border-destructive focus-visible:shadow-[0_0_0_3px_rgba(239,68,68,0.15)]"
             )}
-            type="text"
             value={fileNamePattern}
             onChange={(e) => updatePath({ fileNamePattern: e.target.value })}
             onBlur={(e) => validateFilePattern(e.target.value)}
             placeholder="filename*.csv"
             title="Which filenames to look for. Use * to match any characters."
+            aria-invalid={!!patternError}
           />
           {patternError && (
             <p className="text-xs text-destructive -mt-1 mb-0">{patternError}</p>
@@ -275,12 +257,7 @@ export function FileSettingsStep({
           {(dataType === 'contact' || dataType === 'both') && (
             <div>
               <p className="text-xs font-medium text-muted-foreground m-0">Contacts Database</p>
-              <input
-                className="w-full py-2 px-3 text-sm border border-border rounded-md bg-secondary text-tertiary-foreground outline-none cursor-not-allowed"
-                type="text"
-                value="Customer Contacts"
-                disabled
-              />
+              <Input value="Customer Contacts" disabled />
             </div>
           )}
 
@@ -288,16 +265,15 @@ export function FileSettingsStep({
           {(dataType === 'transactional' || dataType === 'both') && (
             <div>
               <p className="text-xs font-medium text-muted-foreground m-0">Transactional Database</p>
-              <select
-                className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
-                defaultValue=""
-                aria-label="Select transactional table"
-                title="The table where imported records will be stored."
-              >
-                <option value="" disabled>Select Database</option>
-                <option value="treatments">Treatments</option>
-                <option value="products">Products</option>
-              </select>
+              <Select defaultValue="" onValueChange={() => {}}>
+                <SelectTrigger aria-label="Select transactional table" title="The table where imported records will be stored.">
+                  <SelectValue placeholder="Select Database" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="treatments">Treatments</SelectItem>
+                  <SelectItem value="products">Products</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           )}
         </div>
@@ -306,22 +282,4 @@ export function FileSettingsStep({
   );
 }
 
-function UploadIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 16V4M8 8l4-4 4 4"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M4 18h16"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
+

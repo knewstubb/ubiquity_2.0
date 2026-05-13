@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Plus } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
+import { Button } from '../ui/button';
 
 /* ── Types ── */
 
@@ -330,9 +331,9 @@ export function ImportMappingStep({ type }: ImportMappingStepProps) {
         ))}
       </div>
 
-      <button type="button" className="inline-flex items-center gap-1 bg-transparent border-none text-primary text-sm font-medium cursor-pointer p-0 mt-1 hover:text-accent-hover hover:underline">
+      <Button variant="link" className="justify-start p-0 h-auto mt-1">
         <Plus size={14} weight="bold" /> Add New Field
-      </button>
+      </Button>
     </div>
   );
 }
