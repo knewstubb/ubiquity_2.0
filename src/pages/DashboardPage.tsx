@@ -15,6 +15,7 @@ import { ImporterWizardModal } from '../components/importer/ImporterWizardModal'
 import { AutomationSettingsModal } from '../components/dashboard/AutomationSettingsModal';
 import { ActivityLogModal } from '../components/dashboard/ActivityLogModal';
 import { HistoryModal } from '../components/dashboard/HistoryModal';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import type { Automation } from '../models/automation';
 import type { WizardDraft } from '../models/wizard';
 import type { ImporterConfig } from '../models/importer';
@@ -174,6 +175,17 @@ export default function DashboardPage() {
 
   return (
     <div className="w-full max-w-[1440px] mx-auto min-h-[calc(100vh-85px)] py-7 px-6 bg-background">
+      <Breadcrumb className="mb-3">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/audiences/databases">Audience</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Connectors</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <div className="flex items-center justify-between mb-7">
         <div>
           <h1 className="text-2xl font-semibold text-foreground m-0">Connectors</h1>
@@ -251,7 +263,7 @@ export default function DashboardPage() {
               Changes to a connection may affect all linked automations. Proceed only if you understand the impact.
             </p>
             <div className="flex justify-end gap-2">
-              <button type="button" className="px-4 py-2 text-sm font-medium text-muted-foreground bg-background border border-border rounded cursor-pointer transition-colors duration-150 hover:bg-secondary" onClick={() => setPendingEditConnectionId(null)}>Cancel</button>
+              <button type="button" className="px-4 py-2 text-sm font-medium text-muted-foreground bg-transparent border-none rounded cursor-pointer transition-colors duration-150 hover:bg-accent hover:text-accent-foreground" onClick={() => setPendingEditConnectionId(null)}>Cancel</button>
               <button
                 type="button"
                 className="px-4 py-2 text-sm font-semibold text-primary-foreground bg-warning border-none rounded cursor-pointer transition-colors duration-150 hover:bg-warning-foreground"

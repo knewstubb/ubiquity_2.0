@@ -1,70 +1,64 @@
-import { useState, useCallback } from 'react';
-import { CheckCircle } from '@phosphor-icons/react';
-import type { Connection } from '../../models/connection';
-import { useAccount } from '../../contexts/AccountContext';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { CardSelector } from '@/components/composed/card-selector';
-import { ModalHeader } from '@/components/composed/modal-header';
-import { ModalFooter } from '@/components/composed/modal-footer';
+import { useState, useCallback } from 'react'
+import { CheckCircle, FolderOpen, Package, PlugsConnected, SquaresFour, X } from '@phosphor-icons/react'
+import type { Connection } from '../../models/connection'
+import { useAccount } from '../../contexts/AccountContext'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { ChooserModal, type ChooserOption } from '@/components/composed/chooser-modal'
 
-type ConnectionType = 'aws-s3' | 'azure-blob' | 'sftp';
-type SftpAuthMethod = 'password' | 'ssh-key';
-type AwsAuthMethod = 'access-key' | 'iam-role';
-type TestStatus = 'idle' | 'testing' | 'success';
+type ConnectionType = 'aws-s3' | 'azure-blob' | 'sftp'
+type AwsAuthMethod = 'access-key' | 'iam-role'
+type TestStatus = 'idle' | 'testing' | 'success'
 
 interface CreateConnectionModalProps {
-  onClose: () => void;
-  onCreate: (connection: Connection) => void;
-  editConnection?: Connection;
+  onClose: () => void
+  onCreate: (connection: Connection) => void
+  editConnection?: Connection
 }
 
 export function CreateConnectionModal({ onClose, onCreate, editConnection }: CreateConnectionModalProps) {
-  const isEditing = !!editConnection;
-  const { selectedAccountId } = useAccount();
-  const [step, setStep] = useState<1 | 2>(isEditing ? 2 : 1);
+  const isEditing = !!editConnection
+  const { selectedAccountId } = useAccount()
+  const [step, setStep] = useState<1 | 2>(isEditing ? 2 : 1)
 
   // Step 1 state
-  const [name, setName] = useState(editConnection?.name ?? '');
+  const [name, setName] = useState(editConnection?.name ?? '')
   const [connectionType, setConnectionType] = useState<ConnectionType | null>(
     editConnection ? (editConnection.protocol === 'S3' ? 'aws-s3' : editConnection.protocol === 'Azure Blob' ? 'azure-blob' : 'sftp') : null,
-  );
-  const [basePath, setBasePath] = useState(editConnection?.basePath ?? '');
+  )
+  const [basePath, setBasePath] = useState(editConnection?.basePath ?? '')
 
   // Step 2 — AWS S3
-  const s3Config = editConnection?.protocol === 'S3' ? editConnection.config as { region: string; bucket: string; prefix: string; accessKeyId?: string; secretAccessKey?: string } : null;
-  const [awsRegion, setAwsRegion] = useState(s3Config?.region ?? '');
-  const [bucketName, setBucketName] = useState(s3Config?.bucket ?? '');
-  const [prefix, setPrefix] = useState(s3Config?.prefix ?? '');
-  const [awsAuthMethod, setAwsAuthMethod] = useState<AwsAuthMethod>('access-key');
-  const [accessKeyId, setAccessKeyId] = useState(s3Config?.accessKeyId ?? '');
-  const [secretAccessKey, setSecretAccessKey] = useState(s3Config?.secretAccessKey ?? '');
-  const [awsAccountId, setAwsAccountId] = useState('');
-  const [iamRoleArn, setIamRoleArn] = useState('');
+  const s3Config = editConnection?.protocol === 'S3' ? editConnection.config as { region: string; bucket: string; prefix: string; accessKeyId?: string; secretAccessKey?: string } : null
+  const [awsRegion, setAwsRegion] = useState(s3Config?.region ?? '')
+  const [bucketName, setBucketName] = useState(s3Config?.bucket ?? '')
+  const [prefix, setPrefix] = useState(s3Config?.prefix ?? '')
+  const [awsAuthMethod, setAwsAuthMethod] = useState<AwsAuthMethod>('access-key')
+  const [accessKeyId, setAccessKeyId] = useState(s3Config?.accessKeyId ?? '')
+  const [secretAccessKey, setSecretAccessKey] = useState(s3Config?.secretAccessKey ?? '')
+  const [awsAccountId, setAwsAccountId] = useState('')
+  const [iamRoleArn, setIamRoleArn] = useState('')
 
   // Step 2 — Azure Blob
-  const blobConfig = editConnection?.protocol === 'Azure Blob' ? editConnection.config as { containerName: string; accountName: string; sasToken?: string } : null;
-  const [containerName, setContainerName] = useState(blobConfig?.containerName ?? '');
-  const [accountName, setAccountName] = useState(blobConfig?.accountName ?? '');
-  const [sasToken, setSasToken] = useState(blobConfig?.sasToken ?? '');
+  const blobConfig = editConnection?.protocol === 'Azure Blob' ? editConnection.config as { containerName: string; accountName: string; sasToken?: string } : null
+  const [containerName, setContainerName] = useState(blobConfig?.containerName ?? '')
+  const [accountName, setAccountName] = useState(blobConfig?.accountName ?? '')
+  const [sasToken, setSasToken] = useState(blobConfig?.sasToken ?? '')
 
   // Step 2 — SFTP
-  const sftpConfig = editConnection?.protocol === 'SFTP' ? editConnection.config as { host: string; port: number; path: string; username?: string; password?: string } : null;
-  const [hostname, setHostname] = useState(sftpConfig?.host ?? '');
-  const [port, setPort] = useState(sftpConfig?.port?.toString() ?? '22');
-  const [sftpUsername, setSftpUsername] = useState(sftpConfig?.username ?? '');
-  const [sftpAuthMethod, setSftpAuthMethod] = useState<SftpAuthMethod>('password');
-  const [sftpPassword, setSftpPassword] = useState(sftpConfig?.password ?? '');
-  const [sshKey, setSshKey] = useState('');
+  const sftpConfig = editConnection?.protocol === 'SFTP' ? editConnection.config as { host: string; port: number; path: string; username?: string; password?: string } : null
+  const [hostname, setHostname] = useState(sftpConfig?.host ?? '')
+  const [port, setPort] = useState(sftpConfig?.port?.toString() ?? '22')
+  const [sftpUsername, setSftpUsername] = useState(sftpConfig?.username ?? '')
+  const [sshKey, setSshKey] = useState('')
 
   // Test connection
-  const [testStatus, setTestStatus] = useState<TestStatus>('idle');
-  const testPassed = testStatus === 'success';
+  const [testStatus, setTestStatus] = useState<TestStatus>('idle')
+  const testPassed = testStatus === 'success'
 
   // Track whether connection-affecting fields have changed (for edit mode)
   const hasConnectionChanged = isEditing ? (
@@ -78,44 +72,49 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
     (connectionType === 'sftp' && (
       hostname !== (sftpConfig?.host ?? '') ||
       port !== (sftpConfig?.port?.toString() ?? '22') ||
-      sftpUsername !== (sftpConfig?.username ?? '') ||
-      sftpPassword !== (sftpConfig?.password ?? '')
+      sftpUsername !== (sftpConfig?.username ?? '')
     )) ||
     (connectionType === 'azure-blob' && (
       containerName !== (blobConfig?.containerName ?? '') ||
       accountName !== (blobConfig?.accountName ?? '') ||
       sasToken !== (blobConfig?.sasToken ?? '')
     ))
-  ) : true;
+  ) : true
 
-  const canProceedStep1 = connectionType !== null;
+  const canProceedStep1 = connectionType !== null
+
+  const connectionTypeOptions: ChooserOption[] = [
+    { id: 'aws-s3', icon: <Package size={28} weight="light" />, label: 'AWS S3' },
+    { id: 'azure-blob', icon: <SquaresFour size={28} weight="light" />, label: 'Azure Blob' },
+    { id: 'sftp', icon: <FolderOpen size={28} weight="light" />, label: 'SFTP' },
+  ]
 
   const handleNext = useCallback(() => {
-    if (canProceedStep1) setStep(2);
-  }, [canProceedStep1]);
+    if (canProceedStep1) setStep(2)
+  }, [canProceedStep1])
 
   function handleBack() {
-    setStep(1);
-    setTestStatus('idle');
+    setStep(1)
+    setTestStatus('idle')
   }
 
   function handleTestConnection() {
-    setTestStatus('testing');
-    setTimeout(() => setTestStatus('success'), 1500);
+    setTestStatus('testing')
+    setTimeout(() => setTestStatus('success'), 1500)
   }
 
   function handleCreate() {
-    if (!connectionType) return;
+    if (!connectionType) return
 
     const protocol = connectionType === 'aws-s3' ? 'S3' as const
       : connectionType === 'azure-blob' ? 'Azure Blob' as const
-      : 'SFTP' as const;
+      : 'SFTP' as const
 
     const config = connectionType === 'aws-s3'
       ? { region: awsRegion, bucket: bucketName, prefix: prefix }
       : connectionType === 'azure-blob'
       ? { containerName, accountName }
-      : { host: hostname, port: parseInt(port) || 22, path: basePath };
+      : { host: hostname, port: parseInt(port) || 22, path: basePath }
 
     const connection: Connection = {
       id: editConnection?.id ?? crypto.randomUUID(),
@@ -125,77 +124,81 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
       basePath: basePath || '/company/base-path/',
       accountId: editConnection?.accountId ?? selectedAccountId,
       config,
-    };
+    }
 
-    onCreate(connection);
+    onCreate(connection)
   }
 
-  return (
-    <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-[560px] p-0 gap-0">
-        <DialogTitle className="sr-only">{isEditing ? `Edit ${connectionType === 'aws-s3' ? 'AWS S3' : connectionType === 'azure-blob' ? 'Azure Blob' : 'SFTP'} Connection` : step === 1 ? 'Choose Connection Type' : `Set Up ${connectionType === 'aws-s3' ? 'AWS S3' : connectionType === 'azure-blob' ? 'Azure Blob' : 'SFTP'} Connection`}</DialogTitle>
-        <DialogDescription className="sr-only">Configure connection settings</DialogDescription>
-        <ModalHeader
-          title={isEditing ? `Edit ${connectionType === 'aws-s3' ? 'AWS S3' : connectionType === 'azure-blob' ? 'Azure Blob' : 'SFTP'} Connection` : step === 1 ? 'Choose Connection Type' : `Set Up ${connectionType === 'aws-s3' ? 'AWS S3' : connectionType === 'azure-blob' ? 'Azure Blob' : 'SFTP'} Connection`}
-          onClose={onClose}
-        />
+  function getTypeLabel() {
+    if (connectionType === 'aws-s3') return 'AWS S3'
+    if (connectionType === 'azure-blob') return 'Azure Blob'
+    return 'SFTP'
+  }
 
-        <div className="px-6 py-5">
-          {step === 1 ? renderStep1() : renderStep2()}
+  // Step 1: ChooserModal for connection type selection
+  if (step === 1) {
+    return (
+      <ChooserModal
+        open={true}
+        onOpenChange={(open) => { if (!open) onClose() }}
+        icon={<PlugsConnected size={48} weight="light" />}
+        title="Select Connection Type"
+        description="Select the protocol your data source uses. This determines how UbiQuity connects to your files."
+        options={connectionTypeOptions}
+        selectedId={connectionType}
+        onSelect={(id) => setConnectionType(id as ConnectionType)}
+        onConfirm={handleNext}
+        onCancel={onClose}
+        confirmDisabled={!canProceedStep1}
+      />
+    )
+  }
+
+  // Step 2: Dialog with type-specific configuration
+  return (
+    <Dialog open={true} onOpenChange={(open) => { if (!open) onClose() }}>
+      <DialogContent className="max-w-[560px] p-0 gap-0">
+        <DialogHeader className="border-b border-border px-6 py-6 space-y-0">
+          <div className="flex items-center justify-between">
+            <DialogTitle>
+              {isEditing ? `Edit ${getTypeLabel()} Connection` : `Set Up ${getTypeLabel()} Connection`}
+            </DialogTitle>
+            <button
+              type="button"
+              onClick={onClose}
+              className="shrink-0 rounded-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="Close"
+            >
+              <X size={20} weight="bold" />
+            </button>
+          </div>
+          <DialogDescription className="sr-only">Configure connection settings</DialogDescription>
+        </DialogHeader>
+
+        <div className="px-6 py-5 max-h-[60vh] overflow-y-auto">
+          {connectionType === 'aws-s3' && renderAwsS3()}
+          {connectionType === 'azure-blob' && renderAzureBlob()}
+          {connectionType === 'sftp' && renderSftp()}
         </div>
 
-        <ModalFooter
-          primaryAction={step === 1
-            ? { label: 'Next', onClick: handleNext, disabled: !canProceedStep1 }
-            : { label: isEditing ? 'Update Connection' : 'Create Connection', onClick: handleCreate, disabled: !testPassed }
-          }
-          secondaryAction={{ label: 'Cancel', onClick: onClose, variant: 'ghost' }}
-        />
+        <DialogFooter className="border-t border-border px-6 py-4">
+          <Button type="button" variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="button" onClick={handleCreate} disabled={!testPassed}>
+            {isEditing ? 'Update Connection' : 'Create Connection'}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-
-  /* ── Step 1: Connection Type ── */
-  function renderStep1() {
-    return (
-      <>
-        <div className="grid grid-cols-3 gap-3">
-          <CardSelector
-            icon={<svg width="24" height="24" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M6 22l10 4 10-4V10L16 6 6 10v12z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /><path d="M6 10l10 4 10-4" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /><path d="M16 14v12" stroke="currentColor" strokeWidth="2" /></svg>}
-            label="AWS S3"
-            selected={connectionType === 'aws-s3'}
-            onClick={() => setConnectionType('aws-s3')}
-          />
-          <CardSelector
-            icon={<svg width="24" height="24" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2" stroke="currentColor" strokeWidth="2" /><rect x="18" y="5" width="9" height="9" rx="2" stroke="currentColor" strokeWidth="2" /><rect x="5" y="18" width="9" height="9" rx="2" stroke="currentColor" strokeWidth="2" /><rect x="18" y="18" width="9" height="9" rx="2" stroke="currentColor" strokeWidth="2" /></svg>}
-            label="Azure Blob"
-            selected={connectionType === 'azure-blob'}
-            onClick={() => setConnectionType('azure-blob')}
-          />
-          <CardSelector
-            icon={<svg width="24" height="24" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M4 8a2 2 0 012-2h8l2 3h12a2 2 0 012 2v13a2 2 0 01-2 2H6a2 2 0 01-2-2V8z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /></svg>}
-            label="SFTP"
-            selected={connectionType === 'sftp'}
-            onClick={() => setConnectionType('sftp')}
-          />
-        </div>
-      </>
-    );
-  }
-
-  /* ── Step 2: Type-specific settings ── */
-  function renderStep2() {
-    if (connectionType === 'aws-s3') return renderAwsS3();
-    if (connectionType === 'azure-blob') return renderAzureBlob();
-    return renderSftp();
-  }
+  )
 
   /* ── AWS S3 ── */
   function renderAwsS3() {
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-6">
         {/* General fields */}
-        <div className="space-y-3 pb-5 border-b border-border">
+        <div className="space-y-3">
           <div className="space-y-2">
             <Label htmlFor="conn-name-input">Connection Name</Label>
             <Input id="conn-name-input" type="text" placeholder="Enter connection name" value={name} onChange={(e) => setName(e.target.value)} />
@@ -207,8 +210,8 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
         </div>
 
         {/* Connection Settings section */}
-        <div className="pt-5">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">Connection Settings</h3>
+        <div>
+          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Connection Settings</h3>
           <div className="space-y-3">
             <div className="space-y-2">
               <Label htmlFor="aws-region">AWS Region</Label>
@@ -235,9 +238,9 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
           </div>
         </div>
 
-        {/* Authentication section — inset card */}
-        <div className="mt-6 bg-secondary rounded-lg px-5 py-5">
-          <h3 className="text-base font-semibold text-foreground mb-3">Authentication</h3>
+        {/* Authentication section */}
+        <div className="bg-secondary rounded-lg px-5 py-5">
+          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Authentication</h3>
           <div className="space-y-3">
             <div className="space-y-2">
               <Label htmlFor="aws-auth-method">Authentication Method</Label>
@@ -276,37 +279,19 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
               </>
             )}
 
-            {/* Test connection row — inline within auth section */}
-            <div className="flex items-center justify-between pt-4 border-t border-border">
-              {testStatus === 'success' ? (
-                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary"><CheckCircle size={16} weight="fill" /> Connection verified</span>
-              ) : (
-                <>
-                  {hasConnectionChanged ? <span className="text-sm text-muted-foreground">Test your connection settings</span> : <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary"><CheckCircle size={16} weight="fill" /> Connection verified</span>}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handleTestConnection}
-                    disabled={testStatus === 'testing' || !hasConnectionChanged}
-                  >
-                    {testStatus === 'testing' ? 'Testing…' : 'Test Connection'}
-                  </Button>
-                </>
-              )}
-            </div>
+            {renderTestConnectionRow()}
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   /* ── Azure Blob ── */
   function renderAzureBlob() {
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-6">
         {/* General fields */}
-        <div className="space-y-3 pb-5 border-b border-border">
+        <div className="space-y-3">
           <div className="space-y-2">
             <Label htmlFor="conn-name-input">Connection Name</Label>
             <Input id="conn-name-input" type="text" placeholder="Enter connection name" value={name} onChange={(e) => setName(e.target.value)} />
@@ -318,8 +303,8 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
         </div>
 
         {/* Connection Settings section */}
-        <div className="pt-5">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">Connection Settings</h3>
+        <div>
+          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Connection Settings</h3>
           <div className="space-y-3">
             <div className="space-y-2">
               <Label htmlFor="container-name">Container Name</Label>
@@ -332,45 +317,28 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
           </div>
         </div>
 
-        {/* Authentication section — inset card */}
-        <div className="mt-6 bg-secondary rounded-lg px-5 py-5">
-          <h3 className="text-base font-semibold text-foreground mb-3">Authentication</h3>
+        {/* Authentication section */}
+        <div className="bg-secondary rounded-lg px-5 py-5">
+          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Authentication</h3>
           <div className="space-y-3">
             <div className="space-y-2">
               <Label htmlFor="sas-token">SAS Token</Label>
               <Input id="sas-token" type="text" value={sasToken} onChange={(e) => setSasToken(e.target.value)} />
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-border">
-              {testStatus === 'success' ? (
-                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary"><CheckCircle size={16} weight="fill" /> Connection verified</span>
-              ) : (
-                <>
-                  {hasConnectionChanged ? <span className="text-sm text-muted-foreground">Test your connection settings</span> : <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary"><CheckCircle size={16} weight="fill" /> Connection verified</span>}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handleTestConnection}
-                    disabled={testStatus === 'testing' || !hasConnectionChanged}
-                  >
-                    {testStatus === 'testing' ? 'Testing…' : 'Test Connection'}
-                  </Button>
-                </>
-              )}
-            </div>
+            {renderTestConnectionRow()}
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   /* ── SFTP ── */
   function renderSftp() {
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-6">
         {/* General fields */}
-        <div className="space-y-3 pb-5 border-b border-border">
+        <div className="space-y-3">
           <div className="space-y-2">
             <Label htmlFor="conn-name-input">Connection Name</Label>
             <Input id="conn-name-input" type="text" placeholder="Enter connection name" value={name} onChange={(e) => setName(e.target.value)} />
@@ -382,8 +350,8 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
         </div>
 
         {/* Connection Settings section */}
-        <div className="pt-5">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">Connection Settings</h3>
+        <div>
+          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Connection Settings</h3>
           <div className="space-y-3">
             <div className="space-y-2">
               <Label htmlFor="sftp-hostname">Hostname</Label>
@@ -396,54 +364,55 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
           </div>
         </div>
 
-        {/* Authentication section — inset card */}
-        <div className="mt-6 bg-secondary rounded-lg px-5 py-5">
-          <h3 className="text-base font-semibold text-foreground mb-3">Authentication</h3>
+        {/* Authentication section */}
+        <div className="bg-secondary rounded-lg px-5 py-5">
+          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Authentication</h3>
           <div className="space-y-3">
             <div className="space-y-2">
               <Label htmlFor="sftp-username">Username</Label>
               <Input id="sftp-username" type="text" value={sftpUsername} onChange={(e) => setSftpUsername(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>Auth Method</Label>
-              <ToggleGroup type="single" value={sftpAuthMethod} onValueChange={(v) => { if (v) setSftpAuthMethod(v as SftpAuthMethod); }}>
-                <ToggleGroupItem value="password">Password</ToggleGroupItem>
-                <ToggleGroupItem value="ssh-key">SSH Key</ToggleGroupItem>
-              </ToggleGroup>
+              <Label htmlFor="sftp-ssh-key">Public SSH Key</Label>
+              <Textarea id="sftp-ssh-key" value={sshKey} onChange={(e) => setSshKey(e.target.value)} />
             </div>
-            {sftpAuthMethod === 'password' ? (
-              <div className="space-y-2">
-                <Label htmlFor="sftp-password">Password</Label>
-                <Input id="sftp-password" type="password" value={sftpPassword} onChange={(e) => setSftpPassword(e.target.value)} />
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <Label htmlFor="sftp-ssh-key">Public SSH Key</Label>
-                <Textarea id="sftp-ssh-key" value={sshKey} onChange={(e) => setSshKey(e.target.value)} />
-              </div>
-            )}
 
-            <div className="flex items-center justify-between pt-4 border-t border-border">
-              {testStatus === 'success' ? (
-                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary"><CheckCircle size={16} weight="fill" /> Connection verified</span>
-              ) : (
-                <>
-                  {hasConnectionChanged ? <span className="text-sm text-muted-foreground">Test your connection settings</span> : <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary"><CheckCircle size={16} weight="fill" /> Connection verified</span>}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handleTestConnection}
-                    disabled={testStatus === 'testing' || !hasConnectionChanged}
-                  >
-                    {testStatus === 'testing' ? 'Testing…' : 'Test Connection'}
-                  </Button>
-                </>
-              )}
-            </div>
+            {renderTestConnectionRow()}
           </div>
         </div>
       </div>
-    );
+    )
+  }
+
+  /* ── Shared test connection row ── */
+  function renderTestConnectionRow() {
+    return (
+      <div className="flex items-center justify-between pt-4 border-t border-border">
+        {testStatus === 'success' ? (
+          <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+            <CheckCircle size={16} weight="fill" /> Connection verified
+          </span>
+        ) : (
+          <>
+            {hasConnectionChanged ? (
+              <span className="text-sm text-muted-foreground">Test your connection settings</span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+                <CheckCircle size={16} weight="fill" /> Connection verified
+              </span>
+            )}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleTestConnection}
+              disabled={testStatus === 'testing' || !hasConnectionChanged}
+            >
+              {testStatus === 'testing' ? 'Testing…' : 'Test Connection'}
+            </Button>
+          </>
+        )}
+      </div>
+    )
   }
 }

@@ -1,7 +1,27 @@
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 
-export default function TextareaDemo() {
+interface TextareaDemoProps {
+  placeholder?: string
+  rows?: number
+  disabled?: boolean
+  'read-only'?: boolean
+}
+
+export default function TextareaDemo({ placeholder, rows, disabled, 'read-only': readOnly }: TextareaDemoProps) {
+  const hasControls = placeholder !== undefined
+
+  if (hasControls) {
+    return (
+      <Textarea
+        placeholder={placeholder}
+        rows={rows}
+        disabled={disabled}
+        readOnly={readOnly}
+      />
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6 max-w-md">
       <div className="grid gap-2">

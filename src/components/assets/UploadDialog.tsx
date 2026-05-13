@@ -165,7 +165,7 @@ export function UploadDialog({ open, onClose, onUpload, campaigns, currentAccoun
           <div className="flex justify-end gap-3 mt-2">
             <button
               type="button"
-              className="py-2 px-4 border border-border rounded-md bg-transparent text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+              className="py-2 px-4 border-none rounded-md bg-transparent text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               onClick={handleClose}
             >
               Cancel

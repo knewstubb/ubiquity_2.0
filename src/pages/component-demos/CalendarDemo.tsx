@@ -4,14 +4,50 @@ import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { CalendarBlank } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
+import type { DateRange } from 'react-day-picker'
 
-export default function CalendarDemo() {
+interface CalendarDemoProps {
+  mode?: 'single' | 'range'
+  'caption-layout'?: 'label' | 'dropdown'
+  months?: number
+}
+
+export default function CalendarDemo({ mode, 'caption-layout': captionLayout, months }: CalendarDemoProps) {
   const [date, setDate] = useState<Date | undefined>(new Date())
+  const [range, setRange] = useState<DateRange | undefined>(undefined)
   const [pickerDate, setPickerDate] = useState<Date | undefined>(undefined)
-  const [range, setRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
-    from: undefined,
-    to: undefined,
-  })
+
+  const hasControls = mode !== undefined
+
+  if (hasControls) {
+    if (mode === 'range') {
+      return (
+        <Calendar
+          mode="range"
+          selected={range}
+          onSelect={setRange}
+          numberOfMonths={months ?? 1}
+          captionLayout={captionLayout ?? 'label'}
+          startMonth={new Date(2020, 0)}
+          endMonth={new Date(2030, 11)}
+          className="rounded-lg border border-border shadow-sm w-fit"
+        />
+      )
+    }
+
+    return (
+      <Calendar
+        mode="single"
+        selected={date}
+        onSelect={setDate}
+        numberOfMonths={months ?? 1}
+        captionLayout={captionLayout ?? 'label'}
+        startMonth={new Date(2020, 0)}
+        endMonth={new Date(2030, 11)}
+        className="rounded-lg border border-border shadow-sm w-fit"
+      />
+    )
+  }
 
   return (
     <div className="flex flex-col gap-10">
@@ -77,13 +113,13 @@ export default function CalendarDemo() {
         <h3 className="text-base font-semibold text-foreground">Date Range (Two Months)</h3>
         <Calendar
           mode="range"
-          selected={range.from && range.to ? { from: range.from, to: range.to } : undefined}
-          onSelect={(r) => setRange({ from: r?.from, to: r?.to })}
+          selected={range}
+          onSelect={setRange}
           numberOfMonths={2}
           className="rounded-lg border border-border shadow-sm w-fit"
         />
         <p className="text-sm text-muted-foreground">
-          Range: {range.from?.toLocaleDateString() ?? '—'} to {range.to?.toLocaleDateString() ?? '—'}
+          Range: {range?.from?.toLocaleDateString() ?? '—'} to {range?.to?.toLocaleDateString() ?? '—'}
         </p>
       </section>
     </div>

@@ -1328,3 +1328,139 @@ describe('Feature: unified-controls-panel, Property 4: Visibility evaluation mat
     )
   })
 })
+
+// ============================================================================
+// Feature: component-controllers-expansion, Property 5: Conditional Visibility
+// ============================================================================
+
+import { componentRegistry } from '../data/componentRegistry'
+
+describe('Feature: component-controllers-expansion, Property 5: Conditional Visibility', () => {
+  /**
+   * For any PropDefinition with a `visibleWhen` condition, the `isVisible` function
+   * SHALL return false when the referenced control's value is NOT in the acceptable
+   * values list, and SHALL return true when it IS in the list.
+   *
+   * This test specifically validates the Slider's `step-count` control which has:
+   * visibleWhen: { controlName: 'show-steps', values: [true] }
+   *
+   * **Validates: Requirements 6.5, 14.7**
+   */
+
+  // Get the Slider entry from the registry
+  const sliderEntry = componentRegistry.find((e) => e.name === 'Slider')
+  const sliderPropControls = sliderEntry?.propControls ?? []
+  const stepCountControl = sliderPropControls.find((c) => c.name === 'step-count')
+  const showStepsControl = sliderPropControls.find((c) => c.name === 'show-steps')
+
+  it('Slider step-count control exists with visibleWhen referencing show-steps', () => {
+    expect(stepCountControl).toBeDefined()
+    expect(stepCountControl!.visibleWhen).toBeDefined()
+    expect(stepCountControl!.visibleWhen!.controlName).toBe('show-steps')
+    expect(stepCountControl!.visibleWhen!.values).toContain(true)
+    expect(showStepsControl).toBeDefined()
+    expect(showStepsControl!.controlType).toBe('toggle')
+  })
+
+  it('step-count isVisible returns true when show-steps is true (for any random boolean)', () => {
+    fc.assert(
+      fc.property(
+        fc.boolean(),
+        (showStepsValue) => {
+          // Build a values record with the generated boolean for show-steps
+          const values: Record<string, ControlValue> = {}
+          for (const ctrl of sliderPropControls) {
+            values[ctrl.name] = ctrl.defaultValue
+          }
+          values['show-steps'] = showStepsValue
+
+          const visible = isVisible(stepCountControl!, values, sliderPropControls)
+
+          if (showStepsValue === true) {
+            // When show-steps is true, step-count should be visible
+            expect(visible).toBe(true)
+          } else {
+            // When show-steps is false, step-count should be hidden
+            expect(visible).toBe(false)
+          }
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+
+  it('step-count isVisible correctly reflects show-steps value across all Slider control value combinations', () => {
+    fc.assert(
+      fc.property(
+        // Generate random boolean for show-steps
+        fc.boolean(),
+        // Generate random boolean for range-mode
+        fc.boolean(),
+        // Generate random boolean for disabled
+        fc.boolean(),
+        // Generate random boolean for show-tooltip
+        fc.boolean(),
+        // Generate random value-position
+        fc.constantFrom('right', 'above', 'below', 'hidden'),
+        // Generate random min value
+        fc.integer({ min: 0, max: 100 }),
+        // Generate random max value
+        fc.integer({ min: 0, max: 1000 }),
+        (showSteps, rangeMode, disabled, showTooltip, valuePosition, min, max) => {
+          // Build a full values record with random values for all Slider controls
+          const values: Record<string, ControlValue> = {
+            'range-mode': rangeMode,
+            'disabled': disabled,
+            'show-tooltip': showTooltip,
+            'value-position': valuePosition,
+            'show-steps': showSteps,
+            'step-count': 5,
+            'min': min,
+            'max': max,
+          }
+
+          const visible = isVisible(stepCountControl!, values, sliderPropControls)
+
+          // The visibility of step-count depends ONLY on show-steps value
+          // regardless of all other control values
+          expect(visible).toBe(showSteps)
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+
+  it('all Slider controls without visibleWhen are always visible regardless of other values', () => {
+    fc.assert(
+      fc.property(
+        fc.boolean(),
+        fc.boolean(),
+        fc.boolean(),
+        fc.boolean(),
+        fc.constantFrom('right', 'above', 'below', 'hidden'),
+        fc.integer({ min: 0, max: 100 }),
+        fc.integer({ min: 0, max: 1000 }),
+        (showSteps, rangeMode, disabled, showTooltip, valuePosition, min, max) => {
+          const values: Record<string, ControlValue> = {
+            'range-mode': rangeMode,
+            'disabled': disabled,
+            'show-tooltip': showTooltip,
+            'value-position': valuePosition,
+            'show-steps': showSteps,
+            'step-count': 5,
+            'min': min,
+            'max': max,
+          }
+
+          // All controls without visibleWhen should always be visible
+          for (const ctrl of sliderPropControls) {
+            if (!ctrl.visibleWhen) {
+              expect(isVisible(ctrl, values, sliderPropControls)).toBe(true)
+            }
+          }
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+})

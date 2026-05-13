@@ -127,7 +127,7 @@ export function AssetDetailPanel({ asset, onClose, onDelete, scopeLabel }: Asset
               <div className="flex gap-3">
                 <button
                   type="button"
-                  className="flex-1 py-2 px-4 border border-border rounded-md bg-transparent text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-background"
+                  className="flex-1 py-2 px-4 border-none rounded-md bg-transparent text-sm font-medium text-foreground cursor-pointer transition-colors duration-150 hover:bg-accent hover:text-accent-foreground"
                   onClick={() => setConfirming(false)}
                 >
                   Cancel

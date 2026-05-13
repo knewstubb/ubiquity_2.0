@@ -7,7 +7,7 @@ import { componentRegistry, type ComponentEntry } from './componentRegistry'
  * Validates: Requirements 5.2
  */
 describe('Feature: shadcn-tailwind-integration, Property 2: Component registry entries have valid categories', () => {
-  const validCategories: ComponentEntry['category'][] = ['tokens', 'inputs', 'display', 'feedback', 'navigation', 'composed']
+  const validCategories: ComponentEntry['category'][] = ['tokens', 'inputs', 'display', 'feedback', 'navigation', 'compositions']
 
   it('every entry has a category from the valid set { custom, primitives, composed }', () => {
     for (const entry of componentRegistry) {
@@ -46,7 +46,7 @@ describe('Feature: shadcn-tailwind-integration, Property 2: Component registry e
   })
 
   it('generated ComponentEntry-like objects with valid categories pass the category constraint', () => {
-    const categoryArb = fc.constantFrom<ComponentEntry['category']>('tokens', 'inputs', 'display', 'feedback', 'navigation', 'composed')
+    const categoryArb = fc.constantFrom<ComponentEntry['category']>('tokens', 'inputs', 'display', 'feedback', 'navigation', 'compositions')
     const nonEmptyStringArb = fc.string({ minLength: 1, maxLength: 50 }).filter((s) => s.trim().length > 0)
 
     const componentEntryArb = fc.record({

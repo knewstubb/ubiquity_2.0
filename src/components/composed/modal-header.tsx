@@ -17,7 +17,7 @@ export function ModalHeader({ title, onClose, description, className }: ModalHea
       )}
     >
       <div className="flex items-start justify-between gap-6">
-        <h3 className="text-lg font-semibold text-foreground leading-5">
+        <h3 className="text-xl font-semibold text-foreground leading-6">
           {title}
         </h3>
         {onClose && (

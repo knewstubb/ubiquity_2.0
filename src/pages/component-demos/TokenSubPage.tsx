@@ -4,6 +4,7 @@ import { ColourSection } from '../../components/tokens/ColourSection'
 import { TypographySection } from '../../components/tokens/TypographySection'
 import { SpacingSection } from '../../components/tokens/SpacingSection'
 import { RadiusSection } from '../../components/tokens/RadiusSection'
+import { SizingSection } from '../../components/tokens/SizingSection'
 import { IconSection } from '../../components/tokens/IconSection'
 import { ActionBar } from '../../components/tokens/ActionBar'
 import ShadowsDemo from './ShadowsDemo'
@@ -13,7 +14,9 @@ const SLUG_TITLES: Record<string, string> = {
   colours: 'Colours',
   typography: 'Typography',
   shadows: 'Shadows',
-  'spacing-radius': 'Spacing & Radius',
+  spacing: 'Spacing',
+  radius: 'Radius',
+  sizing: 'Sizing & Borders',
   icons: 'Icons',
 }
 
@@ -50,11 +53,16 @@ export default function TokenSubPage() {
           <ShadowsDemo />
         )}
 
-        {tokenSlug === 'spacing-radius' && (
-          <>
-            <SpacingSection config={config} onUpdateSpacing={updateSpacing} />
-            <RadiusSection config={config} onUpdateRadius={updateRadius} />
-          </>
+        {tokenSlug === 'spacing' && (
+          <SpacingSection config={config} onUpdateSpacing={updateSpacing} />
+        )}
+
+        {tokenSlug === 'radius' && (
+          <RadiusSection config={config} onUpdateRadius={updateRadius} />
+        )}
+
+        {tokenSlug === 'sizing' && (
+          <SizingSection />
         )}
 
         {tokenSlug === 'icons' && (

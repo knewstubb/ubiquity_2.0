@@ -125,7 +125,7 @@ describe('Feature: shadcn-tailwind-integration, Property 3: Deep-link routing re
   it('deep-link URL resolution: slug lookup finds the correct component', () => {
     // For each entry, simulate URL resolution by extracting slug from URL path
     // and looking up the component in the registry
-    const categoryArb = fc.constantFrom<'tokens' | 'inputs' | 'display' | 'feedback' | 'navigation' | 'composed'>('tokens', 'inputs', 'display', 'feedback', 'navigation', 'composed')
+    const categoryArb = fc.constantFrom<'tokens' | 'inputs' | 'display' | 'feedback' | 'navigation' | 'compositions'>('tokens', 'inputs', 'display', 'feedback', 'navigation', 'compositions')
     const registryIndexArb = fc.integer({ min: 0, max: componentRegistry.length - 1 })
 
     fc.assert(

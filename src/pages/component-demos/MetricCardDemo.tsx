@@ -1,6 +1,23 @@
 import { MetricCard } from '@/components/composed/metric-card'
 
-export default function MetricCardDemo() {
+interface MetricCardDemoProps {
+  showTrend?: boolean
+  trendDirection?: 'up' | 'down'
+}
+
+export default function MetricCardDemo({ showTrend, trendDirection }: MetricCardDemoProps) {
+  const hasControls = showTrend !== undefined
+
+  if (hasControls) {
+    return (
+      <MetricCard
+        label="Total Contacts"
+        value="12,345"
+        trend={showTrend ? { value: '+12%', direction: trendDirection ?? 'up' } : undefined}
+      />
+    )
+  }
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <MetricCard

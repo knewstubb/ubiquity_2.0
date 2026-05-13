@@ -31,7 +31,7 @@ const VALID_CATEGORIES: ComponentCategory[] = [
   'display',
   'feedback',
   'navigation',
-  'composed',
+  'compositions',
 ]
 
 beforeAll(() => {

@@ -44,8 +44,8 @@ export function SelectControl({ value, onChange, label, options, inline }: Selec
   }
 
   return (
-    <div className="flex flex-col gap-1">
-      <Label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+    <div className="flex flex-col gap-0.5">
+      <Label className="text-sm font-medium text-muted-foreground">
         {label}
       </Label>
       <Select value={value} onValueChange={onChange}>

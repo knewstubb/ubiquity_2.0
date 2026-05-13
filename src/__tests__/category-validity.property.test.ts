@@ -6,13 +6,13 @@ import { componentRegistry } from '../data/componentRegistry'
  * Feature: component-library-reorganisation, Property 1: Category validity
  *
  * For any component entry in the registry, its `category` field must be one of
- * the six valid values: 'tokens' | 'inputs' | 'display' | 'feedback' | 'navigation' | 'composed'.
+ * the six valid values: 'tokens' | 'inputs' | 'display' | 'feedback' | 'navigation' | 'compositions'.
  * No other values are permitted.
  *
  * **Validates: Requirements 2.1, 2.10, 4.4**
  */
 describe('Feature: component-library-reorganisation, Property 1: Category validity', () => {
-  const validCategories = ['tokens', 'inputs', 'display', 'feedback', 'navigation', 'composed'] as const
+  const validCategories = ['tokens', 'inputs', 'display', 'feedback', 'navigation', 'compositions'] as const
 
   it('every entry has a category from the valid set', () => {
     const arbEntry = fc.constantFrom(...componentRegistry)

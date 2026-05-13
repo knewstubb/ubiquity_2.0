@@ -9,8 +9,8 @@ type ValidationState = 'none' | 'error' | 'success'
 
 const SIZE_CLASSES = {
   sm: 'h-8',
-  default: 'h-10',
-  lg: 'h-12',
+  default: 'h-9',
+  lg: 'h-10',
 }
 
 interface InputDemoProps {
@@ -111,10 +111,7 @@ export default function InputDemo(props: InputDemoProps) {
             readOnly={readOnly}
             className={cn(
               'flex-1 min-w-0 bg-transparent border-none outline-none placeholder:text-muted-foreground',
-              'text-foreground px-3 py-0',
-              size === 'sm' && 'text-xs',
-              size === 'lg' && 'text-base',
-              size === 'default' && 'text-sm',
+              'text-foreground px-3 py-0 text-sm',
               disabled && 'cursor-not-allowed',
             )}
           />

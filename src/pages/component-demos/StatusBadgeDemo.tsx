@@ -1,6 +1,20 @@
 import { StatusBadge } from '@/components/composed/status-badge'
+import type { StatusBadgeVariant } from '@/components/composed/status-badge'
 
-export default function StatusBadgeDemo() {
+interface StatusBadgeDemoProps {
+  variant?: StatusBadgeVariant
+  text?: string
+}
+
+export default function StatusBadgeDemo({ variant, text }: StatusBadgeDemoProps) {
+  const hasControls = variant !== undefined
+
+  if (hasControls) {
+    return (
+      <StatusBadge variant={variant}>{text || 'Status'}</StatusBadge>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap gap-3">

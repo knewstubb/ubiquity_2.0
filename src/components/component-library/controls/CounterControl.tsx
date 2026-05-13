@@ -18,7 +18,7 @@ export function CounterControl({ value, onChange, label, min, max, step, variant
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <Label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+      <Label className="text-sm font-medium text-muted-foreground">
         {label}
       </Label>
       <div className="flex items-center gap-1">

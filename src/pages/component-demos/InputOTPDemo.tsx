@@ -1,6 +1,37 @@
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
 
-export default function InputOTPDemo() {
+interface InputOTPDemoProps {
+  length?: number
+  'show-separator'?: boolean
+  disabled?: boolean
+}
+
+export default function InputOTPDemo({ length, 'show-separator': showSeparator, disabled }: InputOTPDemoProps) {
+  const hasControls = length !== undefined
+
+  if (hasControls) {
+    const totalSlots = length
+    const midpoint = Math.ceil(totalSlots / 2)
+    const firstGroup = Array.from({ length: midpoint }, (_, i) => i)
+    const secondGroup = Array.from({ length: totalSlots - midpoint }, (_, i) => midpoint + i)
+
+    return (
+      <InputOTP maxLength={totalSlots} disabled={disabled}>
+        <InputOTPGroup>
+          {firstGroup.map((i) => (
+            <InputOTPSlot key={i} index={i} />
+          ))}
+        </InputOTPGroup>
+        {showSeparator && <InputOTPSeparator />}
+        <InputOTPGroup>
+          {secondGroup.map((i) => (
+            <InputOTPSlot key={i} index={i} />
+          ))}
+        </InputOTPGroup>
+      </InputOTP>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">

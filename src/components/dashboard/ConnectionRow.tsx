@@ -49,20 +49,20 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
               <div className="flex items-center gap-2">
                 <ProtocolIcon protocol={connection.protocol} size={20} error={isError} />
                 <span className="text-[14px] font-medium text-muted-foreground">{connection.protocol === 'S3' ? 'AWS S3' : connection.protocol}:</span>
-                <span className={cn('text-[16px] font-semibold text-foreground', isError && 'text-destructive')}>{connection.name}</span>
+                <span className={cn('text-base font-semibold text-foreground', isError && 'text-destructive')}>{connection.name}</span>
               </div>
             </div>
 
-            {/* Centre: Status text */}
+            {/* Status text — right aligned */}
             {isError ? (
-              <span className="absolute left-1/2 -translate-x-1/2 text-sm text-destructive">
-                Connection Error. <em>Automations Cannot Run</em>
+              <span className="ml-auto mr-10 text-base text-destructive">
+                Connection Error!
               </span>
             ) : (
-              <span className="absolute left-1/2 -translate-x-1/2 text-sm text-muted-foreground">
+              <span className="ml-auto mr-10 text-base text-muted-foreground">
                 {connectorCount === 0
-                  ? 'No automations yet. Create one to start importing data.'
-                  : `${activeCount} of ${connectorCount} Automations Active`}
+                  ? 'No Automations'
+                  : <><span className="font-semibold">{activeCount}</span> of <span className="font-semibold">{connectorCount}</span> Automations Active</>}
               </span>
             )}
 

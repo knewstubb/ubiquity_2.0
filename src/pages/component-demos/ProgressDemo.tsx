@@ -1,23 +1,35 @@
-import { useState, useEffect } from 'react'
 import { Progress } from '@/components/ui/progress'
-import { Button } from '@/components/ui/button'
 
-export default function ProgressDemo() {
-  const [progress, setProgress] = useState(25)
+interface ProgressDemoProps {
+  value?: number
+  showLabel?: boolean
+}
 
-  useEffect(() => {
-    const timer = setTimeout(() => setProgress(66), 500)
-    return () => clearTimeout(timer)
-  }, [])
+export default function ProgressDemo({ value, showLabel }: ProgressDemoProps) {
+  const hasControls = value !== undefined
+
+  if (hasControls) {
+    return (
+      <div className="max-w-md space-y-2">
+        {showLabel && (
+          <div className="flex justify-between text-sm">
+            <span>Progress</span>
+            <span className="text-muted-foreground">{value}%</span>
+          </div>
+        )}
+        <Progress value={value} />
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-6 max-w-md">
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span>Import progress</span>
-          <span className="text-muted-foreground">{progress}%</span>
+          <span className="text-muted-foreground">66%</span>
         </div>
-        <Progress value={progress} />
+        <Progress value={66} />
       </div>
 
       <div className="space-y-2">
@@ -39,10 +51,6 @@ export default function ProgressDemo() {
         <span className="text-sm">100% — Complete</span>
         <Progress value={100} />
       </div>
-
-      <Button variant="outline" size="sm" onClick={() => setProgress(Math.min(100, progress + 10))}>
-        Increase Progress
-      </Button>
     </div>
   )
 }

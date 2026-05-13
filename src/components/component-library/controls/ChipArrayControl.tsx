@@ -36,9 +36,9 @@ export function ChipArrayControl({ value, onChange, label, maxItems }: ChipArray
   }
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-0.5">
       <div className="flex items-center justify-between">
-        <Label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+        <Label className="text-sm font-medium text-muted-foreground">
           {label}
         </Label>
         <span className="text-xs text-muted-foreground">

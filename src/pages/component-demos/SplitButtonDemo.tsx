@@ -1,7 +1,41 @@
 import { FloppyDisk, FileArrowDown, SignOut } from '@phosphor-icons/react'
 import { SplitButton } from '@/components/composed/split-button'
 
-export default function SplitButtonDemo() {
+interface SplitButtonDemoProps {
+  label?: string
+  variant?: string
+  size?: string
+  'option-count'?: number
+  disabled?: boolean
+}
+
+export default function SplitButtonDemo(props: SplitButtonDemoProps) {
+  const label = props.label
+  const variant = props.variant as 'default' | 'outline' | undefined
+  const size = props.size as 'default' | 'sm' | undefined
+  const optionCount = props['option-count']
+  const disabled = props.disabled
+
+  const hasControls = label !== undefined
+
+  if (hasControls) {
+    const options = Array.from({ length: optionCount ?? 2 }, (_, i) => ({
+      label: `Option ${i + 1}`,
+      onClick: () => console.log(`Option ${i + 1} clicked`),
+    }))
+
+    return (
+      <SplitButton
+        label={label}
+        variant={variant}
+        size={size}
+        disabled={disabled}
+        onClick={() => console.log(`${label} clicked`)}
+        options={options}
+      />
+    )
+  }
+
   return (
     <div className="flex flex-col gap-10">
       {/* Default variant */}

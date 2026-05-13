@@ -6,8 +6,9 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select'
+import type { PropOption } from '@/data/componentRegistry'
 
-// Token colours from the UDS design system
+// Default token colours from the UDS design system
 const TOKEN_COLOURS = [
   { name: 'Primary (Teal)', value: '#14B88A' },
   { name: 'Warning (Amber)', value: '#F59E0B' },
@@ -26,30 +27,37 @@ interface ColourControlProps {
   value: string
   onChange: (value: string) => void
   label: string
+  options?: PropOption[]
 }
 
-export function ColourControl({ value, onChange, label }: ColourControlProps) {
+export function ColourControl({ value, onChange, label, options }: ColourControlProps) {
+  const colours = options
+    ? options.map(o => ({ name: o.label, value: o.value }))
+    : TOKEN_COLOURS
+
+  const currentColour = colours.find(c => c.value === value)
+
   return (
-    <div className="flex flex-col gap-1">
-      <Label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+    <div className="flex flex-col gap-0.5">
+      <Label className="text-sm font-medium text-muted-foreground">
         {label}
       </Label>
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className="h-8 text-sm">
           <div className="flex items-center gap-2">
             <span
-              className="h-3 w-3 rounded-sm border border-border shrink-0"
+              className="h-3.5 w-3.5 rounded-full border border-border shrink-0"
               style={{ backgroundColor: value }}
             />
-            <SelectValue placeholder="Select colour" />
+            <span className="truncate">{currentColour?.name ?? value}</span>
           </div>
         </SelectTrigger>
         <SelectContent>
-          {TOKEN_COLOURS.map((colour) => (
+          {colours.map((colour) => (
             <SelectItem key={colour.value} value={colour.value}>
               <div className="flex items-center gap-2">
                 <span
-                  className="h-3 w-3 rounded-sm border border-border shrink-0"
+                  className="h-3.5 w-3.5 rounded-full border border-border shrink-0"
                   style={{ backgroundColor: colour.value }}
                 />
                 <span>{colour.name}</span>

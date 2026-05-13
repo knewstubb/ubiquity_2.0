@@ -143,6 +143,7 @@ export function ControlsPanel({
             label={prop.label}
             value={value as string}
             onChange={(v) => onChange(prop.name, v)}
+            options={prop.options}
           />
         )
       case 'number':
@@ -252,11 +253,11 @@ export function ControlsPanel({
           <div key={group.section ?? `ungrouped-${groupIndex}`} className={cn(groupIndex > 0 && showDividers && 'pt-3 mt-3 border-t border-border')}>
             {/* Show section header: named sections always, "General" only when other named sections exist */}
             {(group.section !== null || (group.section === null && hasNamedSections)) && (
-              <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+              <h4 className="text-sm font-semibold text-muted-foreground mb-1.5">
                 {group.section ?? 'General'}
               </h4>
             )}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {group.controls
                 .filter((prop) => isVisible(prop, values, propControls))
                 .map((prop) => renderControl(prop))}
@@ -276,7 +277,7 @@ export function ControlsPanel({
       {usedIn && usedIn.length > 0 && (
         <div className="mt-3 pt-3 border-t border-border">
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Used in</span>
+            <span className="text-sm font-medium text-muted-foreground">Used in</span>
             {usedIn.map((link) => (
               <Link
                 key={link.route}

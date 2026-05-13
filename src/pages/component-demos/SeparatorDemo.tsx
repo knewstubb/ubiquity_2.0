@@ -1,6 +1,33 @@
 import { Separator } from '@/components/ui/separator'
 
-export default function SeparatorDemo() {
+interface SeparatorDemoProps {
+  orientation?: 'horizontal' | 'vertical'
+  decorative?: boolean
+}
+
+export default function SeparatorDemo({ orientation, decorative }: SeparatorDemoProps) {
+  const hasControls = orientation !== undefined
+
+  if (hasControls) {
+    return (
+      <div className={orientation === 'vertical' ? 'flex h-20 items-center' : 'w-full max-w-sm'}>
+        {orientation === 'vertical' ? (
+          <div className="flex h-full items-center gap-4">
+            <span className="text-sm">Left</span>
+            <Separator orientation="vertical" decorative={decorative} />
+            <span className="text-sm">Right</span>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-sm">Content above</p>
+            <Separator orientation="horizontal" decorative={decorative} />
+            <p className="text-sm">Content below</p>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div>

@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MagnifyingGlass, CaretDown } from '@phosphor-icons/react';
+import { MagnifyingGlass } from '@phosphor-icons/react';
 import { AccountSwitcher } from './AccountSwitcher';
 import { RootAccountSelector } from './RootAccountSelector';
 import { RoleSimulator } from './RoleSimulator';
@@ -9,6 +9,15 @@ import { ResetAccountButton } from '../shared/ResetAccountButton';
 import { ChangePasswordModal } from './ChangePasswordModal';
 import { FeatureFlagsModal } from './FeatureFlagsModal';
 import { Switch } from '../ui/switch';
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
+  navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu';
 import { useFeatureFlags } from '../../contexts/FeatureFlagContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlatformAdmin } from '../../contexts/PlatformAdminContext';
@@ -91,8 +100,8 @@ function isRouteInSection(pathname: string, item: NavItem): boolean {
 export function AppNavBar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const navRef = useRef<HTMLDivElement>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const { isRouteEnabled } = useFeatureFlags();
   const { user, signOut } = useAuth();
   const { isPlatformAdmin } = usePlatformAdmin();
@@ -110,9 +119,7 @@ export function AppNavBar() {
 
   // Filter nav items based on feature flags, and conditionally add admin-only items
   const filteredNavItems = useMemo(() => {
-    // Build nav items with admin-only additions
     const items = NAV_ITEMS.map((item) => {
-      // For the Admin dropdown, conditionally add "User Management" for platform admins
       if (item.label === 'Admin' && isPlatformAdmin && item.subItems) {
         const adminSubItems = [
           ...item.subItems,
@@ -126,16 +133,15 @@ export function AppNavBar() {
     return items.map((item) => {
       if (item.subItems) {
         const enabledSubItems = item.subItems.filter((sub) => isRouteEnabled(sub.path));
-        // If all sub-items are disabled, hide the entire dropdown
         if (enabledSubItems.length === 0) return null;
         return { ...item, subItems: enabledSubItems };
       }
-      // Direct nav item (like Home) — check if its path is disabled
       if (item.path && !isRouteEnabled(item.path)) return null;
       return item;
     }).filter((item): item is NavItem => item !== null);
   }, [isRouteEnabled, isPlatformAdmin]);
 
+  // Close avatar dropdown on outside click
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
@@ -146,6 +152,7 @@ export function AppNavBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Close avatar dropdown on Escape
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') setOpenDropdown(null);
@@ -154,29 +161,13 @@ export function AppNavBar() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // NavigationMenu controlled value — reset on route change
+  const [navValue, setNavValue] = useState('');
+
   useEffect(() => {
+    setNavValue('');
     setOpenDropdown(null);
   }, [location.pathname]);
-
-  const handleNavClick = useCallback(
-    (item: NavItem) => {
-      if (item.subItems) {
-        setOpenDropdown((prev) => (prev === item.label ? null : item.label));
-      } else if (item.path) {
-        navigate(item.path);
-        setOpenDropdown(null);
-      }
-    },
-    [navigate]
-  );
-
-  const handleSubItemClick = useCallback(
-    (path: string) => {
-      navigate(path);
-      setOpenDropdown(null);
-    },
-    [navigate]
-  );
 
   return (
     <nav className="relative top-0 z-50 bg-background border-b border-border h-14" aria-label="Main navigation" ref={navRef}>
@@ -198,63 +189,70 @@ export function AppNavBar() {
 
         <div className="w-px h-5 bg-border shrink-0 mx-3" aria-hidden="true" />
 
-        {/* Primary Nav Items */}
-        <div className="flex items-center gap-4 h-full">
-          {filteredNavItems.map((item) => {
-            const isActive = isRouteInSection(location.pathname, item);
-            const isOpen = openDropdown === item.label;
+        {/* Primary Nav Items — shadcn NavigationMenu */}
+        <NavigationMenu className="h-full" value={navValue} onValueChange={setNavValue}>
+          <NavigationMenuList className="h-full space-x-0 gap-1">
+            {filteredNavItems.map((item) => {
+              const isActive = isRouteInSection(location.pathname, item);
 
-            return (
-              <div key={item.label} className="relative h-full flex items-center">
-                <button
-                  type="button"
-                  className={cn(
-                    "relative px-3 py-2 flex items-center gap-1 font-sans text-sm font-semibold text-foreground",
-                    "bg-transparent border-none rounded-md cursor-pointer transition-colors duration-150 whitespace-nowrap leading-none",
-                    "hover:bg-secondary",
-                    isActive && "text-primary after:content-[''] after:absolute after:bottom-[-12px] after:left-0 after:right-0 after:h-0.5 after:bg-primary"
-                  )}
-                  onClick={() => handleNavClick(item)}
-                  aria-haspopup={item.subItems ? 'true' : undefined}
-                  aria-expanded={item.subItems ? isOpen : undefined}
-                >
-                  {item.label}
-                  {item.subItems && (
-                    <span className={cn("flex items-center text-inherit transition-transform duration-150", isOpen && "rotate-180")}>
-                      <CaretDown size={12} weight="bold" />
-                    </span>
-                  )}
-                </button>
+              // Items without sub-items navigate directly
+              if (!item.subItems) {
+                return (
+                  <NavigationMenuItem key={item.label}>
+                    <NavigationMenuLink
+                      active={isActive}
+                      className={cn(navigationMenuTriggerStyle(), "relative cursor-pointer")}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (item.path) navigate(item.path);
+                      }}
+                    >
+                      {item.label}
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                );
+              }
 
-                {item.subItems && isOpen && (
-                  <div className="absolute top-full left-0 min-w-[180px] bg-background border border-border rounded-lg shadow-[0px_4px_12px_rgba(0,0,0,0.08)] p-1 z-[100]" role="menu">
-                    {item.subItems.map((sub) => {
-                      const isSubActive =
-                        location.pathname === sub.path ||
-                        location.pathname.startsWith(sub.path + '/');
-                      return (
-                        <button
-                          key={sub.path}
-                          type="button"
-                          role="menuitem"
-                          className={cn(
-                            "block w-full px-3 py-2 font-sans text-[13px] font-medium text-foreground",
-                            "bg-none border-none rounded cursor-pointer text-left transition-colors duration-150 whitespace-nowrap",
-                            "hover:bg-secondary",
-                            isSubActive && "text-primary"
-                          )}
-                          onClick={() => handleSubItemClick(sub.path)}
-                        >
-                          {sub.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+              // Items with sub-items use trigger + content
+              return (
+                <NavigationMenuItem key={item.label} value={item.label}>
+                  <NavigationMenuTrigger active={isActive}>
+                    {item.label}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid gap-0.5 p-1.5 min-w-[180px]">
+                      {item.subItems.map((sub) => {
+                        const isSubActive =
+                          location.pathname === sub.path ||
+                          location.pathname.startsWith(sub.path + '/');
+                        return (
+                          <li key={sub.path}>
+                            <NavigationMenuLink asChild>
+                              <a
+                                className={cn(
+                                  "block select-none rounded-md px-2.5 py-2 no-underline outline-none transition-colors hover:bg-secondary hover:text-primary",
+                                  "text-[13px] font-medium",
+                                  isSubActive ? "text-primary" : "text-foreground"
+                                )}
+                                href={sub.path}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  navigate(sub.path);
+                                }}
+                              >
+                                {sub.label}
+                              </a>
+                            </NavigationMenuLink>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              );
+            })}
+          </NavigationMenuList>
+        </NavigationMenu>
 
         <div className="flex-1" />
 
@@ -297,9 +295,7 @@ export function AppNavBar() {
                 <button type="button" role="menuitem" className="block w-full px-3 py-2 font-sans text-[13px] font-medium text-foreground bg-none border-none rounded cursor-pointer text-left transition-colors duration-150 whitespace-nowrap hover:bg-secondary" onClick={() => setOpenDropdown(null)}>Profile</button>
                 <button type="button" role="menuitem" className="block w-full px-3 py-2 font-sans text-[13px] font-medium text-foreground bg-none border-none rounded cursor-pointer text-left transition-colors duration-150 whitespace-nowrap hover:bg-secondary" onClick={() => { setOpenDropdown(null); setShowPasswordModal(true); }}>Password</button>
                 <button type="button" role="menuitem" className="block w-full px-3 py-2 font-sans text-[13px] font-medium text-foreground bg-none border-none rounded cursor-pointer text-left transition-colors duration-150 whitespace-nowrap hover:bg-secondary" onClick={() => { navigate('/admin/pricing'); setOpenDropdown(null); }}>Prices</button>
-                <button type="button" role="menuitem" className="block w-full px-3 py-2 font-sans text-[13px] font-medium text-foreground bg-none border-none rounded cursor-pointer text-left transition-colors duration-150 whitespace-nowrap hover:bg-secondary" onClick={() => { navigate('/admin/header-playground'); setOpenDropdown(null); }}>Header Playground</button>
                 <button type="button" role="menuitem" className="block w-full px-3 py-2 font-sans text-[13px] font-medium text-foreground bg-none border-none rounded cursor-pointer text-left transition-colors duration-150 whitespace-nowrap hover:bg-secondary" onClick={() => { navigate('/admin/components'); setOpenDropdown(null); }}>Component Library</button>
-                <button type="button" role="menuitem" className="block w-full px-3 py-2 font-sans text-[13px] font-medium text-foreground bg-none border-none rounded cursor-pointer text-left transition-colors duration-150 whitespace-nowrap hover:bg-secondary" onClick={() => { navigate('/admin/page-components'); setOpenDropdown(null); }}>Page Components</button>
                 <button type="button" role="menuitem" className="block w-full px-3 py-2 font-sans text-[13px] font-medium text-foreground bg-none border-none rounded cursor-pointer text-left transition-colors duration-150 whitespace-nowrap hover:bg-secondary" onClick={() => setOpenDropdown(null)}>Help</button>
                 <div className="h-px bg-border my-1" />
                 <button type="button" role="menuitem" className="block w-full px-3 py-2 font-sans text-[13px] font-medium text-foreground bg-none border-none rounded cursor-pointer text-left transition-colors duration-150 whitespace-nowrap hover:bg-secondary" onClick={() => { setOpenDropdown(null); setShowFlagsModal(true); }}>Feature Flags</button>

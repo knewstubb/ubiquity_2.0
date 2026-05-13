@@ -44,7 +44,7 @@ export function ModalFooter({
       {secondaryAction && (
         <Button
           type="button"
-          variant={secondaryAction.variant ?? 'outline'}
+          variant={secondaryAction.variant ?? 'ghost'}
           onClick={secondaryAction.onClick}
           disabled={secondaryAction.disabled}
         >

@@ -22,13 +22,13 @@ export function CardSelector({
     <button
       type="button"
       className={cn(
-        'relative flex flex-col items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-3 shadow-sm transition-all',
-        'hover:border-primary hover:bg-success-subtle hover:text-primary',
+        'relative flex flex-col items-center justify-center gap-2 rounded-md border px-4 py-3 transition-all',
+        'hover:border-primary hover:bg-success-subtle hover:text-primary hover:shadow-md',
         'active:translate-y-px',
         'disabled:opacity-50 disabled:pointer-events-none',
         selected
-          ? 'border-primary text-primary bg-white'
-          : 'border-border text-muted-foreground bg-transparent',
+          ? 'border-primary text-primary bg-white shadow-md'
+          : 'border-border text-muted-foreground bg-secondary',
         className
       )}
       onClick={onClick}
@@ -40,8 +40,8 @@ export function CardSelector({
           <Check size={12} weight="bold" className="text-white" />
         </span>
       )}
-      <span className="flex items-center justify-center">{icon}</span>
-      <span className="text-xs font-semibold text-center leading-tight">
+      <span className="flex items-center justify-center [&_svg]:size-7">{icon}</span>
+      <span className="text-base font-semibold text-center leading-tight">
         {label}
       </span>
     </button>

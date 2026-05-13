@@ -1,8 +1,26 @@
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
+import { cn } from '@/lib/utils'
 
-export default function LabelDemo() {
+interface LabelDemoProps {
+  text?: string
+  required?: boolean
+  disabled?: boolean
+}
+
+export default function LabelDemo({ text, required, disabled }: LabelDemoProps) {
+  const hasControls = text !== undefined
+
+  if (hasControls) {
+    return (
+      <Label className={cn(disabled && 'opacity-50 cursor-not-allowed')}>
+        {text}
+        {required && <span className="text-destructive ml-0.5">*</span>}
+      </Label>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6 max-w-sm">
       <div className="grid gap-2">

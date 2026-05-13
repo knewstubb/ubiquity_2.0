@@ -37,7 +37,7 @@ const CATEGORIES: CategoryDef[] = [
   { id: 'display', label: 'Display' },
   { id: 'feedback', label: 'Feedback' },
   { id: 'navigation', label: 'Navigation' },
-  { id: 'composed', label: 'Composed' },
+  { id: 'compositions', label: 'Compositions' },
 ]
 
 function ComponentBreadcrumbs() {
@@ -105,14 +105,14 @@ function SidebarNav() {
   return (
     <SidebarContent>
       {CATEGORIES.map((cat) => {
-        const items = componentRegistry.filter((c) => c.category === cat.id)
+        const items = componentRegistry.filter((c) => c.category === cat.id).sort((a, b) => a.name.localeCompare(b.name))
         if (items.length === 0) return null
         const isExpanded = expanded[cat.id] ?? true
 
         return (
-          <SidebarGroup key={cat.id}>
+          <SidebarGroup key={cat.id} className="p-1">
             <SidebarGroupLabel
-              className="cursor-pointer select-none gap-1 uppercase tracking-wide text-[11px]"
+              className="cursor-pointer select-none gap-1 uppercase tracking-wide text-[11px] h-6"
               onClick={() => toggleGroup(cat.id)}
             >
               {isExpanded ? (
@@ -138,7 +138,7 @@ function SidebarNav() {
                             to={to}
                             className={({ isActive }) =>
                               cn(
-                                "block py-1.5 px-4 pl-6 text-sm text-muted-foreground transition-all duration-150",
+                                "block py-1 px-4 pl-6 text-xs text-muted-foreground transition-all duration-150",
                                 "hover:text-primary",
                                 isActive && "text-primary font-medium"
                               )
@@ -240,12 +240,42 @@ export function ComponentDemoView() {
         </div>
       )}
 
-      {/* Full demo showcase below */}
-      <div className="bg-background p-6 overflow-visible">
-        <Suspense fallback={<div className="p-10 text-sm text-tertiary-foreground">Loading demo…</div>}>
-          <DemoComponent />
-        </Suspense>
-      </div>
+      {/* Full demo showcase below — only shown for components without propControls */}
+      {!hasPropControls && (
+        <div className="bg-background p-6 overflow-visible">
+          <Suspense fallback={<div className="p-10 text-sm text-tertiary-foreground">Loading demo…</div>}>
+            <DemoComponent />
+          </Suspense>
+        </div>
+      )}
+
+      {/* Uses Components */}
+      {entry.usesComponents && entry.usesComponents.length > 0 && (
+        <div className="flex items-center gap-2 pt-4 border-t border-border">
+          <span className="text-xs text-muted-foreground font-medium">Uses:</span>
+          <div className="flex flex-wrap gap-1.5">
+            {entry.usesComponents.map((compName) => {
+              const linked = componentRegistry.find((c) => c.name === compName)
+              if (linked) {
+                return (
+                  <Link
+                    key={compName}
+                    to={`/admin/components/${linked.category}/${linked.slug}`}
+                    className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
+                  >
+                    {compName}
+                  </Link>
+                )
+              }
+              return (
+                <span key={compName} className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-secondary text-tertiary-foreground border border-border">
+                  {compName}
+                </span>
+              )
+            })}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -253,7 +283,7 @@ export function ComponentDemoView() {
 /** Shows a category overview listing all components in that category */
 export function CategoryOverview() {
   const { category } = useParams<{ category: string }>()
-  const items = componentRegistry.filter((c) => c.category === category)
+  const items = componentRegistry.filter((c) => c.category === category).sort((a, b) => a.name.localeCompare(b.name))
   const categoryMeta = CATEGORIES.find((c) => c.id === category)
 
   if (!categoryMeta || items.length === 0) {

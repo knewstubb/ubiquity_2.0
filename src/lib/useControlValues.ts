@@ -155,12 +155,17 @@ export function useControlValues(propControls: PropDefinition[] | undefined): Us
     setValues(defaults)
   }, [defaults])
 
-  // Filter exposed values to only include visible controls
+  // Filter exposed values to only include visible controls + any dynamic keys
   const exposedValues = useMemo(() => {
     const filtered: Record<string, ControlValue> = {}
+    // Include all values from state (covers dynamic renderControls keys)
+    for (const [key, val] of Object.entries(values)) {
+      filtered[key] = val
+    }
+    // Remove hidden propControls values
     for (const ctrl of safeControls) {
-      if (currentVisibility[ctrl.name]) {
-        filtered[ctrl.name] = values[ctrl.name]
+      if (!currentVisibility[ctrl.name]) {
+        delete filtered[ctrl.name]
       }
     }
     return filtered

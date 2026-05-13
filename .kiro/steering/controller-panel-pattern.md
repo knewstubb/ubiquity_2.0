@@ -19,39 +19,36 @@ bg-secondary rounded-lg p-4
 
 ## Typography Hierarchy — Two Levels
 
-Controller panels use TWO distinct text sizes to create visual hierarchy:
+Controller panels use the same label styles as regular form inputs:
 
-### Level 1 — Section Headers (14px)
+### Level 1 — Section Headers
 
 ```
-text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1.5
+text-sm font-semibold text-muted-foreground mb-1.5
 ```
 
-- Used for: group headings that label a section of controls (e.g. "GENERAL", "LAYOUT", "CONTENT")
-- Size: `text-sm` = 14px, weight: `font-bold` (700)
+- Used for: group headings that label a section of controls (e.g. "General", "Layout", "Content")
+- Size: `text-sm` = 14px, weight: `font-semibold` (600)
 - Rendered as `<h4>` in ControlsPanel
 - Gap after header: `mb-1.5` (6px)
-- Dynamic values allowed: "MAX WIDTH — 100%", "STEP 2 OF 4"
-- Format: `{LABEL} — {value}` (em dash, not hyphen)
+- NOT uppercase — uses sentence case
 - Horizontal dividers (`border-t border-border pt-3 mt-3`) between visually distinct sections
 
-### Level 2 — Field Labels (10px)
+### Level 2 — Field Labels
 
 ```
-text-[10px] font-semibold text-muted-foreground uppercase tracking-wider
+text-sm font-medium text-muted-foreground
 ```
 
-- Used for: individual control labels within a section (e.g. "MODE", "SHOW USED IN", "SECTION SPACING")
-- Size: `text-[10px]` = 10px — the smaller label for each control
+- Used for: individual control labels within a section (e.g. "Mode", "Show Used In", "Section Spacing")
+- Size: `text-sm` = 14px — matches standard form labels
 - Rendered as `<Label>` inside each control component
+- NOT uppercase — uses sentence case
 - These sit INSIDE the control components (TextControl, SelectControl, ToggleControl, etc.)
 
-### Why Two Sizes Matter
+### Hierarchy
 
-The 4px difference (14px vs 10px) creates a clear parent-child relationship:
-- Section headers are scannable group titles — you read them to find the right section
-- Field labels are subordinate — they describe individual controls within that section
-- Without this distinction, the panel becomes a flat list with no visual grouping
+Section headers use `font-semibold` (600) while field labels use `font-medium` (500). The weight difference creates a subtle parent-child relationship without needing size or case differences.
 
 ### "General" Header Rule
 
@@ -142,7 +139,7 @@ Toggle: "Show Primary"
 - **Grouped text inputs** (multiple related fields like Prefix/Suffix): Use `prefix-input` instead of a separate label above each field
   - Prefix treatment: grey background zone on the left of the input (`bg-muted px-2 border-r border-input self-stretch flex items-center text-xs text-muted-foreground`)
   - Example: `[Prefix |___________]` instead of a label "PREFIX" above the input
-- **Standalone text inputs** (no parent toggle giving context): Use the Level 2 label pattern — `text-[10px] font-semibold text-muted-foreground uppercase tracking-wider`
+- **Standalone text inputs** (no parent toggle giving context): Use the standard label pattern — `text-sm font-medium text-muted-foreground`
 - **Text inputs**: Do NOT show the current value as a tip on the right side. The input itself shows the value.
 - **Toggle rows**: Label is inline with the switch — no separate header needed per toggle
 - **Select controls**: Always use a section header above (they need the context)
@@ -158,7 +155,7 @@ Toggle: "Show Primary"
 ### "Used in" links
 - Position: bottom of panel
 - Treatment: `mt-3 pt-3 border-t border-border`
-- Label: `text-[10px] font-semibold text-muted-foreground uppercase tracking-wider`
+- Label: `text-sm font-medium text-muted-foreground`
 - Links: `text-xs text-primary hover:underline`
 
 ### Reset button

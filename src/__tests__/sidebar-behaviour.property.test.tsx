@@ -35,7 +35,7 @@ const CATEGORIES: { id: ComponentCategory; label: string }[] = [
   { id: 'display', label: 'Display' },
   { id: 'feedback', label: 'Feedback' },
   { id: 'navigation', label: 'Navigation' },
-  { id: 'composed', label: 'Composed' },
+  { id: 'compositions', label: 'Compositions' },
 ]
 
 // Only categories that have items in the registry
