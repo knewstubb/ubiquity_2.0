@@ -47,7 +47,7 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
               </span>
 
               <div className="flex items-center gap-2">
-                <ProtocolIcon protocol={connection.protocol} size={20} error={isError} />
+                <ProtocolIcon protocol={connection.protocol} size={20} error={isError} inactive={connectorCount === 0} />
                 <span className="text-[14px] font-medium text-muted-foreground">{connection.protocol === 'S3' ? 'AWS S3' : connection.protocol}:</span>
                 <span className={cn('text-base font-semibold text-foreground', isError && 'text-destructive')}>{connection.name}</span>
               </div>
