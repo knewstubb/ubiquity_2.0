@@ -11,7 +11,48 @@ import {
   MenubarSubTrigger,
 } from '@/components/ui/menubar'
 
-export default function MenubarDemo() {
+interface MenubarDemoProps {
+  'menu-count'?: number
+  'show-shortcuts'?: boolean
+}
+
+export default function MenubarDemo(props: MenubarDemoProps) {
+  const menuCount = props['menu-count']
+  const showShortcuts = props['show-shortcuts']
+
+  const hasControls = menuCount !== undefined
+
+  if (hasControls) {
+    const menus = [
+      { label: 'File', items: ['New Campaign', 'Open', 'Save', 'Export'] },
+      { label: 'Edit', items: ['Undo', 'Redo', 'Cut', 'Copy', 'Paste'] },
+      { label: 'View', items: ['Grid View', 'List View', 'Toggle Sidebar'] },
+      { label: 'Help', items: ['Documentation', 'Support', 'About'] },
+      { label: 'Tools', items: ['Preferences', 'Extensions', 'Developer'] },
+    ]
+    const shortcuts = ['⌘N', '⌘O', '⌘S', '⌘E', '⌘Z', '⇧⌘Z', '⌘X', '⌘C', '⌘V']
+
+    return (
+      <Menubar>
+        {menus.slice(0, menuCount).map((menu, menuIdx) => (
+          <MenubarMenu key={menu.label}>
+            <MenubarTrigger>{menu.label}</MenubarTrigger>
+            <MenubarContent>
+              {menu.items.map((item, itemIdx) => (
+                <MenubarItem key={item}>
+                  {item}
+                  {showShortcuts && shortcuts[menuIdx * 2 + itemIdx] && (
+                    <MenubarShortcut>{shortcuts[menuIdx * 2 + itemIdx]}</MenubarShortcut>
+                  )}
+                </MenubarItem>
+              ))}
+            </MenubarContent>
+          </MenubarMenu>
+        ))}
+      </Menubar>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <Menubar>

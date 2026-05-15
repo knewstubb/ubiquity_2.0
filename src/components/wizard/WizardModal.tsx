@@ -220,17 +220,17 @@ export function WizardModal({
       aria-labelledby="wizard-modal-title"
       data-testid="wizard-modal"
     >
-      <div className="w-[60vw] max-w-[1080px] h-[80vh] bg-background rounded-lg shadow-xl flex overflow-hidden animate-[slideUp_200ms_ease]">
+      <div className="w-[60vw] max-w-[1080px] h-[80vh] bg-background rounded-lg border border-border flex overflow-hidden animate-[slideUp_200ms_ease]">
         {/* Left sidebar */}
-        <div className="w-[239px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto z-[2] relative shadow-[2px_0_8px_rgba(0,0,0,0.04)]">
+        <div className="w-[239px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto">
           <div className="flex flex-col items-center text-center gap-1">
             <div className="w-10 h-10 flex items-center justify-center text-primary mb-1">
               <UploadSimple size={56} />
             </div>
-            <h2 id="wizard-modal-title" className="m-0 text-base font-bold text-foreground leading-tight">
-              {connection?.name ?? connectorName}
+            <h2 id="wizard-modal-title" className="m-0 text-base font-bold text-muted-foreground leading-tight">
+              Exporter
             </h2>
-            <span className="text-[11px] font-medium text-tertiary-foreground uppercase tracking-wider">Exporter</span>
+            <span className="text-[11px] font-medium text-tertiary-foreground uppercase tracking-wider">{connection?.name ?? connectorName}</span>
           </div>
           <Stepper
             steps={STEPS}
@@ -243,7 +243,7 @@ export function WizardModal({
 
         {/* Right content area */}
         <div className="flex-1 flex flex-col min-w-0 bg-background">
-          <div className="flex items-center justify-end py-4 px-6 shrink-0">
+          <div className="flex items-center justify-end pt-4 px-8 shrink-0">
             <Button
               variant="ghost"
               size="icon"
@@ -255,11 +255,11 @@ export function WizardModal({
             </Button>
           </div>
 
-          <div className="flex-1 overflow-y-auto py-4 px-10 pb-10 flex flex-col gap-8 scrollbar-gutter-stable" data-testid="wizard-step-content">
+          <div className="flex-1 overflow-y-auto px-8 pb-8 flex flex-col gap-8 scrollbar-gutter-stable" data-testid="wizard-step-content">
             {stepContent}
           </div>
 
-          <div className="shrink-0 py-4 px-6 shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
+          <div className="shrink-0 py-4 px-8">
             <WizardNavButtons
               onBack={handleBack}
               onNext={handleNext}

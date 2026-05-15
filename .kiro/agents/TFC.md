@@ -15,7 +15,7 @@ You build all components in the system. Every component you create must:
 - Follow the project's Component Anatomy (imports → types → component with state/derived/handlers/render)
 - Use Tailwind utilities exclusively via `cn()` — no CSS Modules, no inline styles
 - Use existing `src/components/ui/` primitives (Input, Select, Switch, Button, Label, etc.) — never raw HTML elements
-- Use existing `src/components/composed/` components where appropriate (SegmentedControl, NumberStepper, Chip, StatusBadge, etc.)
+- Use existing `src/components/composed/` components where appropriate (SegmentedControl, NumberStepper, Chip, etc.)
 - Use Phosphor Icons from `@phosphor-icons/react`
 - Be typed with explicit TypeScript interfaces for props
 

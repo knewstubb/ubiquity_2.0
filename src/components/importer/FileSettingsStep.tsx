@@ -218,7 +218,7 @@ export function FileSettingsStep({
         <div className="w-[552px] flex flex-col gap-3">
           <Input
             className={cn(
-              patternError && "border-destructive focus-visible:border-destructive focus-visible:shadow-[0_0_0_3px_rgba(239,68,68,0.15)]"
+              patternError && "border-destructive focus-visible:border-destructive focus-visible:shadow-[--ring-shadow-destructive]"
             )}
             value={fileNamePattern}
             onChange={(e) => updatePath({ fileNamePattern: e.target.value })}

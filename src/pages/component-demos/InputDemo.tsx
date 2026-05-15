@@ -68,10 +68,10 @@ export default function InputDemo(props: InputDemoProps) {
           className={cn(
             'flex items-center w-full rounded-md border bg-background transition-colors overflow-hidden',
             'not-focus-within:hover:border-border-strong',
-            'focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]',
+            'focus-within:border-ring focus-within:shadow-[--ring-shadow]',
             SIZE_CLASSES[size],
-            isError && 'border-destructive hover:border-destructive focus-within:border-destructive focus-within:shadow-[0_0_0_3px_rgba(239,68,68,0.15)]',
-            isSuccess && 'border-success hover:border-success focus-within:border-success focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]',
+            isError && 'border-destructive hover:border-destructive focus-within:border-destructive focus-within:shadow-[--ring-shadow-destructive]',
+            isSuccess && 'border-success hover:border-success focus-within:border-success focus-within:shadow-[--ring-shadow]',
             !isError && !isSuccess && 'border-input',
             disabled && 'opacity-50 cursor-not-allowed not-focus-within:hover:border-input',
           )}
@@ -153,7 +153,7 @@ export default function InputDemo(props: InputDemoProps) {
         <h3 className="text-base font-semibold text-foreground">Default</h3>
         <div className="space-y-1.5">
           <Label htmlFor="demo-default">Email</Label>
-          <div className="flex items-center w-full rounded-md border border-input bg-background h-10 overflow-hidden focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+          <div className="flex items-center w-full rounded-md border border-input bg-background h-10 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
             <input
               id="demo-default"
               type="text"
@@ -169,7 +169,7 @@ export default function InputDemo(props: InputDemoProps) {
         <h3 className="text-base font-semibold text-foreground">With Icons</h3>
         <div className="space-y-1.5">
           <Label htmlFor="demo-icons">Search</Label>
-          <div className="flex items-center w-full rounded-md border border-input bg-background h-10 overflow-hidden focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+          <div className="flex items-center w-full rounded-md border border-input bg-background h-10 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
             <span className="shrink-0 text-muted-foreground pl-3">
               <MagnifyingGlass size={16} />
             </span>
@@ -191,7 +191,7 @@ export default function InputDemo(props: InputDemoProps) {
         <h3 className="text-base font-semibold text-foreground">Prefix & Suffix</h3>
         <div className="space-y-1.5">
           <Label htmlFor="demo-prefix">Website</Label>
-          <div className="flex items-center w-full rounded-md border border-input bg-background h-10 overflow-hidden focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+          <div className="flex items-center w-full rounded-md border border-input bg-background h-10 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
             <span className="shrink-0 text-muted-foreground text-sm select-none bg-secondary px-3 self-stretch flex items-center border-r border-input">https://</span>
             <input
               id="demo-prefix"
@@ -208,13 +208,13 @@ export default function InputDemo(props: InputDemoProps) {
       <section className="flex flex-col gap-2">
         <h3 className="text-base font-semibold text-foreground">Sizes</h3>
         <div className="space-y-3">
-          <div className="flex items-center w-full rounded-md border border-input bg-background h-8 overflow-hidden focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+          <div className="flex items-center w-full rounded-md border border-input bg-background h-8 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
             <input type="text" placeholder="Small" className="flex-1 min-w-0 bg-transparent border-none outline-none placeholder:text-muted-foreground text-foreground px-3 py-0 text-xs" />
           </div>
-          <div className="flex items-center w-full rounded-md border border-input bg-background h-10 overflow-hidden focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+          <div className="flex items-center w-full rounded-md border border-input bg-background h-10 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
             <input type="text" placeholder="Default" className="flex-1 min-w-0 bg-transparent border-none outline-none placeholder:text-muted-foreground text-foreground px-3 py-0 text-sm" />
           </div>
-          <div className="flex items-center w-full rounded-md border border-input bg-background h-12 overflow-hidden focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+          <div className="flex items-center w-full rounded-md border border-input bg-background h-12 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
             <input type="text" placeholder="Large" className="flex-1 min-w-0 bg-transparent border-none outline-none placeholder:text-muted-foreground text-foreground px-3 py-0 text-base" />
           </div>
         </div>

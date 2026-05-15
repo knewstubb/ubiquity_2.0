@@ -51,7 +51,7 @@ export default function PageComponentsPage() {
                   <span className="text-sm font-semibold text-foreground">daily_sales_report</span>
                   <span className="text-base text-muted-foreground">Importer</span>
                   <span className="flex items-center gap-1.5 text-base text-muted-foreground"><NewspaperClipping size={14} /> treatments</span>
-                  <span className="text-[10px] font-semibold px-1.5 rounded-full bg-[rgba(20,184,138,0.15)] text-accent-foreground leading-4">Completed</span>
+                  <span className="text-[10px] font-semibold px-1.5 rounded-full bg-accent text-accent-foreground leading-4">Completed</span>
                   <span className="text-xs text-tertiary-foreground ml-auto">2-minutes ago</span>
                   <Toggle checked={toggleOn} onChange={setToggleOn} label="Active" />
                   <span className="text-tertiary-foreground cursor-pointer"><DotsThree size={16} weight="bold" /></span>
@@ -61,7 +61,7 @@ export default function PageComponentsPage() {
                   <span className="text-sm font-semibold text-foreground">at_risk_customers</span>
                   <span className="text-base text-muted-foreground">Exporter</span>
                   <span className="flex items-center gap-1.5 text-base text-muted-foreground"><UsersThree size={14} /> contacts</span>
-                  <span className="text-[10px] font-semibold px-1.5 rounded-full bg-[rgba(20,184,138,0.15)] text-accent-foreground leading-4">Completed</span>
+                  <span className="text-[10px] font-semibold px-1.5 rounded-full bg-accent text-accent-foreground leading-4">Completed</span>
                   <span className="text-xs text-tertiary-foreground ml-auto">12-days ago</span>
                   <Toggle checked={toggleOff} onChange={setToggleOff} label="Paused" />
                   <span className="text-tertiary-foreground cursor-pointer"><DotsThree size={16} weight="bold" /></span>

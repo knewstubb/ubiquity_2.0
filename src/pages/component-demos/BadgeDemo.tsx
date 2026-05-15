@@ -28,10 +28,40 @@ export default function BadgeDemo(props: BadgeDemoProps) {
     const showIcon = props['show-icon'] ?? false
     const sizeClass = SIZE_CLASSES[size]
     const isOutline = props.outline ?? false
-    const colour = mode === 'non-semantic'
-      ? (props['non-semantic-colour'] ?? '#14B88A')
-      : (props['semantic-colour'] ?? '#14B88A')
 
+    // Semantic mode uses Badge variants directly
+    if (mode === 'semantic') {
+      const semanticColour = props['semantic-colour'] ?? 'var(--primary)'
+      const solidVariantMap: Record<string, string> = {
+        'var(--primary)': 'default',
+        'var(--destructive)': 'error',
+        'var(--warning)': 'warning',
+        'var(--info)': 'info',
+        'var(--success)': 'success',
+        'var(--muted-foreground)': 'neutral',
+      }
+      const subtleVariantMap: Record<string, string> = {
+        'var(--primary)': 'default-subtle',
+        'var(--destructive)': 'error-subtle',
+        'var(--warning)': 'warning-subtle',
+        'var(--info)': 'info-subtle',
+        'var(--success)': 'success-subtle',
+        'var(--muted-foreground)': 'neutral-subtle',
+      }
+      const variant = isOutline
+        ? (subtleVariantMap[semanticColour] ?? 'success-subtle')
+        : (solidVariantMap[semanticColour] ?? 'success')
+
+      return (
+        <Badge variant={variant as any} className={sizeClass}>
+          {showIcon && <CheckCircle size={12} weight="fill" />}
+          {text}
+        </Badge>
+      )
+    }
+
+    // Non-semantic mode uses inline styles with raw colours
+    const colour = props['non-semantic-colour'] ?? '#14B88A'
     const style = isOutline
       ? { backgroundColor: 'transparent', color: colour, borderColor: colour }
       : { backgroundColor: colour, color: '#fff', borderColor: 'transparent' }

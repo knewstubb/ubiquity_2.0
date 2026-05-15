@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '../../lib/utils';
 import { SegmentedControl } from '@/components/composed/segmented-control';
 import { ChipInput } from '@/components/composed/chip-input';
@@ -40,9 +40,19 @@ const DAY_OF_WEEK_OPTIONS = [
 const DEFAULT_EMAIL = 'contact@gmail.com';
 
 /* ── Main Component ── */
-export function NotificationsStep() {
+
+interface NotificationsStepProps {
+  onValidChange?: (valid: boolean) => void;
+}
+
+export function NotificationsStep({ onValidChange }: NotificationsStepProps) {
   /* Failure emails (always visible) */
   const [failureEmails, setFailureEmails] = useState<string[]>([DEFAULT_EMAIL]);
+
+  /* Report validity to parent */
+  useEffect(() => {
+    onValidChange?.(failureEmails.length > 0);
+  }, [failureEmails, onValidChange]);
 
   /* Success */
   const [successEnabled, setSuccessEnabled] = useState(false);
@@ -234,7 +244,7 @@ export function NotificationsStep() {
                         </Select>
                       </div>
                     ) : (
-                      <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] relative cursor-text bg-background focus-within:border-primary focus-within:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]">
+                      <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] relative cursor-text bg-background focus-within:border-primary focus-within:shadow-[--ring-shadow]">
                         {monthlyDates.map((d) => (
                           <span key={d} className="inline-flex items-center gap-1 border border-primary text-primary rounded-full py-1 px-2 text-xs font-medium leading-none whitespace-nowrap">
                             {d}

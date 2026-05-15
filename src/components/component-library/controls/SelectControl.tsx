@@ -22,7 +22,7 @@ export function SelectControl({ value, onChange, label, options, inline }: Selec
     return (
       <div className={cn(
         "flex h-8 w-full rounded-md border border-input bg-background overflow-hidden",
-        "focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]"
+        "focus-within:border-ring focus-within:shadow-[--ring-shadow]"
       )}>
         <span className="flex items-center px-2 text-xs text-muted-foreground bg-muted border-r border-input select-none shrink-0">
           {label}

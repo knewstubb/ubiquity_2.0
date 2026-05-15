@@ -1,7 +1,46 @@
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 
-export default function SonnerDemo() {
+interface SonnerDemoProps {
+  type?: string
+  title?: string
+  description?: string
+}
+
+export default function SonnerDemo(props: SonnerDemoProps) {
+  const hasControls = props.type !== undefined
+
+  if (hasControls) {
+    const type = (props.type as string) ?? 'default'
+    const title = (props.title as string) ?? 'Event has been created'
+    const description = (props.description as string) ?? 'Monday, January 3rd at 6:00pm'
+
+    const handleClick = () => {
+      switch (type) {
+        case 'success':
+          toast.success(title, { description })
+          break
+        case 'error':
+          toast.error(title, { description })
+          break
+        case 'info':
+          toast.info(title, { description })
+          break
+        case 'warning':
+          toast.warning(title, { description })
+          break
+        default:
+          toast(title, { description })
+      }
+    }
+
+    return (
+      <Button variant="outline" onClick={handleClick}>
+        Show Toast
+      </Button>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap gap-3">

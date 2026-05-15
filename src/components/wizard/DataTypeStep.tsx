@@ -115,7 +115,7 @@ export function DataTypeStep({ draft, onUpdate }: DataTypeStepProps) {
         <input
           id="connector-name"
           type="text"
-          className="w-full py-2 px-3 text-sm font-normal text-foreground bg-background border border-border rounded-md leading-5 transition-all duration-150 placeholder:text-tertiary-foreground hover:border-tertiary-foreground focus:outline-none focus:border-ring focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
+          className="w-full py-2 px-3 text-sm font-normal text-foreground bg-background border border-border rounded-md leading-5 transition-all duration-150 placeholder:text-tertiary-foreground hover:border-tertiary-foreground focus:outline-none focus:border-ring focus:shadow-[--ring-shadow]"
           placeholder="Enter connector name…"
           value={draft.name}
           onChange={handleNameChange}

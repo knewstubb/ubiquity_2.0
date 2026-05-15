@@ -1,7 +1,7 @@
 import type { Automation } from '../../models/automation';
 import { DotsThree, GearSix, PencilSimple, ListBullets, ClockCounterClockwise, Trash, UsersThree, NewspaperClipping } from '@phosphor-icons/react';
 import { Switch } from '@/components/ui/switch';
-import { StatusBadge } from '@/components/composed/status-badge';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -130,9 +130,9 @@ export function AutomationCard({ connector, connectionError, onToggleStatus, onV
 
       {/* Group 3: Status + Time */}
       <div className="flex items-center gap-2">
-        <StatusBadge variant={lastRunStatus === 'Failed' ? 'error' : 'active'}>
+        <Badge variant={isPaused ? 'neutral-subtle' : lastRunStatus === 'Failed' ? 'error-subtle' : 'success-subtle'}>
           {lastRunStatus}
-        </StatusBadge>
+        </Badge>
         <span className="text-sm text-tertiary-foreground whitespace-nowrap">{lastRunTime}</span>
       </div>
 

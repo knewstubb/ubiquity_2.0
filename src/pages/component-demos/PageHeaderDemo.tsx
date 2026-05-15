@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Plus, DownloadSimple, MagnifyingGlass, FunnelSimple } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { StatusBadge, type StatusBadgeVariant } from '@/components/composed/status-badge'
+import { Badge } from '@/components/ui/badge'
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
@@ -15,12 +15,13 @@ const SAMPLE_BREADCRUMBS = [
 ]
 const SAMPLE_FILTERS = ['Status', 'Type', 'Date Range', 'Account']
 
-const statusVariantMap: Record<string, StatusBadgeVariant> = {
-  Active: 'active',
-  Draft: 'inactive',
-  Paused: 'inactive',
-  Completed: 'invited',
-  Error: 'error',
+const statusVariantMap: Record<string, string> = {
+  Active: 'success-subtle',
+  Draft: 'neutral-subtle',
+  Invited: 'info-subtle',
+  Paused: 'neutral-subtle',
+  Completed: 'info-subtle',
+  Error: 'error-subtle',
 }
 
 interface PageHeaderDemoProps {
@@ -139,9 +140,9 @@ function PageHeaderPreview({
             <div className="flex items-center gap-2.5">
               <h1 className="text-[22px] font-semibold text-foreground m-0">Page Title</h1>
               {showStatus && (
-                <StatusBadge variant={statusVariantMap[status] || 'active'}>
+                <Badge variant={(statusVariantMap[status] || 'success-subtle') as any}>
                   {status}
-                </StatusBadge>
+                </Badge>
               )}
             </div>
             {showSubtitle && (

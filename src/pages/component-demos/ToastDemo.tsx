@@ -1,7 +1,30 @@
 import { showToast } from '@/components/composed/toast'
 import { Button } from '@/components/ui/button'
 
-export default function ToastDemo() {
+interface ToastDemoProps {
+  variant?: string
+  title?: string
+  description?: string
+}
+
+export default function ToastDemo(props: ToastDemoProps) {
+  const hasControls = props.variant !== undefined
+
+  if (hasControls) {
+    const variant = (props.variant ?? 'default') as 'default' | 'success' | 'error' | 'warning' | 'info'
+    const title = (props.title as string) ?? 'Notification'
+    const description = (props.description as string) ?? 'Something happened.'
+
+    return (
+      <Button
+        variant="outline"
+        onClick={() => showToast({ title, description, variant })}
+      >
+        Show Toast
+      </Button>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap gap-3">

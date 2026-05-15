@@ -242,7 +242,7 @@ export function DateRangePicker({
     <div className="relative" ref={wrapperRef}>
       <button
         type="button"
-        className="inline-flex items-center gap-2 px-3 py-2 text-base font-sans font-medium text-foreground bg-background border border-border rounded-sm cursor-pointer transition-colors duration-150 whitespace-nowrap hover:border-border-strong focus-visible:border-primary focus-visible:shadow-[0_0_0_2px_rgba(20,184,138,0.15)] focus-visible:outline-none"
+        className="inline-flex items-center gap-2 px-3 py-2 text-base font-sans font-medium text-foreground bg-background border border-border rounded-sm cursor-pointer transition-colors duration-150 whitespace-nowrap hover:border-border-strong focus-visible:border-primary focus-visible:shadow-[--ring-shadow] focus-visible:outline-none"
         onClick={() => setOpen((o) => !o)}
         aria-label="Select date range"
       >
@@ -296,7 +296,7 @@ export function DateRangePicker({
                         className={cn(
                           "w-9 h-9 inline-flex items-center justify-center text-[13px] font-sans text-foreground bg-transparent border-none cursor-pointer transition-colors duration-100 hover:bg-secondary",
                           isRangeEdge && "bg-primary text-primary-foreground rounded-full font-semibold hover:bg-accent-hover",
-                          !isRangeEdge && isInRange && "bg-[rgba(20,184,138,0.1)] hover:bg-[rgba(20,184,138,0.18)]",
+                          !isRangeEdge && isInRange && "bg-accent hover:bg-accent",
                           isToday && !isRangeEdge && "font-semibold text-primary"
                         )}
                         onClick={() => handleDayClick(day)}
@@ -322,7 +322,7 @@ export function DateRangePicker({
                   type="button"
                   className={cn(
                     "block w-full text-left px-4 py-2 text-[13px] font-sans font-normal text-foreground bg-transparent border-none cursor-pointer transition-colors duration-150 whitespace-nowrap hover:bg-background",
-                    isActive && "text-primary font-semibold bg-[rgba(20,184,138,0.06)]"
+                    isActive && "text-primary font-semibold bg-accent/60"
                   )}
                   onClick={() => handlePresetClick(preset)}
                 >

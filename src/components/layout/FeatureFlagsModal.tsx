@@ -63,7 +63,7 @@ export function FeatureFlagsModal({ onClose }: FeatureFlagsModalProps) {
         <div className="px-6 py-3 pb-4 border-t border-border">
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-sans font-semibold text-primary bg-none border border-primary rounded cursor-pointer transition-colors duration-150 hover:bg-[rgba(20,184,138,0.06)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-sans font-semibold text-primary bg-none border border-primary rounded cursor-pointer transition-colors duration-150 hover:bg-accent/60 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() => setShowAddForm(true)}
             disabled={showAddForm}
           >
@@ -115,7 +115,7 @@ function FlagRow({ flag, onToggle, onDelete }: FlagRowProps) {
         </label>
         <button
           type="button"
-          className="inline-flex items-center justify-center w-7 h-7 border-none bg-none rounded text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-[rgba(239,68,68,0.08)] hover:text-destructive"
+          className="inline-flex items-center justify-center w-7 h-7 border-none bg-none rounded text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-destructive-subtle hover:text-destructive"
           onClick={onDelete}
           aria-label={`Delete ${flag.name}`}
           title="Delete flag"
@@ -154,7 +154,7 @@ function AddFlagForm({ onAdd, onCancel }: AddFlagFormProps) {
     <form className="py-3 border-t border-border flex flex-col gap-2" onSubmit={handleSubmit}>
       <div className="flex gap-2">
         <input
-          className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
+          className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[--ring-shadow]"
           placeholder="Flag name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -170,13 +170,13 @@ function AddFlagForm({ onAdd, onCancel }: AddFlagFormProps) {
         </select>
       </div>
       <input
-        className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
+        className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[--ring-shadow]"
         placeholder="Route path or component target (e.g. /admin/billing)"
         value={target}
         onChange={(e) => setTarget(e.target.value)}
       />
       <input
-        className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
+        className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[--ring-shadow]"
         placeholder="Description (optional)"
         value={description}
         onChange={(e) => setDescription(e.target.value)}

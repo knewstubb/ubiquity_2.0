@@ -1,7 +1,63 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-export default function TabsDemo() {
+interface TabsDemoProps {
+  'tab-count'?: number
+  orientation?: string
+  'show-content'?: boolean
+}
+
+export default function TabsDemo(props: TabsDemoProps) {
+  const tabCount = props['tab-count']
+  const orientation = props.orientation
+  const showContent = props['show-content']
+
+  const hasControls = tabCount !== undefined
+
+  if (hasControls) {
+    const tabLabels = ['Overview', 'Analytics', 'Settings', 'Reports', 'Activity', 'Logs']
+    const tabDescriptions = [
+      'Summary of your campaign performance this month.',
+      'Detailed performance metrics and trends.',
+      'Configure campaign defaults and preferences.',
+      'Generated reports and exports.',
+      'Recent activity and audit log.',
+      'System logs and debugging info.',
+    ]
+    const tabs = Array.from({ length: tabCount }, (_, i) => ({
+      value: `tab-${i}`,
+      label: tabLabels[i] || `Tab ${i + 1}`,
+      description: tabDescriptions[i] || `Content for tab ${i + 1}.`,
+    }))
+
+    return (
+      <div className="max-w-lg">
+        <Tabs defaultValue="tab-0" orientation={orientation === 'vertical' ? 'vertical' : 'horizontal'} className={orientation === 'vertical' ? 'flex gap-4' : ''}>
+          <TabsList className={orientation === 'vertical' ? 'flex-col h-auto' : ''}>
+            {tabs.map((tab) => (
+              <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
+            ))}
+          </TabsList>
+          {showContent && tabs.map((tab) => (
+            <TabsContent key={tab.value} value={tab.value}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{tab.label}</CardTitle>
+                  <CardDescription>{tab.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    This is the content panel for the {tab.label} tab.
+                  </p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6 max-w-lg">
       <Tabs defaultValue="overview">

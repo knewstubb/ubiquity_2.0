@@ -12,7 +12,50 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-export default function SheetDemo() {
+interface SheetDemoProps {
+  side?: string
+  title?: string
+  description?: string
+}
+
+export default function SheetDemo(props: SheetDemoProps) {
+  const hasControls = props.side !== undefined
+
+  if (hasControls) {
+    const side = (props.side ?? 'right') as 'top' | 'right' | 'bottom' | 'left'
+    const title = (props.title as string) ?? 'Sheet Title'
+    const description = (props.description as string) ?? 'Sheet description text.'
+
+    return (
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline">Open Sheet</Button>
+        </SheetTrigger>
+        <SheetContent side={side}>
+          <SheetHeader>
+            <SheetTitle>{title}</SheetTitle>
+            <SheetDescription>{description}</SheetDescription>
+          </SheetHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="sheet-ctrl-name">Name</Label>
+              <Input id="sheet-ctrl-name" defaultValue="Sarah Chen" />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="sheet-ctrl-email">Email</Label>
+              <Input id="sheet-ctrl-email" defaultValue="sarah@example.com" />
+            </div>
+          </div>
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button type="submit">Save changes</Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <Sheet>

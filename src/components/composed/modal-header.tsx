@@ -12,7 +12,7 @@ export function ModalHeader({ title, onClose, description, className }: ModalHea
   return (
     <div
       className={cn(
-        'rounded-t-lg border-b border-border px-6 py-4',
+        'rounded-t-lg border-b border-border px-6 pt-4 pb-4',
         className
       )}
     >
@@ -32,7 +32,7 @@ export function ModalHeader({ title, onClose, description, className }: ModalHea
         )}
       </div>
       {description && (
-        <p className="text-sm text-muted-foreground mt-0.5 leading-none">{description}</p>
+        <p className="text-sm text-muted-foreground mt-0.5 mb-0 leading-normal">{description}</p>
       )}
     </div>
   )

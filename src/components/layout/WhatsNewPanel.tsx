@@ -25,7 +25,7 @@ export function WhatsNewPanel() {
     <>
       <button
         type="button"
-        className="bg-none border-none cursor-pointer font-sans text-sm font-medium text-primary px-2.5 py-1.5 rounded whitespace-nowrap hover:bg-[rgba(20,184,138,0.08)]"
+        className="bg-none border-none cursor-pointer font-sans text-sm font-medium text-primary px-2.5 py-1.5 rounded whitespace-nowrap hover:bg-accent"
         onClick={open}
       >
         What's New

@@ -232,7 +232,7 @@ export default function DashboardPage() {
               {!connection.status.includes('error') && (
                 <button
                   type="button"
-                  className="flex items-center justify-center h-11 border border-dashed border-primary/40 rounded-lg bg-transparent text-primary text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-[rgba(20,184,138,0.04)] hover:border-primary"
+                  className="flex items-center justify-center h-11 border border-dashed border-primary/40 rounded-lg bg-transparent text-primary text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary"
                   onClick={() => handleAddConnector(connection.id)}
                 >
                   + Add Automation

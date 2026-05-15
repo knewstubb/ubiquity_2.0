@@ -6,10 +6,54 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-export default function ModalDemo() {
+interface ModalDemoProps {
+  title?: string
+  description?: string
+  'field-count'?: number
+  'show-footer'?: boolean
+  'primary-label'?: string
+  'show-cancel'?: boolean
+  'primary-variant'?: string
+}
+
+const FIELD_LABELS = ['Segment Name', 'Description', 'Tags', 'Category', 'Priority']
+const FIELD_PLACEHOLDERS = ['e.g. Gold Members', 'Optional description', 'Add tags...', 'Select category', 'High / Medium / Low']
+
+export default function ModalDemo(props: ModalDemoProps) {
+  const hasControls = props.title !== undefined
   const [open1, setOpen1] = useState(false)
   const [open2, setOpen2] = useState(false)
   const [open3, setOpen3] = useState(false)
+
+  if (hasControls) {
+    const title = (props.title as string) ?? 'New Segment'
+    const description = (props.description as string) ?? 'Create a new audience segment.'
+    const fieldCount = (props['field-count'] as number) ?? 2
+    const showFooter = props['show-footer'] ?? true
+    const primaryLabel = (props['primary-label'] as string) ?? 'Create'
+    const showCancel = props['show-cancel'] ?? true
+    const primaryVariant = (props['primary-variant'] as string) ?? 'default'
+
+    return (
+      <div className="w-[560px] border border-border rounded-lg overflow-hidden bg-background shadow-md">
+        <ModalHeader title={title} description={description || undefined} onClose={() => {}} />
+        <div className="px-6 pt-3 pb-5 space-y-4">
+          {Array.from({ length: fieldCount }, (_, i) => (
+            <div key={i} className="space-y-2">
+              <Label htmlFor={`modal-field-${i}`}>{FIELD_LABELS[i] ?? `Field ${i + 1}`}</Label>
+              <Input id={`modal-field-${i}`} placeholder={FIELD_PLACEHOLDERS[i] ?? 'Enter value...'} />
+            </div>
+          ))}
+        </div>
+        {showFooter && (
+          <ModalFooter
+            primaryAction={{ label: primaryLabel, onClick: () => {}, variant: primaryVariant as 'default' | 'destructive' }}
+            secondaryAction={showCancel ? { label: 'Cancel', onClick: () => {} } : undefined}
+          />
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -98,7 +142,7 @@ export default function ModalDemo() {
             <DialogTitle className="sr-only">New Segment</DialogTitle>
             <DialogDescription className="sr-only">Create a new segment</DialogDescription>
             <ModalHeader title="New Segment" description="Create a new audience segment." onClose={() => setOpen2(false)} />
-            <div className="px-6 py-6 space-y-4">
+            <div className="px-6 py-4 space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="demo-name">Segment Name</Label>
                 <Input id="demo-name" placeholder="e.g. Gold Members" />

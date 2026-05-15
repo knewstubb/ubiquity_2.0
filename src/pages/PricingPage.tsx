@@ -114,7 +114,7 @@ function PriceRow({ category, description, price, onPriceChange }: PriceRowProps
             <span className="text-sm font-semibold text-muted-foreground">$</span>
             <input
               type="number"
-              className="w-20 px-2 py-1 text-sm font-sans font-semibold border border-primary rounded-[4px] text-right outline-none shadow-[0_0_0_2px_rgba(20,184,138,0.15)] tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              className="w-20 px-2 py-1 text-sm font-sans font-semibold border border-primary rounded-[4px] text-right outline-none shadow-[--ring-shadow] tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               onBlur={commitEdit}

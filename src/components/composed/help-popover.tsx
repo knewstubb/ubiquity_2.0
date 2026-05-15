@@ -11,7 +11,7 @@ export function HelpPopover({ title, body }: HelpPopoverProps) {
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="inline-grid place-content-center h-5 w-5 rounded-full bg-primary text-primary-foreground text-[11px] font-bold shrink-0 cursor-pointer border-none p-0 leading-none hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="inline-grid place-content-center h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold shrink-0 cursor-pointer border-none p-0 leading-none hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-label={`Help: ${title}`}
         >
           ?

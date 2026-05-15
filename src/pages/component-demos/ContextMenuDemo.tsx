@@ -11,7 +11,59 @@ import {
 } from '@/components/ui/context-menu'
 import { PencilSimple, Copy, ArrowRight, Trash, Gear, ListBullets, ClockCounterClockwise } from '@phosphor-icons/react'
 
-export default function ContextMenuDemo() {
+interface ContextMenuDemoProps {
+  'item-count'?: number
+  'show-separators'?: boolean
+}
+
+const ALL_ITEMS = [
+  { label: 'Edit', icon: PencilSimple, shortcut: '⌘E' },
+  { label: 'Duplicate', icon: Copy, shortcut: '⌘D' },
+  { label: 'Settings', icon: Gear, shortcut: undefined },
+  { label: 'Activity Log', icon: ListBullets, shortcut: undefined },
+  { label: 'History', icon: ClockCounterClockwise, shortcut: undefined },
+  { label: 'Move to', icon: ArrowRight, shortcut: undefined },
+  { label: 'Archive', icon: ListBullets, shortcut: undefined },
+  { label: 'Delete', icon: Trash, shortcut: '⌘⌫', destructive: true },
+]
+
+export default function ContextMenuDemo(props: ContextMenuDemoProps) {
+  const hasControls = props['item-count'] !== undefined
+
+  if (hasControls) {
+    const itemCount = (props['item-count'] as number) ?? 4
+    const showSeparators = props['show-separators'] ?? true
+    const items = ALL_ITEMS.slice(0, itemCount)
+
+    return (
+      <ContextMenu>
+        <ContextMenuTrigger className="flex h-32 w-full items-center justify-center rounded-lg border-2 border-dashed border-border text-sm text-muted-foreground">
+          Right click here
+        </ContextMenuTrigger>
+        <ContextMenuContent className="w-56">
+          {items.map((item, i) => {
+            const Icon = item.icon
+            const isLast = i === items.length - 1
+            const showSep = showSeparators && !isLast && (i === 1 || i === Math.floor(items.length / 2))
+
+            return (
+              <div key={item.label}>
+                <ContextMenuItem
+                  className={item.destructive ? 'text-destructive focus:text-destructive focus:bg-destructive-subtle' : undefined}
+                >
+                  <Icon weight="bold" className="mr-2 h-4 w-4" />
+                  {item.label}
+                  {item.shortcut && <ContextMenuShortcut>{item.shortcut}</ContextMenuShortcut>}
+                </ContextMenuItem>
+                {showSep && <ContextMenuSeparator />}
+              </div>
+            )
+          })}
+        </ContextMenuContent>
+      </ContextMenu>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-8">
       {/* Standard context menu */}

@@ -120,6 +120,7 @@ export function ImporterWizardModal({
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+  const [notificationsValid, setNotificationsValid] = useState(true);
 
   const steps = useMemo(
     () => getStepsForDataType(config.dataType),
@@ -134,11 +135,25 @@ export function ImporterWizardModal({
   );
 
   const canProceed = useMemo(() => {
+    const stepLabel = steps[currentStep]?.label;
+
+    // Step 0: File Settings — name is required
     if (currentStep === 0) {
-      return config.dataType !== null;
+      return config.name.trim().length > 0 && config.dataType !== null;
     }
+
+    // Mapping steps — at least one field must be mapped (placeholder: always valid for now)
+    if (stepLabel === 'Contact Mapping' || stepLabel === 'Transactional Mapping' || stepLabel === 'Mapping') {
+      return true;
+    }
+
+    // Notifications step — failure email is required
+    if (stepLabel === 'Notifications') {
+      return notificationsValid;
+    }
+
     return true;
-  }, [currentStep, config.dataType]);
+  }, [currentStep, config.name, config.dataType, config.notifications, steps, notificationsValid]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -228,7 +243,7 @@ export function ImporterWizardModal({
     }
 
     if (stepLabel === 'Notifications') {
-      return <NotificationsStep />;
+      return <NotificationsStep onValidChange={setNotificationsValid} />;
     }
     if (stepLabel === 'Contact Configuration') {
       return <ImportConfigStep type="contact" />;
@@ -261,15 +276,15 @@ export function ImporterWizardModal({
       aria-labelledby="importer-wizard-title"
       data-testid="importer-wizard-modal"
     >
-      <div className="w-[60vw] min-w-[860px] max-w-[1080px] h-[80vh] bg-background rounded-lg shadow-xl flex overflow-hidden animate-[slideUp_200ms_ease]">
+      <div className="w-[60vw] min-w-[860px] max-w-[1080px] h-[80vh] bg-background rounded-lg border border-border flex overflow-hidden animate-[slideUp_200ms_ease]">
         {/* Left sidebar */}
-        <div className="w-[239px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto z-[2] relative shadow-[2px_0_8px_rgba(0,0,0,0.04)]">
+        <div className="w-[239px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto">
           <div className="flex flex-col items-center text-center gap-1">
             <div className="w-10 h-10 flex items-center justify-center text-primary mb-1">
               <DownloadSimple size={56} />
             </div>
-            <h2 id="importer-wizard-title" className="m-0 text-base font-bold text-foreground leading-snug">
-              {connectorName}
+            <h2 id="importer-wizard-title" className="m-0 text-base font-bold text-muted-foreground leading-snug">
+              Importer
             </h2>
             <span className="text-[11px] font-medium text-tertiary-foreground uppercase tracking-wider">
               {connection?.name ?? ''}
@@ -286,7 +301,7 @@ export function ImporterWizardModal({
 
         {/* Right content area */}
         <div className="flex-1 flex flex-col min-w-0 bg-background">
-          <div className="flex items-center justify-end py-4 px-6 shrink-0">
+          <div className="flex items-center justify-end pt-4 px-8 shrink-0">
             <Button
               variant="ghost"
               size="icon"
@@ -298,11 +313,11 @@ export function ImporterWizardModal({
             </Button>
           </div>
 
-          <div className="flex-1 overflow-y-auto py-4 px-10 pb-10 flex flex-col gap-6 scrollbar-gutter-stable [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-border-strong [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar-thumb]:border-4 [&::-webkit-scrollbar-thumb]:border-solid [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-clip-padding">
+          <div className="flex-1 overflow-y-auto px-8 pb-8 flex flex-col gap-6 scrollbar-gutter-stable">
             {stepContent}
           </div>
 
-          <div className="shrink-0 p-4 px-6 shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
+          <div className="shrink-0 py-4 px-8">
             <WizardNavButtons
               onBack={handleBack}
               onNext={handleNext}

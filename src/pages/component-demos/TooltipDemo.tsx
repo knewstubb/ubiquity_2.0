@@ -7,7 +7,34 @@ import {
 import { Button } from '@/components/ui/button'
 import { Plus, Gear, Trash } from '@phosphor-icons/react'
 
-export default function TooltipDemo() {
+interface TooltipDemoProps {
+  content?: string
+  side?: string
+  delay?: number
+}
+
+export default function TooltipDemo(props: TooltipDemoProps) {
+  const hasControls = props.content !== undefined
+
+  if (hasControls) {
+    const content = (props.content as string) ?? 'Add to library'
+    const side = (props.side ?? 'top') as 'top' | 'right' | 'bottom' | 'left'
+    const delay = (props.delay as number) ?? 200
+
+    return (
+      <TooltipProvider delayDuration={delay}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="outline">Hover me</Button>
+          </TooltipTrigger>
+          <TooltipContent side={side}>
+            <p>{content}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <TooltipProvider>

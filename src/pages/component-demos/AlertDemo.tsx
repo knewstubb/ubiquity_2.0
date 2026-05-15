@@ -1,7 +1,37 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Info, Warning, WarningCircle } from '@phosphor-icons/react'
 
-export default function AlertDemo() {
+interface AlertDemoProps {
+  variant?: string
+  title?: string
+  description?: string
+  'show-icon'?: boolean
+}
+
+export default function AlertDemo(props: AlertDemoProps) {
+  const hasControls = props.variant !== undefined
+
+  if (hasControls) {
+    const variant = (props.variant ?? 'default') as 'default' | 'destructive'
+    const title = (props.title as string) ?? 'Heads up!'
+    const description = (props.description as string) ?? 'You can add components to your app using the CLI.'
+    const showIcon = props['show-icon'] ?? true
+
+    return (
+      <div className="max-w-lg">
+        <Alert variant={variant}>
+          {showIcon && (
+            variant === 'destructive'
+              ? <WarningCircle className="h-4 w-4" weight="bold" />
+              : <Info className="h-4 w-4" weight="bold" />
+          )}
+          <AlertTitle>{title}</AlertTitle>
+          <AlertDescription>{description}</AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-4 max-w-lg">
       <Alert>

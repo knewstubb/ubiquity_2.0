@@ -13,7 +13,7 @@ export function KeyFieldPicker({ value, onChange }: KeyFieldPickerProps) {
     <div>
       <div className="flex items-center gap-3">
         <select
-          className="flex-1 py-2 px-3 border border-border rounded-md text-sm text-foreground bg-background outline-none focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
+          className="flex-1 py-2 px-3 border border-border rounded-md text-sm text-foreground bg-background outline-none focus:border-primary focus:shadow-[--ring-shadow]"
           value={value ?? ''}
           onChange={(e) => onChange(e.target.value)}
           aria-label="Key field"
@@ -26,7 +26,7 @@ export function KeyFieldPicker({ value, onChange }: KeyFieldPickerProps) {
         </select>
         <span className="text-sm text-tertiary-foreground">→</span>
         <select
-          className="flex-1 py-2 px-3 border border-border rounded-md text-sm text-foreground bg-background outline-none focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
+          className="flex-1 py-2 px-3 border border-border rounded-md text-sm text-foreground bg-background outline-none focus:border-primary focus:shadow-[--ring-shadow]"
           value={contactField}
           onChange={(e) => setContactField(e.target.value)}
           aria-label="Contact matching field"

@@ -406,13 +406,13 @@ export const componentRegistry: ComponentEntry[] = [
         { label: 'Semantic', value: 'semantic' },
         { label: 'Non Semantic', value: 'non-semantic' },
       ]},
-      { name: 'semantic-colour', label: 'Colour', controlType: 'colour', defaultValue: '#14B88A', visibleWhen: { controlName: 'mode', values: ['semantic'] }, options: [
-        { label: 'Accent (Primary)', value: '#14B88A' },
-        { label: 'Negative (Destructive)', value: '#EF4444' },
-        { label: 'Notice (Warning)', value: '#F59E0B' },
-        { label: 'Informative (Info)', value: '#38BDF8' },
-        { label: 'Positive (Success)', value: '#22C55E' },
-        { label: 'Neutral', value: '#71717A' },
+      { name: 'semantic-colour', label: 'Colour', controlType: 'colour', defaultValue: 'var(--primary)', visibleWhen: { controlName: 'mode', values: ['semantic'] }, options: [
+        { label: 'Accent (Primary)', value: 'var(--primary)' },
+        { label: 'Negative (Destructive)', value: 'var(--destructive)' },
+        { label: 'Notice (Warning)', value: 'var(--warning)' },
+        { label: 'Informative (Info)', value: 'var(--info)' },
+        { label: 'Positive (Success)', value: 'var(--success)' },
+        { label: 'Neutral', value: 'var(--muted-foreground)' },
       ]},
       { name: 'non-semantic-colour', label: 'Colour', controlType: 'colour', defaultValue: '#14B88A', visibleWhen: { controlName: 'mode', values: ['non-semantic'] }, options: [
         { label: 'Mint', value: '#14B88A' },
@@ -519,6 +519,15 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'feedback',
     description: 'Callout for important messages with icon, title, and description.',
     component: lazy(() => import('../pages/component-demos/AlertDemo')),
+    propControls: [
+      { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
+        { label: 'Default', value: 'default' },
+        { label: 'Destructive', value: 'destructive' },
+      ]},
+      { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Heads up!' },
+      { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'You can add components to your app using the CLI.' },
+      { name: 'show-icon', label: 'Show Icon', controlType: 'toggle', defaultValue: true },
+    ],
   },
   {
     name: 'AlertDialog',
@@ -527,6 +536,12 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Modal confirmation dialog requiring user action before proceeding.',
     usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/AlertDialogDemo')),
+    propControls: [
+      { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Are you sure?' },
+      { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'This action cannot be undone.' },
+      { name: 'confirm-label', label: 'Confirm Label', controlType: 'text', defaultValue: 'Continue' },
+      { name: 'cancel-label', label: 'Cancel Label', controlType: 'text', defaultValue: 'Cancel' },
+    ],
   },
   {
     name: 'Dialog',
@@ -534,6 +549,11 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'feedback',
     description: 'Accessible modal dialog built on Radix UI with overlay and close button.',
     component: lazy(() => import('../pages/component-demos/DialogDemo')),
+    propControls: [
+      { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Edit Profile' },
+      { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Make changes to your profile here.' },
+      { name: 'show-footer', label: 'Show Footer', controlType: 'toggle', defaultValue: true },
+    ],
   },
   {
     name: 'Sheet',
@@ -542,6 +562,16 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Slide-out panel from screen edge for secondary content or forms.',
     usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/SheetDemo')),
+    propControls: [
+      { name: 'side', label: 'Side', controlType: 'select', defaultValue: 'right', options: [
+        { label: 'Top', value: 'top' },
+        { label: 'Right', value: 'right' },
+        { label: 'Bottom', value: 'bottom' },
+        { label: 'Left', value: 'left' },
+      ]},
+      { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Sheet Title' },
+      { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Sheet description text.' },
+    ],
   },
   {
     name: 'Sonner',
@@ -549,6 +579,17 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'feedback',
     description: 'Toast notification system with stacking and auto-dismiss.',
     component: lazy(() => import('../pages/component-demos/SonnerDemo')),
+    propControls: [
+      { name: 'type', label: 'Type', controlType: 'select', defaultValue: 'default', options: [
+        { label: 'Default', value: 'default' },
+        { label: 'Success', value: 'success' },
+        { label: 'Error', value: 'error' },
+        { label: 'Info', value: 'info' },
+        { label: 'Warning', value: 'warning' },
+      ]},
+      { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Event has been created' },
+      { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Monday, January 3rd at 6:00pm' },
+    ],
   },
   {
     name: 'Tooltip',
@@ -556,6 +597,16 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'feedback',
     description: 'Hover-triggered informational popup with configurable placement.',
     component: lazy(() => import('../pages/component-demos/TooltipDemo')),
+    propControls: [
+      { name: 'content', label: 'Content', controlType: 'text', defaultValue: 'Add to library' },
+      { name: 'side', label: 'Side', controlType: 'select', defaultValue: 'top', options: [
+        { label: 'Top', value: 'top' },
+        { label: 'Right', value: 'right' },
+        { label: 'Bottom', value: 'bottom' },
+        { label: 'Left', value: 'left' },
+      ]},
+      { name: 'delay', label: 'Delay (ms)', controlType: 'number', defaultValue: 200, min: 0, max: 2000 },
+    ],
   },
   {
     name: 'HoverCard',
@@ -564,6 +615,16 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Hover-triggered card preview for links or user profiles.',
     usesComponents: ['Avatar', 'Button'],
     component: lazy(() => import('../pages/component-demos/HoverCardDemo')),
+    propControls: [
+      { name: 'open-delay', label: 'Open Delay (ms)', controlType: 'number', defaultValue: 200, min: 0, max: 2000 },
+      { name: 'close-delay', label: 'Close Delay (ms)', controlType: 'number', defaultValue: 100, min: 0, max: 1000 },
+      { name: 'side', label: 'Side', controlType: 'select', defaultValue: 'bottom', options: [
+        { label: 'Top', value: 'top' },
+        { label: 'Right', value: 'right' },
+        { label: 'Bottom', value: 'bottom' },
+        { label: 'Left', value: 'left' },
+      ]},
+    ],
   },
   {
     name: 'Popover',
@@ -605,6 +666,14 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'navigation',
     description: 'Collapsible content sections with single or multiple open panels.',
     component: lazy(() => import('../pages/component-demos/AccordionDemo')),
+    propControls: [
+      { name: 'item-count', label: 'Items', controlType: 'counter', defaultValue: 3, min: 1, max: 6 },
+      { name: 'type', label: 'Type', controlType: 'select', defaultValue: 'single', options: [
+        { label: 'Single', value: 'single' },
+        { label: 'Multiple', value: 'multiple' },
+      ]},
+      { name: 'collapsible', label: 'Collapsible', controlType: 'toggle', defaultValue: true },
+    ],
   },
   {
     name: 'Breadcrumb',
@@ -623,6 +692,10 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'navigation',
     description: 'Expandable/collapsible content section with trigger.',
     component: lazy(() => import('../pages/component-demos/CollapsibleDemo')),
+    propControls: [
+      { name: 'open', label: 'Open', controlType: 'toggle', defaultValue: false },
+      { name: 'title', label: 'Title', controlType: 'text', defaultValue: '@peduarte starred 3 repositories' },
+    ],
   },
   {
     name: 'Command',
@@ -630,6 +703,10 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'navigation',
     description: 'Combobox/command palette with search filtering and keyboard selection.',
     component: lazy(() => import('../pages/component-demos/CommandDemo')),
+    propControls: [
+      { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Type a command or search...' },
+      { name: 'show-groups', label: 'Show Groups', controlType: 'toggle', defaultValue: true },
+    ],
   },
   {
     name: 'ContextMenu',
@@ -637,6 +714,10 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'navigation',
     description: 'Right-click menu with items, sub-menus, and separators.',
     component: lazy(() => import('../pages/component-demos/ContextMenuDemo')),
+    propControls: [
+      { name: 'item-count', label: 'Item Count', controlType: 'counter', defaultValue: 4, min: 2, max: 8 },
+      { name: 'show-separators', label: 'Show Separators', controlType: 'toggle', defaultValue: true },
+    ],
   },
   {
     name: 'DropdownMenu',
@@ -644,6 +725,11 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'navigation',
     description: 'Click-triggered menu with items, separators, and keyboard navigation.',
     component: lazy(() => import('../pages/component-demos/DropdownMenuDemo')),
+    propControls: [
+      { name: 'item-count', label: 'Item Count', controlType: 'counter', defaultValue: 5, min: 2, max: 8 },
+      { name: 'show-icons', label: 'Show Icons', controlType: 'toggle', defaultValue: true },
+      { name: 'show-separators', label: 'Show Separators', controlType: 'toggle', defaultValue: true },
+    ],
   },
   {
     name: 'Menubar',
@@ -651,6 +737,10 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'navigation',
     description: 'Horizontal menu bar with dropdown sub-menus.',
     component: lazy(() => import('../pages/component-demos/MenubarDemo')),
+    propControls: [
+      { name: 'menu-count', label: 'Menus', controlType: 'counter', defaultValue: 3, min: 2, max: 5 },
+      { name: 'show-shortcuts', label: 'Show Shortcuts', controlType: 'toggle', defaultValue: true },
+    ],
   },
   {
     name: 'NavigationMenu',
@@ -675,6 +765,11 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'navigation',
     description: 'Page navigation with previous/next and numbered page links.',
     component: lazy(() => import('../pages/component-demos/PaginationDemo')),
+    propControls: [
+      { name: 'total-pages', label: 'Total Pages', controlType: 'counter', defaultValue: 10, min: 3, max: 20 },
+      { name: 'current-page', label: 'Current Page', controlType: 'counter', defaultValue: 1, min: 1, max: 20 },
+      { name: 'show-ellipsis', label: 'Show Ellipsis', controlType: 'toggle', defaultValue: true },
+    ],
   },
   {
     name: 'ScrollArea',
@@ -682,6 +777,15 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'navigation',
     description: 'Custom scrollbar container with consistent cross-browser styling.',
     component: lazy(() => import('../pages/component-demos/ScrollAreaDemo')),
+    propControls: [
+      { name: 'height', label: 'Height', controlType: 'range', defaultValue: 200, min: 100, max: 400 },
+      { name: 'orientation', label: 'Orientation', controlType: 'select', defaultValue: 'vertical', options: [
+        { label: 'Vertical', value: 'vertical' },
+        { label: 'Horizontal', value: 'horizontal' },
+        { label: 'Both', value: 'both' },
+      ]},
+      { name: 'item-count', label: 'Item Count', controlType: 'counter', defaultValue: 20, min: 5, max: 50 },
+    ],
   },
   {
     name: 'Tabs',
@@ -689,6 +793,14 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'navigation',
     description: 'Tabbed interface for switching between content panels.',
     component: lazy(() => import('../pages/component-demos/TabsDemo')),
+    propControls: [
+      { name: 'tab-count', label: 'Tabs', controlType: 'counter', defaultValue: 3, min: 2, max: 6 },
+      { name: 'orientation', label: 'Orientation', controlType: 'select', defaultValue: 'horizontal', options: [
+        { label: 'Horizontal', value: 'horizontal' },
+        { label: 'Vertical', value: 'vertical' },
+      ]},
+      { name: 'show-content', label: 'Show Content', controlType: 'toggle', defaultValue: true },
+    ],
   },
 
   // Composed → moved to appropriate categories
@@ -735,7 +847,7 @@ export const componentRegistry: ComponentEntry[] = [
 
             return (
               <div key={i} className={`flex gap-1.5 ${isDisabled ? 'opacity-40' : ''}`}>
-                <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden flex-1 focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+                <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden flex-1 focus-within:border-ring focus-within:shadow-[--ring-shadow]">
                   <span className="shrink-0 text-xs text-muted-foreground select-none bg-secondary px-2 self-stretch flex items-center border-r border-input">{i + 1}</span>
                   <input
                     value={label}
@@ -766,22 +878,6 @@ export const componentRegistry: ComponentEntry[] = [
     },
   },
   {
-    name: 'StatusBadge',
-    slug: 'status-badge',
-    category: 'display',
-    description: 'Coloured pill badge indicating status (active, invited, inactive, error) using UDS tokens.',
-    component: lazy(() => import('../pages/component-demos/StatusBadgeDemo')),
-    propControls: [
-      { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'active', options: [
-        { label: 'Active', value: 'active' },
-        { label: 'Invited', value: 'invited' },
-        { label: 'Inactive', value: 'inactive' },
-        { label: 'Error', value: 'error' },
-      ]},
-      { name: 'text', label: 'Text', controlType: 'text', defaultValue: 'Active' },
-    ],
-  },
-  {
     name: 'MetricCard',
     slug: 'metric-card',
     category: 'display',
@@ -810,14 +906,37 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'feedback',
     description: 'Notification helper using Sonner with UDS styling and variants.',
     component: lazy(() => import('../pages/component-demos/ToastDemo')),
+    propControls: [
+      { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
+        { label: 'Default', value: 'default' },
+        { label: 'Success', value: 'success' },
+        { label: 'Error', value: 'error' },
+        { label: 'Warning', value: 'warning' },
+        { label: 'Info', value: 'info' },
+      ]},
+      { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Notification' },
+      { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Something happened.' },
+    ],
   },
   {
     name: 'Modal',
     slug: 'modal',
     category: 'feedback',
     description: 'Modal dialog pattern with ModalHeader (title + close) and ModalFooter (button slots) composed on shadcn Dialog.',
-    usesComponents: ['Dialog', 'Button'],
+    usesComponents: ['Dialog', 'Button', 'Input', 'Label'],
     component: lazy(() => import('../pages/component-demos/ModalDemo')),
+    propControls: [
+      { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'New Segment', section: 'Header' },
+      { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Create a new audience segment.', section: 'Header' },
+      { name: 'field-count', label: 'Form Fields', controlType: 'counter', defaultValue: 2, min: 1, max: 5, section: 'Body' },
+      { name: 'show-footer', label: 'Show Footer', controlType: 'toggle', defaultValue: true, section: 'Footer' },
+      { name: 'primary-label', label: 'Primary Button', controlType: 'text', defaultValue: 'Create', section: 'Footer' },
+      { name: 'show-cancel', label: 'Show Cancel', controlType: 'toggle', defaultValue: true, section: 'Footer' },
+      { name: 'primary-variant', label: 'Primary Variant', controlType: 'select', defaultValue: 'default', section: 'Footer', options: [
+        { label: 'Default', value: 'default' },
+        { label: 'Destructive', value: 'destructive' },
+      ]},
+    ],
   },
   // Compositions (multi-component patterns that orchestrate flows)
   {
@@ -873,7 +992,7 @@ export const componentRegistry: ComponentEntry[] = [
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Labels</span>
             <div className="space-y-2">
               {labels.map((label, i) => (
-                <div key={i} className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+                <div key={i} className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
                   <span className="shrink-0 text-xs text-muted-foreground select-none bg-secondary px-2 self-stretch flex items-center border-r border-input">{i + 1}</span>
                   <input
                     value={label}
@@ -914,7 +1033,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'page-header',
     category: 'compositions',
     description: 'Configurable page header with breadcrumbs, title, status badge, actions, tabs, filters, and bulk actions.',
-    usesComponents: ['Button', 'Badge', 'Tabs', 'Input', 'StatusBadge', 'Breadcrumb'],
+    usesComponents: ['Button', 'Badge', 'Tabs', 'Input', 'Breadcrumb'],
     component: lazy(() => import('../pages/component-demos/PageHeaderDemo')),
     propControls: [
       { name: 'breadcrumb-count', label: 'Breadcrumbs', controlType: 'counter', defaultValue: 3, min: 0, max: 3, section: 'Structure' },
@@ -960,7 +1079,7 @@ export const componentRegistry: ComponentEntry[] = [
         const key = `label-${i}`
         const val = (values[key] as string) ?? ''
         inputs.push(
-          <div key={i} className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+          <div key={i} className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
             <span className={`shrink-0 text-xs select-none bg-secondary px-2 self-stretch flex items-center border-r border-input ${i < optionCount ? 'text-muted-foreground' : 'text-muted-foreground/40'}`}>{i + 1}</span>
             <input
               value={val}
@@ -997,7 +1116,7 @@ export const componentRegistry: ComponentEntry[] = [
       <>
         <div className="space-y-1.5">
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide block">Bounds</span>
-          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
             <span className="shrink-0 text-xs text-muted-foreground select-none bg-secondary px-2 self-stretch flex items-center border-r border-input">Min</span>
             <input
               type="number"
@@ -1006,7 +1125,7 @@ export const componentRegistry: ComponentEntry[] = [
               className="flex-1 min-w-0 bg-transparent border-none outline-none text-xs text-foreground px-2"
             />
           </div>
-          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
             <span className="shrink-0 text-xs text-muted-foreground select-none bg-secondary px-2 self-stretch flex items-center border-r border-input">Max</span>
             <input
               type="number"
@@ -1015,7 +1134,7 @@ export const componentRegistry: ComponentEntry[] = [
               className="flex-1 min-w-0 bg-transparent border-none outline-none text-xs text-foreground px-2"
             />
           </div>
-          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]">
+          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
             <span className="shrink-0 text-xs text-muted-foreground select-none bg-secondary px-2 self-stretch flex items-center border-r border-input">Step</span>
             <input
               type="number"

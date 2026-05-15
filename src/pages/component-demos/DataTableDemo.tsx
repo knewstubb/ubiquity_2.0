@@ -1,5 +1,5 @@
 import { DataTable, type DataTableColumn } from '@/components/composed/data-table'
-import { StatusBadge, type StatusBadgeVariant } from '@/components/composed/status-badge'
+import { Badge } from '@/components/ui/badge'
 
 interface Contact {
   name: string
@@ -17,8 +17,8 @@ const columns: DataTableColumn<Contact>[] = [
     label: 'Status',
     sortable: true,
     render: (value) => {
-      const variant = (value === 'Active' ? 'active' : value === 'Invited' ? 'invited' : 'inactive') as StatusBadgeVariant
-      return <StatusBadge variant={variant}>{value as string}</StatusBadge>
+      const variant = value === 'Active' ? 'success-subtle' : value === 'Invited' ? 'info-subtle' : 'neutral-subtle'
+      return <Badge variant={variant as any}>{value as string}</Badge>
     },
   },
   { key: 'lastActive', label: 'Last Active', sortable: true, align: 'right' },

@@ -143,7 +143,7 @@ export function ChipInput({
         <div
           className={cn(
             'border border-input rounded-md flex flex-wrap items-center gap-1.5 cursor-text bg-background',
-            'focus-within:border-ring focus-within:shadow-[0_0_0_3px_rgba(20,184,138,0.15)]',
+            'focus-within:border-ring focus-within:shadow-[--ring-shadow]',
             sizeClasses[size],
             className,
           )}

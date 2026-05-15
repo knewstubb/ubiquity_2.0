@@ -285,9 +285,9 @@ export function ImportMappingStep({ type }: ImportMappingStepProps) {
               <select
                 className={cn(
                   "w-full py-2 px-3 text-sm border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8",
-                  row.status === 'duplicate' && "border-destructive focus:border-destructive focus:shadow-[0_0_0_2px_rgba(239,68,68,0.15)]",
+                  row.status === 'duplicate' && "border-destructive focus:border-destructive focus:shadow-[--ring-shadow-destructive]",
                   row.status === 'no-match' && "border-warning focus:border-warning focus:shadow-[0_0_0_2px_rgba(245,158,11,0.15)]",
-                  row.status === 'normal' && "border-border focus:border-primary focus:shadow-[0_0_0_2px_rgba(20,184,138,0.15)]"
+                  row.status === 'normal' && "border-border focus:border-primary focus:shadow-[--ring-shadow]"
                 )}
                 value={row.targetField}
                 onChange={(e) => handleTargetChange(idx, e.target.value)}
