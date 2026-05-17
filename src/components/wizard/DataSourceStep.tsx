@@ -71,8 +71,8 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
 
   return (
     <div className="flex flex-col gap-8" data-testid="data-source-step">
-      <h3 className="m-0 text-lg font-semibold text-primary">Data Source</h3>
-      <p className="-mt-5 text-sm text-tertiary-foreground">Choose what data to export and configure source options.</p>
+      <h3 className="m-0 text-xl font-semibold text-primary">Data Source</h3>
+      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Choose what data to export and configure source options.</p>
 
       {/* Row 0: Name */}
       <div className="flex items-start gap-14">

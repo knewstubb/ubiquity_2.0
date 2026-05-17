@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Button } from '@/components/ui/button'
 import { CaretUpDown } from '@phosphor-icons/react'
@@ -12,13 +12,18 @@ export default function CollapsibleDemo(props: CollapsibleDemoProps) {
   const hasControls = props.title !== undefined
   const [isOpen, setIsOpen] = useState(false)
 
+  const controlledOpen = props.open ?? false
+
+  useEffect(() => {
+    setIsOpen(controlledOpen)
+  }, [controlledOpen])
+
   if (hasControls) {
-    const controlledOpen = props.open ?? false
     const title = (props.title as string) ?? '@peduarte starred 3 repositories'
 
     return (
       <div className="max-w-sm">
-        <Collapsible open={controlledOpen} className="space-y-2">
+        <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-2">
           <div className="flex items-center justify-between space-x-4 px-4">
             <h4 className="text-sm font-semibold">{title}</h4>
             <CollapsibleTrigger asChild>

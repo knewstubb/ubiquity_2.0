@@ -26,10 +26,10 @@ export function DayPicker({ value, onChange, className }: DayPickerProps) {
           key={i}
           type="button"
           className={cn(
-            'w-9 h-9 rounded-full border border-primary text-sm font-semibold cursor-pointer inline-grid place-content-center p-0 transition-colors duration-150 leading-none',
+            'w-9 h-9 rounded-full text-sm font-semibold cursor-pointer inline-grid place-content-center p-0 transition-colors duration-150 leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
             value[i]
               ? 'bg-primary text-primary-foreground'
-              : 'bg-background text-primary hover:bg-accent',
+              : 'border border-border bg-background text-foreground hover:bg-secondary',
           )}
           onClick={() => toggleDay(i)}
           aria-label={`${DAY_NAMES[i]}${value[i] ? ' selected' : ''}`}

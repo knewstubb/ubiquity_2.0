@@ -1,4 +1,6 @@
+import { PencilSimple } from '@phosphor-icons/react';
 import { useConnections } from '../../contexts/ConnectionsContext';
+import { Button } from '../ui/button';
 import type { WizardDraft } from '../../models/wizard';
 import type { ExportDataType, ScheduleFrequency, FileType } from '../../models/automation';
 import { summariseFilterGroup, hasCompleteRules } from '../../utils/filterSummary';
@@ -7,6 +9,7 @@ import { getFieldByKey } from '../../data/fieldRegistry';
 
 interface ReviewStepProps {
   draft: WizardDraft;
+  onEditStep?: (step: number) => void;
 }
 
 const DATA_TYPE_LABELS: Record<ExportDataType, string> = {
@@ -78,7 +81,7 @@ const UNIT_MAP: Record<string, string> = {
   monthly: 'month/s',
 };
 
-export function ReviewStep({ draft }: ReviewStepProps) {
+export function ReviewStep({ draft, onEditStep }: ReviewStepProps) {
   const { getConnectionById } = useConnections();
   const connection = draft.connectionId ? getConnectionById(draft.connectionId) : undefined;
 
@@ -93,50 +96,58 @@ export function ReviewStep({ draft }: ReviewStepProps) {
 
   return (
     <div className="flex flex-col gap-6" data-testid="review-step">
-      <h3 className="text-lg font-semibold text-primary m-0">Review</h3>
-      <p className="text-sm text-tertiary-foreground -mt-5">Review your automation configuration before saving.</p>
+      <h3 className="m-0 text-xl font-semibold text-primary">Review</h3>
+      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Review your automation configuration before saving.</p>
 
       {/* Data Source — Step 0 */}
-      <div className="bg-background border border-border rounded-md py-4 px-5 transition-shadow duration-150 hover:shadow-sm">
-        <h3 className="text-sm font-semibold text-foreground m-0">Data Source</h3>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Connection</span>
-          <span className="text-sm text-muted-foreground font-medium">{connection ? connection.name : 'None selected'}</span>
+      <div className="border-l-2 border-primary pl-4">
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-semibold text-foreground m-0">Data Source</h4>
+          {onEditStep && <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(0)}><PencilSimple size={12} weight="bold" className="mr-1" />Edit</Button>}
         </div>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Exporting From</span>
-          <span className="text-sm text-muted-foreground font-medium">{draft.dataType ? DATA_TYPE_LABELS[draft.dataType] : 'None selected'}</span>
-        </div>
-        {(draft.dataType === 'contact' || draft.dataType === 'transactional_with_contact') && (
-          <div className="flex justify-between py-1">
-            <span className="text-sm text-tertiary-foreground">Contacts Database</span>
-            <span className="text-sm text-muted-foreground font-medium">Customer Contacts</span>
+        <div className="flex flex-col gap-1">
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Connection</span>
+            <span className="text-sm text-foreground font-medium">{connection ? connection.name : 'None selected'}</span>
           </div>
-        )}
-        {draft.enrichmentKeyField && (
-          <div className="flex justify-between py-1">
-            <span className="text-sm text-tertiary-foreground">Key Field</span>
-            <span className="text-sm text-muted-foreground font-medium">{draft.enrichmentKeyField} → ContactRecord.id</span>
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Exporting From</span>
+            <span className="text-sm text-foreground font-medium">{draft.dataType ? DATA_TYPE_LABELS[draft.dataType] : 'None selected'}</span>
           </div>
-        )}
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Filters</span>
-          <span className="text-sm text-muted-foreground font-medium">
-            {hasCompleteRules(draft.filters)
-              ? renderSummaryItems(summariseFilterGroup(draft.filters, getFieldByKey))
-              : 'No filters applied'}
-          </span>
+          {(draft.dataType === 'contact' || draft.dataType === 'transactional_with_contact') && (
+            <div className="flex justify-between py-0.5">
+              <span className="text-sm text-muted-foreground">Contacts Database</span>
+              <span className="text-sm text-foreground font-medium">Customer Contacts</span>
+            </div>
+          )}
+          {draft.enrichmentKeyField && (
+            <div className="flex justify-between py-0.5">
+              <span className="text-sm text-muted-foreground">Key Field</span>
+              <span className="text-sm text-foreground font-medium">{draft.enrichmentKeyField} → ContactRecord.id</span>
+            </div>
+          )}
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Filters</span>
+            <span className="text-sm text-foreground font-medium">
+              {hasCompleteRules(draft.filters)
+                ? renderSummaryItems(summariseFilterGroup(draft.filters, getFieldByKey))
+                : 'No filters applied'}
+            </span>
+          </div>
         </div>
       </div>
 
       {/* Field Mapping — Step 1 */}
-      <div className="bg-background border border-border rounded-md py-4 px-5 transition-shadow duration-150 hover:shadow-sm">
-        <h3 className="text-sm font-semibold text-foreground m-0">Field Mapping</h3>
+      <div className="border-l-2 border-primary pl-4">
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-semibold text-foreground m-0">Field Mapping</h4>
+          {onEditStep && <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(1)}><PencilSimple size={12} weight="bold" className="mr-1" />Edit</Button>}
+        </div>
         {draft.selectedFields.length > 0 ? (
           <ol className="list-none m-0 p-0 flex flex-col gap-1">
             {draft.selectedFields.map((field, index) => (
-              <li key={field.key} className="text-sm text-muted-foreground">
-                <span className="text-tertiary-foreground mr-2 min-w-5 inline-block">{index + 1}.</span>
+              <li key={field.key} className="text-sm text-foreground">
+                <span className="text-muted-foreground mr-2 min-w-5 inline-block">{index + 1}.</span>
                 {field.label}
               </li>
             ))}
@@ -147,93 +158,108 @@ export function ReviewStep({ draft }: ReviewStepProps) {
       </div>
 
       {/* File Configuration — Step 2 */}
-      <div className="bg-background border border-border rounded-md py-4 px-5 transition-shadow duration-150 hover:shadow-sm">
-        <h3 className="text-sm font-semibold text-foreground m-0">File Configuration</h3>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">File Type</span>
-          <span className="text-sm text-muted-foreground font-medium">{getFileTypeLabel(draft.fileType)}</span>
+      <div className="border-l-2 border-primary pl-4">
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-semibold text-foreground m-0">File Configuration</h4>
+          {onEditStep && <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(2)}><PencilSimple size={12} weight="bold" className="mr-1" />Edit</Button>}
         </div>
-        {draft.fileType === 'csv' && (
-          <div className="flex justify-between py-1">
-            <span className="text-sm text-tertiary-foreground">Delimiter</span>
-            <span className="text-sm text-muted-foreground font-medium">{DELIMITER_LABELS[draft.formatOptions.delimiter] ?? draft.formatOptions.delimiter}</span>
+        <div className="flex flex-col gap-1">
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">File Type</span>
+            <span className="text-sm text-foreground font-medium">{getFileTypeLabel(draft.fileType)}</span>
           </div>
-        )}
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Header Row</span>
-          <span className="text-sm text-muted-foreground font-medium">{draft.formatOptions.includeHeader ? 'Enabled' : 'Disabled'}</span>
-        </div>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Date Format</span>
-          <span className="text-sm text-muted-foreground font-medium">{DATE_FORMAT_LABELS[draft.formatOptions.dateFormat] ?? draft.formatOptions.dateFormat}</span>
-        </div>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Timezone</span>
-          <span className="text-sm text-muted-foreground font-medium">{draft.formatOptions.timezone}</span>
-        </div>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">File Naming</span>
-          <span className="text-sm text-muted-foreground font-medium">{draft.fileNamingPattern}</span>
-        </div>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Output Path</span>
-          <span className="text-sm text-muted-foreground font-medium font-mono break-all">{defaultFolder}</span>
+          {draft.fileType === 'csv' && (
+            <div className="flex justify-between py-0.5">
+              <span className="text-sm text-muted-foreground">Delimiter</span>
+              <span className="text-sm text-foreground font-medium">{DELIMITER_LABELS[draft.formatOptions.delimiter] ?? draft.formatOptions.delimiter}</span>
+            </div>
+          )}
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Header Row</span>
+            <span className="text-sm text-foreground font-medium">{draft.formatOptions.includeHeader ? 'Enabled' : 'Disabled'}</span>
+          </div>
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Date Format</span>
+            <span className="text-sm text-foreground font-medium">{DATE_FORMAT_LABELS[draft.formatOptions.dateFormat] ?? draft.formatOptions.dateFormat}</span>
+          </div>
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Timezone</span>
+            <span className="text-sm text-foreground font-medium">{draft.formatOptions.timezone}</span>
+          </div>
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">File Naming</span>
+            <span className="text-sm text-foreground font-medium">{draft.fileNamingPattern}</span>
+          </div>
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Output Path</span>
+            <span className="text-sm text-foreground font-medium font-mono break-all">{defaultFolder}</span>
+          </div>
         </div>
       </div>
 
       {/* Schedule — Step 3 */}
-      <div className="bg-background border border-border rounded-md py-4 px-5 transition-shadow duration-150 hover:shadow-sm">
-        <h3 className="text-sm font-semibold text-foreground m-0">Schedule</h3>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Frequency</span>
-          <span className="text-sm text-muted-foreground font-medium">{draft.schedule ? SCHEDULE_LABELS[draft.schedule] : 'None selected'}</span>
+      <div className="border-l-2 border-primary pl-4">
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-semibold text-foreground m-0">Schedule</h4>
+          {onEditStep && <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(3)}><PencilSimple size={12} weight="bold" className="mr-1" />Edit</Button>}
         </div>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Starting</span>
-          <span className="text-sm text-muted-foreground font-medium">{draft.scheduleConfig.starting}</span>
-        </div>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Every</span>
-          <span className="text-sm text-muted-foreground font-medium">{draft.scheduleConfig.every} {UNIT_MAP[draft.scheduleConfig.frequency]}</span>
-        </div>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">At</span>
-          <span className="text-sm text-muted-foreground font-medium">{draft.scheduleConfig.at}</span>
-        </div>
-        {draft.scheduleConfig.frequency === 'weekly' && (
-          <div className="flex justify-between py-1">
-            <span className="text-sm text-tertiary-foreground">On</span>
-            <span className="text-sm text-muted-foreground font-medium">
-              {DAY_NAMES.filter((_, i) => draft.scheduleConfig.weeklyDays[i]).join(', ') || 'None'}
-            </span>
+        <div className="flex flex-col gap-1">
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Frequency</span>
+            <span className="text-sm text-foreground font-medium">{draft.schedule ? SCHEDULE_LABELS[draft.schedule] : 'None selected'}</span>
           </div>
-        )}
-        {draft.scheduleConfig.frequency === 'monthly' && (
-          <div className="flex justify-between py-1">
-            <span className="text-sm text-tertiary-foreground">On the</span>
-            <span className="text-sm text-muted-foreground font-medium">
-              {draft.scheduleConfig.monthlyPattern === 'day'
-                ? `${draft.scheduleConfig.monthlyOrdinal} ${draft.scheduleConfig.monthlyDayOfWeek}`
-                : draft.scheduleConfig.monthlyDates.join(', ')}
-            </span>
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Starting</span>
+            <span className="text-sm text-foreground font-medium">{draft.scheduleConfig.starting}</span>
           </div>
-        )}
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Every</span>
+            <span className="text-sm text-foreground font-medium">{draft.scheduleConfig.every} {UNIT_MAP[draft.scheduleConfig.frequency]}</span>
+          </div>
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">At</span>
+            <span className="text-sm text-foreground font-medium">{draft.scheduleConfig.at}</span>
+          </div>
+          {draft.scheduleConfig.frequency === 'weekly' && (
+            <div className="flex justify-between py-0.5">
+              <span className="text-sm text-muted-foreground">On</span>
+              <span className="text-sm text-foreground font-medium">
+                {DAY_NAMES.filter((_, i) => draft.scheduleConfig.weeklyDays[i]).join(', ') || 'None'}
+              </span>
+            </div>
+          )}
+          {draft.scheduleConfig.frequency === 'monthly' && (
+            <div className="flex justify-between py-0.5">
+              <span className="text-sm text-muted-foreground">On the</span>
+              <span className="text-sm text-foreground font-medium">
+                {draft.scheduleConfig.monthlyPattern === 'day'
+                  ? `${draft.scheduleConfig.monthlyOrdinal} ${draft.scheduleConfig.monthlyDayOfWeek}`
+                  : draft.scheduleConfig.monthlyDates.join(', ')}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Notifications — Step 3 */}
-      <div className="bg-background border border-border rounded-md py-4 px-5 transition-shadow duration-150 hover:shadow-sm">
-        <h3 className="text-sm font-semibold text-foreground m-0">Notifications</h3>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Email Address</span>
-          <span className="text-sm text-muted-foreground font-medium">{draft.notifications.emails.join(', ') || 'None'}</span>
+      <div className="border-l-2 border-primary pl-4">
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-semibold text-foreground m-0">Notifications</h4>
+          {onEditStep && <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(3)}><PencilSimple size={12} weight="bold" className="mr-1" />Edit</Button>}
         </div>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Successful Export</span>
-          <span className="text-sm text-muted-foreground font-medium">{draft.notifications.successEnabled ? 'Enabled' : 'Disabled'}</span>
-        </div>
-        <div className="flex justify-between py-1">
-          <span className="text-sm text-tertiary-foreground">Failed Export</span>
-          <span className="text-sm text-muted-foreground font-medium">{draft.notifications.failureEnabled ? 'Enabled' : 'Disabled'}</span>
+        <div className="flex flex-col gap-1">
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Email Address</span>
+            <span className="text-sm text-foreground font-medium">{draft.notifications.emails.join(', ') || 'None'}</span>
+          </div>
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Successful Export</span>
+            <span className="text-sm text-foreground font-medium">{draft.notifications.successEnabled ? 'Enabled' : 'Disabled'}</span>
+          </div>
+          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-muted-foreground">Failed Export</span>
+            <span className="text-sm text-foreground font-medium">{draft.notifications.failureEnabled ? 'Enabled' : 'Disabled'}</span>
+          </div>
         </div>
       </div>
     </div>

@@ -96,8 +96,8 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
 
   return (
     <div className="flex flex-col gap-8" data-testid="field-mapping-step">
-      <h3 className="m-0 text-lg font-semibold text-primary">Field Mapping</h3>
-      <p className="-mt-5 text-sm text-tertiary-foreground">Select fields and drag to reorder. Selected fields appear at the top.</p>
+      <h3 className="m-0 text-xl font-semibold text-primary">Field Mapping</h3>
+      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Select fields and drag to reorder. Selected fields appear at the top.</p>
 
       <div className="flex flex-col gap-2">
         <div className="border border-border rounded-md overflow-hidden" role="group" aria-label="Export fields">

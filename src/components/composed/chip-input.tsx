@@ -153,7 +153,7 @@ export function ChipInput({
             <span
               key={value}
               className={cn(
-                'inline-flex items-center gap-1 border border-primary text-primary rounded-full font-medium leading-none whitespace-nowrap',
+                'inline-flex items-center gap-1 border border-primary text-primary rounded-full font-medium leading-none whitespace-nowrap hover:bg-accent',
                 chipSizeClasses[size],
               )}
             >
@@ -191,7 +191,7 @@ export function ChipInput({
             {values.length > 0 && (
               <button
                 type="button"
-                className="bg-transparent border-none text-muted-foreground cursor-pointer p-0.5 leading-none flex items-center hover:text-foreground"
+                className="bg-transparent border-none text-muted-foreground cursor-pointer p-1 leading-none flex items-center hover:text-foreground"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleClearAll();
@@ -222,7 +222,7 @@ export function ChipInput({
         {showValidation && (
           <div
             className={cn(
-              'mt-1.5 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium cursor-pointer transition-colors duration-150 border',
+              'mt-1.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium cursor-pointer transition-colors duration-150 border',
               isValid && 'bg-primary text-primary-foreground border-primary hover:bg-primary/90',
               isInvalid && 'bg-background text-destructive border-destructive',
             )}

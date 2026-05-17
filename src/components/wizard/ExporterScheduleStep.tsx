@@ -68,8 +68,8 @@ export function ExporterScheduleStep({ draft, onUpdate }: ExporterScheduleStepPr
 
   return (
     <div className="flex flex-col gap-8" data-testid="exporter-schedule-step">
-      <h3 className="m-0 text-lg font-semibold text-primary">Schedule</h3>
-      <p className="-mt-5 text-sm text-tertiary-foreground">Set when and how often this export runs.</p>
+      <h3 className="m-0 text-xl font-semibold text-primary">Schedule</h3>
+      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Set when and how often this export runs.</p>
 
       <div className="flex flex-col gap-4 w-full">
         {/* Frequency */}

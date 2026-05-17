@@ -83,8 +83,8 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
 
   return (
     <div className="flex flex-col gap-8" data-testid="output-config-step">
-      <h3 className="m-0 text-lg font-semibold text-primary">File Configuration</h3>
-      <p className="-mt-5 text-sm text-tertiary-foreground">Configure file format, destination folder, and output settings.</p>
+      <h3 className="m-0 text-xl font-semibold text-primary">File Configuration</h3>
+      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Configure file format, destination folder, and output settings.</p>
 
       {/* Destination Folder */}
       <div className="flex items-start gap-14">

@@ -206,7 +206,7 @@ export function WizardModal({
       case 3:
         return <DeliveryStep draft={draft} onUpdate={handleDraftUpdate} />;
       case 4:
-        return <ReviewStep draft={draft} />;
+        return <ReviewStep draft={draft} onEditStep={(step) => setCurrentStep(step)} />;
       default:
         return null;
     }
@@ -242,24 +242,23 @@ export function WizardModal({
         </div>
 
         {/* Right content area */}
-        <div className="flex-1 flex flex-col min-w-0 bg-background">
-          <div className="flex items-center justify-end pt-4 px-8 shrink-0">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleCloseClick}
-              aria-label="Close wizard"
-              data-testid="wizard-close-button"
-            >
-              <X weight="bold" />
-            </Button>
-          </div>
+        <div className="flex-1 flex flex-col min-w-0 bg-background relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleCloseClick}
+            aria-label="Close wizard"
+            data-testid="wizard-close-button"
+            className="absolute top-8 right-8 z-10"
+          >
+            <X weight="bold" />
+          </Button>
 
-          <div className="flex-1 overflow-y-auto px-8 pb-8 flex flex-col gap-8 scrollbar-gutter-stable" data-testid="wizard-step-content">
+          <div className="flex-1 overflow-y-auto px-8 pt-8 pb-8 flex flex-col gap-8 scrollbar-gutter-stable" data-testid="wizard-step-content">
             {stepContent}
           </div>
 
-          <div className="shrink-0 py-4 px-8">
+          <div className="shrink-0 pt-4 pb-8 px-8">
             <WizardNavButtons
               onBack={handleBack}
               onNext={handleNext}
@@ -267,6 +266,7 @@ export function WizardModal({
               canProceed={canProceed}
               isLast={currentStep === 4}
               showBack={currentStep > 0}
+              submitLabel={editConnectorId ? (isDirty ? 'Save Changes' : 'Done') : 'Create Exporter'}
             />
           </div>
         </div>

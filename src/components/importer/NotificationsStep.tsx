@@ -83,8 +83,8 @@ export function NotificationsStep({ onValidChange }: NotificationsStepProps) {
 
   return (
     <div className="flex flex-col gap-8">
-      <h3 className="m-0 text-lg font-semibold text-primary">Notifications</h3>
-      <p className="mt-[-20px] mb-0 text-sm text-tertiary-foreground">Choose who gets notified when imports run, fail, or files are missing.</p>
+      <h3 className="m-0 text-xl font-semibold text-primary">Notifications</h3>
+      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Choose who gets notified when imports run, fail, or files are missing.</p>
 
       {/* ── Row 1: Failure (required) ── */}
       <div className="flex items-start gap-14">

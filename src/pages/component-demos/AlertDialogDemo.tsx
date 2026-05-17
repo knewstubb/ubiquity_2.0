@@ -16,6 +16,7 @@ interface AlertDialogDemoProps {
   description?: string
   'confirm-label'?: string
   'cancel-label'?: string
+  'confirm-variant'?: string
 }
 
 export default function AlertDialogDemo(props: AlertDialogDemoProps) {
@@ -26,6 +27,11 @@ export default function AlertDialogDemo(props: AlertDialogDemoProps) {
     const description = (props.description as string) ?? 'This action cannot be undone.'
     const confirmLabel = (props['confirm-label'] as string) ?? 'Continue'
     const cancelLabel = (props['cancel-label'] as string) ?? 'Cancel'
+    const confirmVariant = (props['confirm-variant'] as string) ?? 'destructive'
+
+    const actionClassName = confirmVariant === 'destructive'
+      ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+      : undefined
 
     return (
       <AlertDialog>
@@ -39,7 +45,7 @@ export default function AlertDialogDemo(props: AlertDialogDemoProps) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{cancelLabel}</AlertDialogCancel>
-            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction className={actionClassName}>
               {confirmLabel}
             </AlertDialogAction>
           </AlertDialogFooter>

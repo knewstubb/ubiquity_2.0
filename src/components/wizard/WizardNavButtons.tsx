@@ -7,6 +7,7 @@ interface WizardNavButtonsProps {
   canProceed: boolean;
   isLast: boolean;
   showBack?: boolean;
+  submitLabel?: string;
 }
 
 export function WizardNavButtons({
@@ -16,19 +17,18 @@ export function WizardNavButtons({
   canProceed,
   isLast,
   showBack = true,
+  submitLabel,
 }: WizardNavButtonsProps) {
   return (
     <div className="flex items-center justify-end gap-3">
       <Button variant="ghost" onClick={onCancel}>
         Cancel
       </Button>
-      {showBack && (
-        <Button variant="outline" onClick={onBack}>
-          Back
-        </Button>
-      )}
+      <Button variant="outline" onClick={onBack} disabled={!showBack}>
+        Back
+      </Button>
       <Button disabled={!canProceed} onClick={onNext}>
-        {isLast ? 'Save' : 'Next'}
+        {isLast ? (submitLabel ?? 'Save') : 'Next'}
       </Button>
     </div>
   );

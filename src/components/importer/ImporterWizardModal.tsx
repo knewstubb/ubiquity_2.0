@@ -300,24 +300,23 @@ export function ImporterWizardModal({
         </div>
 
         {/* Right content area */}
-        <div className="flex-1 flex flex-col min-w-0 bg-background">
-          <div className="flex items-center justify-end pt-4 px-8 shrink-0">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleCloseClick}
-              aria-label="Close wizard"
-              data-testid="importer-close-button"
-            >
-              <X weight="bold" />
-            </Button>
-          </div>
+        <div className="flex-1 flex flex-col min-w-0 bg-background relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleCloseClick}
+            aria-label="Close wizard"
+            data-testid="importer-close-button"
+            className="absolute top-8 right-8 z-10"
+          >
+            <X weight="bold" />
+          </Button>
 
-          <div className="flex-1 overflow-y-auto px-8 pb-8 flex flex-col gap-6 scrollbar-gutter-stable">
+          <div className="flex-1 overflow-y-auto px-8 pt-8 pb-8 flex flex-col gap-6 scrollbar-gutter-stable">
             {stepContent}
           </div>
 
-          <div className="shrink-0 py-4 px-8">
+          <div className="shrink-0 pt-4 pb-8 px-8">
             <WizardNavButtons
               onBack={handleBack}
               onNext={handleNext}
@@ -325,6 +324,7 @@ export function ImporterWizardModal({
               canProceed={canProceed}
               isLast={currentStep === lastStepIndex}
               showBack={currentStep > 0}
+              submitLabel="Create Importer"
             />
           </div>
         </div>

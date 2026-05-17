@@ -15,6 +15,13 @@ interface DialogDemoProps {
   title?: string
   description?: string
   'show-footer'?: boolean
+  size?: string
+}
+
+const SIZE_CLASSES: Record<string, string> = {
+  sm: 'sm:max-w-[360px]',
+  default: 'sm:max-w-[425px]',
+  lg: 'sm:max-w-[560px]',
 }
 
 export default function DialogDemo(props: DialogDemoProps) {
@@ -24,13 +31,15 @@ export default function DialogDemo(props: DialogDemoProps) {
     const title = (props.title as string) ?? 'Edit Profile'
     const description = (props.description as string) ?? 'Make changes to your profile here.'
     const showFooter = props['show-footer'] ?? true
+    const size = (props.size as string) ?? 'default'
+    const sizeClass = SIZE_CLASSES[size] ?? SIZE_CLASSES.default
 
     return (
       <Dialog>
         <DialogTrigger asChild>
           <Button>Open Dialog</Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className={sizeClass}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>

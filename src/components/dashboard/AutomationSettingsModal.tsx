@@ -1,5 +1,7 @@
-import { X } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../ui/dialog';
+import { ModalHeader } from '../composed/modal-header';
+import { ModalFooter } from '../composed/modal-footer';
 import type { Automation } from '../../models/automation';
 import type { Connection } from '../../models/connection';
 
@@ -26,136 +28,161 @@ const DATA_TYPE_LABELS: Record<string, string> = {
 
 export function AutomationSettingsModal({ connector, connection, onClose, onEdit }: AutomationSettingsModalProps) {
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[200]" onClick={onClose}>
-      <div className="bg-background rounded-lg shadow-xl w-[560px] max-w-[90vw] max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-border">
-          <div>
-            <h2 className="text-lg font-semibold text-foreground m-0">{connector.name}</h2>
-            <p className="text-[13px] text-muted-foreground mt-1 mb-0">{connection.name} · {connector.direction === 'import' ? 'Importer' : 'Exporter'}</p>
-          </div>
-          <button type="button" className="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded text-tertiary-foreground cursor-pointer transition-colors duration-150 shrink-0 hover:bg-secondary hover:text-foreground" onClick={onClose} aria-label="Close">
-            <X size={18} weight="bold" />
-          </button>
+    <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent className="max-w-[560px] p-0 gap-0">
+        <DialogTitle className="sr-only">{connector.name}</DialogTitle>
+        <DialogDescription className="sr-only">Automation settings for {connector.name}</DialogDescription>
+        <ModalHeader
+          title={connector.name}
+          description={`${connection.name} · ${connector.direction === 'import' ? 'Importer' : 'Exporter'}`}
+          onClose={onClose}
+        />
+
+        <div className="px-6 py-5 overflow-y-auto max-h-[60vh] flex flex-col gap-5">
+          {connector.direction === 'import' ? (
+            <>
+              {/* Importer: File Settings */}
+              <Section title="File Settings">
+                <Row label="Path Mode" value="Automatic" />
+                <Row label="Folder Name" value={toKebabCase(connector.name)} />
+                <Row label="Sample File" value="sample-contacts.csv" />
+                <Row label="Importing To" value={DATA_TYPE_LABELS[connector.dataType] ?? connector.dataType} />
+                <Row label="Database" value="Customer Contacts" />
+              </Section>
+
+              {/* Importer: Contact Configuration */}
+              <Section title="Contact Configuration">
+                <Row label="Update Type" value="Append / Update" />
+                <Row label="Blank Values" value="Preserve Existing Data" />
+                <Row label="Matching Fields" value="Email, Customer ID" />
+              </Section>
+
+              {/* Importer: Contact Mapping */}
+              <Section title="Contact Mapping">
+                <div className="flex flex-col gap-1">
+                  {connector.selectedFields.length > 0 ? (
+                    connector.selectedFields.slice(0, 5).map((field) => (
+                      <div key={field.key} className="flex items-center gap-2 py-0.5">
+                        <span className="text-sm text-muted-foreground min-w-[120px]">{field.key}</span>
+                        <span className="text-sm text-muted-foreground">→</span>
+                        <span className="text-sm text-primary font-medium">{field.label}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <Row label="" value="No fields mapped" />
+                  )}
+                </div>
+                {connector.selectedFields.length > 0 && (
+                  <p className="mt-2 mb-0 text-xs text-muted-foreground">{connector.selectedFields.length} fields mapped</p>
+                )}
+              </Section>
+
+              {/* Importer: Notifications */}
+              <Section title="Notifications">
+                <Row label="Failure" value="contact@gmail.com" />
+                <Row label="Success" value="Disabled" />
+                <Row label="No File Alert" value="Disabled" />
+              </Section>
+            </>
+          ) : (
+            <>
+              {/* Exporter: Data Source */}
+              <Section title="Data Source">
+                <Row label="Connection" value={connection.name} />
+                <Row label="Exporting From" value={DATA_TYPE_LABELS[connector.dataType] ?? connector.dataType} />
+                {(connector.dataType === 'contact' || connector.dataType === 'transactional_with_contact') && (
+                  <Row label="Contacts Database" value="Customer Contacts" />
+                )}
+                {connector.transactionalSource && (
+                  <Row label="Source Table" value={connector.transactionalSource} />
+                )}
+                {connector.enrichmentKeyField && (
+                  <Row label="Key Field" value={`${connector.enrichmentKeyField} → ContactRecord.id`} />
+                )}
+                <Row label="Filters" value="No filters applied" />
+              </Section>
+
+              {/* Exporter: Field Mapping */}
+              <Section title="Field Mapping">
+                {connector.selectedFields.length > 0 ? (
+                  <>
+                    {connector.selectedFields.map((field, index) => (
+                      <Row key={field.key} label={`${index + 1}.`} value={field.label} />
+                    ))}
+                  </>
+                ) : (
+                  <Row label="" value="No fields selected" />
+                )}
+              </Section>
+
+              {/* Exporter: File Configuration */}
+              <Section title="File Configuration">
+                <Row label="File Type" value={connector.fileType.toUpperCase()} />
+                {connector.fileType === 'csv' && (
+                  <Row label="Delimiter" value={connector.formatOptions.delimiter === ',' ? 'Comma (,)' : connector.formatOptions.delimiter === '|' ? 'Pipe (|)' : connector.formatOptions.delimiter === '\t' ? 'Tab' : connector.formatOptions.delimiter} />
+                )}
+                <Row label="Header Row" value={connector.formatOptions.includeHeader ? 'Enabled' : 'Disabled'} />
+                <Row label="Date Format" value={connector.formatOptions.dateFormat} />
+                <Row label="Timezone" value={connector.formatOptions.timezone} />
+                <Row label="File Naming" value={connector.fileNamingPattern || '—'} />
+                <Row label="Output Path" value={`/company/base-path/${toKebabCase(connector.name)}/`} />
+              </Section>
+
+              {/* Exporter: Schedule */}
+              <Section title="Schedule">
+                <Row label="Frequency" value={SCHEDULE_LABELS[connector.schedule] ?? connector.schedule} />
+                <Row
+                  label="Status"
+                  value={connector.status === 'active' ? 'Active' : 'Paused'}
+                  valueClassName={connector.status === 'active' ? 'text-primary' : 'text-muted-foreground'}
+                />
+              </Section>
+
+              {/* Exporter: Notifications */}
+              <Section title="Notifications">
+                <Row label="Email Address" value="contact@gmail.com" />
+                <Row label="Successful Export" value="Enabled" />
+                <Row label="Failed Export" value="Enabled" />
+              </Section>
+            </>
+          )}
+
+          {/* Metadata (both) */}
+          <Section title="Metadata">
+            <Row label="Created" value={formatDateTime(connector.createdAt)} />
+            <Row label="Last Updated" value={formatDateTime(connector.updatedAt)} />
+          </Section>
         </div>
 
-        {/* Content */}
-        <div className="px-6 py-4 overflow-y-auto flex-1 flex flex-col gap-4">
-          {/* File Settings */}
-          <div className="bg-background border border-border rounded-md px-4 py-3">
-            <div className="mb-2 pb-1.5 border-b border-border">
-              <h4 className="text-[13px] font-semibold text-foreground m-0">File Settings</h4>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Connection</span>
-              <span className="text-[13px] text-foreground font-medium">{connection.name}</span>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Protocol</span>
-              <span className="text-[13px] text-foreground font-medium">{connection.protocol}</span>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Base Path</span>
-              <span className="text-[13px] text-foreground font-medium">{connection.basePath}</span>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">File Type</span>
-              <span className="text-[13px] text-foreground font-medium">{connector.fileType.toUpperCase()}</span>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">File Pattern</span>
-              <span className="text-[13px] text-foreground font-medium">{connector.fileNamingPattern}</span>
-            </div>
-          </div>
+        <ModalFooter
+          primaryAction={{ label: 'Edit Automation', onClick: () => { onClose(); onEdit(); } }}
+          secondaryAction={{ label: 'Close', onClick: onClose }}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+}
 
-          {/* Data Configuration */}
-          <div className="bg-background border border-border rounded-md px-4 py-3">
-            <div className="mb-2 pb-1.5 border-b border-border">
-              <h4 className="text-[13px] font-semibold text-foreground m-0">Data Configuration</h4>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Data Type</span>
-              <span className="text-[13px] text-foreground font-medium">{DATA_TYPE_LABELS[connector.dataType] ?? connector.dataType}</span>
-            </div>
-            {connector.transactionalSource && (
-              <div className="flex justify-between py-[3px]">
-                <span className="text-[13px] text-tertiary-foreground">Source Table</span>
-                <span className="text-[13px] text-foreground font-medium">{connector.transactionalSource}</span>
-              </div>
-            )}
-            {connector.enrichmentKeyField && (
-              <div className="flex justify-between py-[3px]">
-                <span className="text-[13px] text-tertiary-foreground">Enrichment Key</span>
-                <span className="text-[13px] text-foreground font-medium">{connector.enrichmentKeyField}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Format Options */}
-          <div className="bg-background border border-border rounded-md px-4 py-3">
-            <div className="mb-2 pb-1.5 border-b border-border">
-              <h4 className="text-[13px] font-semibold text-foreground m-0">Format Options</h4>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Delimiter</span>
-              <span className="text-[13px] text-foreground font-medium">{connector.formatOptions.delimiter === ',' ? 'Comma (,)' : connector.formatOptions.delimiter === '|' ? 'Pipe (|)' : connector.formatOptions.delimiter === '\t' ? 'Tab' : connector.formatOptions.delimiter}</span>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Header Row</span>
-              <span className="text-[13px] text-foreground font-medium">{connector.formatOptions.includeHeader ? 'Yes' : 'No'}</span>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Date Format</span>
-              <span className="text-[13px] text-foreground font-medium">{connector.formatOptions.dateFormat}</span>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Timezone</span>
-              <span className="text-[13px] text-foreground font-medium">{connector.formatOptions.timezone}</span>
-            </div>
-          </div>
-
-          {/* Schedule */}
-          <div className="bg-background border border-border rounded-md px-4 py-3">
-            <div className="mb-2 pb-1.5 border-b border-border">
-              <h4 className="text-[13px] font-semibold text-foreground m-0">Schedule</h4>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Frequency</span>
-              <span className="text-[13px] text-foreground font-medium">{SCHEDULE_LABELS[connector.schedule] ?? connector.schedule}</span>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Status</span>
-              <span className={cn(
-                "text-[13px] font-medium",
-                connector.status === 'active' ? "text-primary" : "text-tertiary-foreground"
-              )}>
-                {connector.status === 'active' ? 'Active' : 'Paused'}
-              </span>
-            </div>
-          </div>
-
-          {/* Metadata */}
-          <div className="bg-background border border-border rounded-md px-4 py-3">
-            <div className="mb-2 pb-1.5 border-b border-border">
-              <h4 className="text-[13px] font-semibold text-foreground m-0">Metadata</h4>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Created</span>
-              <span className="text-[13px] text-foreground font-medium">{formatDateTime(connector.createdAt)}</span>
-            </div>
-            <div className="flex justify-between py-[3px]">
-              <span className="text-[13px] text-tertiary-foreground">Last Updated</span>
-              <span className="text-[13px] text-foreground font-medium">{formatDateTime(connector.updatedAt)}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="flex justify-end gap-2 px-6 py-3 pb-4 border-t border-border">
-          <button type="button" className="px-4 py-2 text-sm font-sans font-medium text-muted-foreground bg-background border border-border rounded cursor-pointer transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2" onClick={onClose}>Close</button>
-          <button type="button" className="px-4 py-2 text-sm font-sans font-semibold text-primary-foreground bg-primary border-none rounded cursor-pointer transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2" onClick={() => { onClose(); onEdit(); }}>Edit Automation</button>
-        </div>
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="border-l-2 border-primary pl-4">
+      <h4 className="text-sm font-semibold text-foreground m-0 mb-2">{title}</h4>
+      <div className="flex flex-col gap-1">
+        {children}
       </div>
+    </div>
+  );
+}
+
+function toKebabCase(str: string): string {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function Row({ label, value, valueClassName }: { label: string; value: string; valueClassName?: string }) {
+  return (
+    <div className="flex justify-between py-0.5">
+      <span className="text-sm text-muted-foreground">{label}</span>
+      <span className={cn('text-sm text-foreground font-medium', valueClassName)}>{value}</span>
     </div>
   );
 }

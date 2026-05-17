@@ -24,7 +24,7 @@ export function ModalHeader({ title, onClose, description, className }: ModalHea
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 h-5 w-5 flex items-center justify-center rounded-sm text-muted-foreground transition-all hover:text-foreground hover:bg-secondary active:scale-90 focus:outline-none focus-visible:text-foreground"
+            className="shrink-0 h-6 w-6 flex items-center justify-center rounded-sm text-muted-foreground transition-all hover:text-foreground hover:bg-secondary active:scale-90 focus:outline-none focus-visible:text-foreground"
             aria-label="Close"
           >
             <X size={16} weight="regular" />
@@ -32,7 +32,7 @@ export function ModalHeader({ title, onClose, description, className }: ModalHea
         )}
       </div>
       {description && (
-        <p className="text-sm text-muted-foreground mt-0.5 mb-0 leading-normal">{description}</p>
+        <p className="text-sm text-muted-foreground mt-1 mb-0 leading-normal">{description}</p>
       )}
     </div>
   )

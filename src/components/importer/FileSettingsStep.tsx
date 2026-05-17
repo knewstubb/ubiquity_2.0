@@ -73,14 +73,14 @@ export function FileSettingsStep({
 
   return (
     <div className="flex flex-col gap-8">
-      <h3 className="m-0 text-lg font-semibold text-primary">File Settings</h3>
-      <p className="mt-[-20px] mb-0 text-sm text-tertiary-foreground">Configure how files are read and where they are stored.</p>
+      <h3 className="m-0 text-xl font-semibold text-primary">File Settings</h3>
+      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Configure how files are read and where they are stored.</p>
 
       {/* Name */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
-          <p className="text-sm font-semibold text-foreground m-0">Name</p>
-          <p className="text-xs text-tertiary-foreground mt-1 mb-0">A unique name for this automation</p>
+          <p className="text-sm font-semibold text-foreground m-0">Importer Name</p>
+          <p className="text-xs text-tertiary-foreground mt-1 mb-0">A unique name for this importer</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
           <Input

@@ -16,6 +16,7 @@ interface SheetDemoProps {
   side?: string
   title?: string
   description?: string
+  'show-footer'?: boolean
 }
 
 export default function SheetDemo(props: SheetDemoProps) {
@@ -25,6 +26,7 @@ export default function SheetDemo(props: SheetDemoProps) {
     const side = (props.side ?? 'right') as 'top' | 'right' | 'bottom' | 'left'
     const title = (props.title as string) ?? 'Sheet Title'
     const description = (props.description as string) ?? 'Sheet description text.'
+    const showFooter = props['show-footer'] ?? true
 
     return (
       <Sheet>
@@ -46,11 +48,13 @@ export default function SheetDemo(props: SheetDemoProps) {
               <Input id="sheet-ctrl-email" defaultValue="sarah@example.com" />
             </div>
           </div>
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button type="submit">Save changes</Button>
-            </SheetClose>
-          </SheetFooter>
+          {showFooter && (
+            <SheetFooter>
+              <SheetClose asChild>
+                <Button type="submit">Save changes</Button>
+              </SheetClose>
+            </SheetFooter>
+          )}
         </SheetContent>
       </Sheet>
     )

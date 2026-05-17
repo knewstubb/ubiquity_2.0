@@ -161,8 +161,8 @@ export function ImportConfigStep({ type }: ImportConfigStepProps) {
 
   return (
     <div className="flex flex-col gap-8">
-      <h3 className="m-0 text-lg font-semibold text-primary">{pageTitle}</h3>
-      <p className="mt-[-20px] mb-0 text-sm text-tertiary-foreground">Set how records are matched, updated, and deduplicated.</p>
+      <h3 className="m-0 text-xl font-semibold text-primary">{pageTitle}</h3>
+      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Set how records are matched, updated, and deduplicated.</p>
 
       {/* Update Type */}
       <div className="flex items-start gap-14">

@@ -249,8 +249,8 @@ export function ImportMappingStep({ type }: ImportMappingStepProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <h2 className="m-0 text-lg font-semibold text-primary">{title}</h2>
-      <p className="mt-[-16px] mb-0 text-sm text-tertiary-foreground">Map your file columns to UbiQuity fields.</p>
+      <h3 className="m-0 text-xl font-semibold text-primary">{title}</h3>
+      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Map your file columns to UbiQuity fields.</p>
 
       <div className="border border-border rounded-lg bg-background overflow-hidden">
         {/* Header */}

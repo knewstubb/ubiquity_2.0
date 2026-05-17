@@ -523,6 +523,9 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
         { label: 'Default', value: 'default' },
         { label: 'Destructive', value: 'destructive' },
+        { label: 'Warning', value: 'warning' },
+        { label: 'Info', value: 'info' },
+        { label: 'Success', value: 'success' },
       ]},
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Heads up!' },
       { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'You can add components to your app using the CLI.' },
@@ -541,6 +544,10 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'This action cannot be undone.' },
       { name: 'confirm-label', label: 'Confirm Label', controlType: 'text', defaultValue: 'Continue' },
       { name: 'cancel-label', label: 'Cancel Label', controlType: 'text', defaultValue: 'Cancel' },
+      { name: 'confirm-variant', label: 'Confirm Style', controlType: 'select', defaultValue: 'destructive', options: [
+        { label: 'Default (Primary)', value: 'default' },
+        { label: 'Destructive', value: 'destructive' },
+      ]},
     ],
   },
   {
@@ -553,6 +560,11 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Edit Profile' },
       { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Make changes to your profile here.' },
       { name: 'show-footer', label: 'Show Footer', controlType: 'toggle', defaultValue: true },
+      { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'default', options: [
+        { label: 'Small (360px)', value: 'sm' },
+        { label: 'Default (425px)', value: 'default' },
+        { label: 'Large (560px)', value: 'lg' },
+      ]},
     ],
   },
   {
@@ -571,6 +583,7 @@ export const componentRegistry: ComponentEntry[] = [
       ]},
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Sheet Title' },
       { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Sheet description text.' },
+      { name: 'show-footer', label: 'Show Footer', controlType: 'toggle', defaultValue: true },
     ],
   },
   {
@@ -706,6 +719,7 @@ export const componentRegistry: ComponentEntry[] = [
     propControls: [
       { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Type a command or search...' },
       { name: 'show-groups', label: 'Show Groups', controlType: 'toggle', defaultValue: true },
+      { name: 'item-count', label: 'Items', controlType: 'counter', defaultValue: 5, min: 2, max: 8 },
     ],
   },
   {
@@ -1255,6 +1269,17 @@ export const componentRegistry: ComponentEntry[] = [
     propControls: [
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'How does this work?' },
       { name: 'body', label: 'Body', controlType: 'textarea', defaultValue: 'This is a help popover that provides contextual information to the user.' },
+      { name: 'side', label: 'Side', controlType: 'select', defaultValue: 'bottom', options: [
+        { label: 'Top', value: 'top' },
+        { label: 'Right', value: 'right' },
+        { label: 'Bottom', value: 'bottom' },
+        { label: 'Left', value: 'left' },
+      ]},
+      { name: 'align', label: 'Align', controlType: 'select', defaultValue: 'start', options: [
+        { label: 'Start', value: 'start' },
+        { label: 'Center', value: 'center' },
+        { label: 'End', value: 'end' },
+      ]},
     ],
   },
   {
@@ -1263,6 +1288,15 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'inputs',
     description: 'Seven circular day-of-week toggle buttons (Mon–Sun). Selected days are filled primary, unselected have a 1px primary outline.',
     component: lazy(() => import('../pages/component-demos/DayPickerDemo')),
-    propControls: [],
+    propControls: [
+      { name: 'preset', label: 'Preset', controlType: 'select', defaultValue: 'custom', options: [
+        { label: 'Custom', value: 'custom' },
+        { label: 'Weekdays', value: 'weekdays' },
+        { label: 'Weekend', value: 'weekend' },
+        { label: 'All', value: 'all' },
+        { label: 'None', value: 'none' },
+      ]},
+      { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
+    ],
   },
 ]
