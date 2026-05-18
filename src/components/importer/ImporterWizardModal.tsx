@@ -21,11 +21,17 @@ import { ImportConfigStep } from './ImportConfigStep';
 import { ImportMappingStep } from './ImportMappingStep';
 import { ImporterReviewStep } from './ImporterReviewStep';
 import type { ImporterConfig, ImportDataType } from '../../models/importer';
-import { DEFAULT_FILE_PATH_CONFIG } from '../../models/importer';
+import {
+  DEFAULT_FILE_PATH_CONFIG,
+  DEFAULT_CONTACT_CONFIG,
+  DEFAULT_TRANSACTIONAL_CONFIG,
+  DEFAULT_NOTIFICATION_CONFIG,
+} from '../../models/importer';
 
 interface ImporterWizardModalProps {
   connectionId: string;
   connectorName: string;
+  existingConfig?: ImporterConfig;
   onSave: (config: ImporterConfig) => void;
   onClose: () => void;
 }
@@ -92,17 +98,18 @@ function createDefaultConfig(
       ...DEFAULT_FILE_PATH_CONFIG,
       folderName: toKebabCase(name),
     },
-    notifications: {},
-    contactConfig: {},
-    contactMapping: {},
-    transactionalConfig: {},
-    transactionalMapping: {},
+    notifications: { ...DEFAULT_NOTIFICATION_CONFIG },
+    contactConfig: { ...DEFAULT_CONTACT_CONFIG },
+    contactMapping: [],
+    transactionalConfig: { ...DEFAULT_TRANSACTIONAL_CONFIG },
+    transactionalMapping: [],
   };
 }
 
 export function ImporterWizardModal({
   connectionId,
   connectorName,
+  existingConfig,
   onSave,
   onClose,
 }: ImporterWizardModalProps) {
@@ -112,8 +119,8 @@ export function ImporterWizardModal({
   const basePath = connection?.basePath ?? '/company/base-path/';
 
   const initialConfig = useMemo(
-    () => createDefaultConfig(connectionId, connectorName),
-    [connectionId, connectorName],
+    () => existingConfig ?? createDefaultConfig(connectionId, connectorName),
+    [connectionId, connectorName, existingConfig],
   );
 
   const [config, setConfig] = useState<ImporterConfig>(initialConfig);
@@ -137,9 +144,14 @@ export function ImporterWizardModal({
   const canProceed = useMemo(() => {
     const stepLabel = steps[currentStep]?.label;
 
-    // Step 0: File Settings — name is required
+    // Step 0: File Settings — name is required, and file upload is required for new importers
     if (currentStep === 0) {
-      return config.name.trim().length > 0 && config.dataType !== null;
+      const hasName = config.name.trim().length > 0 && config.dataType !== null;
+      const fileRequired = !existingConfig; // Only required when creating new
+      if (fileRequired) {
+        return hasName && (config.csvHeaders?.length ?? 0) > 0;
+      }
+      return hasName;
     }
 
     // Mapping steps — at least one field must be mapped (placeholder: always valid for now)
@@ -153,7 +165,7 @@ export function ImporterWizardModal({
     }
 
     return true;
-  }, [currentStep, config.name, config.dataType, config.notifications, steps, notificationsValid]);
+  }, [currentStep, config.name, config.dataType, config.csvHeaders, config.notifications, steps, notificationsValid]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -192,8 +204,13 @@ export function ImporterWizardModal({
 
   const handleNext = () => {
     if (currentStep === lastStepIndex) {
+      if (existingConfig && !isDirty) {
+        // No changes — just close
+        onClose();
+        return;
+      }
       onSave(config);
-      toast.success('Automation saved successfully');
+      toast.success(existingConfig ? 'Changes saved successfully' : 'Automation saved successfully');
       onClose();
       return;
     }
@@ -243,27 +260,27 @@ export function ImporterWizardModal({
     }
 
     if (stepLabel === 'Notifications') {
-      return <NotificationsStep onValidChange={setNotificationsValid} />;
+      return <NotificationsStep value={config.notifications} onUpdate={(notifications) => handleConfigUpdate({ notifications })} onValidChange={setNotificationsValid} />;
     }
     if (stepLabel === 'Contact Configuration') {
-      return <ImportConfigStep type="contact" />;
+      return <ImportConfigStep type="contact" value={config.contactConfig} onUpdate={(contactConfig) => handleConfigUpdate({ contactConfig })} />;
     }
     if (stepLabel === 'Contact Mapping') {
-      return <ImportMappingStep type="contact" />;
+      return <ImportMappingStep type="contact" value={config.contactMapping} onUpdate={(contactMapping) => handleConfigUpdate({ contactMapping })} csvHeaders={config.csvHeaders} csvExampleValues={config.csvExampleValues} onGoToFileSettings={() => setCurrentStep(0)} />;
     }
     if (stepLabel === 'Transactional Configuration') {
-      return <ImportConfigStep type="transactional" />;
+      return <ImportConfigStep type="transactional" value={config.transactionalConfig} onUpdate={(transactionalConfig) => handleConfigUpdate({ transactionalConfig })} />;
     }
     if (stepLabel === 'Transactional Mapping') {
-      return <ImportMappingStep type="transactional" />;
+      return <ImportMappingStep type="transactional" value={config.transactionalMapping} onUpdate={(transactionalMapping) => handleConfigUpdate({ transactionalMapping })} csvHeaders={config.csvHeaders} csvExampleValues={config.csvExampleValues} lookupMappings={config.lookupMappings} onLookupUpdate={(lookupMappings) => handleConfigUpdate({ lookupMappings })} onGoToFileSettings={() => setCurrentStep(0)} />;
     }
     if (stepLabel === 'Review') {
-      return <ImporterReviewStep />;
+      return <ImporterReviewStep config={config} />;
     }
 
     // Fallback for generic labels before dataType is selected
-    if (stepLabel === 'Configuration') return <ImportConfigStep type="contact" />;
-    if (stepLabel === 'Mapping') return <ImportMappingStep type="contact" />;
+    if (stepLabel === 'Configuration') return <ImportConfigStep type="contact" value={config.contactConfig} onUpdate={(contactConfig) => handleConfigUpdate({ contactConfig })} />;
+    if (stepLabel === 'Mapping') return <ImportMappingStep type="contact" value={config.contactMapping} onUpdate={(contactMapping) => handleConfigUpdate({ contactMapping })} csvHeaders={config.csvHeaders} csvExampleValues={config.csvExampleValues} onGoToFileSettings={() => setCurrentStep(0)} />;
 
     return null;
   })();
@@ -324,7 +341,7 @@ export function ImporterWizardModal({
               canProceed={canProceed}
               isLast={currentStep === lastStepIndex}
               showBack={currentStep > 0}
-              submitLabel="Create Importer"
+              submitLabel={existingConfig ? (isDirty ? 'Save Changes' : 'Done') : 'Create Importer'}
             />
           </div>
         </div>

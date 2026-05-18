@@ -1,4 +1,6 @@
 import type { FilterGroup } from './segment';
+import type { ImporterConfig } from './importer';
+import type { NotificationConfig as ExporterNotificationConfig, ScheduleConfig } from './wizard';
 
 export type ExportDataType =
   | 'contact'
@@ -48,4 +50,7 @@ export interface Automation {
   status: AutomationStatus;
   createdAt: string;                   // ISO timestamp
   updatedAt: string;                   // ISO timestamp
+  importerConfig?: ImporterConfig;     // Present when direction === 'import'
+  notifications?: ExporterNotificationConfig; // Present when direction === 'export'
+  scheduleConfig?: ScheduleConfig;     // Full schedule details (frequency, time, days, etc.)
 }

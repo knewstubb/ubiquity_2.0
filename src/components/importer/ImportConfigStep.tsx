@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CaretDown, X } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { HelpPopover } from '@/components/composed/help-popover';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
+import type { ContactConfig, TransactionalConfig } from '../../models/importer';
 
 interface ImportConfigStepProps {
   type: 'contact' | 'transactional';
+  value: ContactConfig | TransactionalConfig;
+  onUpdate: (config: ContactConfig | TransactionalConfig) => void;
 }
 
 /* ── Radio option data ── */
@@ -140,12 +143,21 @@ function ChipInput({ chips, onRemove, onAdd, onClearAll, availableOptions }: Chi
 }
 
 /* ── Main Component ── */
-export function ImportConfigStep({ type }: ImportConfigStepProps) {
-  const [updateType, setUpdateType] = useState<UpdateType>('append-update');
-  const [blankMode, setBlankMode] = useState<BlankValueMode>('preserve');
-  const [chips, setChips] = useState<string[]>(DEFAULT_CHIPS);
+export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProps) {
+  const [updateType, setUpdateType] = useState<UpdateType>(value.updateType);
+  const [blankMode, setBlankMode] = useState<BlankValueMode>(value.blankValueHandling);
+  const [chips, setChips] = useState<string[]>(value.matchingFields);
 
   const pageTitle = type === 'contact' ? 'Contact Configuration' : 'Transactional Configuration';
+
+  // Notify parent whenever local state changes
+  useEffect(() => {
+    onUpdate({
+      updateType,
+      blankValueHandling: blankMode,
+      matchingFields: chips,
+    });
+  }, [updateType, blankMode, chips]);
 
   const handleRemoveChip = (chip: string) => {
     setChips((prev) => prev.filter((c) => c !== chip));

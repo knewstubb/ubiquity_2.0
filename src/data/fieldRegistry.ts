@@ -9,6 +9,7 @@ export interface FieldDefinition {
 }
 
 export const CONTACT_FIELDS: FieldDefinition[] = [
+  { key: 'id', label: 'Customer ID', source: 'contact', dataType: 'string' },
   { key: 'firstName', label: 'First Name', source: 'contact', dataType: 'string' },
   { key: 'lastName', label: 'Last Name', source: 'contact', dataType: 'string' },
   { key: 'email', label: 'Email Address', source: 'contact', dataType: 'string' },

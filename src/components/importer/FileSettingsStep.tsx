@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { UploadSimple } from '@phosphor-icons/react';
+import { useState, useRef } from 'react';
+import { UploadSimple, X, FileCsv } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { SegmentedControl } from '@/components/composed/segmented-control';
 import { PrefixInput } from '@/components/composed/prefix-input';
 import { HelpPopover } from '@/components/composed/help-popover';
 import { Input } from '../ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
+import { parse } from '../../utils/csv-parser';
 import type { ImporterConfig, PathMode, ImportDataType } from '../../models/importer';
 
 interface FileSettingsStepProps {
@@ -27,6 +28,13 @@ const DATA_TYPES: { value: ImportDataType; label: string }[] = [
   { value: 'both', label: 'Combined' },
 ];
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+
+export function truncateFilename(name: string): string {
+  if (name.length <= 40) return name;
+  return name.slice(0, 40) + '\u2026';
+}
+
 export function FileSettingsStep({
   config,
   basePath,
@@ -34,6 +42,10 @@ export function FileSettingsStep({
   onUpdate,
 }: FileSettingsStepProps) {
   const [patternError, setPatternError] = useState('');
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [transactionalTable, setTransactionalTable] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { filePathConfig, dataType } = config;
   const { pathMode, folderName, readPath, errorFolderPath, archiveFolderPath, fileNamePattern } =
     filePathConfig;
@@ -66,6 +78,88 @@ export function FileSettingsStep({
     } else {
       setPatternError('');
     }
+  }
+
+  function handleFileSelect(file: File) {
+    setFileError(null);
+
+    // Validate extension
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      setFileError('Only .csv files are accepted');
+      return;
+    }
+
+    // Validate size
+    if (file.size > MAX_FILE_SIZE) {
+      setFileError('File is too large (max 5 MB)');
+      return;
+    }
+
+    // Read and parse
+    const reader = new FileReader();
+    reader.onload = () => {
+      const csvString = reader.result as string;
+      const result = parse(csvString);
+
+      if (result.headers.length === 0) {
+        setFileError('File has no columns');
+        return;
+      }
+
+      const isReplacement = uploadedFileName !== null;
+      setUploadedFileName(file.name);
+      setFileError(null);
+
+      if (isReplacement) {
+        // When replacing an existing file, clear all mappings
+        onUpdate({
+          csvHeaders: result.headers,
+          csvExampleValues: result.exampleValues,
+          contactMapping: [],
+          transactionalMapping: [],
+          lookupMappings: [],
+        });
+      } else {
+        onUpdate({ csvHeaders: result.headers, csvExampleValues: result.exampleValues });
+      }
+    };
+    reader.onerror = () => {
+      setFileError('Unable to read file');
+    };
+    reader.readAsText(file);
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) handleFileSelect(file);
+    // Reset input so the same file can be re-selected
+    e.target.value = '';
+  }
+
+  function handleDropzoneClick() {
+    fileInputRef.current?.click();
+  }
+
+  function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleFileSelect(file);
+  }
+
+  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+  }
+
+  function handleRemoveFile() {
+    setUploadedFileName(null);
+    setFileError(null);
+    onUpdate({
+      csvHeaders: undefined,
+      csvExampleValues: undefined,
+      lookupMappings: [],
+      contactMapping: [],
+      transactionalMapping: [],
+    });
   }
 
   const effectiveBasePath =
@@ -190,15 +284,56 @@ export function FileSettingsStep({
           </p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <div className="border-2 border-dashed border-border rounded-md py-2 px-4 flex flex-row items-center gap-2 cursor-pointer h-10 transition-colors duration-150 hover:border-primary hover:bg-accent" role="button" tabIndex={0} aria-label="Upload sample file">
-            <div className="text-tertiary-foreground flex items-center">
-              <UploadSimple size={20} />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv"
+            className="hidden"
+            onChange={handleInputChange}
+            aria-hidden="true"
+            tabIndex={-1}
+          />
+          {uploadedFileName ? (
+            <div className="border border-border rounded-md py-2 px-4 flex flex-row items-center gap-2 h-10">
+              <FileCsv size={20} className="text-primary shrink-0" />
+              <p className="text-sm text-foreground m-0 flex-1 truncate">
+                {truncateFilename(uploadedFileName)}
+              </p>
+              <button
+                type="button"
+                onClick={handleRemoveFile}
+                className="text-tertiary-foreground hover:text-foreground transition-colors p-0.5 rounded"
+                aria-label="Remove file"
+              >
+                <X size={16} />
+              </button>
             </div>
-            <p className="text-sm text-tertiary-foreground m-0 whitespace-nowrap">
-              Drag & drop a file here, or{' '}
-              <span className="text-primary font-medium underline cursor-pointer">browse</span>
-            </p>
-          </div>
+          ) : (
+            <div
+              className={cn(
+                "border-2 border-dashed rounded-md py-2 px-4 flex flex-row items-center gap-2 cursor-pointer h-10 transition-colors duration-150 hover:border-primary hover:bg-accent",
+                fileError ? "border-destructive" : "border-border"
+              )}
+              role="button"
+              tabIndex={0}
+              aria-label="Upload sample file"
+              onClick={handleDropzoneClick}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDropzoneClick(); }}
+            >
+              <div className="text-tertiary-foreground flex items-center">
+                <UploadSimple size={20} />
+              </div>
+              <p className="text-sm text-tertiary-foreground m-0 whitespace-nowrap">
+                Drag & drop a file here, or{' '}
+                <span className="text-primary font-medium underline cursor-pointer">browse</span>
+              </p>
+            </div>
+          )}
+          {fileError && (
+            <p className="text-xs text-destructive -mt-1 mb-0">{fileError}</p>
+          )}
         </div>
       </div>
 
@@ -265,7 +400,7 @@ export function FileSettingsStep({
           {(dataType === 'transactional' || dataType === 'both') && (
             <div>
               <p className="text-xs font-medium text-muted-foreground m-0">Transactional Database</p>
-              <Select defaultValue="" onValueChange={() => {}}>
+              <Select value={transactionalTable || undefined} onValueChange={setTransactionalTable}>
                 <SelectTrigger aria-label="Select transactional table" title="The table where imported records will be stored.">
                   <SelectValue placeholder="Select Database" />
                 </SelectTrigger>

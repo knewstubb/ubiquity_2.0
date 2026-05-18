@@ -1,6 +1,31 @@
-export function ImporterReviewStep() {
+import React from 'react';
+import type { ImporterConfig, UpdateType, BlankValueHandling } from '../../models/importer';
+
+interface ImporterReviewStepProps {
+  config: ImporterConfig;
+}
+
+const UPDATE_TYPE_LABELS: Record<UpdateType, string> = {
+  'append-update': 'Append / Update',
+  'append': 'Append Only',
+  'update': 'Update Only',
+};
+
+const BLANK_VALUE_LABELS: Record<BlankValueHandling, string> = {
+  'preserve': 'Preserve Existing Data',
+  'import': 'Import Blank Values',
+};
+
+function formatPathMode(mode: string): string {
+  return mode.charAt(0).toUpperCase() + mode.slice(1);
+}
+
+export function ImporterReviewStep({ config }: ImporterReviewStepProps) {
+  const showContact = config.dataType === 'contact' || config.dataType === 'both';
+  const showTransactional = config.dataType === 'transactional' || config.dataType === 'both';
+
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 max-w-xl">
       <h3 className="m-0 text-xl font-semibold text-primary">Review</h3>
       <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Review your automation configuration before saving.</p>
 
@@ -8,109 +33,151 @@ export function ImporterReviewStep() {
       <div className="border-l-2 border-primary pl-4">
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-semibold text-foreground m-0">File Settings</h4>
-          <button type="button" className="text-xs font-medium text-primary bg-transparent border-none cursor-pointer p-0 hover:underline">Edit</button>
         </div>
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between py-0.5">
-            <span className="text-sm text-muted-foreground">Path Mode</span>
-            <span className="text-sm text-foreground font-medium">Automatic</span>
-          </div>
-          <div className="flex justify-between py-0.5">
-            <span className="text-sm text-muted-foreground">Folder Name</span>
-            <span className="text-sm text-foreground font-medium">onboarding-2026</span>
-          </div>
-          <div className="flex justify-between py-0.5">
-            <span className="text-sm text-muted-foreground">Sample File</span>
-            <span className="text-sm text-foreground font-medium">sample-contacts.csv</span>
-          </div>
-          <div className="flex justify-between py-0.5">
-            <span className="text-sm text-muted-foreground">Importing To</span>
-            <span className="text-sm text-foreground font-medium">Contacts</span>
-          </div>
-          <div className="flex justify-between py-0.5">
-            <span className="text-sm text-muted-foreground">Database</span>
-            <span className="text-sm text-foreground font-medium">Customer Contacts</span>
-          </div>
+        <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
+          <span className="text-sm text-muted-foreground">Path Mode</span>
+          <span className="text-sm text-foreground font-medium">{formatPathMode(config.filePathConfig.pathMode)}</span>
+          {config.filePathConfig.folderName && (
+            <>
+              <span className="text-sm text-muted-foreground">Folder Name</span>
+              <span className="text-sm text-foreground font-medium">{config.filePathConfig.folderName}</span>
+            </>
+          )}
+          {config.filePathConfig.readPath && (
+            <>
+              <span className="text-sm text-muted-foreground">Read Path</span>
+              <span className="text-sm text-foreground font-medium">{config.filePathConfig.readPath}</span>
+            </>
+          )}
+          {config.filePathConfig.errorFolderPath && (
+            <>
+              <span className="text-sm text-muted-foreground">Error Folder</span>
+              <span className="text-sm text-foreground font-medium">{config.filePathConfig.errorFolderPath}</span>
+            </>
+          )}
+          {config.filePathConfig.archiveFolderPath && (
+            <>
+              <span className="text-sm text-muted-foreground">Archive Folder</span>
+              <span className="text-sm text-foreground font-medium">{config.filePathConfig.archiveFolderPath}</span>
+            </>
+          )}
+          {config.filePathConfig.fileNamePattern && (
+            <>
+              <span className="text-sm text-muted-foreground">File Pattern</span>
+              <span className="text-sm text-foreground font-medium">{config.filePathConfig.fileNamePattern}</span>
+            </>
+          )}
+          {config.dataType && (
+            <>
+              <span className="text-sm text-muted-foreground">Data Type</span>
+              <span className="text-sm text-foreground font-medium capitalize">{config.dataType === 'both' ? 'Contacts & Transactional' : config.dataType === 'contact' ? 'Contacts' : 'Transactional'}</span>
+            </>
+          )}
         </div>
       </div>
 
       {/* Contact Configuration */}
-      <div className="border-l-2 border-primary pl-4">
-        <div className="flex items-center justify-between mb-2">
-          <h4 className="text-sm font-semibold text-foreground m-0">Contact Configuration</h4>
-          <button type="button" className="text-xs font-medium text-primary bg-transparent border-none cursor-pointer p-0 hover:underline">Edit</button>
-        </div>
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between py-0.5">
+      {showContact && (
+        <div className="border-l-2 border-primary pl-4">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold text-foreground m-0">Contact Configuration</h4>
+          </div>
+          <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
             <span className="text-sm text-muted-foreground">Update Type</span>
-            <span className="text-sm text-foreground font-medium">Append / Update</span>
-          </div>
-          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-foreground font-medium">{UPDATE_TYPE_LABELS[config.contactConfig.updateType]}</span>
             <span className="text-sm text-muted-foreground">Blank Values</span>
-            <span className="text-sm text-foreground font-medium">Preserve Existing Data</span>
-          </div>
-          <div className="flex justify-between py-0.5">
+            <span className="text-sm text-foreground font-medium">{BLANK_VALUE_LABELS[config.contactConfig.blankValueHandling]}</span>
             <span className="text-sm text-muted-foreground">Matching Fields</span>
-            <span className="text-sm text-foreground font-medium">Email, Customer ID</span>
+            <span className="text-sm text-foreground font-medium">{config.contactConfig.matchingFields.length > 0 ? config.contactConfig.matchingFields.join(', ') : 'None'}</span>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Contact Mapping */}
-      <div className="border-l-2 border-primary pl-4">
-        <div className="flex items-center justify-between mb-2">
-          <h4 className="text-sm font-semibold text-foreground m-0">Contact Mapping</h4>
-          <button type="button" className="text-xs font-medium text-primary bg-transparent border-none cursor-pointer p-0 hover:underline">Edit</button>
+      {showContact && config.contactMapping.length > 0 && (
+        <div className="border-l-2 border-primary pl-4">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold text-foreground m-0">Contact Mapping</h4>
+          </div>
+          <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
+            {config.contactMapping.map((mapping, index) => (
+              <React.Fragment key={index}>
+                <span className="text-sm text-muted-foreground">{mapping.sourceField}</span>
+                <span className="text-sm text-primary font-medium flex items-center gap-6">
+                  <span className="text-muted-foreground">→</span>
+                  <span>{mapping.targetField}</span>
+                </span>
+              </React.Fragment>
+            ))}
+          </div>
+          <p className="mt-2 mb-0 text-xs text-muted-foreground">{config.contactMapping.length} field{config.contactMapping.length !== 1 ? 's' : ''} mapped</p>
         </div>
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 py-0.5">
-            <span className="text-sm text-muted-foreground min-w-[120px]">policy_number</span>
-            <span className="text-sm text-muted-foreground">→</span>
-            <span className="text-sm text-primary font-medium">policy_id</span>
+      )}
+
+      {/* Transactional Configuration */}
+      {showTransactional && (
+        <div className="border-l-2 border-primary pl-4">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold text-foreground m-0">Transactional Configuration</h4>
           </div>
-          <div className="flex items-center gap-2 py-0.5">
-            <span className="text-sm text-muted-foreground min-w-[120px]">first_name</span>
-            <span className="text-sm text-muted-foreground">→</span>
-            <span className="text-sm text-primary font-medium">first_name</span>
-          </div>
-          <div className="flex items-center gap-2 py-0.5">
-            <span className="text-sm text-muted-foreground min-w-[120px]">last_name</span>
-            <span className="text-sm text-muted-foreground">→</span>
-            <span className="text-sm text-primary font-medium">last_name</span>
-          </div>
-          <div className="flex items-center gap-2 py-0.5">
-            <span className="text-sm text-muted-foreground min-w-[120px]">salutation</span>
-            <span className="text-sm text-muted-foreground">→</span>
-            <span className="text-sm text-primary font-medium">greeting</span>
-          </div>
-          <div className="flex items-center gap-2 py-0.5">
-            <span className="text-sm text-muted-foreground min-w-[120px]">email_address</span>
-            <span className="text-sm text-muted-foreground">→</span>
-            <span className="text-sm text-primary font-medium">email_address</span>
+          <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
+            <span className="text-sm text-muted-foreground">Update Type</span>
+            <span className="text-sm text-foreground font-medium">{UPDATE_TYPE_LABELS[config.transactionalConfig.updateType]}</span>
+            <span className="text-sm text-muted-foreground">Blank Values</span>
+            <span className="text-sm text-foreground font-medium">{BLANK_VALUE_LABELS[config.transactionalConfig.blankValueHandling]}</span>
+            <span className="text-sm text-muted-foreground">Matching Fields</span>
+            <span className="text-sm text-foreground font-medium">{config.transactionalConfig.matchingFields.length > 0 ? config.transactionalConfig.matchingFields.join(', ') : 'None'}</span>
           </div>
         </div>
-        <p className="mt-2 mb-0 text-xs text-muted-foreground">5 of 9 fields mapped · 1 ignored · 1 warning</p>
-      </div>
+      )}
+
+      {/* Transactional Mapping */}
+      {showTransactional && config.transactionalMapping.length > 0 && (
+        <div className="border-l-2 border-primary pl-4">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold text-foreground m-0">Transactional Mapping</h4>
+          </div>
+          <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
+            {config.transactionalMapping.map((mapping, index) => (
+              <React.Fragment key={index}>
+                <span className="text-sm text-muted-foreground">{mapping.sourceField}</span>
+                <span className="text-sm text-primary font-medium flex items-center gap-6">
+                  <span className="text-muted-foreground">→</span>
+                  <span>{mapping.targetField}</span>
+                </span>
+              </React.Fragment>
+            ))}
+          </div>
+          <p className="mt-2 mb-0 text-xs text-muted-foreground">{config.transactionalMapping.length} field{config.transactionalMapping.length !== 1 ? 's' : ''} mapped</p>
+        </div>
+      )}
 
       {/* Notifications */}
       <div className="border-l-2 border-primary pl-4">
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-semibold text-foreground m-0">Notifications</h4>
-          <button type="button" className="text-xs font-medium text-primary bg-transparent border-none cursor-pointer p-0 hover:underline">Edit</button>
         </div>
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between py-0.5">
-            <span className="text-sm text-muted-foreground">Failure</span>
-            <span className="text-sm text-foreground font-medium">contact@gmail.com</span>
-          </div>
-          <div className="flex justify-between py-0.5">
-            <span className="text-sm text-muted-foreground">Success</span>
-            <span className="text-sm text-foreground font-medium">Disabled</span>
-          </div>
-          <div className="flex justify-between py-0.5">
-            <span className="text-sm text-muted-foreground">No File Alert</span>
-            <span className="text-sm text-foreground font-medium">Disabled</span>
-          </div>
+        <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
+          <span className="text-sm text-muted-foreground">Failure</span>
+          <span className="text-sm text-foreground font-medium">
+            {config.notifications.failureEmails.length > 0 ? config.notifications.failureEmails.join(', ') : 'No recipients'}
+          </span>
+          <span className="text-sm text-muted-foreground">Success</span>
+          <span className="text-sm text-foreground font-medium">
+            {config.notifications.successEnabled
+              ? config.notifications.successEmails.length > 0
+                ? config.notifications.successEmails.join(', ')
+                : 'Enabled (no recipients)'
+              : 'Disabled'}
+          </span>
+          <span className="text-sm text-muted-foreground">No File Alert</span>
+          <span className="text-sm text-foreground font-medium">
+            {config.notifications.noFileAlertEnabled
+              ? config.notifications.noFileAlertEmails.length > 0
+                ? config.notifications.noFileAlertEmails.join(', ')
+                : 'Enabled (no recipients)'
+              : 'Disabled'}
+          </span>
         </div>
       </div>
     </div>

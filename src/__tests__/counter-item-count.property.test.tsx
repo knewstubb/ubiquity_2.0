@@ -84,11 +84,10 @@ describe('Feature: component-controllers-expansion, Property 3: Counter-Driven I
           fc.integer({ min: 1, max: 5 }),
           (count) => {
             const { container, unmount } = render(
-              <FormDemo field-count={count} show-descriptions={true} validation="none" />
+              <FormDemo field-count={count} section-count={1} show-descriptions={true} validation="none" />
             )
 
-            // FormItem renders a div containing FormLabel + FormControl + FormDescription
-            // Each field has a label element
+            // Each field has a label element (1 section × N fields)
             const labels = container.querySelectorAll('label')
             expect(labels.length).toBe(count)
 

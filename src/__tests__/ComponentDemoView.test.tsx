@@ -163,11 +163,12 @@ describe('ComponentDemoView integration', () => {
     it('renders ControlsPanel when component has propControls', () => {
       renderWithRoute('display', 'with-prop')
 
-      // The demo should render
-      expect(screen.getByTestId('with-prop-demo')).toBeInTheDocument()
+      // The demo should render with props passed (preview mode)
+      expect(screen.getByTestId('with-prop-preview')).toBeInTheDocument()
 
-      // "Controls" heading should be present (from ControlsPanel)
-      expect(screen.getByText('Controls')).toBeInTheDocument()
+      // Controls panel should be present — check for a control input
+      const inputs = document.querySelectorAll('input[type="text"], [role="combobox"]')
+      expect(inputs.length).toBeGreaterThan(0)
     })
   })
 
@@ -175,11 +176,11 @@ describe('ComponentDemoView integration', () => {
     it('renders "View in context" section with links when usedIn is provided', () => {
       renderWithRoute('display', 'with-used-in')
 
-      // The demo should render
-      expect(screen.getByTestId('with-used-in-demo')).toBeInTheDocument()
+      // The demo should render with props passed (preview mode)
+      expect(screen.getByTestId('with-used-in-preview')).toBeInTheDocument()
 
-      // "Used in:" label should be present
-      expect(screen.getByText('Used in:')).toBeInTheDocument()
+      // "Used in" label should be present (no colon)
+      expect(screen.getByText('Used in')).toBeInTheDocument()
 
       // Links should render with correct labels
       expect(screen.getByText('Dashboard')).toBeInTheDocument()
@@ -198,14 +199,15 @@ describe('ComponentDemoView integration', () => {
     it('does not render "View in context" section when usedIn is absent', () => {
       renderWithRoute('display', 'with-prop-no-used-in')
 
-      // The demo should render
-      expect(screen.getByTestId('prop-no-used-in-demo')).toBeInTheDocument()
+      // The demo should render with props passed (preview mode)
+      expect(screen.getByTestId('prop-no-used-in-preview')).toBeInTheDocument()
 
       // Controls panel should be present (has propControls)
-      expect(screen.getByText('Controls')).toBeInTheDocument()
+      const inputs = document.querySelectorAll('input, [role="switch"]')
+      expect(inputs.length).toBeGreaterThan(0)
 
-      // "Used in:" label should NOT be present
-      expect(screen.queryByText('Used in:')).not.toBeInTheDocument()
+      // "Used in" label should NOT be present
+      expect(screen.queryByText('Used in')).not.toBeInTheDocument()
     })
   })
 })

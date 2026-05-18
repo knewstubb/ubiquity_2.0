@@ -1,9 +1,11 @@
+import React from 'react';
 import { cn } from '../../lib/utils';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../ui/dialog';
 import { ModalHeader } from '../composed/modal-header';
 import { ModalFooter } from '../composed/modal-footer';
-import type { Automation } from '../../models/automation';
+import type { Automation, ScheduleFrequency } from '../../models/automation';
 import type { Connection } from '../../models/connection';
+import type { UpdateType, BlankValueHandling } from '../../models/importer';
 
 interface AutomationSettingsModalProps {
   connector: Automation;
@@ -12,8 +14,8 @@ interface AutomationSettingsModalProps {
   onEdit: () => void;
 }
 
-const SCHEDULE_LABELS: Record<string, string> = {
-  every_15_min: 'Every 15 minutes',
+const SCHEDULE_LABELS: Record<ScheduleFrequency, string> = {
+  every_15_min: 'Every 15 Minutes',
   hourly: 'Hourly',
   daily: 'Daily',
   weekly: 'Weekly',
@@ -24,6 +26,23 @@ const DATA_TYPE_LABELS: Record<string, string> = {
   contact: 'Contacts',
   transactional: 'Transactional',
   transactional_with_contact: 'Transactional + Contact',
+};
+
+const UPDATE_TYPE_LABELS: Record<UpdateType, string> = {
+  'append-update': 'Append / Update',
+  'append': 'Append Only',
+  'update': 'Update Only',
+};
+
+const BLANK_VALUE_LABELS: Record<BlankValueHandling, string> = {
+  'preserve': 'Preserve Existing Data',
+  'import': 'Import Blank Values',
+};
+
+const PATH_MODE_LABELS: Record<string, string> = {
+  automatic: 'Automatic',
+  base: 'Base Path',
+  custom: 'Custom Path',
 };
 
 export function AutomationSettingsModal({ connector, connection, onClose, onEdit }: AutomationSettingsModalProps) {
@@ -41,48 +60,87 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
         <div className="px-6 py-5 overflow-y-auto max-h-[60vh] flex flex-col gap-5">
           {connector.direction === 'import' ? (
             <>
-              {/* Importer: File Settings */}
-              <Section title="File Settings">
-                <Row label="Path Mode" value="Automatic" />
-                <Row label="Folder Name" value={toKebabCase(connector.name)} />
-                <Row label="Sample File" value="sample-contacts.csv" />
-                <Row label="Importing To" value={DATA_TYPE_LABELS[connector.dataType] ?? connector.dataType} />
-                <Row label="Database" value="Customer Contacts" />
-              </Section>
+              {connector.importerConfig ? (
+                <>
+                  {/* Importer: File Settings */}
+                  <Section title="File Settings">
+                    <Row label="Path Mode" value={PATH_MODE_LABELS[connector.importerConfig.filePathConfig.pathMode] ?? connector.importerConfig.filePathConfig.pathMode} />
+                    <Row label="Folder Name" value={connector.importerConfig.filePathConfig.folderName || toKebabCase(connector.name)} />
+                    {connector.importerConfig.filePathConfig.readPath && (
+                      <Row label="Read Path" value={connector.importerConfig.filePathConfig.readPath} />
+                    )}
+                    {connector.importerConfig.filePathConfig.errorFolderPath && (
+                      <Row label="Error Folder" value={connector.importerConfig.filePathConfig.errorFolderPath} />
+                    )}
+                    {connector.importerConfig.filePathConfig.archiveFolderPath && (
+                      <Row label="Archive Folder" value={connector.importerConfig.filePathConfig.archiveFolderPath} />
+                    )}
+                    {connector.importerConfig.filePathConfig.fileNamePattern && (
+                      <Row label="File Pattern" value={connector.importerConfig.filePathConfig.fileNamePattern} />
+                    )}
+                    <Row label="Importing To" value={DATA_TYPE_LABELS[connector.importerConfig.dataType ?? ''] ?? connector.importerConfig.dataType ?? 'Not set'} />
+                  </Section>
 
-              {/* Importer: Contact Configuration */}
-              <Section title="Contact Configuration">
-                <Row label="Update Type" value="Append / Update" />
-                <Row label="Blank Values" value="Preserve Existing Data" />
-                <Row label="Matching Fields" value="Email, Customer ID" />
-              </Section>
+                  {/* Importer: Contact Configuration */}
+                  <Section title="Contact Configuration">
+                    <Row label="Update Type" value={UPDATE_TYPE_LABELS[connector.importerConfig.contactConfig.updateType]} />
+                    <Row label="Blank Values" value={BLANK_VALUE_LABELS[connector.importerConfig.contactConfig.blankValueHandling]} />
+                    <Row label="Matching Fields" value={connector.importerConfig.contactConfig.matchingFields.join(', ') || 'None'} />
+                  </Section>
 
-              {/* Importer: Contact Mapping */}
-              <Section title="Contact Mapping">
-                <div className="flex flex-col gap-1">
-                  {connector.selectedFields.length > 0 ? (
-                    connector.selectedFields.slice(0, 5).map((field) => (
-                      <div key={field.key} className="flex items-center gap-2 py-0.5">
-                        <span className="text-sm text-muted-foreground min-w-[120px]">{field.key}</span>
-                        <span className="text-sm text-muted-foreground">→</span>
-                        <span className="text-sm text-primary font-medium">{field.label}</span>
-                      </div>
-                    ))
-                  ) : (
-                    <Row label="" value="No fields mapped" />
+                  {/* Importer: Transactional Configuration (if applicable) */}
+                  {connector.importerConfig.transactionalMapping.length > 0 && (
+                    <Section title="Transactional Configuration">
+                      <Row label="Update Type" value={UPDATE_TYPE_LABELS[connector.importerConfig.transactionalConfig.updateType]} />
+                      <Row label="Blank Values" value={BLANK_VALUE_LABELS[connector.importerConfig.transactionalConfig.blankValueHandling]} />
+                      <Row label="Matching Fields" value={connector.importerConfig.transactionalConfig.matchingFields.join(', ') || 'None'} />
+                    </Section>
                   )}
-                </div>
-                {connector.selectedFields.length > 0 && (
-                  <p className="mt-2 mb-0 text-xs text-muted-foreground">{connector.selectedFields.length} fields mapped</p>
-                )}
-              </Section>
 
-              {/* Importer: Notifications */}
-              <Section title="Notifications">
-                <Row label="Failure" value="contact@gmail.com" />
-                <Row label="Success" value="Disabled" />
-                <Row label="No File Alert" value="Disabled" />
-              </Section>
+                  {/* Importer: Contact Mapping */}
+                  {connector.importerConfig.contactMapping.length > 0 && (
+                    <Section title="Contact Mapping">
+                      <div className="grid grid-cols-[1fr_auto_1fr] gap-x-3 gap-y-0.5">
+                        {connector.importerConfig.contactMapping.map((mapping) => (
+                          <React.Fragment key={`${mapping.sourceField}-${mapping.targetField}`}>
+                            <span className="text-sm text-muted-foreground text-right">{mapping.sourceField}</span>
+                            <span className="text-sm text-muted-foreground text-center">→</span>
+                            <span className="text-sm text-primary font-medium">{mapping.targetField}</span>
+                          </React.Fragment>
+                        ))}
+                      </div>
+                      <p className="mt-2 mb-0 text-xs text-muted-foreground">{connector.importerConfig.contactMapping.length} field{connector.importerConfig.contactMapping.length !== 1 ? 's' : ''} mapped</p>
+                    </Section>
+                  )}
+
+                  {/* Importer: Transactional Mapping */}
+                  {connector.importerConfig.transactionalMapping.length > 0 && (
+                    <Section title="Transactional Mapping">
+                      <div className="grid grid-cols-[1fr_auto_1fr] gap-x-3 gap-y-0.5">
+                        {connector.importerConfig.transactionalMapping.map((mapping) => (
+                          <React.Fragment key={`${mapping.sourceField}-${mapping.targetField}`}>
+                            <span className="text-sm text-muted-foreground text-right">{mapping.sourceField}</span>
+                            <span className="text-sm text-muted-foreground text-center">→</span>
+                            <span className="text-sm text-primary font-medium">{mapping.targetField}</span>
+                          </React.Fragment>
+                        ))}
+                      </div>
+                      <p className="mt-2 mb-0 text-xs text-muted-foreground">{connector.importerConfig.transactionalMapping.length} field{connector.importerConfig.transactionalMapping.length !== 1 ? 's' : ''} mapped</p>
+                    </Section>
+                  )}
+
+                  {/* Importer: Notifications */}
+                  <Section title="Notifications">
+                    <Row label="Failure" value={connector.importerConfig.notifications.failureEmails.length > 0 ? connector.importerConfig.notifications.failureEmails.join(', ') : 'Not configured'} />
+                    <Row label="Success" value={connector.importerConfig.notifications.successEnabled ? (connector.importerConfig.notifications.successEmails.join(', ') || 'Enabled') : 'Disabled'} />
+                    <Row label="No File Alert" value={connector.importerConfig.notifications.noFileAlertEnabled ? (connector.importerConfig.notifications.noFileAlertEmails.join(', ') || 'Enabled') : 'Disabled'} />
+                  </Section>
+                </>
+              ) : (
+                <Section title="Importer Configuration">
+                  <p className="text-sm text-muted-foreground italic m-0">Not configured</p>
+                </Section>
+              )}
             </>
           ) : (
             <>
@@ -140,9 +198,9 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
 
               {/* Exporter: Notifications */}
               <Section title="Notifications">
-                <Row label="Email Address" value="contact@gmail.com" />
-                <Row label="Successful Export" value="Enabled" />
-                <Row label="Failed Export" value="Enabled" />
+                <Row label="Email Address" value={connector.notifications?.emails?.join(', ') || '—'} />
+                <Row label="Successful Export" value={connector.notifications?.successEnabled ? 'Enabled' : 'Disabled'} />
+                <Row label="Failed Export" value={connector.notifications?.failureEnabled ? 'Enabled' : 'Disabled'} />
               </Section>
             </>
           )}

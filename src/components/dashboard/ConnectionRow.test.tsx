@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ConnectionRow } from './ConnectionRow';
 import type { Connection } from '../../models/connection';
 import type { Automation } from '../../models/automation';
@@ -52,7 +52,7 @@ const mockConnectors: Automation[] = [
 
 const mockOnAddConnector = vi.fn();
 
-function renderRow(connectors = mockConnectors, children?: React.ReactNode) {
+function renderRow(connectors = mockConnectors) {
   return render(
     <MemoryRouter>
       <ConnectionRow
@@ -60,7 +60,7 @@ function renderRow(connectors = mockConnectors, children?: React.ReactNode) {
         connectors={connectors}
         onAddConnector={mockOnAddConnector}
       >
-        {children ?? <div data-testid="child-content">Connector cards here</div>}
+        <div data-testid="child-content">Connector cards here</div>
       </ConnectionRow>
     </MemoryRouter>,
   );
@@ -71,112 +71,101 @@ describe('ConnectionRow', () => {
     mockOnAddConnector.mockClear();
   });
 
-  it('renders connection name and protocol icon', () => {
+  it('renders connection name', () => {
     renderRow();
     expect(screen.getByText('Spa AWS S3 Bucket')).toBeInTheDocument();
-    expect(screen.getByLabelText('S3 bucket')).toBeInTheDocument();
   });
 
-  it('renders connector count', () => {
+  it('renders protocol label', () => {
     renderRow();
-    expect(screen.getByText('1 of 2 Automations Active')).toBeInTheDocument();
+    expect(screen.getByText('AWS S3:')).toBeInTheDocument();
   });
 
-  it('renders singular connector count', () => {
-    renderRow([mockConnectors[0]]);
-    expect(screen.getByText('1 of 1 Automations Active')).toBeInTheDocument();
+  it('renders active automation count', () => {
+    renderRow();
+    // The count is split across span elements: "1 of 2 Automations Active"
+    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(screen.getByText(/Automations Active/)).toBeInTheDocument();
   });
 
-  it('renders "+ Add Automation" button that calls onAddConnector', async () => {
+  it('shows "No Automations" when connectors array is empty', () => {
+    renderRow([]);
+    expect(screen.getByText('No Automations')).toBeInTheDocument();
+  });
+
+  it('has a connection actions menu button', () => {
+    renderRow();
+    expect(screen.getByLabelText('Connection actions')).toBeInTheDocument();
+  });
+
+  it('shows "Add Automation" in the dropdown menu', async () => {
     const user = userEvent.setup();
     renderRow();
-    const addButton = screen.getByText('+ Add Automation');
-    expect(addButton).toBeInTheDocument();
-    expect(addButton.tagName).toBe('BUTTON');
 
-    await user.click(addButton);
+    await user.click(screen.getByLabelText('Connection actions'));
+    expect(screen.getByText('Add Automation')).toBeInTheDocument();
+  });
+
+  it('calls onAddConnector when "Add Automation" is selected from menu', async () => {
+    const user = userEvent.setup();
+    renderRow();
+
+    await user.click(screen.getByLabelText('Connection actions'));
+    await user.click(screen.getByText('Add Automation'));
     expect(mockOnAddConnector).toHaveBeenCalledWith('conn-1');
   });
 
-  it('defaults to collapsed state — children not visible', () => {
-    renderRow();
-    const header = screen.getByRole('button', { name: /spa aws s3 bucket/i });
-    expect(header).toHaveAttribute('aria-expanded', 'false');
+  it('starts collapsed — collapsible content is closed', () => {
+    const { container } = renderRow();
+    const collapsibleContent = container.querySelector('[data-state]');
+    // The Collapsible starts closed
+    expect(collapsibleContent?.getAttribute('data-state')).toBe('closed');
   });
 
-  it('expands on click to show children', async () => {
+  it('expands on header click to show children', async () => {
+    const user = userEvent.setup();
+    const { container } = renderRow();
+
+    // Click the connection name area to expand
+    await user.click(screen.getByText('Spa AWS S3 Bucket'));
+    const collapsibleContent = container.querySelector('[data-state="open"]');
+    expect(collapsibleContent).toBeTruthy();
+  });
+
+  it('collapses on second click', async () => {
+    const user = userEvent.setup();
+    const { container } = renderRow();
+
+    await user.click(screen.getByText('Spa AWS S3 Bucket'));
+    expect(container.querySelector('[data-state="open"]')).toBeTruthy();
+
+    await user.click(screen.getByText('Spa AWS S3 Bucket'));
+    expect(container.querySelector('[data-state="open"]')).toBeNull();
+  });
+
+  it('shows "Edit Connection" in the dropdown menu', async () => {
     const user = userEvent.setup();
     renderRow();
 
-    const header = screen.getByRole('button', { name: /spa aws s3 bucket/i });
-    await user.click(header);
-
-    expect(screen.getByTestId('child-content')).toBeInTheDocument();
+    await user.click(screen.getByLabelText('Connection actions'));
+    expect(screen.getByText('Edit Connection')).toBeInTheDocument();
   });
 
-  it('collapses on second click to hide children', async () => {
+  it('shows "Delete Connection" in the dropdown menu', async () => {
     const user = userEvent.setup();
     renderRow();
 
-    const header = screen.getByRole('button', { name: /spa aws s3 bucket/i });
-    await user.click(header);
-    expect(header).toHaveAttribute('aria-expanded', 'true');
-
-    await user.click(header);
-    expect(header).toHaveAttribute('aria-expanded', 'false');
+    await user.click(screen.getByLabelText('Connection actions'));
+    expect(screen.getByText('Delete Connection')).toBeInTheDocument();
   });
 
-  it('sets aria-expanded correctly', async () => {
+  it('disables "Delete Connection" when connectors exist', async () => {
     const user = userEvent.setup();
     renderRow();
 
-    const header = screen.getByRole('button', { name: /spa aws s3 bucket/i });
-    expect(header).toHaveAttribute('aria-expanded', 'false');
-
-    await user.click(header);
-    expect(header).toHaveAttribute('aria-expanded', 'true');
-  });
-
-  it('shows status dot for connected status', () => {
-    renderRow();
-    const dot = screen.getByTitle('Connected');
-    expect(dot).toBeInTheDocument();
-  });
-
-  it('shows status dot for error status', () => {
-    const errorConnection: Connection = {
-      ...mockConnection,
-      status: 'error',
-    };
-    render(
-      <MemoryRouter>
-        <ConnectionRow connection={errorConnection} connectors={[]} onAddConnector={mockOnAddConnector}>
-          <div />
-        </ConnectionRow>
-      </MemoryRouter>,
-    );
-    expect(screen.getByTitle('Error')).toBeInTheDocument();
-  });
-
-  it('toggles via keyboard (Enter key)', async () => {
-    const user = userEvent.setup();
-    renderRow();
-
-    const header = screen.getByRole('button', { name: /spa aws s3 bucket/i });
-    header.focus();
-    await user.keyboard('{Enter}');
-
-    expect(screen.getByTestId('child-content')).toBeInTheDocument();
-  });
-
-  it('does not expand when clicking "+ Add Automation"', async () => {
-    const user = userEvent.setup();
-    renderRow();
-
-    const addButton = screen.getByText('+ Add Automation');
-    await user.click(addButton);
-
-    const header = screen.getByRole('button', { name: /spa aws s3 bucket/i });
-    expect(header).toHaveAttribute('aria-expanded', 'false');
+    await user.click(screen.getByLabelText('Connection actions'));
+    const deleteItem = screen.getByText('Delete Connection').closest('[role="menuitem"]');
+    expect(deleteItem).toHaveAttribute('data-disabled');
   });
 });

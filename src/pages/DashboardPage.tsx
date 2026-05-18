@@ -31,6 +31,7 @@ interface ImporterModalState {
   open: boolean;
   connectionId: string;
   connectorName: string;
+  existingConfig?: ImporterConfig;
 }
 
 export default function DashboardPage() {
@@ -97,6 +98,7 @@ export default function DashboardPage() {
         open: true,
         connectionId: connector.connectionId,
         connectorName: connector.name,
+        existingConfig: connector.importerConfig ?? undefined,
       });
     } else {
       setWizardModalState({
@@ -143,6 +145,7 @@ export default function DashboardPage() {
       status: 'active',
       createdAt: now,
       updatedAt: now,
+      importerConfig: config,
     };
 
     addAutomationDirect(connector);
@@ -193,10 +196,6 @@ export default function DashboardPage() {
             {filteredConnections.length} connection{filteredConnections.length !== 1 ? 's' : ''} · {totalAutomations} automation{totalAutomations !== 1 ? 's' : ''}
           </p>
         </div>
-        <Button onClick={() => setShowCreateConnection(true)}>
-          <Plus size={14} weight="bold" />
-          New Connection
-        </Button>
       </div>
 
       <div className="flex flex-col">
@@ -232,7 +231,7 @@ export default function DashboardPage() {
               {!connection.status.includes('error') && (
                 <button
                   type="button"
-                  className="flex items-center justify-center h-11 border border-dashed border-primary/40 rounded-lg bg-transparent text-primary text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary"
+                  className="flex items-center justify-center h-11 border border-dashed border-primary/40 rounded-lg bg-surface text-primary text-base font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary"
                   onClick={() => handleAddConnector(connection.id)}
                 >
                   + Add Automation
@@ -241,6 +240,15 @@ export default function DashboardPage() {
             </ConnectionRow>
           );
         })}
+        {filteredConnections.length > 0 && (
+          <button
+            type="button"
+            className="flex items-center justify-center border border-dashed border-primary/40 rounded-lg bg-surface/50 text-primary text-base font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary p-4 min-h-[64px]"
+            onClick={() => setShowCreateConnection(true)}
+          >
+            + Add New Connection
+          </button>
+        )}
       </div>
 
       {/* CreateConnectionModal — shown when user clicks "New Connection" */}
@@ -316,6 +324,7 @@ export default function DashboardPage() {
         <ImporterWizardModal
           connectionId={importerModalState.connectionId}
           connectorName={importerModalState.connectorName}
+          existingConfig={importerModalState.existingConfig}
           onSave={handleImporterSave}
           onClose={handleImporterClose}
         />

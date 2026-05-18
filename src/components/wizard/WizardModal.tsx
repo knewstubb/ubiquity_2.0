@@ -94,8 +94,8 @@ export function WizardModal({
           fileNamingPattern: existing.fileNamingPattern,
           schedule: existing.schedule,
           filters: { ...existing.filters },
-          scheduleConfig: { ...DEFAULT_SCHEDULE_CONFIG },
-          notifications: { ...DEFAULT_NOTIFICATIONS },
+          scheduleConfig: existing.scheduleConfig ? { ...existing.scheduleConfig } : { ...DEFAULT_SCHEDULE_CONFIG },
+          notifications: existing.notifications ? { ...existing.notifications } : { ...DEFAULT_NOTIFICATIONS },
         };
       }
     }

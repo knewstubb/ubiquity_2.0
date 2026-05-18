@@ -130,7 +130,7 @@ export function AutomationCard({ connector, connectionError, onToggleStatus, onV
 
       {/* Group 3: Status + Time */}
       <div className="flex items-center gap-2">
-        <Badge variant={isPaused ? 'neutral-subtle' : lastRunStatus === 'Failed' ? 'error-subtle' : 'success-subtle'}>
+        <Badge variant={isPaused ? 'neutral-subtle' : lastRunStatus === 'Failed' ? 'error-subtle' : 'default-subtle'}>
           {lastRunStatus}
         </Badge>
         <span className="text-sm text-tertiary-foreground whitespace-nowrap">{lastRunTime}</span>

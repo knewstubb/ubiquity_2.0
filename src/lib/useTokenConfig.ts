@@ -26,10 +26,11 @@ function readFromStorage(): TokenConfig {
 /**
  * Deep-merges a partial config with defaults so that missing keys
  * are filled in from DEFAULT_TOKEN_CONFIG.
+ * Also migrates deprecated primitive references (e.g. white-50 → white).
  */
 function mergeWithDefaults(partial: Partial<TokenConfig>): TokenConfig {
   const defaults = structuredClone(DEFAULT_TOKEN_CONFIG)
-  return {
+  const merged = {
     colours: { ...defaults.colours, ...(partial.colours ?? {}) },
     spacing: { ...defaults.spacing, ...(partial.spacing ?? {}) },
     radius: { base: partial.radius?.base ?? defaults.radius.base },
@@ -40,6 +41,14 @@ function mergeWithDefaults(partial: Partial<TokenConfig>): TokenConfig {
       },
     },
   }
+
+  // Migrate deprecated references
+  for (const [key, value] of Object.entries(merged.colours)) {
+    if (value.light === 'white-50') value.light = 'white'
+    if (value.dark === 'white-50') value.dark = 'white'
+  }
+
+  return merged
 }
 
 /**

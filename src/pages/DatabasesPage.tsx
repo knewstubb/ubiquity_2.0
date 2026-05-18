@@ -19,6 +19,7 @@ const TIER_CLASS: Record<string, string> = {
 const accountNameMap = new Map(accounts.map((a) => [a.id, a.name]));
 
 const contactColumns: Column<Contact>[] = [
+  { key: 'id', header: 'Customer ID', width: '120px', render: (c) => c.id },
   { key: 'name', header: 'Name', render: (c) => `${c.firstName} ${c.lastName}` },
   { key: 'email', header: 'Email', render: (c) => c.email },
   {
@@ -35,6 +36,7 @@ const contactColumns: Column<Contact>[] = [
 ];
 
 const txnColumns: Column<TransactionalRecord>[] = [
+  { key: 'contactId', header: 'Customer ID', width: '120px', render: (r) => r.contactId },
   { key: 'contactName', header: 'Contact', render: (r) => r.contactName },
   { key: 'description', header: 'Description', render: (r) => r.description },
   { key: 'date', header: 'Date', width: '120px', render: (r) => r.date },

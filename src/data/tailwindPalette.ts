@@ -12,6 +12,7 @@ export const PALETTE_NAMES = [
   'pink', 'rose',
   'mint',  // custom UDS brand palette
   'white', // pure white utility palette
+  'black', // pure black utility palette
 ] as const
 
 export const SHADE_STEPS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] as const
@@ -163,10 +164,21 @@ export const tailwindPalette: Record<string, Record<string, string>> = {
     '600': '#FFFFFF', '700': '#FFFFFF', '800': '#FFFFFF',
     '900': '#FFFFFF', '950': '#FFFFFF',
   },
+  // Pure black utility palette
+  black: {
+    '50': '#000000', '100': '#000000', '200': '#000000',
+    '300': '#000000', '400': '#000000', '500': '#000000',
+    '600': '#000000', '700': '#000000', '800': '#000000',
+    '900': '#000000', '950': '#000000',
+  },
 }
 
 /** Resolve a Tailwind primitive reference (e.g. "zinc-800") to its hex value */
 export function resolveToHex(ref: string): string | null {
+  // Handle bare colour names without shade
+  if (ref === 'white') return '#FFFFFF'
+  if (ref === 'black') return '#000000'
+
   const dashIndex = ref.lastIndexOf('-')
   if (dashIndex === -1) return null
   const palette = ref.slice(0, dashIndex)

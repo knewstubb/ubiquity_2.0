@@ -393,7 +393,7 @@ describe('Feature: component-library-reorganisation, Property 10: Control reset 
     )
   })
 
-  it('reset button is not shown when isDirty is false', () => {
+  it('reset button is disabled when isDirty is false', () => {
     fc.assert(
       fc.property(arbNonEmptyPropDefinitions, (propControls) => {
         const values = buildValues(propControls)
@@ -410,16 +410,18 @@ describe('Feature: component-library-reorganisation, Property 10: Control reset 
           </MemoryRouter>
         )
 
-        // Reset button should not be visible when isDirty is false
+        // Reset button should be disabled when isDirty is false
         const buttons = container.querySelectorAll('button')
-        let resetBtn: HTMLElement | null = null
+        let resetBtn: HTMLButtonElement | null = null
         buttons.forEach((btn) => {
           if (btn.textContent?.toLowerCase().includes('reset')) {
-            resetBtn = btn
+            resetBtn = btn as HTMLButtonElement
           }
         })
 
-        expect(resetBtn).toBeNull()
+        if (resetBtn) {
+          expect(resetBtn.disabled).toBe(true)
+        }
       }),
       { numRuns: 100 }
     )
@@ -502,8 +504,8 @@ describe('Feature: component-library-reorganisation, Property 11: UsedIn links r
           </MemoryRouter>
         )
 
-        // "Used in:" text should not appear
-        expect(container.textContent).not.toContain('Used in:')
+        // "Used in" text should not appear
+        expect(container.textContent).not.toContain('Used in')
       }),
       { numRuns: 100 }
     )

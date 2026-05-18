@@ -25,7 +25,14 @@ const { mockState, mockFrom } = vi.hoisted(() => {
 
 vi.mock('../../lib/supabase', () => ({
   get supabase() {
-    return mockState.configured ? { from: mockFrom } : null;
+    if (!mockState.configured) return null;
+    return {
+      from: mockFrom,
+      auth: {
+        getSession: () => Promise.resolve({ data: { session: null } }),
+        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+      },
+    };
   },
   isSupabaseConfigured: () => mockState.configured,
 }));
@@ -34,6 +41,7 @@ import {
   FeatureFlagProvider,
   useFeatureFlags,
 } from '../FeatureFlagContext';
+import { AuthProvider } from '../AuthContext';
 import type { FeatureFlagContextValue } from '../FeatureFlagContext';
 
 // Helper component that exposes context values for testing
@@ -62,9 +70,11 @@ function CtxCapture() {
 
 function renderProvider(props?: { flagName?: string; routePath?: string }) {
   return render(
-    <FeatureFlagProvider>
-      <TestConsumer flagName={props?.flagName} routePath={props?.routePath} />
-    </FeatureFlagProvider>,
+    <AuthProvider>
+      <FeatureFlagProvider>
+        <TestConsumer flagName={props?.flagName} routePath={props?.routePath} />
+      </FeatureFlagProvider>
+    </AuthProvider>,
   );
 }
 
@@ -166,9 +176,11 @@ describe('FeatureFlagContext', () => {
       mockState.fetchResult = { data: null, error: { message: 'table not found' } };
 
       render(
-        <FeatureFlagProvider>
-          <CtxCapture />
-        </FeatureFlagProvider>,
+        <AuthProvider>
+          <FeatureFlagProvider>
+            <CtxCapture />
+          </FeatureFlagProvider>
+        </AuthProvider>,
       );
 
       await waitFor(() => {
@@ -185,9 +197,11 @@ describe('FeatureFlagContext', () => {
       mockState.fetchThrows = true;
 
       render(
-        <FeatureFlagProvider>
-          <CtxCapture />
-        </FeatureFlagProvider>,
+        <AuthProvider>
+          <FeatureFlagProvider>
+            <CtxCapture />
+          </FeatureFlagProvider>
+        </AuthProvider>,
       );
 
       await waitFor(() => {

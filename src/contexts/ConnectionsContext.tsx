@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import type { Connection } from '../models/connection';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { useDataLayer } from '../providers/DataLayerProvider';
@@ -21,6 +21,18 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
   const supabaseMode = isSupabaseConfigured();
 
   const [connections, setConnections] = useState<Connection[]>(dataLayer.connections);
+
+  // Fetch from Supabase on mount when in supabase mode
+  useEffect(() => {
+    if (!supabaseMode) return;
+    connectionsAdapter.getAll().then((data) => {
+      if (data.length > 0) {
+        setConnections(data);
+      }
+    }).catch((err) => {
+      console.warn('Failed to fetch connections from Supabase, using seed data', err);
+    });
+  }, []);
 
   const getConnectionById = useCallback(
     (id: string) => connections.find((c) => c.id === id),

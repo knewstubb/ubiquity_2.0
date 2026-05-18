@@ -81,8 +81,8 @@ describe('WhatsNewPanel', () => {
     await user.click(screen.getByRole('button', { name: /what's new/i }));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
-    // The overlay is the sibling div before the panel
-    const overlay = container.querySelector('[class*="overlay"]');
+    // The overlay is the fixed backdrop div (sibling before the dialog panel)
+    const overlay = container.querySelector('.fixed.inset-0');
     expect(overlay).toBeTruthy();
     await user.click(overlay!);
 

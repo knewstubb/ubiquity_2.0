@@ -29,8 +29,8 @@ Extend the three data structures in `src/data/defaultTokenConfig.ts` to register
   - [x] 2.2 Add text token entries to DEFAULT_TOKEN_CONFIG.colours
     - Add `text-tertiary: { light: 'zinc-400', dark: 'zinc-500' }`
     - Add `text-disabled: { light: 'zinc-300', dark: 'zinc-600' }`
-    - Add `text-inverse: { light: 'white-50', dark: 'zinc-900' }`
-    - Add `text-on-accent: { light: 'white-50', dark: 'white-50' }`
+    - Add `text-inverse: { light: 'white', dark: 'zinc-900' }`
+    - Add `text-on-accent: { light: 'white', dark: 'white' }`
     - _Requirements: 3.1, 10.1, 10.2, 10.3_
 
   - [x] 2.3 Add accent token entries to DEFAULT_TOKEN_CONFIG.colours

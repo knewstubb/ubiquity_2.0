@@ -11,7 +11,7 @@ async function enableNoFile(user: ReturnType<typeof userEvent.setup>) {
 
 /** Helper: click a frequency tab */
 async function selectFrequency(user: ReturnType<typeof userEvent.setup>, label: string) {
-  const btn = screen.getByRole('button', { name: label });
+  const btn = screen.getByRole('radio', { name: label });
   await user.click(btn);
 }
 
@@ -22,7 +22,7 @@ describe('NotificationsStep — No File frequency-specific content', () => {
     await enableNoFile(user);
 
     // Hourly tab should be active
-    const hourlyBtn = screen.getByRole('button', { name: 'Hourly' });
+    const hourlyBtn = screen.getByRole('radio', { name: 'Hourly' });
     expect(hourlyBtn.className).toContain('text-primary');
 
     // Should show Starting, Every, At, Email Address
@@ -113,8 +113,8 @@ describe('NotificationsStep — No File frequency-specific content', () => {
     expect(screen.getByLabelText('Day of week')).toBeInTheDocument();
 
     // Default values
-    expect(screen.getByLabelText('Ordinal')).toHaveValue('2nd');
-    expect(screen.getByLabelText('Day of week')).toHaveValue('Wednesday');
+    expect(screen.getByLabelText('Ordinal')).toHaveTextContent('2nd');
+    expect(screen.getByLabelText('Day of week')).toHaveTextContent('Wednesday');
 
     // Unit suffix
     expect(screen.getByText('Months/s')).toBeInTheDocument();
@@ -159,14 +159,12 @@ describe('NotificationsStep — No File frequency-specific content', () => {
     await enableNoFile(user);
     await selectFrequency(user, 'Monthly');
 
-    const ordinalSelect = screen.getByLabelText('Ordinal');
-    const daySelect = screen.getByLabelText('Day of week');
+    // Verify the default values are displayed in the triggers
+    const ordinalTrigger = screen.getByLabelText('Ordinal');
+    const dayTrigger = screen.getByLabelText('Day of week');
 
-    await user.selectOptions(ordinalSelect, 'Last');
-    expect(ordinalSelect).toHaveValue('Last');
-
-    await user.selectOptions(daySelect, 'Friday');
-    expect(daySelect).toHaveValue('Friday');
+    expect(ordinalTrigger).toHaveTextContent('2nd');
+    expect(dayTrigger).toHaveTextContent('Wednesday');
   });
 
   it('renders unit suffix as a styled badge element', async () => {

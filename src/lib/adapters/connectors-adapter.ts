@@ -9,7 +9,7 @@ async function getCurrentUserId(): Promise<string | null> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapRowToConnector(row: any): Automation {
+export function mapRowToConnector(row: any): Automation {
   return {
     id: row.id,
     connectionId: row.connection_id,
@@ -27,10 +27,13 @@ function mapRowToConnector(row: any): Automation {
     status: row.status,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    importerConfig: row.importer_config ?? undefined,
+    notifications: row.notifications ?? undefined,
+    scheduleConfig: row.schedule_config ?? undefined,
   };
 }
 
-function mapConnectorToRow(connector: Automation) {
+export function mapConnectorToRow(connector: Automation) {
   return {
     id: connector.id,
     connection_id: connector.connectionId,
@@ -48,6 +51,9 @@ function mapConnectorToRow(connector: Automation) {
     status: connector.status,
     created_at: connector.createdAt,
     updated_at: connector.updatedAt,
+    importer_config: connector.importerConfig ?? null,
+    notifications: connector.notifications ?? null,
+    schedule_config: connector.scheduleConfig ?? null,
   };
 }
 
@@ -91,6 +97,9 @@ export async function update(id: string, updates: Partial<Automation>): Promise<
   if (updates.schedule !== undefined) row.schedule = updates.schedule;
   if (updates.filters !== undefined) row.filters = updates.filters;
   if (updates.status !== undefined) row.status = updates.status;
+  if (updates.importerConfig !== undefined) row.importer_config = updates.importerConfig;
+  if (updates.notifications !== undefined) row.notifications = updates.notifications;
+  if (updates.scheduleConfig !== undefined) row.schedule_config = updates.scheduleConfig;
 
   const { data, error } = await supabase!.from('connectors').update(row).eq('id', id).select().single();
   if (error || !data) throw new Error(error?.message ?? 'Failed to update connector');

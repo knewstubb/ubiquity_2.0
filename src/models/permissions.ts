@@ -19,6 +19,8 @@ export interface PermissionUser {
   name: string;
   email: string;
   initials: string;
+  isSystemAdmin?: boolean;
+  isPlatformOwner?: boolean;
 }
 
 export interface UserAccountAssignment {

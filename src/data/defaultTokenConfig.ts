@@ -16,6 +16,7 @@ export const TOKEN_DESCRIPTIONS: Record<string, TokenDescription> = {
   'foreground': { description: 'Default text colour', usage: 'Body text, headings, labels' },
   'card': { description: 'Card surface', usage: 'Card backgrounds, elevated panels' },
   'card-foreground': { description: 'Text on cards', usage: 'Text inside card components' },
+  'surface': { description: 'Flat content surface', usage: 'Flat content areas, list items, table rows, inline panels' },
   'popover': { description: 'Popover/dropdown surface', usage: 'Dropdown menus, tooltips, popovers' },
   'popover-foreground': { description: 'Text in popovers', usage: 'Text inside dropdown menus and tooltips' },
 
@@ -101,7 +102,7 @@ export const TOKEN_DESCRIPTIONS: Record<string, TokenDescription> = {
 };
 
 export const COLOUR_TOKEN_GROUPS: { name: string; tokens: string[] }[] = [
-  { name: 'Core Surfaces', tokens: ['background', 'foreground', 'card', 'card-foreground', 'popover', 'popover-foreground'] },
+  { name: 'Core Surfaces', tokens: ['background', 'foreground', 'card', 'card-foreground', 'surface', 'popover', 'popover-foreground'] },
   { name: 'Primary', tokens: ['primary', 'primary-foreground'] },
   { name: 'Secondary', tokens: ['secondary', 'secondary-foreground'] },
   { name: 'Muted', tokens: ['muted', 'muted-foreground', 'tertiary-foreground'] },
@@ -129,14 +130,15 @@ export const DEFAULT_TOKEN_CONFIG: TokenConfig = {
     // Core Surfaces
     'background': { light: 'zinc-50', dark: 'zinc-900' },
     'foreground': { light: 'zinc-800', dark: 'zinc-50' },
-    'card': { light: 'white-50', dark: 'zinc-800' },
+    'card': { light: 'white', dark: 'zinc-800' },
     'card-foreground': { light: 'zinc-800', dark: 'zinc-50' },
-    'popover': { light: 'white-50', dark: 'zinc-900' },
+    'surface': { light: 'white', dark: 'black' },
+    'popover': { light: 'white', dark: 'zinc-900' },
     'popover-foreground': { light: 'zinc-800', dark: 'zinc-50' },
 
     // Primary
     'primary': { light: 'mint-500', dark: 'mint-500' },
-    'primary-foreground': { light: 'white-50', dark: 'white-50' },
+    'primary-foreground': { light: 'white', dark: 'white' },
 
     // Secondary
     'secondary': { light: 'zinc-100', dark: 'zinc-800' },
@@ -154,7 +156,7 @@ export const DEFAULT_TOKEN_CONFIG: TokenConfig = {
 
     // Destructive
     'destructive': { light: 'red-500', dark: 'red-500' },
-    'destructive-foreground': { light: 'white-50', dark: 'white-50' },
+    'destructive-foreground': { light: 'white', dark: 'white' },
     'destructive-subtle': { light: 'red-50', dark: 'red-950' },
     'destructive-border': { light: 'red-500', dark: 'red-400' },
 
@@ -189,7 +191,7 @@ export const DEFAULT_TOKEN_CONFIG: TokenConfig = {
     // Extended
     'background-sunken': { light: 'zinc-200', dark: 'zinc-950' },
     'background-elevated': { light: 'zinc-300', dark: 'zinc-700' },
-    'text-inverse': { light: 'white-50', dark: 'zinc-900' },
+    'text-inverse': { light: 'white', dark: 'zinc-900' },
     'danger-hover': { light: 'red-600', dark: 'red-500' },
     'danger-text': { light: 'red-700', dark: 'red-300' },
     'neutral-hover': { light: 'zinc-600', dark: 'zinc-500' },
@@ -201,7 +203,7 @@ export const DEFAULT_TOKEN_CONFIG: TokenConfig = {
     'sidebar': { light: 'zinc-100', dark: 'zinc-900' },
     'sidebar-foreground': { light: 'zinc-800', dark: 'zinc-50' },
     'sidebar-primary': { light: 'mint-500', dark: 'mint-500' },
-    'sidebar-primary-foreground': { light: 'white-50', dark: 'white-50' },
+    'sidebar-primary-foreground': { light: 'white', dark: 'white' },
     'sidebar-accent': { light: 'mint-50', dark: 'mint-950' },
     'sidebar-accent-foreground': { light: 'mint-700', dark: 'mint-300' },
     'sidebar-border': { light: 'zinc-200', dark: 'zinc-700' },

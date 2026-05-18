@@ -8,6 +8,8 @@ import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
+import type { NotificationConfig } from '../../models/importer';
+import { DEFAULT_NOTIFICATION_CONFIG } from '../../models/importer';
 
 /* ── Types ── */
 type Frequency = 'hourly' | 'daily' | 'weekly' | 'monthly';
@@ -42,12 +44,17 @@ const DEFAULT_EMAIL = 'contact@gmail.com';
 /* ── Main Component ── */
 
 interface NotificationsStepProps {
+  value?: NotificationConfig;
+  onUpdate?: (config: NotificationConfig) => void;
   onValidChange?: (valid: boolean) => void;
 }
 
-export function NotificationsStep({ onValidChange }: NotificationsStepProps) {
+export function NotificationsStep({ value, onUpdate, onValidChange }: NotificationsStepProps) {
+  /* Initialize from value prop or defaults */
+  const initial = value ?? DEFAULT_NOTIFICATION_CONFIG;
+
   /* Failure emails (always visible) */
-  const [failureEmails, setFailureEmails] = useState<string[]>([DEFAULT_EMAIL]);
+  const [failureEmails, setFailureEmails] = useState<string[]>(initial.failureEmails);
 
   /* Report validity to parent */
   useEffect(() => {
@@ -55,16 +62,27 @@ export function NotificationsStep({ onValidChange }: NotificationsStepProps) {
   }, [failureEmails, onValidChange]);
 
   /* Success */
-  const [successEnabled, setSuccessEnabled] = useState(false);
-  const [successEmails, setSuccessEmails] = useState<string[]>([DEFAULT_EMAIL]);
+  const [successEnabled, setSuccessEnabled] = useState(initial.successEnabled);
+  const [successEmails, setSuccessEmails] = useState<string[]>(initial.successEmails);
 
   /* No File */
-  const [noFileEnabled, setNoFileEnabled] = useState(false);
+  const [noFileEnabled, setNoFileEnabled] = useState(initial.noFileAlertEnabled);
   const [noFileFrequency, setNoFileFrequency] = useState<Frequency>('hourly');
   const [noFileStarting, setNoFileStarting] = useState('Friday, 09 May, 2025');
   const [noFileEvery, setNoFileEvery] = useState('1');
   const [noFileAt, setNoFileAt] = useState('2:30 pm');
-  const [noFileEmails, setNoFileEmails] = useState<string[]>([DEFAULT_EMAIL]);
+  const [noFileEmails, setNoFileEmails] = useState<string[]>(initial.noFileAlertEmails);
+
+  /* Notify parent whenever any notification value changes */
+  useEffect(() => {
+    onUpdate?.({
+      failureEmails,
+      successEnabled,
+      successEmails,
+      noFileAlertEnabled: noFileEnabled,
+      noFileAlertEmails: noFileEmails,
+    });
+  }, [failureEmails, successEnabled, successEmails, noFileEnabled, noFileEmails]);
 
   /* Weekly day selection — 0-indexed from Monday, default T(1), W(2), F(4) */
   const [noFileDays, setNoFileDays] = useState<boolean[]>([

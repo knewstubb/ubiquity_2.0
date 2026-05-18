@@ -55,6 +55,18 @@ export function AutomationsProvider({ children }: { children: ReactNode }) {
     return dataLayer.connectors;
   });
 
+  // Fetch from Supabase on mount when in supabase mode
+  useEffect(() => {
+    if (!supabaseMode) return;
+    automationsAdapter.getAll().then((data) => {
+      if (data.length > 0) {
+        setAutomations(data);
+      }
+    }).catch((err) => {
+      console.warn('Failed to fetch automations from Supabase, using seed data', err);
+    });
+  }, []);
+
   useEffect(() => {
     if (!supabaseMode) {
       saveAutomations(automations);
@@ -80,12 +92,14 @@ export function AutomationsProvider({ children }: { children: ReactNode }) {
       status: 'active',
       createdAt: now,
       updatedAt: now,
+      notifications: draft.notifications,
+      scheduleConfig: draft.scheduleConfig,
     };
     setAutomations((prev) => [...prev, automation]);
     if (supabaseMode) {
       automationsAdapter.add(automation).catch((err) => {
-        showToast(err.message || 'Failed to add automation', 'error');
-        setAutomations((prev) => prev.filter((c) => c.id !== automation.id));
+        showToast('Saved locally — Supabase sync failed', 'error');
+        console.warn('addAutomation: Supabase sync failed, keeping local state', err.message);
       });
     }
     return automation;
@@ -95,8 +109,9 @@ export function AutomationsProvider({ children }: { children: ReactNode }) {
     setAutomations((prev) => [...prev, automation]);
     if (supabaseMode) {
       automationsAdapter.add(automation).catch((err) => {
-        showToast(err.message || 'Failed to add automation', 'error');
-        setAutomations((prev) => prev.filter((c) => c.id !== automation.id));
+        // Keep the local state — don't roll back. Show a warning instead.
+        showToast('Saved locally — Supabase sync failed', 'error');
+        console.warn('addAutomationDirect: Supabase sync failed, keeping local state', err.message);
       });
     }
   }, [supabaseMode, showToast]);
@@ -122,6 +137,8 @@ export function AutomationsProvider({ children }: { children: ReactNode }) {
               fileNamingPattern: draft.fileNamingPattern,
               schedule: draft.schedule!,
               filters: draft.filters,
+              notifications: draft.notifications,
+              scheduleConfig: draft.scheduleConfig,
               updatedAt: new Date().toISOString(),
             }
           : c,

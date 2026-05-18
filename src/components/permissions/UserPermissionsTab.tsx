@@ -1,7 +1,8 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { FloppyDisk } from '@phosphor-icons/react';
 import type { FunctionalPermissions, UserAccountAssignment } from '../../models/permissions';
 import { usePermissions } from '../../contexts/PermissionsContext';
+import { useToast } from '../shared/Toast';
 import { accounts } from '../../data/accounts';
 import { FUNCTIONAL_GROUPS } from '../../data/permissions';
 import { UserSidebar } from './UserSidebar';
@@ -39,6 +40,8 @@ export function UserPermissionsTab() {
     permissionGroups,
     getAssignmentsForUser,
     setAssignmentsForUser,
+    isCurrentUserSystemAdmin,
+    setSystemAdmin,
   } = usePermissions();
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -48,6 +51,10 @@ export function UserPermissionsTab() {
   const [draftAssignments, setDraftAssignments] = useState<Map<string, string>>(new Map());
   // Custom permissions per account (for edit panel)
   const [customPerms, setCustomPerms] = useState<Map<string, Record<string, FunctionalPermissions>>>(new Map());
+
+  // Dirty tracking — snapshot of initial state for comparison
+  const initialSnapshotRef = useRef<string>('');
+  const { showToast } = useToast();
 
   // Edit panel state
   const [editAccountId, setEditAccountId] = useState<string | null>(null);
@@ -87,9 +94,25 @@ export function UserPermissionsTab() {
     setCheckedIds(checked);
     setDraftAssignments(assigns);
     setCustomPerms(customs);
+
+    // Capture snapshot for dirty tracking
+    initialSnapshotRef.current = JSON.stringify({
+      checked: Array.from(checked).sort(),
+      assigns: Array.from(assigns.entries()).sort(),
+      customs: Array.from(customs.entries()).sort(),
+    });
   }, [selectedUserId, getAssignmentsForUser]);
 
   // --- Cascading check/uncheck ---
+
+  const isDirty = useMemo(() => {
+    const current = JSON.stringify({
+      checked: Array.from(checkedIds).sort(),
+      assigns: Array.from(draftAssignments.entries()).sort(),
+      customs: Array.from(customPerms.entries()).sort(),
+    });
+    return current !== initialSnapshotRef.current;
+  }, [checkedIds, draftAssignments, customPerms]);
 
   const handleCheckChange = useCallback(
     (accountId: string, checked: boolean) => {
@@ -252,7 +275,16 @@ export function UserPermissionsTab() {
     }
 
     setAssignmentsForUser(selectedUserId, newAssignments);
-  }, [selectedUserId, checkedIds, draftAssignments, customPerms, defaultGroupId, setAssignmentsForUser]);
+
+    // Update snapshot so isDirty resets
+    initialSnapshotRef.current = JSON.stringify({
+      checked: Array.from(checkedIds).sort(),
+      assigns: Array.from(draftAssignments.entries()).sort(),
+      customs: Array.from(customPerms.entries()).sort(),
+    });
+
+    showToast('Permissions saved successfully', 'success');
+  }, [selectedUserId, checkedIds, draftAssignments, customPerms, defaultGroupId, setAssignmentsForUser, showToast]);
 
   // --- Render ---
 
@@ -272,8 +304,9 @@ export function UserPermissionsTab() {
               <p className="font-sans text-sm text-muted-foreground m-0 leading-normal">Select accounts to grant access.</p>
             </div>
             <button
-              className="inline-flex items-center gap-2 px-4 py-2 border-none rounded-md bg-primary font-sans text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 whitespace-nowrap shrink-0 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+              className="inline-flex items-center gap-2 px-4 py-2 border-none rounded-md bg-primary font-sans text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 whitespace-nowrap shrink-0 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-primary"
               onClick={handleSave}
+              disabled={!isDirty}
             >
               <FloppyDisk size={16} weight="bold" />
               Save Changes
@@ -281,6 +314,25 @@ export function UserPermissionsTab() {
           </div>
 
           <div className="mt-2">
+            {/* System Administrator toggle — only visible to system admins */}
+            {isCurrentUserSystemAdmin && selectedUser && (
+              <div className="flex items-center justify-between py-3 px-4 mb-4 border border-border rounded-lg bg-surface">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-sm font-semibold text-foreground">System Administrator</span>
+                  <span className="text-xs text-muted-foreground">Full unrestricted access to all accounts and settings</span>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={selectedUser.isSystemAdmin ?? false}
+                    onChange={(e) => setSystemAdmin(selectedUser.id, e.target.checked)}
+                  />
+                  <div className="w-9 h-5 bg-muted rounded-full peer peer-checked:bg-primary transition-colors duration-200 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
+                </label>
+              </div>
+            )}
+
             <AccountTree
               accounts={accounts}
               checkedAccountIds={checkedIds}

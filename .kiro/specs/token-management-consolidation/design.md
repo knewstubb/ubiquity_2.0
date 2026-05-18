@@ -97,8 +97,8 @@ Each new token maps to a `{ light: PrimitiveRef, dark: PrimitiveRef }` pair deri
 | `background-elevated` | `zinc-300` | `zinc-700` |
 | `text-tertiary` | `zinc-400` | `zinc-500` |
 | `text-disabled` | `zinc-300` | `zinc-600` |
-| `text-inverse` | `white-50` | `zinc-900` |
-| `text-on-accent` | `white-50` | `white-50` |
+| `text-inverse` | `white` | `zinc-900` |
+| `text-on-accent` | `white` | `white` |
 | `accent-hover` | `mint-600` | `mint-400` |
 | `accent-subtle` | `mint-50` | `mint-950` |
 | `accent-text` | `mint-700` | `mint-300` |

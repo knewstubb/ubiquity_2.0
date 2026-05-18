@@ -6,6 +6,7 @@ import { WizardNavButtons } from './WizardNavButtons';
 function renderNav(overrides: Partial<{
   onBack: () => void;
   onNext: () => void;
+  onCancel: () => void;
   canProceed: boolean;
   isLast: boolean;
   showBack: boolean;
@@ -13,6 +14,7 @@ function renderNav(overrides: Partial<{
   const props = {
     onBack: overrides.onBack ?? vi.fn(),
     onNext: overrides.onNext ?? vi.fn(),
+    onCancel: overrides.onCancel ?? vi.fn(),
     canProceed: overrides.canProceed ?? true,
     isLast: overrides.isLast ?? false,
     showBack: overrides.showBack,
@@ -27,9 +29,9 @@ describe('WizardNavButtons', () => {
     expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument();
   });
 
-  it('hides Back button when showBack is false', () => {
+  it('disables Back button when showBack is false', () => {
     renderNav({ showBack: false });
-    expect(screen.queryByRole('button', { name: 'Back' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument();
   });
 

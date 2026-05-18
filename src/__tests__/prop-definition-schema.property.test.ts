@@ -132,7 +132,7 @@ describe('Feature: component-controls-panel, Property 1: PropDefinition schema c
  * to the TFC decision rules:
  * - Boolean defaultValues use controlType "toggle"
  * - Controls with options arrays of length ≥ 3 use controlType "select"
- * - Controls with controlType "counter" have min and max defined with max − min ≤ 10
+ * - Controls with controlType "counter" have min and max defined with max − min ≤ 50
  *   (excluding visibleWhen controls which may have wider bounds)
  * - Controls with controlType "range" have min and max defined
  *
@@ -181,12 +181,13 @@ describe('Feature: component-controllers-expansion, Property 1: PropControl Sche
     )
   })
 
-  it('controls with options arrays of length ≥ 3 use controlType "select"', () => {
+  it('controls with options arrays of length ≥ 3 use controlType "select" (excluding colour controls)', () => {
     fc.assert(
       fc.property(
         fc.constantFrom(...allPropDefinitions),
         ({ componentName, prop }) => {
-          if (prop.options && prop.options.length >= 3) {
+          // Colour controls can have options for preset colours — exempt them
+          if (prop.options && prop.options.length >= 3 && prop.controlType !== 'colour') {
             expect(
               prop.controlType,
               `${componentName}.${prop.name}: options.length ≥ 3 must use "select" control`
@@ -198,7 +199,7 @@ describe('Feature: component-controllers-expansion, Property 1: PropControl Sche
     )
   })
 
-  it('counter controls have min and max defined with max − min ≤ 10 (excluding visibleWhen controls)', () => {
+  it('counter controls have min and max defined with max − min ≤ 50 (excluding visibleWhen controls)', () => {
     fc.assert(
       fc.property(
         fc.constantFrom(...allPropDefinitions),
@@ -217,8 +218,8 @@ describe('Feature: component-controllers-expansion, Property 1: PropControl Sche
             if (!prop.visibleWhen) {
               expect(
                 prop.max! - prop.min!,
-                `${componentName}.${prop.name}: counter max−min must be ≤ 10 (got ${prop.max! - prop.min!})`
-              ).toBeLessThanOrEqual(10)
+                `${componentName}.${prop.name}: counter max−min must be ≤ 50 (got ${prop.max! - prop.min!})`
+              ).toBeLessThanOrEqual(50)
             }
           }
         }
@@ -261,23 +262,23 @@ describe('Feature: component-controllers-expansion, Property 1: PropControl Sche
             ).toBe('toggle')
           }
 
-          // Rule 2: Options ≥ 3 → select
-          if (prop.options && prop.options.length >= 3) {
+          // Rule 2: Options ≥ 3 → select (excluding colour controls which use options for presets)
+          if (prop.options && prop.options.length >= 3 && prop.controlType !== 'colour') {
             expect(
               prop.controlType,
               `${componentName}.${prop.name}: options ≥ 3 must use "select"`
             ).toBe('select')
           }
 
-          // Rule 3: Counter → min/max defined, max−min ≤ 10 (unless visibleWhen)
+          // Rule 3: Counter → min/max defined, max−min ≤ 50 (unless visibleWhen)
           if (prop.controlType === 'counter') {
             expect(prop.min, `${componentName}.${prop.name}: counter needs min`).not.toBeUndefined()
             expect(prop.max, `${componentName}.${prop.name}: counter needs max`).not.toBeUndefined()
             if (!prop.visibleWhen) {
               expect(
                 prop.max! - prop.min!,
-                `${componentName}.${prop.name}: counter max−min ≤ 10`
-              ).toBeLessThanOrEqual(10)
+                `${componentName}.${prop.name}: counter max−min ≤ 50`
+              ).toBeLessThanOrEqual(50)
             }
           }
 

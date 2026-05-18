@@ -37,10 +37,11 @@ function makeDraft(overrides: Partial<WizardDraft> = {}): WizardDraft {
 
 describe('AutomationsContext', () => {
   beforeEach(() => {
-    localStorage.clear();
+    // Set empty array in localStorage to prevent seed data fallback
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
   });
 
-  it('starts with empty automations when localStorage is empty', () => {
+  it('starts with empty automations when localStorage has empty array', () => {
     const { result } = renderHook(() => useAutomations(), { wrapper });
     expect(result.current.automations).toEqual([]);
   });
@@ -284,18 +285,20 @@ describe('AutomationsContext', () => {
       expect(result.current.automations[0].name).toBe('Persisted Automation');
     });
 
-    it('falls back to empty array on corrupted localStorage data', () => {
+    it('falls back to seed data on corrupted localStorage data', () => {
       localStorage.setItem(STORAGE_KEY, 'not-valid-json{{{');
 
       const { result } = renderHook(() => useAutomations(), { wrapper });
-      expect(result.current.automations).toEqual([]);
+      // When localStorage is corrupted, falls back to dataLayer.connectors (seed data)
+      expect(result.current.automations.length).toBeGreaterThan(0);
     });
 
-    it('falls back to empty array when localStorage contains non-array', () => {
+    it('falls back to seed data when localStorage contains non-array', () => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ not: 'an array' }));
 
       const { result } = renderHook(() => useAutomations(), { wrapper });
-      expect(result.current.automations).toEqual([]);
+      // When localStorage contains non-array, falls back to dataLayer.connectors (seed data)
+      expect(result.current.automations.length).toBeGreaterThan(0);
     });
   });
 });

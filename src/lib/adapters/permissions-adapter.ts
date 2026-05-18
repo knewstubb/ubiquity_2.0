@@ -39,6 +39,8 @@ function mapRowToUser(row: any): PermissionUser {
     name: row.name,
     email: row.email,
     initials: row.initials,
+    isSystemAdmin: row.is_system_admin ?? false,
+    isPlatformOwner: row.is_platform_owner ?? false,
   };
 }
 
@@ -148,5 +150,16 @@ export async function removeAssignment(userId: string, accountId: string): Promi
     .delete()
     .eq('user_id', userId)
     .eq('account_id', accountId);
+  if (error) throw new Error(error.message);
+}
+
+
+export async function setSystemAdmin(userId: string, isSystemAdmin: boolean): Promise<void> {
+  if (!isSupabaseConfigured()) return;
+
+  const { error } = await supabase!
+    .from('prototype_users')
+    .update({ is_system_admin: isSystemAdmin })
+    .eq('id', userId);
   if (error) throw new Error(error.message);
 }

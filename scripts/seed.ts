@@ -240,6 +240,8 @@ async function seedConnectors(): Promise<void> {
     status: c.status,
     created_at: c.createdAt,
     updated_at: c.updatedAt,
+    importer_config: c.importerConfig ?? null,
+    notifications: c.notifications ?? null,
   }));
   await upsertRows('connectors', rows);
 }

@@ -56,6 +56,13 @@ export interface PermissionsContextValue {
 
   // Effective permissions for the active root account tree
   effectivePermissions: Record<string, FunctionalPermissions>;
+
+  // System Administrator
+  isCurrentUserSystemAdmin: boolean;
+  setSystemAdmin: (userId: string, isSystemAdmin: boolean) => void;
+
+  // Platform Owner (prototype management — not assignable via UI)
+  isCurrentUserPlatformOwner: boolean;
 }
 
 function persistState(state: PersistedState): void {
@@ -105,7 +112,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     }
     return dataLayer.assignments;
   });
-  const permissionUsers = dataLayer.users;
+  const [permissionUsers, setPermissionUsers] = useState<PermissionUser[]>(dataLayer.users);
 
   // Persist to localStorage only in local mode
   useEffect(() => {
@@ -330,6 +337,41 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     return resolveEffectivePermissions(assignments, permissionGroups, accountTreeIds, userId);
   }, [user?.id, accountsInActiveTree, assignments, permissionGroups]);
 
+  // --- System Administrator ---
+
+  const isCurrentUserSystemAdmin = useMemo(() => {
+    const userId = user?.id ?? '';
+    if (!userId) return false;
+    const currentUser = permissionUsers.find((u) => u.id === userId);
+    return currentUser?.isSystemAdmin ?? false;
+  }, [user?.id, permissionUsers]);
+
+  const isCurrentUserPlatformOwner = useMemo(() => {
+    const userId = user?.id ?? '';
+    if (!userId) return false;
+    const currentUser = permissionUsers.find((u) => u.id === userId);
+    return currentUser?.isPlatformOwner ?? false;
+  }, [user?.id, permissionUsers]);
+
+  const setSystemAdmin = useCallback((userId: string, isSystemAdmin: boolean) => {
+    // Optimistically update local state
+    setPermissionUsers((prev) =>
+      prev.map((u) => u.id === userId ? { ...u, isSystemAdmin } : u)
+    );
+
+    if (supabaseMode) {
+      permissionsAdapter.setSystemAdmin(userId, isSystemAdmin).then(() => {
+        showToast(`System Administrator ${isSystemAdmin ? 'granted' : 'revoked'}`, 'success');
+      }).catch((err) => {
+        // Rollback on failure
+        setPermissionUsers((prev) =>
+          prev.map((u) => u.id === userId ? { ...u, isSystemAdmin: !isSystemAdmin } : u)
+        );
+        showToast(err.message || 'Failed to update system admin status', 'error');
+      });
+    }
+  }, [supabaseMode, showToast]);
+
   const value: PermissionsContextValue = {
     permissionGroups,
     addPermissionGroup,
@@ -348,6 +390,9 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     resolveGroupName,
     matchPermissionsToGroup,
     effectivePermissions,
+    isCurrentUserSystemAdmin,
+    setSystemAdmin,
+    isCurrentUserPlatformOwner,
   };
 
   return (
