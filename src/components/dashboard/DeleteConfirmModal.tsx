@@ -1,14 +1,14 @@
-import { useState, useCallback } from 'react';
-import { Modal } from '../shared/Modal';
-import { TextField } from '../shared/TextField';
+import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed'
 
 interface DeleteConfirmModalProps {
   /** The type of object being deleted, e.g. "Connection" or "Automation" */
-  objectType: string;
+  objectType: string
   /** The name of the object being deleted */
-  objectName: string;
-  onConfirm: () => void;
-  onCancel: () => void;
+  objectName: string
+  onConfirm: () => void
+  onCancel: () => void
+  /** Controlled open state — defaults to true for backward compatibility */
+  open?: boolean
 }
 
 export function DeleteConfirmModal({
@@ -16,46 +16,23 @@ export function DeleteConfirmModal({
   objectName,
   onConfirm,
   onCancel,
+  open = true,
 }: DeleteConfirmModalProps) {
-  const [inputValue, setInputValue] = useState('');
-  const isValid = inputValue.trim() === 'ACCEPT';
-
-  const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      if (isValid) onConfirm();
-    },
-    [isValid, onConfirm],
-  );
-
   return (
-    <Modal
-      title={`Delete ${objectType}?`}
-      onClose={onCancel}
-      maxWidth="460px"
-      primaryAction={{
-        label: `Delete ${objectType}`,
-        onClick: () => { if (isValid) onConfirm(); },
-        disabled: !isValid,
-        variant: 'destructive',
+    <AlertDialogComposed
+      open={open}
+      onOpenChange={(value) => {
+        if (!value) onCancel()
       }}
-      secondaryAction={{ label: 'Cancel', onClick: onCancel }}
+      intent="destructive"
+      title={`Delete '${objectName}'?`}
+      confirmLabel={`Delete ${objectType.toLowerCase()}`}
+      onConfirm={onConfirm}
+      requiresInput="DELETE"
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <p className="m-0 text-base text-muted-foreground leading-relaxed [&>strong]:text-foreground">
-          <strong>{objectName}</strong> will be deleted. This action cannot be undone.
-        </p>
-        <p className="m-0 text-base text-muted-foreground leading-relaxed [&>strong]:text-foreground">
-          Type <strong>ACCEPT</strong> in the box below to confirm deletion.
-        </p>
-        <TextField
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="ACCEPT"
-          autoFocus
-          autoComplete="off"
-        />
-      </form>
-    </Modal>
-  );
+      <p className="m-0 leading-relaxed">
+        This will permanently remove <span className="font-semibold">{objectName}</span> and all associated data. This cannot be undone.
+      </p>
+    </AlertDialogComposed>
+  )
 }

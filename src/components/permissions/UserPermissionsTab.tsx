@@ -1,10 +1,11 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
-import { FloppyDisk } from '@phosphor-icons/react';
 import type { FunctionalPermissions, UserAccountAssignment } from '../../models/permissions';
 import { usePermissions } from '../../contexts/PermissionsContext';
 import { useToast } from '../shared/Toast';
+import { cn } from '../../lib/utils';
 import { accounts } from '../../data/accounts';
 import { FUNCTIONAL_GROUPS } from '../../data/permissions';
+import { Toggle } from '../shared/Toggle';
 import { UserSidebar } from './UserSidebar';
 import { AccountTree } from './AccountTree';
 import { PermissionEditPanel } from './PermissionEditPanel';
@@ -34,7 +35,7 @@ function getAllDescendantIds(accountId: string, accountMap: ReturnType<typeof bu
   return descendants;
 }
 
-export function UserPermissionsTab() {
+export function UserPermissionsTab({ onRegisterSave }: { onRegisterSave?: (handle: { isDirty: boolean; onSave: () => void }) => void }) {
   const {
     users,
     permissionGroups,
@@ -286,6 +287,11 @@ export function UserPermissionsTab() {
     showToast('Permissions saved successfully', 'success');
   }, [selectedUserId, checkedIds, draftAssignments, customPerms, defaultGroupId, setAssignmentsForUser, showToast]);
 
+  // Register save handle with parent page
+  useEffect(() => {
+    onRegisterSave?.({ isDirty, onSave: handleSave });
+  }, [onRegisterSave, isDirty, handleSave]);
+
   // --- Render ---
 
   return (
@@ -303,45 +309,38 @@ export function UserPermissionsTab() {
               <h2 className="font-sans text-xl font-semibold text-foreground m-0">Permissions for {selectedUser.name}</h2>
               <p className="font-sans text-sm text-muted-foreground m-0 leading-normal">Select accounts to grant access.</p>
             </div>
-            <button
-              className="inline-flex items-center gap-2 px-4 py-2 border-none rounded-md bg-primary font-sans text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 whitespace-nowrap shrink-0 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-primary"
-              onClick={handleSave}
-              disabled={!isDirty}
-            >
-              <FloppyDisk size={16} weight="bold" />
-              Save Changes
-            </button>
           </div>
 
           <div className="mt-2">
             {/* System Administrator toggle — only visible to system admins */}
             {isCurrentUserSystemAdmin && selectedUser && (
-              <div className="flex items-center justify-between py-3 px-4 mb-4 border border-border rounded-lg bg-surface">
+              <div className="flex items-center justify-between py-3 px-4 mb-4 border border-border rounded bg-surface">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-sm font-semibold text-foreground">System Administrator</span>
                   <span className="text-xs text-muted-foreground">Full unrestricted access to all accounts and settings</span>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="sr-only peer"
-                    checked={selectedUser.isSystemAdmin ?? false}
-                    onChange={(e) => setSystemAdmin(selectedUser.id, e.target.checked)}
-                  />
-                  <div className="w-9 h-5 bg-muted rounded-full peer peer-checked:bg-primary transition-colors duration-200 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
-                </label>
+                <Toggle
+                  checked={selectedUser.isSystemAdmin ?? false}
+                  onChange={(checked) => setSystemAdmin(selectedUser.id, checked)}
+                  id="system-admin-toggle"
+                />
               </div>
             )}
 
-            <AccountTree
-              accounts={accounts}
-              checkedAccountIds={checkedIds}
-              assignments={draftAssignments}
-              permissionGroups={permissionGroups}
-              onCheckChange={handleCheckChange}
-              onGroupChange={handleGroupChange}
-              onEditClick={handleEditClick}
-            />
+            <div className={cn(
+              "transition-opacity duration-200",
+              selectedUser.isSystemAdmin && "opacity-40 pointer-events-none"
+            )}>
+              <AccountTree
+                accounts={accounts}
+                checkedAccountIds={checkedIds}
+                assignments={draftAssignments}
+                permissionGroups={permissionGroups}
+                onCheckChange={handleCheckChange}
+                onGroupChange={handleGroupChange}
+                onEditClick={handleEditClick}
+              />
+            </div>
           </div>
 
           {editAccount && selectedUser && (
@@ -356,7 +355,7 @@ export function UserPermissionsTab() {
           )}
         </div>
       ) : (
-        <div className="flex items-center justify-center h-full font-sans text-base text-tertiary-foreground">
+        <div className="flex items-center justify-center h-full font-sans text-base text-muted-foreground">
           Select a user to manage their permissions
         </div>
       )}

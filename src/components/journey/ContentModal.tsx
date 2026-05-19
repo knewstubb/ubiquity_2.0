@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
-import { X, FloppyDisk, Envelope, ListBullets, ChartBar } from '@phosphor-icons/react';
+import { FloppyDisk, Envelope, ListBullets, ChartBar } from '@phosphor-icons/react';
+import { CloseButton } from '@/components/ui/close-button';
 
 export interface ContentModalProps {
   contentType: 'email' | 'form' | 'survey';
@@ -52,13 +53,7 @@ export function ContentModal({ contentType, nodeLabel, onClose, onSave }: Conten
           <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium text-primary bg-primary/10 capitalize">
             {nodeLabel}
           </span>
-          <button
-            className="flex items-center justify-center w-8 h-8 border-none rounded-sm bg-transparent text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-            onClick={onClose}
-            aria-label="Close content editor"
-          >
-            <X size={18} weight="bold" />
-          </button>
+          <CloseButton size="lg" onClick={onClose} aria-label="Close content editor" />
         </div>
 
         {/* Body — placeholder builder UI */}

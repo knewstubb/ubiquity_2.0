@@ -1,5 +1,5 @@
-import { X } from '@phosphor-icons/react';
 import { useChangelog } from '../../contexts/ChangelogContext';
+import { CloseButton } from '../ui/close-button';
 
 export function ChangelogBanner() {
   const { showBanner, unseenEntries, dismissBanner } = useChangelog();
@@ -23,14 +23,12 @@ export function ChangelogBanner() {
           </span>
         ))}
       </div>
-      <button
-        type="button"
-        className="bg-none border-none cursor-pointer text-warning-foreground p-1 flex items-center justify-center rounded shrink-0 hover:bg-[rgba(245,158,11,0.15)]"
+      <CloseButton
+        size="default"
         onClick={dismissBanner}
         aria-label="Dismiss changelog banner"
-      >
-        <X size={16} weight="bold" />
-      </button>
+        className="shrink-0 text-warning-foreground hover:bg-[rgba(245,158,11,0.15)] hover:bg-none"
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import { Plus } from '@phosphor-icons/react';
 import type { Account } from '../../models/account';
 import type { FunctionalPermissions } from '../../models/permissions';
 import { usePermissions } from '../../contexts/PermissionsContext';
@@ -53,7 +54,7 @@ function renderSidebarNode(
   );
 }
 
-export function AccountPermissionsTab() {
+export function AccountPermissionsTab({ onRegisterSave }: { onRegisterSave?: (handle: { isDirty: boolean; onSave: () => void }) => void }) {
   const {
     users,
     permissionGroups,
@@ -65,6 +66,11 @@ export function AccountPermissionsTab() {
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
   const [manageDialogOpen, setManageDialogOpen] = useState(false);
   const [editUserId, setEditUserId] = useState<string | null>(null);
+
+  // Register no-op save handle — this tab manages its own save flow
+  useEffect(() => {
+    onRegisterSave?.({ isDirty: false, onSave: () => {} });
+  }, [onRegisterSave]);
 
   const accountMap = useMemo(() => buildAccountMap(accounts), []);
   const rootAccounts = useMemo(() => accounts.filter((a) => a.parentId === null), []);
@@ -236,7 +242,8 @@ export function AccountPermissionsTab() {
               className="inline-flex items-center gap-2 px-4 py-2 border-none rounded-md bg-primary font-sans text-sm font-medium text-primary-foreground cursor-pointer transition-colors duration-150 whitespace-nowrap shrink-0 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               onClick={() => setManageDialogOpen(true)}
             >
-              + Manage Users
+              <Plus size={16} weight="bold" />
+              Manage Users
             </button>
           </div>
 
@@ -277,7 +284,7 @@ export function AccountPermissionsTab() {
           />
         </div>
       ) : (
-        <div className="flex items-center justify-center h-full font-sans text-base text-tertiary-foreground">
+        <div className="flex items-center justify-center h-full font-sans text-base text-muted-foreground">
           Select an account to manage user access
         </div>
       )}

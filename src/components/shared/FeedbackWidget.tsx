@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
-import { ChatCircle, X } from '@phosphor-icons/react';
+import { ChatCircle } from '@phosphor-icons/react';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { CloseButton } from '../ui/close-button';
 
 function formatTimestamp(iso: string): string {
   try {
@@ -83,14 +84,11 @@ export function FeedbackWidget() {
               <h2 className="font-sans text-base font-semibold text-foreground m-0">
                 Feedback
               </h2>
-              <button
-                type="button"
-                className="bg-none border-none cursor-pointer text-tertiary-foreground p-1 flex items-center justify-center rounded hover:text-muted-foreground hover:bg-secondary"
+              <CloseButton
+                size="lg"
                 onClick={togglePanel}
                 aria-label="Close feedback panel"
-              >
-                <X size={20} weight="bold" />
-              </button>
+              />
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-3">

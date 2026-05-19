@@ -183,7 +183,18 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
             <p className="text-sm font-semibold text-foreground m-0">Update Type</p>
             <HelpPopover
               title="Which update type should I choose?"
-              body="Update/Append is the safest default. New records are added, and existing records are updated. Append only adds new records. Update only refreshes existing records."
+              width="wide"
+              body={
+                <>
+                  <p className="m-0 mb-2">This controls what happens when your file contains a mix of new and existing contacts.</p>
+                  <ul className="m-0 pl-4 mb-2 list-disc flex flex-col gap-2">
+                    <li><strong>Update/Append</strong> – the safest default. New contacts are added, and existing contacts are updated with the latest data from your file.</li>
+                    <li><strong>Append</strong> – use this if you only want to add new contacts and never change existing ones. Any contact that already exists in UbiQuity will be skipped entirely.</li>
+                    <li><strong>Update</strong> – use this if you only want to refresh data for contacts that already exist. Any new contacts in your file will be ignored.</li>
+                  </ul>
+                  <p className="m-0">If you're unsure, Update/Append is almost always the right choice.</p>
+                </>
+              }
             />
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">
@@ -228,7 +239,16 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
             <p className="text-sm font-semibold text-foreground m-0">Blank Values</p>
             <HelpPopover
               title="What happens when a field in my file is empty?"
-              body="Preserve existing data means blanks are treated as no change. Import blank values means blanks will clear existing data."
+              width="wide"
+              body={
+                <>
+                  <p className="m-0 mb-2">Sometimes your import file has blank cells. This setting controls whether those blanks should overwrite what's already stored in UbiQuity.</p>
+                  <ul className="m-0 pl-4 list-disc flex flex-col gap-2">
+                    <li><strong>Preserve existing data</strong> – a blank cell in your file is treated as "no change." Whatever is already in UbiQuity stays. This is the safer option.</li>
+                    <li><strong>Import blank values</strong> – a blank cell in your file will clear the existing value in UbiQuity. Use this only if blank values in your file are intentional and mean "this field should be empty."</li>
+                  </ul>
+                </>
+              }
             />
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">
@@ -273,7 +293,7 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
             <p className="text-sm font-semibold text-foreground m-0">Matching Fields</p>
             <HelpPopover
               title="How does UbiQuity know if a record already exists?"
-              body="Matching Fields are the columns used to decide whether each row is new or an update. Choose fields that uniquely identify a record, like email address."
+              body="Matching Fields are the columns used to decide whether each row is new or an update. Choose fields that uniquely identify a record, like Customer ID."
             />
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">

@@ -1,7 +1,7 @@
-import { X } from '@phosphor-icons/react';
 import { FUNCTIONAL_GROUPS } from '../../data/permissions';
 import { usePermissions } from '../../contexts/PermissionsContext';
 import { PermissionCard } from './PermissionCard';
+import { CloseButton } from '../ui/close-button';
 
 interface PermissionEditPanelProps {
   open: boolean;
@@ -54,13 +54,12 @@ export function PermissionEditPanel({
               {resolvedLabel}
             </span>
           </div>
-          <button
-            className="flex items-center justify-center w-8 h-8 border-none rounded-md bg-transparent text-muted-foreground cursor-pointer shrink-0 transition-colors duration-150 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+          <CloseButton
+            size="lg"
+            className="shrink-0"
             onClick={onClose}
             aria-label="Close"
-          >
-            <X size={20} />
-          </button>
+          />
         </div>
 
         <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 overflow-y-auto pr-1">

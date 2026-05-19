@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { CheckCircle, FolderOpen, Package, PlugsConnected, SquaresFour, X } from '@phosphor-icons/react'
+import { CheckCircle, FolderOpen, Package, PlugsConnected, SquaresFour } from '@phosphor-icons/react'
 import type { Connection } from '../../models/connection'
 import { useAccount } from '../../contexts/AccountContext'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { ChooserModal, type ChooserOption } from '@/components/composed/chooser-modal'
+import { CloseButton } from '@/components/ui/close-button'
 
 type ConnectionType = 'aws-s3' | 'azure-blob' | 'sftp'
 type AwsAuthMethod = 'access-key' | 'iam-role'
@@ -163,14 +164,11 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
             <DialogTitle>
               {isEditing ? `Edit ${getTypeLabel()} Connection` : `Set Up ${getTypeLabel()} Connection`}
             </DialogTitle>
-            <button
-              type="button"
+            <CloseButton
+              size="lg"
               onClick={onClose}
-              className="shrink-0 rounded-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Close"
-            >
-              <X size={20} weight="bold" />
-            </button>
+            />
           </div>
           <DialogDescription className="sr-only">Configure connection settings</DialogDescription>
         </DialogHeader>

@@ -15,6 +15,7 @@ import { ImporterWizardModal } from '../components/importer/ImporterWizardModal'
 import { AutomationSettingsModal } from '../components/dashboard/AutomationSettingsModal';
 import { ActivityLogModal } from '../components/dashboard/ActivityLogModal';
 import { HistoryModal } from '../components/dashboard/HistoryModal';
+import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import type { Automation } from '../models/automation';
 import type { WizardDraft } from '../models/wizard';
@@ -32,6 +33,7 @@ interface ImporterModalState {
   connectionId: string;
   connectorName: string;
   existingConfig?: ImporterConfig;
+  editConnectorId?: string | null;
 }
 
 export default function DashboardPage() {
@@ -94,11 +96,16 @@ export default function DashboardPage() {
     if (!connector) return;
 
     if (connector.direction === 'import') {
+      // Merge transactionalSource from the automation into the importerConfig
+      const importerConfig = connector.importerConfig
+        ? { ...connector.importerConfig, transactionalTable: connector.transactionalSource ?? connector.importerConfig.transactionalTable }
+        : undefined;
       setImporterModalState({
         open: true,
         connectionId: connector.connectionId,
         connectorName: connector.name,
-        existingConfig: connector.importerConfig ?? undefined,
+        existingConfig: importerConfig,
+        editConnectorId: connector.id,
       });
     } else {
       setWizardModalState({
@@ -130,25 +137,45 @@ export default function DashboardPage() {
       : config.dataType === 'transactional' ? 'transactional' as const
       : 'contact' as const;
 
-    const connector: Automation = {
-      id: crypto.randomUUID(),
-      connectionId: config.connectionId,
-      name: config.name,
-      direction: 'import',
-      dataType,
-      selectedFields: [],
-      fileType: 'csv',
-      formatOptions: { delimiter: ',', includeHeader: true, dateFormat: 'ISO8601', timezone: 'Pacific/Auckland' },
-      fileNamingPattern: config.filePathConfig.fileNamePattern || `${config.name.toLowerCase().replace(/\s+/g, '_')}_{date}.csv`,
-      schedule: 'daily',
-      filters: { combinator: 'AND', rules: [], groups: [] },
-      status: 'active',
-      createdAt: now,
-      updatedAt: now,
-      importerConfig: config,
-    };
+    if (importerModalState?.editConnectorId) {
+      // Update existing automation — delete old and add updated version
+      const existingConnector = automations.find((c) => c.id === importerModalState.editConnectorId);
+      if (existingConnector) {
+        const updated: Automation = {
+          ...existingConnector,
+          name: config.name,
+          dataType,
+          ...(config.transactionalTable ? { transactionalSource: config.transactionalTable } : { transactionalSource: undefined }),
+          fileNamingPattern: config.filePathConfig.fileNamePattern || existingConnector.fileNamingPattern,
+          updatedAt: now,
+          importerConfig: config,
+        };
+        deleteAutomation(existingConnector.id);
+        addAutomationDirect(updated);
+      }
+    } else {
+      // Create new automation
+      const connector: Automation = {
+        id: crypto.randomUUID(),
+        connectionId: config.connectionId,
+        name: config.name,
+        direction: 'import',
+        dataType,
+        ...(config.transactionalTable ? { transactionalSource: config.transactionalTable } : {}),
+        selectedFields: [],
+        fileType: 'csv',
+        formatOptions: { delimiter: ',', includeHeader: true, dateFormat: 'ISO8601', timezone: 'Pacific/Auckland' },
+        fileNamingPattern: config.filePathConfig.fileNamePattern || `${config.name.toLowerCase().replace(/\s+/g, '_')}_{date}.csv`,
+        schedule: 'daily',
+        filters: { combinator: 'AND', rules: [], groups: [] },
+        status: 'active',
+        createdAt: now,
+        updatedAt: now,
+        importerConfig: config,
+      };
 
-    addAutomationDirect(connector);
+      addAutomationDirect(connector);
+    }
   }
 
   function handleImporterClose() {
@@ -196,6 +223,9 @@ export default function DashboardPage() {
             {filteredConnections.length} connection{filteredConnections.length !== 1 ? 's' : ''} · {totalAutomations} automation{totalAutomations !== 1 ? 's' : ''}
           </p>
         </div>
+        <Button variant="outline" onClick={() => setShowCreateConnection(true)}>
+          + New Connection
+        </Button>
       </div>
 
       <div className="flex flex-col">
@@ -240,15 +270,7 @@ export default function DashboardPage() {
             </ConnectionRow>
           );
         })}
-        {filteredConnections.length > 0 && (
-          <button
-            type="button"
-            className="flex items-center justify-center border border-dashed border-primary/40 rounded-lg bg-surface/50 text-primary text-base font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary p-4 min-h-[64px]"
-            onClick={() => setShowCreateConnection(true)}
-          >
-            + Add New Connection
-          </button>
-        )}
+
       </div>
 
       {/* CreateConnectionModal — shown when user clicks "New Connection" */}
@@ -263,29 +285,25 @@ export default function DashboardPage() {
       )}
 
       {/* Edit Connection Warning — shown before opening the edit modal */}
-      {pendingEditConnectionId && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[200]" onClick={() => setPendingEditConnectionId(null)}>
-          <div className="bg-background rounded-lg shadow-xl p-6 w-[400px] max-w-[90vw]" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-base font-semibold text-foreground m-0 mb-2">Edit Connection</h3>
-            <p className="text-sm text-muted-foreground m-0 mb-5 leading-relaxed">
-              Changes to a connection may affect all linked automations. Proceed only if you understand the impact.
-            </p>
-            <div className="flex justify-end gap-2">
-              <button type="button" className="px-4 py-2 text-sm font-medium text-muted-foreground bg-transparent border-none rounded cursor-pointer transition-colors duration-150 hover:bg-accent hover:text-accent-foreground" onClick={() => setPendingEditConnectionId(null)}>Cancel</button>
-              <button
-                type="button"
-                className="px-4 py-2 text-sm font-semibold text-primary-foreground bg-warning border-none rounded cursor-pointer transition-colors duration-150 hover:bg-warning-foreground"
-                onClick={() => {
-                  setEditingConnection(pendingEditConnectionId);
-                  setPendingEditConnectionId(null);
-                }}
-              >
-                Continue
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AlertDialogComposed
+        intent="warning"
+        open={!!pendingEditConnectionId}
+        onOpenChange={() => setPendingEditConnectionId(null)}
+        title={`Edit '${pendingEditConnectionId ? getConnectionById(pendingEditConnectionId)?.name ?? 'connection' : 'connection'}'?`}
+        confirmLabel="Edit connection"
+        onConfirm={() => {
+          setEditingConnection(pendingEditConnectionId);
+          setPendingEditConnectionId(null);
+        }}
+        onCancel={() => setPendingEditConnectionId(null)}
+      >
+        {(() => {
+          const count = pendingEditConnectionId
+            ? automations.filter((a) => a.connectionId === pendingEditConnectionId).length
+            : 0;
+          return <>There are <span className="font-semibold">{count} automation{count !== 1 ? 's' : ''}</span> using this connection. Editing it may affect their ability to run successfully.</>;
+        })()}
+      </AlertDialogComposed>
 
       {/* EditConnectionModal — shown when user clicks "Edit Connection" from meatball menu */}
       {editingConnection && getConnectionById(editingConnection) && (

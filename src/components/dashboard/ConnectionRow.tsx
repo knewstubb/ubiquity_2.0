@@ -3,6 +3,7 @@ import type { Connection } from '../../models/connection';
 import type { Automation } from '../../models/automation';
 import { DotsThree, PencilSimple, Trash, Plus, CaretRight } from '@phosphor-icons/react';
 import { ProtocolIcon } from '../shared/ProtocolIcon';
+import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import {
   DropdownMenu,
@@ -55,15 +56,29 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
 
             {/* Status text — right aligned */}
             {isError ? (
-              <span className="ml-auto mr-10 text-base text-destructive">
-                Connection Error!
-              </span>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="ml-auto mr-10"
+                onClick={(e) => { e.stopPropagation(); onEditConnection?.(connection.id); }}
+              >
+                Fix connection
+              </Button>
             ) : (
-              <span className="ml-auto mr-10 text-base text-muted-foreground">
-                {connectorCount === 0
-                  ? 'No Automations'
-                  : <><span className="font-semibold">{activeCount}</span> of <span className="font-semibold">{connectorCount}</span> Automations Active</>}
-              </span>
+              connectorCount === 0 ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="ml-auto mr-10 text-primary border-primary/40 hover:bg-primary/5 hover:text-primary"
+                  onClick={(e) => { e.stopPropagation(); onAddConnector(connection.id); }}
+                >
+                  Add automation
+                </Button>
+              ) : (
+                <span className="ml-auto mr-10 text-base text-muted-foreground">
+                  <span className="font-semibold">{activeCount}</span> of <span className="font-semibold">{connectorCount}</span> automations active
+                </span>
+              )
             )}
 
             {/* Right: Actions menu */}
@@ -79,18 +94,18 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
                     <DotsThree size={20} weight="bold" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="min-w-[220px] p-1.5">
+                <DropdownMenuContent align="end" className="min-w-[220px] p-1.5" onClick={(e) => e.stopPropagation()}>
                   {!isError && (
                     <DropdownMenuItem
                       className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md"
-                      onSelect={() => onAddConnector(connection.id)}
+                      onSelect={(e) => { e.preventDefault(); onAddConnector(connection.id); }}
                     >
                       <Plus size={16} weight="regular" /> Add Automation
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem
                     className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md"
-                    onSelect={() => onEditConnection?.(connection.id)}
+                    onSelect={(e) => { e.preventDefault(); onEditConnection?.(connection.id); }}
                   >
                     <PencilSimple size={16} weight="regular" /> Edit Connection
                   </DropdownMenuItem>
@@ -99,7 +114,7 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
                     className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md text-destructive focus:text-destructive focus:bg-destructive/5"
                     disabled={connectorCount > 0}
                     title={connectorCount > 0 ? 'Remove all Automations before deleting connection' : undefined}
-                    onSelect={() => onDeleteConnection?.(connection.id)}
+                    onSelect={(e) => { e.preventDefault(); onDeleteConnection?.(connection.id); }}
                   >
                     <Trash size={16} weight="regular" /> Delete Connection
                   </DropdownMenuItem>

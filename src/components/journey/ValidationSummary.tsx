@@ -2,8 +2,8 @@ import {
   WarningCircle,
   Warning,
   CheckCircle,
-  X,
 } from '@phosphor-icons/react';
+import { CloseButton } from '../ui/close-button';
 import type { ValidationError } from '../../utils/journeyValidation';
 
 export interface ValidationSummaryProps {
@@ -41,14 +41,11 @@ export function ValidationSummary({
             </span>
           )}
         </div>
-        <button
-          className="flex items-center justify-center w-7 h-7 border-none bg-transparent text-muted-foreground cursor-pointer rounded-sm transition-colors duration-150 hover:bg-secondary"
+        <CloseButton
           onClick={onClose}
           title="Close validation summary"
           aria-label="Close validation summary"
-        >
-          <X size={16} weight="bold" />
-        </button>
+        />
       </div>
 
       {/* Success state */}

@@ -242,6 +242,7 @@ async function seedConnectors(): Promise<void> {
     updated_at: c.updatedAt,
     importer_config: c.importerConfig ?? null,
     notifications: c.notifications ?? null,
+    schedule_config: c.scheduleConfig ?? null,
   }));
   await upsertRows('connectors', rows);
 }

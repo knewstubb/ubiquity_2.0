@@ -23,7 +23,7 @@ export function UserAccessCard({
   ];
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2 border border-border rounded-[4px] bg-background shadow-sm">
+    <div className="flex items-center gap-2 px-4 py-2 border border-border rounded bg-background shadow-sm">
       <span className="flex items-center justify-center w-[34px] h-[34px] min-w-[34px] rounded-full bg-primary text-primary-foreground font-sans text-xs font-semibold leading-none">
         {user.initials}
       </span>
@@ -46,7 +46,7 @@ export function UserAccessCard({
           aria-label={`Permission group for ${user.name}`}
         />
         <button
-          className="flex items-center justify-center bg-transparent border-none cursor-pointer text-muted-foreground p-1 rounded-[4px] transition-colors duration-150 hover:text-primary hover:bg-secondary"
+          className="flex items-center justify-center bg-transparent border-none cursor-pointer text-muted-foreground p-1 rounded transition-colors duration-150 hover:text-primary hover:bg-secondary"
           onClick={onEditClick}
           aria-label={`Edit permissions for ${user.name}`}
           type="button"

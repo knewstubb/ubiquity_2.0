@@ -67,12 +67,12 @@ export default function ModalHeaderDemo() {
             <DialogTitle className="sr-only">Confirm Deletion</DialogTitle>
             <DialogDescription className="sr-only">Confirm deletion of connection</DialogDescription>
             <ModalHeader
-              title="Confirm Deletion"
+              title="Confirm deletion?"
               description="This will permanently remove the connection."
               onClose={() => setOpen2(false)}
             />
             <div className="px-6 py-6">
-              <p className="text-sm text-muted-foreground">Are you sure you want to proceed?</p>
+              <p className="text-sm text-muted-foreground">This action will proceed immediately.</p>
             </div>
           </DialogContent>
         </Dialog>

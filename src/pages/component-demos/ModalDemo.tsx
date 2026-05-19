@@ -66,7 +66,7 @@ export default function ModalDemo(props: ModalDemoProps) {
             <ModalHeader title="New Connection" onClose={() => {}} />
           </div>
           <div className="border border-border rounded-lg overflow-hidden">
-            <ModalHeader title="Delete Connection" description="This action cannot be undone." onClose={() => {}} />
+            <ModalHeader title="Delete connection?" description="This action cannot be undone." onClose={() => {}} />
           </div>
           <div className="border border-border rounded-lg overflow-hidden">
             <ModalHeader
@@ -164,9 +164,9 @@ export default function ModalDemo(props: ModalDemoProps) {
           <DialogContent className="max-w-[420px] p-0 gap-0">
             <DialogTitle className="sr-only">Delete Connection</DialogTitle>
             <DialogDescription className="sr-only">Confirm deletion</DialogDescription>
-            <ModalHeader title="Delete Connection" description="This action cannot be undone." onClose={() => setOpen3(false)} />
+            <ModalHeader title="Delete connection?" description="This action cannot be undone." onClose={() => setOpen3(false)} />
             <div className="px-6 py-6">
-              <p className="text-sm text-foreground">Are you sure you want to delete this connection? All associated automations will stop running.</p>
+              <p className="text-sm text-foreground">Deleting this connection will stop all associated automations from running.</p>
             </div>
             <ModalFooter
               primaryAction={{ label: 'Delete', onClick: () => setOpen3(false), variant: 'destructive' }}

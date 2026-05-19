@@ -27,33 +27,33 @@ describe('DeleteConfirmModal', () => {
     expect(screen.getByRole('button', { name: 'Delete Automation' })).toBeInTheDocument();
   });
 
-  it('delete button is disabled until ACCEPT is typed', () => {
+  it('delete button is disabled until DELETE is typed', () => {
     render(<DeleteConfirmModal {...defaultProps} />);
     const deleteBtn = screen.getByRole('button', { name: 'Delete Automation' });
     expect(deleteBtn).toBeDisabled();
   });
 
-  it('delete button is enabled after typing ACCEPT', async () => {
+  it('delete button is enabled after typing DELETE', async () => {
     render(<DeleteConfirmModal {...defaultProps} />);
-    const input = screen.getByPlaceholderText('ACCEPT');
-    await userEvent.type(input, 'ACCEPT');
+    const input = screen.getByPlaceholderText('Type DELETE here');
+    await userEvent.type(input, 'DELETE');
     const deleteBtn = screen.getByRole('button', { name: 'Delete Automation' });
     expect(deleteBtn).toBeEnabled();
   });
 
-  it('calls onConfirm when ACCEPT is typed and Delete is clicked', async () => {
+  it('calls onConfirm when DELETE is typed and Delete is clicked', async () => {
     const onConfirm = vi.fn();
     render(<DeleteConfirmModal {...defaultProps} onConfirm={onConfirm} />);
-    const input = screen.getByPlaceholderText('ACCEPT');
-    await userEvent.type(input, 'ACCEPT');
+    const input = screen.getByPlaceholderText('Type DELETE here');
+    await userEvent.type(input, 'DELETE');
     await userEvent.click(screen.getByRole('button', { name: 'Delete Automation' }));
     expect(onConfirm).toHaveBeenCalledOnce();
   });
 
-  it('rejects lowercase "accept"', async () => {
+  it('rejects lowercase "delete"', async () => {
     render(<DeleteConfirmModal {...defaultProps} />);
-    const input = screen.getByPlaceholderText('ACCEPT');
-    await userEvent.type(input, 'accept');
+    const input = screen.getByPlaceholderText('Type DELETE here');
+    await userEvent.type(input, 'delete');
     const deleteBtn = screen.getByRole('button', { name: 'Delete Automation' });
     expect(deleteBtn).toBeDisabled();
   });
@@ -65,11 +65,11 @@ describe('DeleteConfirmModal', () => {
     expect(onCancel).toHaveBeenCalledOnce();
   });
 
-  it('calls onCancel when backdrop is clicked', async () => {
+  it('calls onCancel when close button is clicked', async () => {
     const onCancel = vi.fn();
     render(<DeleteConfirmModal {...defaultProps} onCancel={onCancel} />);
-    const backdrop = screen.getByRole('dialog');
-    await userEvent.click(backdrop);
+    const closeBtn = screen.getByRole('button', { name: 'Close' });
+    await userEvent.click(closeBtn);
     expect(onCancel).toHaveBeenCalledOnce();
   });
 
@@ -82,8 +82,7 @@ describe('DeleteConfirmModal', () => {
 
   it('has correct aria attributes', () => {
     render(<DeleteConfirmModal {...defaultProps} />);
-    const dialog = screen.getByRole('dialog');
-    expect(dialog).toHaveAttribute('aria-modal', 'true');
-    expect(dialog).toHaveAttribute('aria-labelledby', 'modal-title');
+    const dialog = screen.getByRole('alertdialog');
+    expect(dialog).toBeInTheDocument();
   });
 });

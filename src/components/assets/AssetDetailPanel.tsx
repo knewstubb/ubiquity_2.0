@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { X, Trash, Image, FileText } from '@phosphor-icons/react';
+import { Trash, Image, FileText } from '@phosphor-icons/react';
+import { CloseButton } from '../ui/close-button';
 import type { Asset } from '../../models/asset';
 
 interface AssetDetailPanelProps {
@@ -76,14 +77,7 @@ export function AssetDetailPanel({ asset, onClose, onDelete, scopeLabel }: Asset
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <h2 className="m-0 text-lg font-semibold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">{asset.name}</h2>
-          <button
-            type="button"
-            className="flex items-center justify-center w-8 h-8 border-none rounded-md bg-transparent text-muted-foreground cursor-pointer transition-colors duration-150 shrink-0 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-            onClick={onClose}
-            aria-label="Close panel"
-          >
-            <X size={20} />
-          </button>
+          <CloseButton size="lg" onClick={onClose} aria-label="Close panel" className="shrink-0" />
         </div>
 
         <DetailPreview asset={asset} />
@@ -123,7 +117,7 @@ export function AssetDetailPanel({ asset, onClose, onDelete, scopeLabel }: Asset
             </button>
           ) : (
             <div className="flex flex-col gap-3">
-              <p className="text-sm text-muted-foreground text-center">Are you sure? This cannot be undone.</p>
+              <p className="text-sm text-muted-foreground text-center">This cannot be undone.</p>
               <div className="flex gap-3">
                 <button
                   type="button"

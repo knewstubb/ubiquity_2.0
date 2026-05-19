@@ -44,7 +44,7 @@ export function FileSettingsStep({
   const [patternError, setPatternError] = useState('');
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
-  const [transactionalTable, setTransactionalTable] = useState('');
+  const [transactionalTable, setTransactionalTable] = useState(config.transactionalTable ?? '');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { filePathConfig, dataType } = config;
   const { pathMode, folderName, readPath, errorFolderPath, archiveFolderPath, fileNamePattern } =
@@ -193,7 +193,16 @@ export function FileSettingsStep({
             <p className="text-sm font-semibold text-foreground m-0">File Path</p>
             <HelpPopover
               title="How do files move through the system?"
-              body="UbiQuity checks your Base Path every 5 minutes for files matching your File Pattern. When a file is found: it's moved to the Read Path while being processed, if the import succeeds it's moved to the Archive Path, if it fails it's moved to the Error Path."
+              body={
+                <>
+                  <p className="m-0 mb-2">UbiQuity checks your Base Path every 5 minutes for files matching your File Pattern. When a file is found:</p>
+                  <ul className="m-0 pl-4 list-disc flex flex-col gap-1">
+                    <li>It's moved to the <strong>Read Path</strong> while being processed</li>
+                    <li>If the import succeeds, it's moved to the <strong>Archive Path</strong></li>
+                    <li>If it fails, it's moved to the <strong>Error Path</strong></li>
+                  </ul>
+                </>
+              }
             />
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
@@ -345,7 +354,20 @@ export function FileSettingsStep({
             <p className="text-sm font-semibold text-foreground m-0">File Pattern</p>
             <HelpPopover
               title="How does UbiQuity know which files to import?"
-              body="UbiQuity looks for files whose name matches the pattern you set here. Use * to match any characters. For example: sales-*.csv matches sales-jan.csv, *.csv matches any CSV file."
+              width="wide"
+              body={
+                <>
+                  <p className="m-0 mb-2">UbiQuity looks for files whose name matches the pattern you set here. Use the * character to mean "anything." For example:</p>
+                  <ul className="m-0 pl-4 mb-2 list-disc flex flex-col gap-1">
+                    <li><strong>sales-*.csv</strong> matches sales-jan.csv, sales-feb.csv, sales-2026.csv</li>
+                    <li><strong>*.csv</strong> matches any CSV file in the folder</li>
+                    <li><strong>daily-export-*.csv</strong> matches daily-export-01.csv, daily-export-02.csv</li>
+                  </ul>
+                  <p className="m-0">The pattern only checks the filename — not the folder path. If you're only ever placing one type of file in the folder, *.csv is the simplest option.</p>
+                </>
+              }
+              details="If multiple connectors share the same Base Path, each one must have a different Filename Filter. Otherwise both connectors will try to import the same files. Use specific prefixes (e.g. sales-*.csv, orders-*.csv) to keep connectors separate within the same directory."
+              detailsVariant="caution"
             />
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
@@ -376,7 +398,15 @@ export function FileSettingsStep({
             <p className="text-sm font-semibold text-foreground m-0">Importing To</p>
             <HelpPopover
               title="What's the difference?"
-              body="Contacts updates the contact database for people records. Transactional updates a transactional table for activity data. Both updates contacts and transactional data in a single import."
+              body={
+                <>
+                  <ul className="m-0 pl-4 list-disc flex flex-col gap-2">
+                    <li><strong>Contacts</strong> – updates the contact database with people records.</li>
+                    <li><strong>Transactional</strong> – updates a transactional table with activity data (e.g. purchases, treatments).</li>
+                    <li><strong>Combined</strong> – updates both contacts and transactional data in a single import.</li>
+                  </ul>
+                </>
+              }
             />
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">Select the database you want to update</p>
@@ -400,7 +430,13 @@ export function FileSettingsStep({
           {(dataType === 'transactional' || dataType === 'both') && (
             <div>
               <p className="text-xs font-medium text-muted-foreground m-0">Transactional Database</p>
-              <Select value={transactionalTable || undefined} onValueChange={setTransactionalTable}>
+              <Select
+                value={transactionalTable || undefined}
+                onValueChange={(v) => {
+                  setTransactionalTable(v);
+                  onUpdate({ transactionalTable: v });
+                }}
+              >
                 <SelectTrigger aria-label="Select transactional table" title="The table where imported records will be stored.">
                   <SelectValue placeholder="Select Database" />
                 </SelectTrigger>

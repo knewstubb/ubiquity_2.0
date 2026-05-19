@@ -249,31 +249,105 @@ export function ComponentDemoView() {
         </div>
       )}
 
-      {/* Uses Components */}
-      {entry.usesComponents && entry.usesComponents.length > 0 && (
-        <div className="flex items-center gap-2 pt-4 border-t border-border">
-          <span className="text-xs text-muted-foreground font-medium">Uses:</span>
-          <div className="flex flex-wrap gap-1.5">
-            {entry.usesComponents.map((compName) => {
-              const linked = componentRegistry.find((c) => c.name === compName)
-              if (linked) {
-                return (
-                  <Link
-                    key={compName}
-                    to={`/admin/components/${linked.category}/${linked.slug}`}
-                    className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
-                  >
-                    {compName}
-                  </Link>
-                )
-              }
-              return (
-                <span key={compName} className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-secondary text-tertiary-foreground border border-border">
-                  {compName}
-                </span>
-              )
-            })}
-          </div>
+      {/* Design Guidance + Relationships (side by side) */}
+      {(entry.designGuidance?.length || entry.usesComponents?.length || entry.usedIn?.length || componentRegistry.some((c) => c.usesComponents?.includes(entry.name))) && (
+        <div className="flex gap-6 pt-5 border-t border-border">
+          {/* Design Guidance — left column */}
+          {entry.designGuidance && entry.designGuidance.length > 0 && (
+            <div className="flex-1 min-w-0 flex flex-col gap-4">
+              <h2 className="text-base font-semibold text-foreground m-0">Design guidance</h2>
+              {entry.designGuidance.map((section) => (
+                <div key={section.heading} className="flex flex-col gap-1.5">
+                  <h3 className="text-sm font-semibold text-foreground m-0">{section.heading}</h3>
+                  {Array.isArray(section.content) ? (
+                    <ul className="list-disc pl-4 m-0 space-y-0.5">
+                      {section.content.map((item, i) => (
+                        <li key={i} className="text-sm text-muted-foreground">{item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-muted-foreground m-0">{section.content}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Relationships — right column */}
+          {(() => {
+            const usedBy = componentRegistry.filter(
+              (c) => c.usesComponents?.includes(entry.name)
+            )
+            const hasRelationships = (entry.usesComponents && entry.usesComponents.length > 0) || usedBy.length > 0 || (entry.usedIn && entry.usedIn.length > 0)
+            if (!hasRelationships) return null
+            return (
+              <div className="w-56 shrink-0 flex flex-col gap-4">
+                {/* Uses */}
+                {entry.usesComponents && entry.usesComponents.length > 0 && (
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-xs text-muted-foreground font-medium">Uses</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {entry.usesComponents.map((compName) => {
+                        const linked = componentRegistry.find((c) => c.name === compName)
+                        if (linked) {
+                          return (
+                            <Link
+                              key={compName}
+                              to={`/admin/components/${linked.category}/${linked.slug}`}
+                              className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
+                            >
+                              {compName}
+                            </Link>
+                          )
+                        }
+                        return (
+                          <span key={compName} className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-secondary text-tertiary-foreground border border-border">
+                            {compName}
+                          </span>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Used by */}
+                {usedBy.length > 0 && (
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-xs text-muted-foreground font-medium">Used by</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {usedBy.map((comp) => (
+                        <Link
+                          key={comp.slug}
+                          to={`/admin/components/${comp.category}/${comp.slug}`}
+                          className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-secondary text-foreground border border-border hover:border-primary hover:text-primary transition-colors"
+                        >
+                          {comp.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Used in */}
+                {entry.usedIn && entry.usedIn.length > 0 && (
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-xs text-muted-foreground font-medium">Used in</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {entry.usedIn.map((link) => (
+                        <Link
+                          key={link.route}
+                          to={link.route}
+                          className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-secondary text-foreground border border-border hover:border-primary hover:text-primary transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          })()}
         </div>
       )}
     </div>

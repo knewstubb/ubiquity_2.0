@@ -11,7 +11,7 @@ export function UserSidebar({ users, selectedUserId, onSelectUser }: UserSidebar
   return (
     <div className="flex flex-col border-r border-border h-full overflow-hidden">
       <h2 className="font-sans text-base font-semibold text-foreground m-0 p-4">Users</h2>
-      <ul className="flex-1 overflow-y-auto list-none m-0 p-0">
+      <ul className="flex-1 overflow-y-auto list-none m-0 p-0" role="listbox" aria-label="Users">
         {users.map((user) => (
           <li
             key={user.id}
@@ -21,7 +21,8 @@ export function UserSidebar({ users, selectedUserId, onSelectUser }: UserSidebar
               user.id === selectedUserId && "bg-accent border-l-primary hover:bg-accent"
             )}
             onClick={() => onSelectUser(user.id)}
-            role="button"
+            role="option"
+            aria-selected={user.id === selectedUserId}
             tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {

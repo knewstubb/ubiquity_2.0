@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { X, UploadSimple } from '@phosphor-icons/react';
+import { UploadSimple } from '@phosphor-icons/react';
 import { useAutomations } from '../../contexts/AutomationsContext';
 import { useConnections } from '../../contexts/ConnectionsContext';
-import { Button } from '../ui/button';
+import { CloseButton } from '../ui/close-button';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -214,7 +214,7 @@ export function WizardModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 animate-[fadeIn_200ms_ease]"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-xs animate-[fadeIn_200ms_ease]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="wizard-modal-title"
@@ -243,16 +243,12 @@ export function WizardModal({
 
         {/* Right content area */}
         <div className="flex-1 flex flex-col min-w-0 bg-background relative">
-          <Button
-            variant="ghost"
-            size="icon"
+          <CloseButton
             onClick={handleCloseClick}
             aria-label="Close wizard"
             data-testid="wizard-close-button"
             className="absolute top-8 right-8 z-10"
-          >
-            <X weight="bold" />
-          </Button>
+          />
 
           <div className="flex-1 overflow-y-auto px-8 pt-8 pb-8 flex flex-col gap-8 scrollbar-gutter-stable" data-testid="wizard-step-content">
             {stepContent}
@@ -278,7 +274,7 @@ export function WizardModal({
           <AlertDialogHeader>
             <AlertDialogTitle>Discard changes?</AlertDialogTitle>
             <AlertDialogDescription>
-              You have unsaved changes. Are you sure you want to discard them?
+              Your unsaved changes will be lost. This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

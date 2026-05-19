@@ -12,7 +12,7 @@ export function ResetAccountButton() {
     if (!supabase || !user) return;
 
     const confirmed = window.confirm(
-      'Are you sure? This will reset all your changes.',
+      'This will reset all your changes and cannot be undone.',
     );
     if (!confirmed) return;
 

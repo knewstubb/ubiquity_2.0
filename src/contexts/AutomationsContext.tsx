@@ -48,10 +48,10 @@ export function AutomationsProvider({ children }: { children: ReactNode }) {
   const supabaseMode = isSupabaseConfigured();
 
   const [automations, setAutomations] = useState<Automation[]>(() => {
-    if (!supabaseMode) {
-      const stored = loadAutomationsFromStorage();
-      if (stored !== null) return stored;
-    }
+    // Always check localStorage first — it may contain user-created automations
+    // that haven't synced to Supabase yet
+    const stored = loadAutomationsFromStorage();
+    if (stored !== null) return stored;
     return dataLayer.connectors;
   });
 
@@ -60,18 +60,24 @@ export function AutomationsProvider({ children }: { children: ReactNode }) {
     if (!supabaseMode) return;
     automationsAdapter.getAll().then((data) => {
       if (data.length > 0) {
-        setAutomations(data);
+        // Merge: keep any local-only automations not in Supabase
+        setAutomations((prev) => {
+          const supabaseIds = new Set(data.map((a) => a.id));
+          const localOnly = prev.filter((a) => !supabaseIds.has(a.id));
+          const merged = [...data, ...localOnly];
+          saveAutomations(merged);
+          return merged;
+        });
       }
     }).catch((err) => {
-      console.warn('Failed to fetch automations from Supabase, using seed data', err);
+      console.warn('Failed to fetch automations from Supabase, using local data', err);
     });
   }, []);
 
+  // Always persist to localStorage as a fallback
   useEffect(() => {
-    if (!supabaseMode) {
-      saveAutomations(automations);
-    }
-  }, [automations, supabaseMode]);
+    saveAutomations(automations);
+  }, [automations]);
 
   const addAutomation = useCallback((draft: WizardDraft): Automation => {
     const now = new Date().toISOString();
@@ -98,8 +104,8 @@ export function AutomationsProvider({ children }: { children: ReactNode }) {
     setAutomations((prev) => [...prev, automation]);
     if (supabaseMode) {
       automationsAdapter.add(automation).catch((err) => {
-        showToast('Saved locally — Supabase sync failed', 'error');
-        console.warn('addAutomation: Supabase sync failed, keeping local state', err.message);
+        console.error('addAutomation: Supabase sync failed', err);
+        showToast(`Supabase sync failed: ${err.message}. Other users won't see this automation until sync succeeds.`, 'error');
       });
     }
     return automation;
@@ -109,9 +115,8 @@ export function AutomationsProvider({ children }: { children: ReactNode }) {
     setAutomations((prev) => [...prev, automation]);
     if (supabaseMode) {
       automationsAdapter.add(automation).catch((err) => {
-        // Keep the local state — don't roll back. Show a warning instead.
-        showToast('Saved locally — Supabase sync failed', 'error');
-        console.warn('addAutomationDirect: Supabase sync failed, keeping local state', err.message);
+        console.error('addAutomationDirect: Supabase sync failed', err);
+        showToast(`Supabase sync failed: ${err.message}. Other users won't see this automation until sync succeeds.`, 'error');
       });
     }
   }, [supabaseMode, showToast]);

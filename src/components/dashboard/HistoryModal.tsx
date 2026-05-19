@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react';
-import { X, Plus, Play, Pause, PencilSimple } from '@phosphor-icons/react';
+import { Plus, Play, Pause, PencilSimple } from '@phosphor-icons/react';
+import { CloseButton } from '@/components/ui/close-button';
 import type { Automation } from '../../models/automation';
 
 interface HistoryModalProps {
@@ -94,9 +95,7 @@ export function HistoryModal({ connector, onClose }: HistoryModalProps) {
             <h2 id="history-title" className="text-lg font-semibold text-foreground m-0">History</h2>
             <p className="text-[13px] text-muted-foreground mt-1 mb-0">{connector.name}</p>
           </div>
-          <button type="button" className="inline-flex items-center justify-center w-7 h-7 bg-transparent border-none rounded-md text-muted-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary hover:text-foreground" onClick={onClose} aria-label="Close">
-            <X size={18} weight="bold" />
-          </button>
+          <CloseButton size="default" onClick={onClose} aria-label="Close" />
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-5">

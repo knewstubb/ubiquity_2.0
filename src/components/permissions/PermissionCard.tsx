@@ -18,7 +18,7 @@ const CRUD_LABELS: { key: CrudKey; label: string }[] = [
 
 export function PermissionCard({ functionalGroup, permissions, editable, onToggle }: PermissionCardProps) {
   return (
-    <div className="bg-background border border-border rounded-sm shadow-sm p-4 flex flex-col gap-2">
+    <div className="bg-background border border-border rounded shadow-sm p-4 flex flex-col gap-2">
       <h3 className="font-sans text-base font-semibold text-foreground m-0 mb-1">{functionalGroup}</h3>
       {CRUD_LABELS.map(({ key, label }) => (
         <div key={key} className="flex items-center justify-between py-1">

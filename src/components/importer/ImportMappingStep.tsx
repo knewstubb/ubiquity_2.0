@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Plus, X, UploadSimple, ArrowLeft } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
+import { HelpPopover } from '@/components/composed/help-popover';
 import type { FieldMapping, LookupMapping } from '../../models/importer';
 import { CONTACT_LOOKUP_FIELDS } from '../../models/importer';
 
@@ -356,7 +357,7 @@ export function ImportMappingStep({
     [lookupRows, handleLookupChange],
   );
 
-  // If no CSV headers are available, show a message instead of the mapping table
+  // If no CSV headers are available, show a guide for editing existing automations
   if (!hasHeaders) {
     return (
       <div className="flex flex-col gap-6">
@@ -368,12 +369,12 @@ export function ImportMappingStep({
           </div>
           <div className="text-center">
             <p className="text-sm font-medium text-foreground m-0" data-testid="no-csv-message">
-              No sample file uploaded yet
+              Upload a new file to remap fields
             </p>
             <p className="text-xs text-muted-foreground mt-1 mb-0">
-              To remap fields, upload a new CSV file on the File Settings step.
+              Your current mappings are saved and will continue to be used.
               <br />
-              Existing mappings are preserved until a new file is uploaded.
+              To change them, upload a new CSV on the File Settings step.
             </p>
           </div>
           {onGoToFileSettings && (
@@ -399,7 +400,25 @@ export function ImportMappingStep({
       {/* Lookup Field Mapping — transactional only */}
       {type === 'transactional' && (
         <div className="flex flex-col gap-3" data-testid="lookup-field-mapping-section">
-          <h4 className="m-0 text-base font-semibold text-foreground">Lookup Field Mapping</h4>
+          <div className="flex items-center gap-2">
+            <h4 className="m-0 text-base font-semibold text-foreground">Lookup Mapping</h4>
+            <HelpPopover
+              title="How does UbiQuity link transactions to contacts?"
+              width="wide"
+              body={
+                <>
+                  <p className="m-0 mb-2">Every transactional record needs to be linked to a contact in UbiQuity. Lookup Mapping tells the system which column in your file identifies the contact that each transaction belongs to.</p>
+                  <p className="m-0 mb-2">You do this by pairing a column from your file (File Column) with a column in the contact table (Contact Table Column). For example, if your file has a "Customer ID" column, you'd map it to the "Customer ID" field in the contact table. UbiQuity will then use that to find the matching contact.</p>
+                  <p className="m-0">You need at least one lookup mapping. You can add more if a single field isn't enough to uniquely identify a contact (e.g. first name + last name + email).</p>
+                </>
+              }
+              details="If a transaction row can't be matched to a contact, it won't be imported. Make sure the lookup column in your file contains values that exist in the contact database."
+              detailsVariant="caution"
+            />
+          </div>
+          <p className="m-0 -mt-1 text-sm text-muted-foreground">
+            Map file columns to contact table columns to identify which contact each transactional row belongs to. At least one mapping is required before proceeding.
+          </p>
           <div className="border border-border rounded-lg bg-background overflow-hidden">
             {/* Lookup header */}
             <div className="grid grid-cols-[1fr_1fr_40px] items-center py-3 px-4 bg-secondary border-b border-border">
@@ -464,19 +483,38 @@ export function ImportMappingStep({
                 </div>
               </div>
             ))}
-          </div>
 
-          {/* Add Lookup Field button */}
-          <Button
-            variant="link"
-            className="justify-start p-0 h-auto"
-            onClick={handleAddLookupRow}
-            data-testid="add-lookup-field-btn"
-          >
-            <Plus size={14} weight="bold" /> Add Lookup Field
-          </Button>
+            {/* Add Lookup Field button — inside table */}
+            <div className="py-2 px-4 border-t border-border">
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary leading-none hover:underline underline-offset-4"
+                onClick={handleAddLookupRow}
+                data-testid="add-lookup-field-btn"
+              >
+                <Plus size={12} weight="bold" className="shrink-0" />
+                <span>Add Lookup Field</span>
+              </button>
+            </div>
+          </div>
         </div>
       )}
+
+      {/* Transactional Database Mapping */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2">
+          <h4 className="m-0 text-base font-semibold text-foreground">Transactional Database Mapping</h4>
+          <HelpPopover
+            title="How does mapping work for transactional data?"
+            width="wide"
+            body={
+              <>
+                <p className="m-0 mb-2">This works the same as contact mapping. Match each column in your file to a field in the transactional table. Columns set to [[Ignore Field]] won't be imported.</p>
+                <p className="m-0">Columns showing "Mapped in other context" are already mapped in the contact mapping step and can't be remapped here. This is normal for files that import to both contacts and transactional data. Some columns serve the contact side, others serve the transactional side.</p>
+              </>
+            }
+          />
+        </div>
 
       <div className="border border-border rounded-lg bg-background overflow-hidden">
         {/* Header */}
@@ -555,11 +593,19 @@ export function ImportMappingStep({
             </div>
           </div>
         ))}
-      </div>
 
-      <Button variant="link" className="justify-start p-0 h-auto mt-1">
-        <Plus size={14} weight="bold" /> Add New Field
-      </Button>
+        {/* Add New Field button — inside table */}
+        <div className="py-2 px-4 border-t border-border">
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary leading-none hover:underline underline-offset-4"
+          >
+            <Plus size={12} weight="bold" className="shrink-0" />
+            <span>Add New Field</span>
+          </button>
+        </div>
+      </div>
+      </div>
     </div>
   );
 }

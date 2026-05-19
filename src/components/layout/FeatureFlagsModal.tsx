@@ -1,8 +1,9 @@
 import { useState, useCallback } from 'react';
-import { X, Plus, Trash } from '@phosphor-icons/react';
+import { Plus, Trash } from '@phosphor-icons/react';
 import { useFeatureFlags } from '../../contexts/FeatureFlagContext';
 import type { FeatureFlag } from '../../contexts/FeatureFlagContext';
 import { cn } from '../../lib/utils';
+import { CloseButton } from '../ui/close-button';
 
 interface FeatureFlagsModalProps {
   onClose: () => void;
@@ -19,14 +20,11 @@ export function FeatureFlagsModal({ onClose }: FeatureFlagsModalProps) {
       <div className="bg-background rounded-lg shadow-xl w-[560px] max-w-[90vw] max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 pt-5">
           <h2 className="text-lg font-semibold text-foreground m-0">Feature Flags</h2>
-          <button
-            type="button"
-            className="inline-flex items-center justify-center w-8 h-8 border-none bg-none rounded text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary hover:text-foreground"
+          <CloseButton
+            size="lg"
             onClick={onClose}
             aria-label="Close"
-          >
-            <X size={18} weight="bold" />
-          </button>
+          />
         </div>
 
         <p className="px-6 pt-2 text-[13px] text-muted-foreground m-0">

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { X } from '@phosphor-icons/react';
 import { useChangelog } from '../../contexts/ChangelogContext';
+import { CloseButton } from '../ui/close-button';
 
 function formatDate(iso: string): string {
   try {
@@ -41,14 +41,11 @@ export function WhatsNewPanel() {
           >
             <div className="flex items-center justify-between px-5 py-4 border-b border-border">
               <h2 className="font-sans text-lg font-semibold text-foreground m-0">What's New</h2>
-              <button
-                type="button"
-                className="bg-none border-none cursor-pointer text-tertiary-foreground p-1 flex items-center justify-center rounded hover:text-muted-foreground hover:bg-secondary"
+              <CloseButton
+                size="lg"
                 onClick={close}
                 aria-label="Close panel"
-              >
-                <X size={20} weight="bold" />
-              </button>
+              />
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-4">

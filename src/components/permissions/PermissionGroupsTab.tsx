@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { FunctionalPermissions } from '../../models/permissions';
 import { usePermissions } from '../../contexts/PermissionsContext';
 import { FUNCTIONAL_GROUPS } from '../../data/permissions';
@@ -16,7 +16,7 @@ function makeEmptyPermissions(): Record<string, FunctionalPermissions> {
   return perms;
 }
 
-export function PermissionGroupsTab() {
+export function PermissionGroupsTab({ onRegisterSave }: { onRegisterSave?: (handle: { isDirty: boolean; onSave: () => void }) => void }) {
   const { permissionGroups, assignments, addPermissionGroup, updatePermissionGroup, deletePermissionGroup } = usePermissions();
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
@@ -33,6 +33,11 @@ export function PermissionGroupsTab() {
   const [nameError, setNameError] = useState('');
 
   const selectedGroup = permissionGroups.find((g) => g.id === selectedGroupId) ?? null;
+
+  // Register no-op save handle — this tab manages its own save flow
+  useEffect(() => {
+    onRegisterSave?.({ isDirty: false, onSave: () => {} });
+  }, [onRegisterSave]);
 
   // --- Handlers ---
 
@@ -171,7 +176,7 @@ export function PermissionGroupsTab() {
 
   function renderEmptyState() {
     return (
-      <div className="flex items-center justify-center h-full font-sans text-base text-tertiary-foreground">
+      <div className="flex items-center justify-center h-full font-sans text-base text-muted-foreground">
         Select a permission group or create a new one
       </div>
     );

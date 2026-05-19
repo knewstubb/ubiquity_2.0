@@ -1,5 +1,4 @@
 import {
-  X,
   Trash,
   Users,
   Lightning,
@@ -20,6 +19,7 @@ import {
   GearSix,
 } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
+import { CloseButton } from '../ui/close-button';
 import { useJourneys } from '../../contexts/JourneysContext';
 import type { JourneyNode, NodeType } from '../../models/journey';
 import { TriggerConfig } from './config/TriggerConfig';
@@ -140,13 +140,7 @@ export function InspectorPanel({
           <span className="flex-1 text-sm font-semibold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
             Journey Settings
           </span>
-          <button
-            className="flex items-center justify-center shrink-0 w-7 h-7 border-none bg-transparent rounded-sm text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary hover:text-foreground"
-            onClick={onClose}
-            aria-label="Close inspector"
-          >
-            <X size={16} weight="bold" />
-          </button>
+          <CloseButton onClick={onClose} aria-label="Close inspector" className="shrink-0" />
         </div>
         <div className="flex-1 overflow-y-auto p-4">
           <JourneySettingsForm journeyId={journeyId} />
@@ -170,13 +164,7 @@ export function InspectorPanel({
         <span className="flex-1 text-sm font-semibold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
           {selectedNode.label}
         </span>
-        <button
-          className="flex items-center justify-center shrink-0 w-7 h-7 border-none bg-transparent rounded-sm text-tertiary-foreground cursor-pointer transition-colors duration-150 hover:bg-secondary hover:text-foreground"
-          onClick={onClose}
-          aria-label="Close inspector"
-        >
-          <X size={16} weight="bold" />
-        </button>
+        <CloseButton onClick={onClose} aria-label="Close inspector" className="shrink-0" />
       </div>
       <div className="flex-1 overflow-y-auto p-4">
         {getConfigForm(nodeType, journeyId, selectedNode, onEditContent)}

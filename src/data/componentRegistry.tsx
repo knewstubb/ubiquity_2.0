@@ -41,6 +41,11 @@ export interface UsedInLink {
   route: string
 }
 
+export interface DesignGuidanceSection {
+  heading: string
+  content: string | string[]
+}
+
 export interface ComponentEntry {
   name: string
   slug: string
@@ -54,6 +59,7 @@ export interface ComponentEntry {
     values: Record<string, ControlValue>,
     setValue: (name: string, value: ControlValue) => void
   ) => ReactNode
+  designGuidance?: DesignGuidanceSection[]
 }
 
 export const componentRegistry: ComponentEntry[] = [
@@ -113,7 +119,7 @@ export const componentRegistry: ComponentEntry[] = [
     name: 'Button',
     slug: 'shadcn-button',
     category: 'inputs',
-    description: 'Accessible button with variants: default, destructive, outline, secondary, ghost, link.',
+    description: 'Accessible button with variants: default, destructive, outline, secondary, secondarySolid, ghost, link.',
     component: lazy(() => import('../pages/component-demos/ButtonDemo')),
     propControls: [
       { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Click me' },
@@ -122,6 +128,7 @@ export const componentRegistry: ComponentEntry[] = [
         { label: 'Destructive', value: 'destructive' },
         { label: 'Outline', value: 'outline' },
         { label: 'Secondary', value: 'secondary' },
+        { label: 'Secondary Solid', value: 'secondarySolid' },
         { label: 'Ghost', value: 'ghost' },
         { label: 'Link', value: 'link' },
       ]},
@@ -136,6 +143,28 @@ export const componentRegistry: ComponentEntry[] = [
     usedIn: [
       { label: 'Dashboard', route: '/dashboard' },
       { label: 'Campaigns', route: '/automations/campaigns' },
+    ],
+  },
+  {
+    name: 'Close Button',
+    slug: 'close-button',
+    category: 'inputs',
+    description: 'Accessible close/dismiss button with size variants, used for modals, panels, banners, and dialogs.',
+    component: lazy(() => import('../pages/component-demos/CloseButtonDemo')),
+    propControls: [
+      { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'default', options: [
+        { label: 'Extra Small (20px)', value: 'xs' },
+        { label: 'Small (24px)', value: 'sm' },
+        { label: 'Default (28px)', value: 'default' },
+        { label: 'Large (32px)', value: 'lg' },
+      ]},
+      { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
+      { name: 'ariaLabel', label: 'Aria Label', controlType: 'text', defaultValue: 'Close' },
+    ],
+    usedIn: [
+      { label: 'Sheet', route: '/admin/components/feedback/sheet' },
+      { label: 'AlertDialog', route: '/admin/components/feedback/alert-dialog' },
+      { label: 'Modal', route: '/admin/components/feedback/modal' },
     ],
   },
   {
@@ -536,18 +565,83 @@ export const componentRegistry: ComponentEntry[] = [
     name: 'AlertDialog',
     slug: 'alert-dialog',
     category: 'feedback',
-    description: 'Modal confirmation dialog requiring user action before proceeding.',
-    usesComponents: ['Button'],
+    description: 'Confirmation dialog with neutral, warning, and destructive intent variants and tiered confirmation guards.',
+    usesComponents: ['Button', 'Input', 'Checkbox', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/AlertDialogDemo')),
     propControls: [
-      { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Are you sure?' },
-      { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'This action cannot be undone.' },
-      { name: 'confirm-label', label: 'Confirm Label', controlType: 'text', defaultValue: 'Continue' },
-      { name: 'cancel-label', label: 'Cancel Label', controlType: 'text', defaultValue: 'Cancel' },
-      { name: 'confirm-variant', label: 'Confirm Style', controlType: 'select', defaultValue: 'destructive', options: [
-        { label: 'Default (Primary)', value: 'default' },
-        { label: 'Destructive', value: 'destructive' },
+      { name: 'object-name', label: 'Object name', controlType: 'text', defaultValue: '' },
+      { name: 'confirmation-guard', label: 'Confirmation guard', controlType: 'select', defaultValue: 'none', options: [
+        { label: 'None', value: 'none' },
+        { label: 'Checkbox', value: 'checkbox' },
+        { label: 'Type to confirm', value: 'type-to-confirm' },
       ]},
+      { name: 'input-text', label: 'Input text', controlType: 'text', defaultValue: 'DELETE', visibleWhen: { controlName: 'confirmation-guard', values: ['type-to-confirm'] } },
+      { name: 'loading', label: 'Simulate loading', controlType: 'toggle', defaultValue: false },
+      { name: 'loading-label', label: 'Loading label', controlType: 'text', defaultValue: 'Deleting...', visibleWhen: { controlName: 'loading', values: [true] } },
+    ],
+    designGuidance: [
+      {
+        heading: 'What is AlertDialog?',
+        content: 'A modal confirmation dialog that interrupts the user before a significant action. It communicates severity through three intent variants (neutral, warning, destructive) and supports tiered confirmation guards based on the impact of the action.',
+      },
+      {
+        heading: 'When to use',
+        content: [
+          'Any action that cannot be undone (delete, purge, remove permanently)',
+          'Actions with significant side effects (editing a connection that affects linked automations)',
+          'Discarding unsaved work (close wizard without saving, abandon form changes)',
+          'Informational alerts that require acknowledgement before continuing',
+        ],
+      },
+      {
+        heading: 'When NOT to use',
+        content: [
+          'Inline confirmations where a toast or undo pattern is sufficient',
+          'Form validation — use inline error messages instead',
+          'Success feedback — use Sonner toast instead',
+          'Complex multi-step flows — use a Dialog or Sheet with form content',
+          'Non-blocking information — use a banner or callout instead',
+        ],
+      },
+      {
+        heading: 'Intent variants',
+        content: [
+          'Neutral — no top accent, teal confirm button. Routine confirmations like "Discard changes?" or "Close without saving?".',
+          'Warning — amber top accent with Warning icon in title, secondarySolid confirm button. Actions with side effects that the user should think twice about.',
+          'Destructive — red top accent, red confirm button, swapped button order (confirm left, cancel right). Irreversible actions.',
+        ],
+      },
+      {
+        heading: 'Destructive severity levels',
+        content: [
+          'Minor — no confirmation guard. Low-impact destructive actions (e.g. remove a tag, unlink an item).',
+          'Major — "I understand" checkbox. Significant impact that affects the system (e.g. delete a campaign, remove a segment).',
+          'Catastrophic — type-to-confirm input. Irreversible, high-stakes actions (e.g. delete an account, purge all data).',
+        ],
+      },
+      {
+        heading: 'Object names in titles',
+        content: 'When an action relates to a specific object, include its name in the title. E.g. "Delete \'Summer Sale\'?" not just "Delete campaign?". This gives users confidence they are acting on the right thing. Titles asking the user to perform an action always end with a question mark.',
+      },
+      {
+        heading: 'Microcopy (Yifrah framework)',
+        content: [
+          'Tell users what happens next, not what they did — "This will permanently remove all data" not "You are about to delete"',
+          'Never use "are you sure" — state the consequence directly instead',
+          'Titles that ask the user to perform an action must end with a question mark — "Delete \'Summer Sale\'?" not "Delete \'Summer Sale\'"',
+          'Button labels are actions — "Delete campaign" not "OK" or "Yes"',
+          'Be specific about consequences — "3 automations will stop running" not "This may affect other items"',
+          'Loading labels describe the action in progress — "Deleting..." or "Saving..." not "Please wait"',
+        ],
+      },
+      {
+        heading: 'Loading state',
+        content: 'When onConfirm returns a Promise, the confirm button shows a spinner alongside text like "Deleting..." or "Saving...". Both buttons disable and all dismissal paths are blocked until the Promise resolves or rejects.',
+      },
+      {
+        heading: 'Single-action dialogs',
+        content: 'Set showCancel={false} for informational alerts that only need an acknowledgement button (e.g. "Mapping incomplete" with an "OK" button). The X close button remains available.',
+      },
     ],
   },
   {
@@ -572,7 +666,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'sheet',
     category: 'feedback',
     description: 'Slide-out panel from screen edge for secondary content or forms.',
-    usesComponents: ['Button'],
+    usesComponents: ['Button', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/SheetDemo')),
     propControls: [
       { name: 'side', label: 'Side', controlType: 'select', defaultValue: 'right', options: [
@@ -937,7 +1031,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'modal',
     category: 'feedback',
     description: 'Modal dialog pattern with ModalHeader (title + close) and ModalFooter (button slots) composed on shadcn Dialog.',
-    usesComponents: ['Dialog', 'Button', 'Input', 'Label'],
+    usesComponents: ['Dialog', 'Button', 'Input', 'Label', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/ModalDemo')),
     propControls: [
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'New Segment', section: 'Header' },
@@ -1182,6 +1276,53 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'show-icon', label: 'Show Icon', controlType: 'toggle', defaultValue: false },
       { name: 'selectable', label: 'Selectable', controlType: 'toggle', defaultValue: false },
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
+    ],
+    designGuidance: [
+      {
+        heading: 'What is a Chip?',
+        content: 'A pill-shaped interactive label used to represent discrete values — tags, filter selections, or multi-select entries. Chips are always removable (via dismiss button) or selectable (via parent click handler), distinguishing them from static badges.',
+      },
+      {
+        heading: 'When to use',
+        content: [
+          'Removable tags in multi-select inputs (e.g. selected fields in an importer mapping)',
+          'Email address entries in recipient fields (e.g. "brad@example.com" with dismiss to remove)',
+          'Filter pills in filter bars where users toggle criteria on/off',
+          'Status labels where colour semantics communicate meaning (mint = success, red = error)',
+        ],
+      },
+      {
+        heading: 'When NOT to use',
+        content: [
+          'Navigation — use Button or Link instead',
+          'Counts or indicators — use Badge component instead',
+          'Static labels that cannot be dismissed or selected — use Badge with appropriate variant',
+        ],
+      },
+      {
+        heading: 'Variants',
+        content: [
+          'Default — neutral grey background. General-purpose tags and filters with no semantic meaning.',
+          'Outline — transparent with border. Lighter visual weight, good for dense lists or inside inputs where background contrast matters.',
+          'Mint — green-tinted. Communicates success or positive status (e.g. "Active", "Verified", "Matched").',
+          'Red — red-tinted. Communicates error or destructive status (e.g. "Failed", "Blocked", "Unmatched").',
+        ],
+      },
+      {
+        heading: 'Sizes',
+        content: [
+          'Default (28px / h-7) — standard usage in filter bars, tag lists, and form fields.',
+          'Small (24px / h-6) — compact contexts like inside input fields or dense filter bars where vertical space is constrained.',
+        ],
+      },
+      {
+        heading: 'Selection behaviour',
+        content: 'The Chip itself does not handle click-to-select. The parent wraps it in a button or clickable container and manages selected state. When selected, the chip fills with a solid colour (primary, success, or destructive depending on variant) and switches to white text. This high-contrast treatment makes the active state immediately obvious in dense filter bars.',
+      },
+      {
+        heading: 'Dismiss behaviour',
+        content: 'When onDismiss is provided, a small X button renders inside the chip. It uses stopPropagation to prevent triggering the parent\'s click handler. The dismiss button has its own aria-label ("Remove {label}") for screen reader clarity.',
+      },
     ],
   },
   {

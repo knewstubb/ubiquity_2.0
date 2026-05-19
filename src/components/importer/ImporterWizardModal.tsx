@@ -1,18 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
-import { X, DownloadSimple } from '@phosphor-icons/react';
+import { DownloadSimple } from '@phosphor-icons/react';
 import { useConnections } from '../../contexts/ConnectionsContext';
-import { Button } from '../ui/button';
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from '../ui/alert-dialog';
+import { usePermissions } from '../../contexts/PermissionsContext';
+import { CloseButton } from '../ui/close-button';
+import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed';
 import { Stepper } from '../composed/stepper';
 import { WizardNavButtons } from '../wizard/WizardNavButtons';
 import { FileSettingsStep } from './FileSettingsStep';
@@ -114,12 +106,20 @@ export function ImporterWizardModal({
   onClose,
 }: ImporterWizardModalProps) {
   const { getConnectionById } = useConnections();
+  const { users } = usePermissions();
   const connection = getConnectionById(connectionId);
 
   const basePath = connection?.basePath ?? '/company/base-path/';
+  const teamEmails = useMemo(() => users.map((u) => u.email), [users]);
 
   const initialConfig = useMemo(
-    () => existingConfig ?? createDefaultConfig(connectionId, connectorName),
+    () => {
+      if (!existingConfig) return createDefaultConfig(connectionId, connectorName);
+      // When editing, strip csvHeaders/csvExampleValues so the mapping step
+      // shows the empty state until a new file is uploaded
+      const { csvHeaders, csvExampleValues, ...rest } = existingConfig;
+      return rest as ImporterConfig;
+    },
     [connectionId, connectorName, existingConfig],
   );
 
@@ -127,6 +127,8 @@ export function ImporterWizardModal({
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+  const [showMappingAlert, setShowMappingAlert] = useState(false);
+  const [mappingAlertMessage, setMappingAlertMessage] = useState('');
   const [notificationsValid, setNotificationsValid] = useState(true);
 
   const steps = useMemo(
@@ -155,7 +157,12 @@ export function ImporterWizardModal({
     }
 
     // Mapping steps — at least one field must be mapped (placeholder: always valid for now)
-    if (stepLabel === 'Contact Mapping' || stepLabel === 'Transactional Mapping' || stepLabel === 'Mapping') {
+    if (stepLabel === 'Contact Mapping' || stepLabel === 'Mapping') {
+      return true;
+    }
+
+    // Transactional Mapping — always allow Next, validate on click
+    if (stepLabel === 'Transactional Mapping') {
       return true;
     }
 
@@ -203,9 +210,34 @@ export function ImporterWizardModal({
   };
 
   const handleNext = () => {
+    const stepLabel = steps[currentStep]?.label;
+
+    // Validate Transactional Mapping step before proceeding
+    if (stepLabel === 'Transactional Mapping') {
+      const lookups = config.lookupMappings ?? [];
+      const hasCompleteLookup = lookups.some(
+        (m) => m.sourceField.trim() !== '' && m.contactField.trim() !== ''
+      );
+      if (!hasCompleteLookup) {
+        setMappingAlertMessage('At least one Lookup Mapping is required. Select a File Column and Contact Table Column to link transactions to contacts.');
+        setShowMappingAlert(true);
+        return;
+      }
+
+      // Check for duplicate target mappings in the field mapping
+      const mappedTargets = config.transactionalMapping
+        .filter((m) => m.targetField && m.targetField !== '[[Ignore Field]]')
+        .map((m) => m.targetField);
+      const duplicates = mappedTargets.filter((t, i) => mappedTargets.indexOf(t) !== i);
+      if (duplicates.length > 0) {
+        setMappingAlertMessage(`Duplicate field mapping detected: "${duplicates[0]}" is mapped more than once. Each UbiQuity field can only be mapped to one file column.`);
+        setShowMappingAlert(true);
+        return;
+      }
+    }
+
     if (currentStep === lastStepIndex) {
       if (existingConfig && !isDirty) {
-        // No changes — just close
         onClose();
         return;
       }
@@ -260,7 +292,7 @@ export function ImporterWizardModal({
     }
 
     if (stepLabel === 'Notifications') {
-      return <NotificationsStep value={config.notifications} onUpdate={(notifications) => handleConfigUpdate({ notifications })} onValidChange={setNotificationsValid} />;
+      return <NotificationsStep value={config.notifications} onUpdate={(notifications) => handleConfigUpdate({ notifications })} onValidChange={setNotificationsValid} teamEmails={teamEmails} />;
     }
     if (stepLabel === 'Contact Configuration') {
       return <ImportConfigStep type="contact" value={config.contactConfig} onUpdate={(contactConfig) => handleConfigUpdate({ contactConfig })} />;
@@ -287,7 +319,7 @@ export function ImporterWizardModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 animate-[fadeIn_200ms_ease]"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-xs animate-[fadeIn_200ms_ease]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="importer-wizard-title"
@@ -318,16 +350,12 @@ export function ImporterWizardModal({
 
         {/* Right content area */}
         <div className="flex-1 flex flex-col min-w-0 bg-background relative">
-          <Button
-            variant="ghost"
-            size="icon"
+          <CloseButton
             onClick={handleCloseClick}
             aria-label="Close wizard"
             data-testid="importer-close-button"
             className="absolute top-8 right-8 z-10"
-          >
-            <X weight="bold" />
-          </Button>
+          />
 
           <div className="flex-1 overflow-y-auto px-8 pt-8 pb-8 flex flex-col gap-6 scrollbar-gutter-stable">
             {stepContent}
@@ -347,25 +375,29 @@ export function ImporterWizardModal({
         </div>
       </div>
 
-      <AlertDialog open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Discard changes?</AlertDialogTitle>
-            <AlertDialogDescription>
-              You have unsaved changes. Are you sure you want to discard them?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Keep editing</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/80"
-              onClick={onClose}
-            >
-              Discard
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <AlertDialogComposed
+        open={showDiscardConfirm}
+        onOpenChange={setShowDiscardConfirm}
+        intent="destructive"
+        title="Discard changes?"
+        confirmLabel="Discard"
+        cancelLabel="Keep editing"
+        onConfirm={onClose}
+      >
+        Your unsaved changes will be lost. This cannot be undone.
+      </AlertDialogComposed>
+
+      <AlertDialogComposed
+        open={showMappingAlert}
+        onOpenChange={setShowMappingAlert}
+        intent="neutral"
+        title="Mapping incomplete"
+        confirmLabel="OK"
+        onConfirm={() => setShowMappingAlert(false)}
+        showCancel={false}
+      >
+        {mappingAlertMessage}
+      </AlertDialogComposed>
     </div>
   );
 }

@@ -78,7 +78,15 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
                     {connector.importerConfig.filePathConfig.fileNamePattern && (
                       <Row label="File Pattern" value={connector.importerConfig.filePathConfig.fileNamePattern} />
                     )}
-                    <Row label="Importing To" value={DATA_TYPE_LABELS[connector.importerConfig.dataType ?? ''] ?? connector.importerConfig.dataType ?? 'Not set'} />
+                    <Row label="Importing To" value={(() => {
+                      const dt = connector.importerConfig.dataType;
+                      const txTable = connector.importerConfig.transactionalTable ?? connector.transactionalSource;
+                      const txName = txTable ? txTable.charAt(0).toUpperCase() + txTable.slice(1) : 'Transactional';
+                      if (dt === 'contact') return 'Customer Contacts';
+                      if (dt === 'transactional') return txName;
+                      if (dt === 'both') return `Customer Contacts, ${txName}`;
+                      return 'Not set';
+                    })()} />
                   </Section>
 
                   {/* Importer: Contact Configuration */}
@@ -103,9 +111,9 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
                       <div className="grid grid-cols-[1fr_auto_1fr] gap-x-3 gap-y-0.5">
                         {connector.importerConfig.contactMapping.map((mapping) => (
                           <React.Fragment key={`${mapping.sourceField}-${mapping.targetField}`}>
-                            <span className="text-sm text-muted-foreground text-right">{mapping.sourceField}</span>
-                            <span className="text-sm text-muted-foreground text-center">→</span>
-                            <span className="text-sm text-primary font-medium">{mapping.targetField}</span>
+                            <span className="text-sm text-muted-foreground">{mapping.sourceField}</span>
+                            <span className="text-sm text-muted-foreground">→</span>
+                            <span className="text-sm text-primary font-medium text-right">{mapping.targetField}</span>
                           </React.Fragment>
                         ))}
                       </div>
@@ -119,9 +127,9 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
                       <div className="grid grid-cols-[1fr_auto_1fr] gap-x-3 gap-y-0.5">
                         {connector.importerConfig.transactionalMapping.map((mapping) => (
                           <React.Fragment key={`${mapping.sourceField}-${mapping.targetField}`}>
-                            <span className="text-sm text-muted-foreground text-right">{mapping.sourceField}</span>
-                            <span className="text-sm text-muted-foreground text-center">→</span>
-                            <span className="text-sm text-primary font-medium">{mapping.targetField}</span>
+                            <span className="text-sm text-muted-foreground">{mapping.sourceField}</span>
+                            <span className="text-sm text-muted-foreground">→</span>
+                            <span className="text-sm text-primary font-medium text-right">{mapping.targetField}</span>
                           </React.Fragment>
                         ))}
                       </div>

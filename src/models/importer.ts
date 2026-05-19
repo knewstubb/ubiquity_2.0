@@ -52,6 +52,7 @@ export interface ImporterConfig {
   contactMapping: FieldMapping[];
   transactionalConfig: TransactionalConfig;
   transactionalMapping: FieldMapping[];
+  transactionalTable?: string;
   csvHeaders?: string[];
   csvExampleValues?: Record<string, string>;
   lookupMappings?: LookupMapping[];

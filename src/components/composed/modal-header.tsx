@@ -1,5 +1,5 @@
-import { X } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
+import { CloseButton } from '@/components/ui/close-button'
 
 interface ModalHeaderProps {
   title: React.ReactNode
@@ -21,14 +21,7 @@ export function ModalHeader({ title, onClose, description, className }: ModalHea
           {title}
         </h3>
         {onClose && (
-          <button
-            type="button"
-            onClick={onClose}
-            className="shrink-0 h-6 w-6 flex items-center justify-center rounded-sm text-muted-foreground transition-all hover:text-foreground hover:bg-secondary active:scale-90 focus:outline-none focus-visible:text-foreground"
-            aria-label="Close"
-          >
-            <X size={16} weight="regular" />
-          </button>
+          <CloseButton size="sm" onClick={onClose} aria-label="Close" />
         )}
       </div>
       {description && (

@@ -1,3 +1,4 @@
+import { Plus } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import type { PermissionGroup } from '../../models/permissions';
 
@@ -15,9 +16,10 @@ export function GroupSidebar({ groups, selectedGroupId, onSelectGroup, onCreateC
         className="flex items-center justify-center gap-1 m-4 px-4 py-2 font-sans text-sm font-semibold text-primary bg-transparent border border-primary rounded-sm cursor-pointer transition-colors duration-150 hover:bg-accent focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
         onClick={onCreateClick}
       >
-        + Create
+        <Plus size={16} weight="bold" />
+        Create
       </button>
-      <ul className="flex-1 overflow-y-auto list-none m-0 p-0">
+      <ul className="flex-1 overflow-y-auto list-none m-0 p-0" role="listbox" aria-label="Permission groups">
         {groups.map((group) => (
           <li
             key={group.id}
@@ -27,7 +29,8 @@ export function GroupSidebar({ groups, selectedGroupId, onSelectGroup, onCreateC
               group.id === selectedGroupId && "bg-accent border-l-primary hover:bg-accent"
             )}
             onClick={() => onSelectGroup(group.id)}
-            role="button"
+            role="option"
+            aria-selected={group.id === selectedGroupId}
             tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {

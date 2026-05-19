@@ -47,9 +47,11 @@ interface NotificationsStepProps {
   value?: NotificationConfig;
   onUpdate?: (config: NotificationConfig) => void;
   onValidChange?: (valid: boolean) => void;
+  /** List of team member emails to show as suggestions */
+  teamEmails?: string[];
 }
 
-export function NotificationsStep({ value, onUpdate, onValidChange }: NotificationsStepProps) {
+export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }: NotificationsStepProps) {
   /* Initialize from value prop or defaults */
   const initial = value ?? DEFAULT_NOTIFICATION_CONFIG;
 
@@ -115,7 +117,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange }: Notificati
           </p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <ChipInput values={failureEmails} onChange={setFailureEmails} label="Email Address" type="email" placeholder="Add email…" aria-label="Add email address" />
+          <ChipInput values={failureEmails} onChange={setFailureEmails} label="Email Address" type="email" placeholder="Add email…" aria-label="Add email address" options={teamEmails} />
         </div>
       </div>
 
@@ -149,6 +151,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange }: Notificati
                 type="email"
                 placeholder="Add email…"
                 aria-label="Add email address"
+                options={teamEmails}
               />
             </div>
           )}
@@ -342,6 +345,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange }: Notificati
                 type="email"
                 placeholder="Add email…"
                 aria-label="Add email address"
+                options={teamEmails}
               />
             </div>
           )}

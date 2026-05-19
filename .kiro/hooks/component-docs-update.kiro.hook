@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Update Component Docs",
+  "description": "When a component file in src/components/ui/ or src/components/composed/ is edited, review and update the design documentation JSDoc block at the top of the file to reflect the current implementation.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/components/ui/*.tsx",
+      "src/components/composed/*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A component file was just edited. Read the file and check if it has a design documentation JSDoc block at the top (above imports). If it does, review the block against the current implementation and update any sections that are now outdated (variants, sizes, usage guidance, design decisions). If the file does NOT have a documentation block yet, add one following this format:\n\n```\n/**\n * @component ComponentName\n * @description Brief description of what this component does.\n *\n * @designDecisions\n * - Why key styling/architecture choices were made\n *\n * @usage\n * - When to use this component vs alternatives\n *\n * @variants (if applicable)\n * - variant-name: when to use it\n *\n * @sizes (if applicable)\n * - size-name (dimensions): when to use it\n *\n * @examples\n * - Brief usage examples with context\n */\n```\n\nKeep it concise — focus on the \"why\" and \"when\", not the \"how\" (the code shows the how). Only update sections that changed."
+  }
+}
