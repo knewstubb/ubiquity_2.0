@@ -12,7 +12,8 @@
  *
  * @usage
  * - `default` (teal): primary CTA — one per section max
- * - `destructive` (red): delete/remove actions
+ * - `destructive` (red solid): delete/remove actions — use inside confirmation dialogs
+ * - `destructiveOutline` (red border): dangerous action that needs visibility but less weight than solid red — e.g. "Remove" in lists, secondary destructive alongside a primary
  * - `outline` (teal border): secondary action that still needs prominence (e.g. "Add new")
  * - `secondary` (dark solid): strong secondary — use sparingly alongside a primary
  * - `secondaryOutline` (dark grey border): low-emphasis — cancel buttons, filter toggles, toolbar actions
@@ -21,7 +22,8 @@
  *
  * @variants
  * - default: solid teal — primary actions
- * - destructive: solid red — irreversible/dangerous actions
+ * - destructive: solid red — irreversible/dangerous actions (confirmation dialogs)
+ * - destructiveOutline: transparent + red border — lighter-weight destructive (inline remove, secondary destructive)
  * - outline: transparent + teal border — prominent secondary
  * - secondary: solid dark — strong secondary
  * - secondaryOutline: transparent + border-strong — low-emphasis secondary
@@ -38,6 +40,7 @@
  * - `<Button>Save changes</Button>` — primary action
  * - `<Button variant="secondaryOutline">Cancel</Button>` — cancel/dismiss
  * - `<Button variant="destructive">Delete</Button>` — destructive confirm
+ * - `<Button variant="destructiveOutline">Remove</Button>` — lighter destructive action
  * - `<Button variant="ghost" size="icon"><X /></Button>` — icon-only close
  * - `<Button asChild><Link to="/page">Go</Link></Button>` — polymorphic as link
  */
@@ -56,6 +59,8 @@ const buttonVariants = cva(
           "bg-primary text-primary-foreground hover:bg-primary/80 active:scale-95",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/80 active:scale-95",
+        destructiveOutline:
+          "bg-transparent text-destructive border border-destructive/40 hover:bg-destructive/5 active:scale-95",
         outline:
           "bg-transparent text-primary border border-primary hover:bg-primary/5 active:translate-y-px",
         secondary:

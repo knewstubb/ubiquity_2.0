@@ -162,7 +162,7 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
         <DialogHeader className="border-b border-border px-6 py-6 space-y-0">
           <div className="flex items-center justify-between">
             <DialogTitle>
-              {isEditing ? `Edit ${getTypeLabel()} Connection` : `Set Up ${getTypeLabel()} Connection`}
+              {isEditing ? (editConnection.name || `Edit ${getTypeLabel()} Connection`) : `Set Up ${getTypeLabel()} Connection`}
             </DialogTitle>
             <CloseButton
               size="lg"

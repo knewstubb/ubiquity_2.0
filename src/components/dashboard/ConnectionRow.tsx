@@ -19,11 +19,12 @@ interface ConnectionRowProps {
   connectors: Automation[];
   onAddConnector: (connectionId: string) => void;
   onEditConnection?: (connectionId: string) => void;
+  onFixConnection?: (connectionId: string) => void;
   onDeleteConnection?: (connectionId: string) => void;
   children?: ReactNode;
 }
 
-export function ConnectionRow({ connection, connectors, onAddConnector, onEditConnection, onDeleteConnection, children }: ConnectionRowProps) {
+export function ConnectionRow({ connection, connectors, onAddConnector, onEditConnection, onFixConnection, onDeleteConnection, children }: ConnectionRowProps) {
   const [expanded, setExpanded] = useState(false);
 
   const connectorCount = connectors.length;
@@ -57,10 +58,10 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
             {/* Status text — right aligned */}
             {isError ? (
               <Button
-                variant="secondaryOutline"
+                variant="destructiveOutline"
                 size="sm"
                 className="ml-auto mr-10"
-                onClick={(e) => { e.stopPropagation(); onEditConnection?.(connection.id); }}
+                onClick={(e) => { e.stopPropagation(); onFixConnection?.(connection.id); }}
               >
                 Fix connection
               </Button>

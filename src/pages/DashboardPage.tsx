@@ -51,6 +51,7 @@ export default function DashboardPage() {
   const [showCreateConnection, setShowCreateConnection] = useState(false);
   const [editingConnection, setEditingConnection] = useState<string | null>(null);
   const [pendingEditConnectionId, setPendingEditConnectionId] = useState<string | null>(null);
+  const [pendingFixConnectionId, setPendingFixConnectionId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Automation | null>(null);
   const [pendingDeleteConnectionId, setPendingDeleteConnectionId] = useState<string | null>(null);
   const [initialModalConnectionId, setInitialModalConnectionId] = useState<string | null>(null);
@@ -243,6 +244,7 @@ export default function DashboardPage() {
               connectors={childConnectors}
               onAddConnector={handleAddConnector}
               onEditConnection={(id) => setPendingEditConnectionId(id)}
+              onFixConnection={(id) => setPendingFixConnectionId(id)}
               onDeleteConnection={(id) => setPendingDeleteConnectionId(id)}
             >
               {childConnectors.map((connector) => (
@@ -303,6 +305,22 @@ export default function DashboardPage() {
             : 0;
           return <>There are <span className="font-semibold">{count} automation{count !== 1 ? 's' : ''}</span> using this connection. Editing it may affect their ability to run successfully.</>;
         })()}
+      </AlertDialogComposed>
+
+      {/* Fix Connection Warning — shown when user clicks "Fix connection" on an errored connection */}
+      <AlertDialogComposed
+        intent="warning"
+        open={!!pendingFixConnectionId}
+        onOpenChange={() => setPendingFixConnectionId(null)}
+        title={pendingFixConnectionId ? getConnectionById(pendingFixConnectionId)?.name ?? 'Fix connection' : 'Fix connection'}
+        confirmLabel="Fix connection"
+        onConfirm={() => {
+          setEditingConnection(pendingFixConnectionId);
+          setPendingFixConnectionId(null);
+        }}
+        onCancel={() => setPendingFixConnectionId(null)}
+      >
+        <p className="m-0 leading-relaxed">This connection is no longer functioning. To fix it you'll need to understand the associated database configuration, including credentials and access paths.</p>
       </AlertDialogComposed>
 
       {/* EditConnectionModal — shown when user clicks "Edit Connection" from meatball menu */}

@@ -119,13 +119,14 @@ export const componentRegistry: ComponentEntry[] = [
     name: 'Button',
     slug: 'shadcn-button',
     category: 'inputs',
-    description: 'Accessible button with variants: default, destructive, outline, secondary, secondaryOutline, ghost, link.',
+    description: 'Accessible button with variants: default, destructive, destructiveOutline, outline, secondary, secondaryOutline, ghost, link.',
     component: lazy(() => import('../pages/component-demos/ButtonDemo')),
     propControls: [
       { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Click me' },
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
         { label: 'Default', value: 'default' },
         { label: 'Destructive', value: 'destructive' },
+        { label: 'Destructive Outline', value: 'destructiveOutline' },
         { label: 'Outline', value: 'outline' },
         { label: 'Secondary', value: 'secondary' },
         { label: 'Secondary Outline', value: 'secondaryOutline' },
@@ -157,6 +158,7 @@ export const componentRegistry: ComponentEntry[] = [
       { heading: 'Variant guidance', content: [
         'default (teal solid): Primary CTA — one per section max',
         'destructive (red solid): Irreversible or dangerous actions (delete, remove)',
+        'destructiveOutline (red border, transparent bg): Destructive action needing less visual weight — "Fix connection", inline remove buttons, secondary destructive alongside a solid primary',
         'outline (teal border, transparent bg): Prominent secondary — "Add new", "Export"',
         'secondary (dark solid): Strong secondary alongside a primary — use sparingly',
         'secondaryOutline (border-strong, transparent bg): Low-emphasis — cancel, filter toggles, toolbar actions. Uses border-strong token for a mid-weight outline that reads clearly against light surfaces without competing with primary teal.',
