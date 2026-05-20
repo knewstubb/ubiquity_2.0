@@ -37,7 +37,7 @@ const sampleLineItem = {
 const sampleLineItem2 = {
   id: 'item-2',
   accountId: 'acc-1-child',
-  category: 'Integration' as const,
+  category: 'Connector' as const,
   description: 'Shopify — REST',
   sendDate: null,
   items: 100,

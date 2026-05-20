@@ -95,7 +95,7 @@ export function AutomationsProvider({ children }: { children: ReactNode }) {
       fileNamingPattern: draft.fileNamingPattern,
       schedule: draft.schedule!,
       filters: draft.filters,
-      status: 'active',
+      status: 'paused',
       createdAt: now,
       updatedAt: now,
       notifications: draft.notifications,

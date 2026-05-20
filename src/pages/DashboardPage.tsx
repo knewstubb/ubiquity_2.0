@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PlugsConnected, Plus } from '@phosphor-icons/react';
+import { CurrencyDollar, PlugsConnected, Plus } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useConnections } from '../contexts/ConnectionsContext';
@@ -54,6 +54,7 @@ export default function DashboardPage() {
   const [pendingFixConnectionId, setPendingFixConnectionId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Automation | null>(null);
   const [pendingDeleteConnectionId, setPendingDeleteConnectionId] = useState<string | null>(null);
+  const [pendingActivation, setPendingActivation] = useState<Automation | null>(null);
   const [initialModalConnectionId, setInitialModalConnectionId] = useState<string | null>(null);
   const [wizardModalState, setWizardModalState] = useState<WizardModalState | null>(null);
   const [importerModalState, setImporterModalState] = useState<ImporterModalState | null>(null);
@@ -169,7 +170,7 @@ export default function DashboardPage() {
         fileNamingPattern: config.filePathConfig.fileNamePattern || `${config.name.toLowerCase().replace(/\s+/g, '_')}_{date}.csv`,
         schedule: 'daily',
         filters: { combinator: 'AND', rules: [], groups: [] },
-        status: 'active',
+        status: 'paused',
         createdAt: now,
         updatedAt: now,
         importerConfig: config,
@@ -252,7 +253,13 @@ export default function DashboardPage() {
                   key={connector.id}
                   connector={connector}
                   connectionError={connection.status === 'error'}
-                  onToggleStatus={() => toggleAutomationStatus(connector.id)}
+                  onToggleStatus={() => {
+                    if (connector.status === 'paused') {
+                      setPendingActivation(connector);
+                    } else {
+                      toggleAutomationStatus(connector.id);
+                    }
+                  }}
                   onViewSettings={() => setSettingsConnectorId(connector.id)}
                   onEditWizard={() => handleEdit(connector.id)}
                   onDelete={() => handleDeleteRequest(connector)}
@@ -321,6 +328,28 @@ export default function DashboardPage() {
         onCancel={() => setPendingFixConnectionId(null)}
       >
         <p className="m-0 leading-relaxed">This connection is no longer functioning. To fix it you'll need to understand the associated database configuration, including credentials and access paths.</p>
+      </AlertDialogComposed>
+
+      {/* Activate Automation Warning — shown when enabling a paused automation */}
+      <AlertDialogComposed
+        intent="warning"
+        open={!!pendingActivation}
+        onOpenChange={() => setPendingActivation(null)}
+        title={`Activate ${pendingActivation?.name ?? 'automation'}?`}
+        confirmLabel="Activate automation"
+        icon={<CurrencyDollar size={20} weight="bold" className="text-warning shrink-0" />}
+        onConfirm={() => {
+          if (pendingActivation) {
+            toggleAutomationStatus(pendingActivation.id);
+          }
+          setPendingActivation(null);
+        }}
+        onCancel={() => setPendingActivation(null)}
+        requiresInput="ACCEPT"
+        inputLabel="Type ACCEPT to authorise this charge"
+      >
+        <p className="m-0 leading-relaxed">This automation costs <span className="font-semibold">$250.00/month</span>, billed immediately.</p>
+        <p className="m-0 leading-relaxed mt-2">Once started, the minimum billing period cannot be cancelled or refunded.</p>
       </AlertDialogComposed>
 
       {/* EditConnectionModal — shown when user clicks "Edit Connection" from meatball menu */}

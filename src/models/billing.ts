@@ -7,7 +7,7 @@ export type BillingCategory =
   | 'TXT Message Parts'
   | 'Survey Responses'
   | 'Event Triggered Emails'
-  | 'Integration';
+  | 'Connector';
 
 /** Unit prices per billing category (NZD) */
 export const UNIT_PRICES: Record<BillingCategory, number> = {
@@ -19,7 +19,7 @@ export const UNIT_PRICES: Record<BillingCategory, number> = {
   'TXT Message Parts': 0.065,
   'Survey Responses': 0.015,
   'Event Triggered Emails': 0.008,
-  'Integration': 25.00,
+  'Connector': 250.00,
 };
 
 export interface BillingLineItem {

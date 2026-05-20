@@ -645,11 +645,13 @@ export const componentRegistry: ComponentEntry[] = [
         ],
       },
       {
-        heading: 'Destructive severity levels',
+        heading: 'Confirmation guards',
         content: [
-          'Minor — no confirmation guard. Low-impact destructive actions (e.g. remove a tag, unlink an item).',
-          'Major — "I understand" checkbox. Significant impact that affects the system (e.g. delete a campaign, remove a segment).',
-          'Catastrophic — type-to-confirm input. Irreversible, high-stakes actions (e.g. delete an account, purge all data).',
+          'requiresCheckbox — "I understand" checkbox. Destructive-only. Use for significant-impact actions (e.g. delete a campaign, remove a segment).',
+          'requiresInput — type-to-confirm input. Works with ALL intents. Use for any action needing explicit typed confirmation (e.g. "DELETE" for account removal, "RESET" for config reset on a warning dialog). The input focus ring colour matches the dialog intent (amber for warning, red for destructive, default for neutral) to reinforce severity context.',
+          'inputLabel — custom instruction text for the type-to-confirm input. Overrides the default "Type {x} to confirm" label. Use when the default phrasing doesn\'t fit the context (e.g. "Type RESET to confirm factory reset").',
+          'Neither — no guard. Use for low-impact confirmations where the dialog itself is sufficient friction.',
+          'When both are provided, requiresInput takes precedence (checkbox is hidden).',
         ],
       },
       {
@@ -670,6 +672,10 @@ export const componentRegistry: ComponentEntry[] = [
       {
         heading: 'Loading state',
         content: 'When onConfirm returns a Promise, the confirm button shows a spinner alongside text like "Deleting..." or "Saving...". Both buttons disable and all dismissal paths are blocked until the Promise resolves or rejects.',
+      },
+      {
+        heading: 'Custom icons',
+        content: 'Pass an icon prop (ReactNode) to render a custom icon inline with the title. For warning intent this overrides the default Warning icon; for neutral/destructive it adds an icon where none exists by default. Use for domain-specific context — e.g. a CurrencyDollar icon for billing confirmations or a Trash icon for clear-history dialogs.',
       },
       {
         heading: 'Single-action dialogs',
@@ -988,7 +994,7 @@ export const componentRegistry: ComponentEntry[] = [
 
             return (
               <div key={i} className={`flex gap-1.5 ${isDisabled ? 'opacity-40' : ''}`}>
-                <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden flex-1 focus-within:border-ring focus-within:shadow-[--ring-shadow]">
+                <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden flex-1 focus-within:border-ring focus-within:shadow-ring">
                   <span className="shrink-0 text-xs text-muted-foreground select-none bg-secondary px-2 self-stretch flex items-center border-r border-input">{i + 1}</span>
                   <input
                     value={label}
@@ -1133,7 +1139,7 @@ export const componentRegistry: ComponentEntry[] = [
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Labels</span>
             <div className="space-y-2">
               {labels.map((label, i) => (
-                <div key={i} className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
+                <div key={i} className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-ring">
                   <span className="shrink-0 text-xs text-muted-foreground select-none bg-secondary px-2 self-stretch flex items-center border-r border-input">{i + 1}</span>
                   <input
                     value={label}
@@ -1220,7 +1226,7 @@ export const componentRegistry: ComponentEntry[] = [
         const key = `label-${i}`
         const val = (values[key] as string) ?? ''
         inputs.push(
-          <div key={i} className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
+          <div key={i} className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-ring">
             <span className={`shrink-0 text-xs select-none bg-secondary px-2 self-stretch flex items-center border-r border-input ${i < optionCount ? 'text-muted-foreground' : 'text-muted-foreground/40'}`}>{i + 1}</span>
             <input
               value={val}
@@ -1257,7 +1263,7 @@ export const componentRegistry: ComponentEntry[] = [
       <>
         <div className="space-y-1.5">
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide block">Bounds</span>
-          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
+          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-ring">
             <span className="shrink-0 text-xs text-muted-foreground select-none bg-secondary px-2 self-stretch flex items-center border-r border-input">Min</span>
             <input
               type="number"
@@ -1266,7 +1272,7 @@ export const componentRegistry: ComponentEntry[] = [
               className="flex-1 min-w-0 bg-transparent border-none outline-none text-xs text-foreground px-2"
             />
           </div>
-          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
+          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-ring">
             <span className="shrink-0 text-xs text-muted-foreground select-none bg-secondary px-2 self-stretch flex items-center border-r border-input">Max</span>
             <input
               type="number"
@@ -1275,7 +1281,7 @@ export const componentRegistry: ComponentEntry[] = [
               className="flex-1 min-w-0 bg-transparent border-none outline-none text-xs text-foreground px-2"
             />
           </div>
-          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-[--ring-shadow]">
+          <div className="flex items-center rounded-md border border-input bg-background h-7 overflow-hidden focus-within:border-ring focus-within:shadow-ring">
             <span className="shrink-0 text-xs text-muted-foreground select-none bg-secondary px-2 self-stretch flex items-center border-r border-input">Step</span>
             <input
               type="number"

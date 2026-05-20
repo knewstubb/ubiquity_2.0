@@ -152,7 +152,7 @@ function AddFlagForm({ onAdd, onCancel }: AddFlagFormProps) {
     <form className="py-3 border-t border-border flex flex-col gap-2" onSubmit={handleSubmit}>
       <div className="flex gap-2">
         <input
-          className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[--ring-shadow]"
+          className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-ring"
           placeholder="Flag name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -168,13 +168,13 @@ function AddFlagForm({ onAdd, onCancel }: AddFlagFormProps) {
         </select>
       </div>
       <input
-        className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[--ring-shadow]"
+        className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-ring"
         placeholder="Route path or component target (e.g. /admin/billing)"
         value={target}
         onChange={(e) => setTarget(e.target.value)}
       />
       <input
-        className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-[--ring-shadow]"
+        className="flex-1 px-2.5 py-2 text-[13px] font-sans border border-border rounded outline-none text-foreground transition-colors duration-150 focus:border-primary focus:shadow-ring"
         placeholder="Description (optional)"
         value={description}
         onChange={(e) => setDescription(e.target.value)}

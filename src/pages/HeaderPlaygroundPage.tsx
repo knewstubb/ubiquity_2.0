@@ -144,7 +144,7 @@ export default function HeaderPlaygroundPage() {
             {showSearch && (
               <div className="relative inline-flex items-center">
                 <MagnifyingGlass size={14} weight="regular" className="absolute left-2.5 text-tertiary-foreground pointer-events-none" />
-                <input type="text" className="py-[7px] pr-2.5 pl-[30px] text-[13px] font-sans border border-border rounded outline-none w-[180px] text-foreground focus:border-primary focus:shadow-[--ring-shadow]" placeholder="Search..." />
+                <input type="text" className="py-[7px] pr-2.5 pl-[30px] text-[13px] font-sans border border-border rounded outline-none w-[180px] text-foreground focus:border-primary focus:shadow-ring" placeholder="Search..." />
               </div>
             )}
             {showFilters && visibleFilters.map((filter) => (
@@ -397,20 +397,20 @@ function DetailBody() {
         <h3 className="text-[15px] font-semibold text-foreground m-0">General Information</h3>
         <div className="flex flex-col gap-1 flex-1">
           <label className="text-[13px] font-medium text-muted-foreground">Name</label>
-          <input type="text" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-[--ring-shadow]" defaultValue="Summer Glow Campaign" />
+          <input type="text" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-ring" defaultValue="Summer Glow Campaign" />
         </div>
         <div className="flex flex-col gap-1 flex-1">
           <label className="text-[13px] font-medium text-muted-foreground">Description</label>
-          <textarea className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground resize-y min-h-[60px] focus:border-primary focus:shadow-[--ring-shadow]" defaultValue="Drive summer bookings and product sales across all locations" rows={3} />
+          <textarea className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground resize-y min-h-[60px] focus:border-primary focus:shadow-ring" defaultValue="Drive summer bookings and product sales across all locations" rows={3} />
         </div>
         <div className="flex gap-4">
           <div className="flex flex-col gap-1 flex-1">
             <label className="text-[13px] font-medium text-muted-foreground">Start Date</label>
-            <input type="date" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-[--ring-shadow]" defaultValue="2025-11-15" />
+            <input type="date" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-ring" defaultValue="2025-11-15" />
           </div>
           <div className="flex flex-col gap-1 flex-1">
             <label className="text-[13px] font-medium text-muted-foreground">End Date</label>
-            <input type="date" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-[--ring-shadow]" defaultValue="2026-02-28" />
+            <input type="date" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-ring" defaultValue="2026-02-28" />
           </div>
         </div>
       </div>
@@ -445,7 +445,7 @@ function SplitPanelBody() {
         <p className="text-sm text-muted-foreground leading-normal m-0">This is the main content area of a split-panel layout. The sidebar provides navigation between sections while the content area shows the active section's details.</p>
         <div className="flex flex-col gap-1 flex-1">
           <label className="text-[13px] font-medium text-muted-foreground">Workspace Name</label>
-          <input type="text" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-[--ring-shadow]" defaultValue="Serenity Spa Group" />
+          <input type="text" className="px-3 py-2 text-sm font-sans border border-border rounded outline-none text-foreground focus:border-primary focus:shadow-ring" defaultValue="Serenity Spa Group" />
         </div>
         <div className="flex flex-col gap-1 flex-1">
           <label className="text-[13px] font-medium text-muted-foreground">Default Timezone</label>

@@ -65,7 +65,7 @@ function ChipInput({ chips, onRemove, onAdd, onClearAll, availableOptions }: Chi
   return (
     <div>
       <p className="text-xs font-medium text-muted-foreground m-0">Fields to be Matched</p>
-      <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] relative cursor-text bg-background focus-within:border-primary focus-within:shadow-[--ring-shadow]">
+      <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] relative cursor-text bg-background focus-within:border-primary focus-within:shadow-ring">
         {chips.map((chip) => (
           <span key={chip} className="inline-flex items-center gap-1 border border-primary text-primary rounded-full py-1 px-2 text-xs font-medium leading-none whitespace-nowrap">
             {chip}

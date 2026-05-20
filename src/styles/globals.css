@@ -75,6 +75,7 @@
   --ring: #14B88A;
   --ring-shadow: 0 0 0 3px rgba(20, 184, 138, 0.15);
   --ring-shadow-destructive: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  --ring-shadow-warning: 0 0 0 3px rgba(245, 158, 11, 0.15);
   --border-strong: #D4D4D8;
 
   /* Disabled */
@@ -191,6 +192,7 @@
   --ring: #14B88A;
   --ring-shadow: 0 0 0 3px rgba(20, 184, 138, 0.15);
   --ring-shadow-destructive: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  --ring-shadow-warning: 0 0 0 3px rgba(245, 158, 11, 0.15);
   --border-strong: #3F3F46;
 
   /* Disabled */
@@ -373,6 +375,11 @@
 
   /* ── Spacing (matches Tailwind defaults, explicit for clarity) ── */
   --spacing: 4px;
+
+  /* ── Ring shadows (focus ring glow per intent) ── */
+  --shadow-ring: var(--ring-shadow);
+  --shadow-ring-warning: var(--ring-shadow-warning);
+  --shadow-ring-destructive: var(--ring-shadow-destructive);
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════

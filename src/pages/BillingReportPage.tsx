@@ -35,7 +35,7 @@ export default function BillingReportPage() {
     setStartDate(cycle.start);
     setEndDate(cycle.end);
     setSelectedAccountId(null);
-    setCategoryFilter('Integration');
+    setCategoryFilter('Connector');
   }, [setStartDate, setEndDate, setSelectedAccountId, setCategoryFilter]);
 
   return (

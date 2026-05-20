@@ -79,7 +79,7 @@ export function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
               <input
                 id="cp-current"
                 type="password"
-                className="px-3 py-2 text-sm font-sans border border-border rounded bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-[--ring-shadow]"
+                className="px-3 py-2 text-sm font-sans border border-border rounded bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-ring"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 autoComplete="current-password"
@@ -91,7 +91,7 @@ export function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
               <input
                 id="cp-new"
                 type="password"
-                className="px-3 py-2 text-sm font-sans border border-border rounded bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-[--ring-shadow]"
+                className="px-3 py-2 text-sm font-sans border border-border rounded bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-ring"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 autoComplete="new-password"
@@ -103,7 +103,7 @@ export function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
               <input
                 id="cp-confirm"
                 type="password"
-                className="px-3 py-2 text-sm font-sans border border-border rounded bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-[--ring-shadow]"
+                className="px-3 py-2 text-sm font-sans border border-border rounded bg-background text-foreground outline-none transition-colors duration-150 focus:border-primary focus:shadow-ring"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 autoComplete="new-password"

@@ -38,7 +38,7 @@ export function FileNamingInput({ value, onChange }: FileNamingInputProps) {
       <input
         ref={inputRef}
         id="file-naming-input"
-        className="w-full py-2 px-3 border border-border rounded-md text-sm text-foreground bg-background outline-none box-border placeholder:text-tertiary-foreground focus:border-primary focus:shadow-[--ring-shadow]"
+        className="w-full py-2 px-3 border border-border rounded-md text-sm text-foreground bg-background outline-none box-border placeholder:text-tertiary-foreground focus:border-primary focus:shadow-ring"
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}

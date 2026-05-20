@@ -7,7 +7,7 @@
  * @designDecisions
  * - Uses standard Button components instead of Radix AlertDialogAction/AlertDialogCancel
  *   so we can disable buttons and prevent dismissal during async loading
- * - Top border accent is rendered as a separate div (not a CSS border-top) so it clips
+ * - Top border accent is rendered as a separate div (h-1.5 / 6px, not a CSS border-top) so it clips
  *   cleanly to the container's rounded corners without overflow issues
  * - Neutral intent uses full border (border-border), warning/destructive use border-x + border-b
  *   since the coloured strip replaces the top border visually
@@ -16,8 +16,13 @@
  * - Destructive dialogs swap button order (confirm left, cancel right) to prevent muscle-memory
  *   clicks on the primary action position
  * - Three destructive severity levels: minor (no guard), major (checkbox), catastrophic (type input)
+ * - requiresInput is intent-agnostic — allows type-to-confirm on neutral/warning dialogs too
+ *   (e.g. confirming a risky but non-destructive action like resetting a config)
+ * - requiresCheckbox remains destructive-only to preserve the severity hierarchy
  * - Loading state blocks all dismissal paths (Escape, overlay click, X button, Cancel) to
  *   prevent orphaned async operations
+ * - Type-to-confirm input focus ring colour matches the dialog intent (amber for warning,
+ *   red for destructive, default for neutral) — reinforces severity context during interaction
  * - Input/checkbox resets on close via useEffect on `open` — ensures stale state never persists
  * - All copy follows Yifrah's microcopy framework: clear, action-oriented, no jargon,
  *   tell users what happens next (not what they did)
@@ -31,7 +36,7 @@
  * - Titles that ask the user to perform an action MUST end with a question mark
  * - Never use "are you sure" in body copy — state what will happen, not what the user is about to do
  * - Add `requiresCheckbox` for major destructive actions (significant but recoverable impact)
- * - Add `requiresInput` for catastrophic destructive actions (irreversible, high-stakes)
+ * - Add `requiresInput` for any action requiring explicit typed confirmation (works with all intents)
  * - Set `showCancel={false}` for informational alerts with only a dismiss action
  *
  * @variants
@@ -44,11 +49,25 @@
  * - major: "I understand" checkbox — significant impact (e.g. delete a campaign)
  * - catastrophic: Type-to-confirm input — irreversible, high-stakes (e.g. delete account)
  *
+ * @confirmationGuards
+ * - requiresCheckbox: Only applies to destructive intent (ignored otherwise)
+ * - requiresInput: Applies to ALL intents — renders type-to-confirm for any action needing explicit confirmation
+ * - inputLabel: Custom instruction text for the type-to-confirm input — overrides the default "Type {x} to confirm"
+ * - icon: Custom ReactNode icon rendered inline with the title — overrides the default Warning icon for warning intent
+ *
+ * @customisation
+ * - icon: Custom ReactNode rendered inline with the title — overrides the default Warning icon for warning intent.
+ *   For neutral/destructive intents (which have no default icon), this adds an icon where none existed.
+ *
  * @examples
  * - Discard changes: intent="neutral", title="Discard changes?", confirmLabel="Discard", cancelLabel="Keep editing"
  * - Edit connection: intent="warning", title="Edit 'Mailchimp'?", confirmLabel="Edit connection"
  * - Delete campaign: intent="destructive", title="Delete 'Summer Sale'?", requiresCheckbox=true
  * - Delete account: intent="destructive", title="Delete 'Acme Corp'?", requiresInput="DELETE"
+ * - Custom input label: requiresInput="RESET", inputLabel="Type RESET to confirm factory reset"
+ * - Custom icon: intent="warning", icon={<CurrencyDollar size={20} weight="fill" className="text-warning shrink-0" />}
+ * - Reset config: intent="warning", title="Reset configuration?", requiresInput="RESET"
+ * - Custom icon: intent="neutral", icon={<Trash size={20} />}, title="Clear history?"
  * - Async delete: onConfirm returns Promise, loadingLabel="Deleting..."
  * - Info-only: intent="neutral", showCancel={false}, confirmLabel="OK"
  */
@@ -87,6 +106,10 @@ export interface AlertDialogComposedProps {
   requiresCheckbox?: boolean
   /** Catastrophic destructive: type-to-confirm guard string — e.g. "DELETE" */
   requiresInput?: string
+  /** Custom label for the type-to-confirm input — overrides default "Type {x} to confirm" */
+  inputLabel?: string
+  /** Custom icon to render inline with the title — overrides the default Warning icon for warning intent */
+  icon?: ReactNode
   /** Label shown on confirm button during async loading — e.g. "Deleting..." */
   loadingLabel?: string
   /** Whether to show the cancel button — defaults to true */
@@ -148,6 +171,8 @@ export function AlertDialogComposed({
   onCancel,
   requiresCheckbox,
   requiresInput,
+  inputLabel,
+  icon,
   loadingLabel,
   showCancel = true,
 }: AlertDialogComposedProps) {
@@ -164,7 +189,7 @@ export function AlertDialogComposed({
   }, [open])
 
   // Derived state
-  const showInput = !!requiresInput && intent === 'destructive'
+  const showInput = !!requiresInput
   const showCheckbox = !!requiresCheckbox && intent === 'destructive' && !showInput
   const inputValid = !showInput || inputValue === requiresInput
   const checkboxValid = !showCheckbox || checkboxChecked
@@ -240,7 +265,7 @@ export function AlertDialogComposed({
           {intent !== 'neutral' && (
             <div
               className={cn(
-                'h-1 w-full',
+                'h-1.5 w-full',
                 intent === 'warning' && 'bg-warning',
                 intent === 'destructive' && 'bg-destructive'
               )}
@@ -250,9 +275,11 @@ export function AlertDialogComposed({
           {/* Header */}
           <div className="flex items-center justify-between px-6 pt-6">
             <AlertDialogPrimitive.Title className="flex items-center gap-2 text-lg font-semibold">
-              {intent === 'warning' && (
-                <Warning size={20} weight="fill" className="text-warning shrink-0" />
-              )}
+              {icon
+                ? icon
+                : intent === 'warning' && (
+                    <Warning size={20} weight="fill" className="text-warning shrink-0" />
+                  )}
               {title}
             </AlertDialogPrimitive.Title>
             <CloseButton
@@ -288,13 +315,17 @@ export function AlertDialogComposed({
               {showInput && (
                 <div className="mt-4 space-y-1.5">
                   <Label>
-                    Type <span className="font-semibold">{requiresInput}</span> to confirm
+                    {inputLabel ?? <>Type <span className="font-semibold">{requiresInput}</span> to confirm</>}
                   </Label>
                   <Input
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     disabled={isLoading}
                     autoComplete="off"
+                    className={cn(
+                      intent === 'warning' && 'focus-visible:border-warning focus-visible:shadow-ring-warning',
+                      intent === 'destructive' && 'focus-visible:border-destructive focus-visible:shadow-ring-destructive'
+                    )}
                   />
                 </div>
               )}

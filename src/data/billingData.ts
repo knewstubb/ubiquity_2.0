@@ -405,11 +405,11 @@ function generateIntegrations(): BillingLineItem[] {
     const connAutomations = automations.filter((a) => a.connectionId === conn.id);
 
     if (connAutomations.length === 0) {
-      // Connection with no automations — still bill as one integration
+      // Connection with no automations — still bill as one connector
       items.push({
         id: nextId(),
         accountId: conn.accountId,
-        category: 'Integration',
+        category: 'Connector',
         description: conn.name,
         sendDate: null,
         items: 1,
@@ -424,7 +424,7 @@ function generateIntegrations(): BillingLineItem[] {
         items.push({
           id: nextId(),
           accountId: conn.accountId,
-          category: 'Integration',
+          category: 'Connector',
           description: auto.name,
           sendDate: null,
           items: 1,

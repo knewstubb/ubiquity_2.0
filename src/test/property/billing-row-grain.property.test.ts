@@ -53,7 +53,7 @@ describe('Property 8: Row Grain — One Row Per Individual Item', () => {
       'TXT Message Parts',
       'Survey Responses',
       'Event Triggered Emails',
-      'Integration',
+      'Connector',
     ]);
     for (const item of billingLineItems) {
       expect(validCategories.has(item.category)).toBe(true);

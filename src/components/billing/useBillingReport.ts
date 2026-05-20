@@ -18,7 +18,7 @@ export interface AccountTreeNode {
   children: AccountTreeNode[];
 }
 
-export type CategoryFilter = 'all' | 'Integration';
+export type CategoryFilter = 'all' | 'Connector';
 
 export interface UseBillingReportReturn {
   tree: AccountTreeNode[];
@@ -88,7 +88,7 @@ function filterByDateRange(
         return item.sendDate >= startDate && item.sendDate <= endDate;
       }
       case 'Database Records':
-      case 'Integration': {
+      case 'Connector': {
         // Include if billing cycle overlaps with selected date range
         if (!item.billingCycleStart || !item.billingCycleEnd) return false;
         return rangesOverlap(
@@ -280,7 +280,7 @@ export function useBillingReport(): UseBillingReportReturn {
   const [startDate, setStartDate] = useState(cycle.start);
   const [endDate, setEndDate] = useState(cycle.end);
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
-  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('Integration');
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('Connector');
   const [sortColumn, setSortColumn] = useState<string>('account');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 

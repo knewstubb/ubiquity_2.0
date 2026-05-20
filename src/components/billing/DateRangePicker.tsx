@@ -242,7 +242,7 @@ export function DateRangePicker({
     <div className="relative" ref={wrapperRef}>
       <button
         type="button"
-        className="inline-flex items-center gap-2 px-3 py-2 text-base font-sans font-medium text-foreground bg-background border border-border rounded-sm cursor-pointer transition-colors duration-150 whitespace-nowrap hover:border-border-strong focus-visible:border-primary focus-visible:shadow-[--ring-shadow] focus-visible:outline-none"
+        className="inline-flex items-center gap-2 px-3 py-2 text-base font-sans font-medium text-foreground bg-background border border-border rounded-sm cursor-pointer transition-colors duration-150 whitespace-nowrap hover:border-border-strong focus-visible:border-primary focus-visible:shadow-ring focus-visible:outline-none"
         onClick={() => setOpen((o) => !o)}
         aria-label="Select date range"
       >

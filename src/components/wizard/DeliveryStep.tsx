@@ -132,7 +132,7 @@ export function DeliveryStep({ draft, onUpdate }: DeliveryStepProps) {
                     </Select>
                   </div>
                 ) : (
-                  <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-10 relative cursor-text bg-background focus-within:border-primary focus-within:shadow-[--ring-shadow]">
+                  <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-10 relative cursor-text bg-background focus-within:border-primary focus-within:shadow-ring">
                     {sc.monthlyDates.map((d) => (
                       <span key={d} className="inline-flex items-center gap-1 border border-primary text-primary rounded-full py-1 px-2 text-xs font-medium leading-none whitespace-nowrap">{d}
                         <button type="button" className="bg-transparent border-none text-primary cursor-pointer text-xs p-0 leading-none flex items-center hover:text-accent-foreground"

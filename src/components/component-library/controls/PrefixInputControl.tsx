@@ -14,7 +14,7 @@ export function PrefixInputControl({ value, onChange, prefix }: PrefixInputContr
       className={cn(
         "flex h-8 w-full rounded-md border border-input bg-background",
         "ring-offset-background",
-        "focus-within:border-ring focus-within:shadow-[--ring-shadow]"
+        "focus-within:border-ring focus-within:shadow-ring"
       )}
     >
       <span

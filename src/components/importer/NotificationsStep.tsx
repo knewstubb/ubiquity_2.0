@@ -265,7 +265,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }
                         </Select>
                       </div>
                     ) : (
-                      <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] relative cursor-text bg-background focus-within:border-primary focus-within:shadow-[--ring-shadow]">
+                      <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] relative cursor-text bg-background focus-within:border-primary focus-within:shadow-ring">
                         {monthlyDates.map((d) => (
                           <span key={d} className="inline-flex items-center gap-1 border border-primary text-primary rounded-full py-1 px-2 text-xs font-medium leading-none whitespace-nowrap">
                             {d}

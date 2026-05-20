@@ -95,7 +95,7 @@ export function ExporterScheduleStep({ draft, onUpdate }: ExporterScheduleStepPr
         <div>
           <p className="text-xs font-medium text-muted-foreground m-0 mb-1">Starting</p>
           <input
-            className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 box-border focus:border-primary focus:shadow-[--ring-shadow] placeholder:text-tertiary-foreground"
+            className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 box-border focus:border-primary focus:shadow-ring placeholder:text-tertiary-foreground"
             type="text"
             value={starting}
             onChange={(e) => setStarting(e.target.value)}
@@ -163,7 +163,7 @@ export function ExporterScheduleStep({ draft, onUpdate }: ExporterScheduleStepPr
               {monthlyPattern === 'day' ? (
                 <div className="flex items-center gap-2">
                   <select
-                    className="flex-1 py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-no-repeat bg-[right_12px_center] pr-8 box-border focus:border-primary focus:shadow-[--ring-shadow]"
+                    className="flex-1 py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-no-repeat bg-[right_12px_center] pr-8 box-border focus:border-primary focus:shadow-ring"
                     style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")` }}
                     value={monthlyOrdinal}
                     onChange={(e) => setMonthlyOrdinal(e.target.value)}
@@ -174,7 +174,7 @@ export function ExporterScheduleStep({ draft, onUpdate }: ExporterScheduleStepPr
                     ))}
                   </select>
                   <select
-                    className="flex-1 py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-no-repeat bg-[right_12px_center] pr-8 box-border focus:border-primary focus:shadow-[--ring-shadow]"
+                    className="flex-1 py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-no-repeat bg-[right_12px_center] pr-8 box-border focus:border-primary focus:shadow-ring"
                     style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")` }}
                     value={monthlyDayOfWeek}
                     onChange={(e) => setMonthlyDayOfWeek(e.target.value)}
@@ -186,7 +186,7 @@ export function ExporterScheduleStep({ draft, onUpdate }: ExporterScheduleStepPr
                   </select>
                 </div>
               ) : (
-                <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-10 relative cursor-text bg-background focus-within:border-primary focus-within:shadow-[--ring-shadow]">
+                <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-10 relative cursor-text bg-background focus-within:border-primary focus-within:shadow-ring">
                   {monthlyDates.map((d) => (
                     <span key={d} className="inline-flex items-center gap-1 border border-primary text-primary rounded-full py-1 px-2 text-xs font-medium leading-none whitespace-nowrap">
                       {d}
@@ -233,7 +233,7 @@ export function ExporterScheduleStep({ draft, onUpdate }: ExporterScheduleStepPr
             <p className="text-xs font-medium text-muted-foreground m-0 mb-1">Every</p>
             <div className="flex items-stretch">
               <select
-                className="flex-1 py-2 px-3 text-sm border border-border rounded-l-md rounded-r-none border-r-0 bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-no-repeat bg-[right_12px_center] pr-8 box-border focus:border-primary focus:shadow-[--ring-shadow]"
+                className="flex-1 py-2 px-3 text-sm border border-border rounded-l-md rounded-r-none border-r-0 bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-no-repeat bg-[right_12px_center] pr-8 box-border focus:border-primary focus:shadow-ring"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")` }}
                 value={every}
                 onChange={(e) => setEvery(e.target.value)}
@@ -249,7 +249,7 @@ export function ExporterScheduleStep({ draft, onUpdate }: ExporterScheduleStepPr
           <div className="flex flex-col gap-1 flex-1">
             <p className="text-xs font-medium text-muted-foreground m-0 mb-1">At</p>
             <input
-              className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 box-border focus:border-primary focus:shadow-[--ring-shadow] placeholder:text-tertiary-foreground"
+              className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none transition-colors duration-150 box-border focus:border-primary focus:shadow-ring placeholder:text-tertiary-foreground"
               type="text"
               value={at}
               onChange={(e) => setAt(e.target.value)}

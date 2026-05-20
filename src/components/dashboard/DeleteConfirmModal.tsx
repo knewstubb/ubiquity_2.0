@@ -25,13 +25,14 @@ export function DeleteConfirmModal({
         if (!value) onCancel()
       }}
       intent="destructive"
-      title={`Delete '${objectName}'?`}
+      title={`Delete ${objectType}?`}
       confirmLabel={`Delete ${objectType.toLowerCase()}`}
       onConfirm={onConfirm}
       requiresInput="DELETE"
+      inputLabel="Type DELETE here"
     >
       <p className="m-0 leading-relaxed">
-        This will permanently remove <span className="font-semibold">{objectName}</span> and all associated data. This cannot be undone.
+        <span className="font-semibold">{objectName}</span> will be permanently deleted. This action cannot be undone.
       </p>
     </AlertDialogComposed>
   )

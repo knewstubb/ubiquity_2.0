@@ -66,7 +66,7 @@ describe('Property 4: Date Range Filter Correctness', () => {
               break;
             }
             case 'Database Records':
-            case 'Integration': {
+            case 'Connector': {
               // billing cycle must overlap with selected range
               expect(item.billingCycleStart).toBeTruthy();
               expect(item.billingCycleEnd).toBeTruthy();

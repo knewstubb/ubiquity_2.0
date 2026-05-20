@@ -70,7 +70,7 @@ export function BillingFilters({
         <label className="text-base font-normal text-muted-foreground leading-[17px]" htmlFor="billing-account-filter">Account</label>
         <select
           id="billing-account-filter"
-          className="px-3 py-2 text-base font-sans border border-border rounded-sm bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 min-w-[220px] focus:border-primary focus:shadow-[--ring-shadow]"
+          className="px-3 py-2 text-base font-sans border border-border rounded-sm bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 min-w-[220px] focus:border-primary focus:shadow-ring"
           value={selectedAccountId ?? ''}
           onChange={(e) => onAccountChange(e.target.value || null)}
         >
