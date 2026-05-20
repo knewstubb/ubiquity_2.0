@@ -65,7 +65,7 @@ export default function AlertDialogDemo(props: AlertDialogDemoProps) {
         <Button variant="default" onClick={() => setOpenIntent('neutral')}>
           Open neutral dialog
         </Button>
-        <Button variant="secondarySolid" onClick={() => setOpenIntent('warning')}>
+        <Button variant="secondary" onClick={() => setOpenIntent('warning')}>
           Open warning dialog
         </Button>
         <Button variant="destructive" onClick={() => setOpenIntent('destructive')}>

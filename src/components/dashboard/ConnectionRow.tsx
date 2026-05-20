@@ -57,7 +57,7 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
             {/* Status text — right aligned */}
             {isError ? (
               <Button
-                variant="secondary"
+                variant="secondaryOutline"
                 size="sm"
                 className="ml-auto mr-10"
                 onClick={(e) => { e.stopPropagation(); onEditConnection?.(connection.id); }}

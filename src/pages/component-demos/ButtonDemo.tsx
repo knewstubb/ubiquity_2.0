@@ -3,7 +3,7 @@ import { EnvelopeSimple, Plus, SpinnerGap, Trash, PencilSimple, ArrowRight } fro
 
 interface ButtonDemoProps {
   label?: string
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'secondaryOutline' | 'ghost' | 'link'
   size?: 'default' | 'sm' | 'lg' | 'icon'
   disabled?: boolean
 }
@@ -27,7 +27,7 @@ export default function ButtonDemo({ label, variant, size, disabled }: ButtonDem
         <h3 className="text-base font-semibold text-foreground">Variants</h3>
         <div className="flex flex-wrap items-center gap-3">
           <Button>Primary</Button>
-          <Button variant="secondary">Secondary</Button>
+          <Button variant="secondaryOutline">Secondary</Button>
           <Button variant="destructive">Destructive</Button>
           <Button variant="outline">Outline</Button>
           <Button variant="ghost">Ghost</Button>
@@ -51,7 +51,7 @@ export default function ButtonDemo({ label, variant, size, disabled }: ButtonDem
         <h3 className="text-base font-semibold text-foreground">With Icons</h3>
         <div className="flex flex-wrap items-center gap-3">
           <Button><EnvelopeSimple weight="bold" /> Send Email</Button>
-          <Button variant="secondary"><Plus weight="bold" /> New Campaign</Button>
+          <Button variant="secondaryOutline"><Plus weight="bold" /> New Campaign</Button>
           <Button variant="destructive"><Trash weight="bold" /> Delete</Button>
           <Button variant="ghost"><PencilSimple weight="bold" /> Edit</Button>
           <Button>Continue <ArrowRight weight="bold" /></Button>
@@ -63,7 +63,7 @@ export default function ButtonDemo({ label, variant, size, disabled }: ButtonDem
         <h3 className="text-base font-semibold text-foreground">Icon Only</h3>
         <div className="flex flex-wrap items-center gap-3">
           <Button size="icon"><Plus weight="bold" /></Button>
-          <Button size="icon" variant="secondary"><PencilSimple weight="bold" /></Button>
+          <Button size="icon" variant="secondaryOutline"><PencilSimple weight="bold" /></Button>
           <Button size="icon" variant="destructive"><Trash weight="bold" /></Button>
           <Button size="icon" variant="ghost"><EnvelopeSimple weight="bold" /></Button>
         </div>
@@ -74,7 +74,7 @@ export default function ButtonDemo({ label, variant, size, disabled }: ButtonDem
         <h3 className="text-base font-semibold text-foreground">Disabled</h3>
         <div className="flex flex-wrap items-center gap-3">
           <Button disabled>Primary Disabled</Button>
-          <Button variant="secondary" disabled>Secondary Disabled</Button>
+          <Button variant="secondaryOutline" disabled>Secondary Disabled</Button>
           <Button variant="destructive" disabled>Destructive Disabled</Button>
           <Button variant="ghost" disabled>Ghost Disabled</Button>
         </div>
@@ -85,7 +85,7 @@ export default function ButtonDemo({ label, variant, size, disabled }: ButtonDem
         <h3 className="text-base font-semibold text-foreground">Loading</h3>
         <div className="flex flex-wrap items-center gap-3">
           <Button disabled><SpinnerGap className="animate-spin" weight="bold" /> Loading...</Button>
-          <Button variant="secondary" disabled><SpinnerGap className="animate-spin" weight="bold" /> Saving...</Button>
+          <Button variant="secondaryOutline" disabled><SpinnerGap className="animate-spin" weight="bold" /> Saving...</Button>
         </div>
       </section>
     </div>

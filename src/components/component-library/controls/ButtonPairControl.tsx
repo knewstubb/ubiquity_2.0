@@ -68,7 +68,7 @@ export function ButtonPairControl({
       </div>
       <div className={cn("flex items-center gap-2")}>
         <Button
-          variant="secondary"
+          variant="secondaryOutline"
           size="sm"
           onClick={handleDecrement}
           disabled={isDecrementDisabled}
@@ -77,7 +77,7 @@ export function ButtonPairControl({
           {labels[0]}
         </Button>
         <Button
-          variant="secondary"
+          variant="secondaryOutline"
           size="sm"
           onClick={handleIncrement}
           disabled={isIncrementDisabled}

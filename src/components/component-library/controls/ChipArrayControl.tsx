@@ -82,7 +82,7 @@ export function ChipArrayControl({ value, onChange, label, maxItems }: ChipArray
         />
         <Button
           type="button"
-          variant="secondary"
+          variant="secondaryOutline"
           size="icon"
           onClick={handleAdd}
           disabled={isAtMax || !inputValue.trim()}

@@ -298,7 +298,7 @@ export function ControlsPanel({
       {/* Reset button — always visible, disabled when clean */}
       <div className="mt-3 pt-3 border-t border-border">
         <Button
-          variant="secondary"
+          variant="secondaryOutline"
           size="sm"
           className="w-full h-8 text-xs"
           onClick={onReset}

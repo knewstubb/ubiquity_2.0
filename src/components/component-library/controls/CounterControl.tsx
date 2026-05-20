@@ -23,7 +23,7 @@ export function CounterControl({ value, onChange, label, min, max, step, variant
       </Label>
       <div className="flex items-center gap-1">
         <Button
-          variant="secondary"
+          variant="secondaryOutline"
           size="icon"
           className="h-6 w-6 shrink-0"
           disabled={value <= min}
@@ -38,7 +38,7 @@ export function CounterControl({ value, onChange, label, min, max, step, variant
           {value}
         </span>
         <Button
-          variant="secondary"
+          variant="secondaryOutline"
           size="icon"
           className="h-6 w-6 shrink-0"
           disabled={value >= max}

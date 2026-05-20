@@ -36,7 +36,7 @@
  *
  * @variants
  * - neutral: No top accent, default (teal) confirm button — routine confirmations
- * - warning: Amber top accent + Warning icon in title, secondarySolid confirm button — cautionary
+ * - warning: Amber top accent + Warning icon in title, secondary (solid dark) confirm button — cautionary
  * - destructive: Red top accent, red confirm button, swapped button order — irreversible actions
  *
  * @destructiveLevels
@@ -100,7 +100,7 @@ const intentStyles = {
     confirmVariant: 'default' as const,
   },
   warning: {
-    confirmVariant: 'secondarySolid' as const,
+    confirmVariant: 'secondary' as const,
   },
   destructive: {
     confirmVariant: 'destructive' as const,

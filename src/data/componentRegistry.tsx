@@ -119,7 +119,7 @@ export const componentRegistry: ComponentEntry[] = [
     name: 'Button',
     slug: 'shadcn-button',
     category: 'inputs',
-    description: 'Accessible button with variants: default, destructive, outline, secondary, secondarySolid, ghost, link.',
+    description: 'Accessible button with variants: default, destructive, outline, secondary, secondaryOutline, ghost, link.',
     component: lazy(() => import('../pages/component-demos/ButtonDemo')),
     propControls: [
       { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Click me' },
@@ -128,7 +128,7 @@ export const componentRegistry: ComponentEntry[] = [
         { label: 'Destructive', value: 'destructive' },
         { label: 'Outline', value: 'outline' },
         { label: 'Secondary', value: 'secondary' },
-        { label: 'Secondary Solid', value: 'secondarySolid' },
+        { label: 'Secondary Outline', value: 'secondaryOutline' },
         { label: 'Ghost', value: 'ghost' },
         { label: 'Link', value: 'link' },
       ]},
@@ -143,6 +143,37 @@ export const componentRegistry: ComponentEntry[] = [
     usedIn: [
       { label: 'Dashboard', route: '/dashboard' },
       { label: 'Campaigns', route: '/automations/campaigns' },
+    ],
+    designGuidance: [
+      { heading: 'What', content: 'Primary interactive element for triggering actions. Uses CVA for variant/size composition and Radix Slot for polymorphic rendering via asChild.' },
+      { heading: 'When to use', content: [
+        'Any clickable action that is not a navigation link',
+        'Form submissions, modal triggers, toolbar actions, inline actions',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Navigation between pages — use a Link or anchor instead (or Button with asChild wrapping a Link)',
+        'Toggle states — use a Toggle or SegmentedControl',
+      ]},
+      { heading: 'Variant guidance', content: [
+        'default (teal solid): Primary CTA — one per section max',
+        'destructive (red solid): Irreversible or dangerous actions (delete, remove)',
+        'outline (teal border, transparent bg): Prominent secondary — "Add new", "Export"',
+        'secondary (dark solid): Strong secondary alongside a primary — use sparingly',
+        'secondaryOutline (border-strong, transparent bg): Low-emphasis — cancel, filter toggles, toolbar actions. Uses border-strong token for a mid-weight outline that reads clearly against light surfaces without competing with primary teal.',
+        'ghost (no bg until hover): Minimal — icon-only buttons, inline actions where a border adds noise',
+        'link (underline on hover): Inline text links styled as buttons',
+      ]},
+      { heading: 'Size guidance', content: [
+        'sm (h-8 / 32px): Compact contexts — table rows, filter bars, inline actions',
+        'default (h-9 / 36px): Standard usage — forms, modals, page actions',
+        'lg (h-10 / 40px): Hero CTAs, modal primary actions, onboarding',
+        'icon (h-9 / 36px square): Icon-only buttons — close, settings, overflow menus',
+      ]},
+      { heading: 'Interaction patterns', content: [
+        'Solid variants use active:scale-95 for tactile click feedback',
+        'Outline variant uses active:translate-y-px for a subtle press effect',
+        'Disabled state strips colour and adds opacity uniformly across all variants',
+      ]},
     ],
   },
   {
@@ -607,7 +638,7 @@ export const componentRegistry: ComponentEntry[] = [
         heading: 'Intent variants',
         content: [
           'Neutral — no top accent, teal confirm button. Routine confirmations like "Discard changes?" or "Close without saving?".',
-          'Warning — amber top accent with Warning icon in title, secondarySolid confirm button. Actions with side effects that the user should think twice about.',
+          'Warning — amber top accent with Warning icon in title, secondary confirm button. Actions with side effects that the user should think twice about.',
           'Destructive — red top accent, red confirm button, swapped button order (confirm left, cancel right). Irreversible actions.',
         ],
       },
