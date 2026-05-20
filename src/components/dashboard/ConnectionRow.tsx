@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import type { Connection } from '../../models/connection';
 import type { Automation } from '../../models/automation';
-import { DotsThree, PencilSimple, Trash, Plus, CaretRight } from '@phosphor-icons/react';
+import { DotsThree, PencilSimple, Trash, Plus, CaretRight, Wrench } from '@phosphor-icons/react';
 import { ProtocolIcon } from '../shared/ProtocolIcon';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -63,6 +63,7 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
                 className="ml-auto mr-10"
                 onClick={(e) => { e.stopPropagation(); onFixConnection?.(connection.id); }}
               >
+                <Wrench size={14} weight="bold" />
                 Fix connection
               </Button>
             ) : (
@@ -73,6 +74,7 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
                   className="ml-auto mr-10 text-primary border-primary/40 hover:bg-primary/5 hover:text-primary"
                   onClick={(e) => { e.stopPropagation(); onAddConnector(connection.id); }}
                 >
+                  <Plus size={14} weight="bold" />
                   Add automation
                 </Button>
               ) : (
