@@ -297,15 +297,15 @@ export function AlertDialogComposed({
 
               {/* Major destructive: checkbox confirmation */}
               {showCheckbox && (
-                <div className="mt-4 flex items-start gap-2">
+                <div className="mt-4 flex items-center gap-2">
                   <Checkbox
                     id="confirm-checkbox"
+                    variant="secondary"
                     checked={checkboxChecked}
                     onCheckedChange={(checked) => setCheckboxChecked(checked === true)}
                     disabled={isLoading}
-                    className="mt-0.5"
                   />
-                  <Label htmlFor="confirm-checkbox" className="text-sm text-foreground cursor-pointer leading-tight">
+                  <Label htmlFor="confirm-checkbox" className="text-sm text-foreground cursor-pointer">
                     I understand this action cannot be undone
                   </Label>
                 </div>

@@ -1,17 +1,17 @@
 {
   "enabled": true,
-  "name": "Update design guidance",
-  "description": "When a component file in src/components/composed/ or src/components/ui/ is edited, reviews the component's JSDoc block and implementation, then updates the designGuidance array in src/data/componentRegistry.tsx to keep the design documentation in sync.",
-  "version": "1",
+  "name": "Update Design Guidance",
+  "description": "When a component file is edited, reviews and updates the JSDoc documentation block, designGuidance array, and component relationship data in the registry.",
+  "version": "2",
   "when": {
     "type": "fileEdited",
     "patterns": [
-      "src/components/composed/*.tsx",
-      "src/components/ui/*.tsx"
+      "src/components/composed/**/*.tsx",
+      "src/components/ui/**/*.tsx"
     ]
   },
   "then": {
     "type": "askAgent",
-    "prompt": "A component file was just edited. Read the file and check if it has a design documentation JSDoc block at the top (above imports). If it does, review the block against the current implementation and update any sections that are now outdated (variants, sizes, usage guidance, design decisions). If the file does NOT have a documentation block yet, add one following this format:\n\n```\n/**\n * @component ComponentName\n * @description Brief description of what this component does.\n *\n * @designDecisions\n * - Why key styling/architecture choices were made\n *\n * @usage\n * - When to use this component vs alternatives\n *\n * @variants (if applicable)\n * - variant-name: when to use it\n *\n * @sizes (if applicable)\n * - size-name (dimensions): when to use it\n *\n * @examples\n * - Brief usage examples with context\n */\n```\n\nKeep it concise — focus on the \"why\" and \"when\", not the \"how\" (the code shows the how). Only update sections that changed.\n\nThen, check if this component has a `designGuidance` array in its entry in `src/data/componentRegistry.tsx`. If it does, update the guidance sections to reflect any changes in variants, sizes, usage patterns, or design decisions. If it doesn't have one yet, add a `designGuidance` array with sections covering: what the component is, when to use it, when NOT to use it, variant guidance, size guidance, and any notable interaction patterns. Use the DesignGuidanceSection[] format: `{ heading: string, content: string | string[] }`."
+    "prompt": "A component file was just edited. Do the following:\n\n1. **JSDoc block** — Check if the file has a design documentation JSDoc block above imports. If it does, review it against the current implementation and update outdated sections. If it doesn't, add one:\n\n```\n/**\n * @component ComponentName\n * @description Brief description.\n *\n * @designDecisions\n * - Why key choices were made (reference docs/ui/ files where applicable)\n *\n * @usage\n * - When to use this vs alternatives\n *\n * @variants (if applicable)\n * - variant-name: when to use it\n *\n * @sizes (if applicable)\n * - size-name: when to use it\n */\n```\n\nKeep it concise — the \"why\" and \"when\", not the \"how\". Reference docs/ui/ foundation docs in @designDecisions where the choice follows a system-level rule (e.g. \"4px radius per docs/ui/borders-radius.md\"). Only document component-specific decisions that go beyond the system defaults.\n\n2. **Registry guidance** — Check if this component has a `designGuidance` array in `src/data/componentRegistry.tsx`. Update it to reflect current variants, sizes, and usage patterns. Add one if missing.\n\n3. **Component relationships** — Check the `usesComponents` array in the registry. Update it to match the component's current imports from `src/components/ui/` and `src/components/composed/`. Only include library components, not utilities or external packages."
   }
 }

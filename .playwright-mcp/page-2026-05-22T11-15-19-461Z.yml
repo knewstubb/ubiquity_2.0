@@ -1,0 +1,293 @@
+- generic [ref=e2]:
+  - navigation "Main navigation" [ref=e21]:
+    - generic [ref=e22]:
+      - button "UbiQuity home" [ref=e23] [cursor=pointer]:
+        - generic [ref=e24]: U
+      - button "Serenity Spa Group" [ref=e27] [cursor=pointer]:
+        - generic [ref=e28]: Serenity Spa Group
+        - img [ref=e30]
+      - navigation "Main" [ref=e33]:
+        - list [ref=e35]:
+          - listitem [ref=e36]:
+            - generic [ref=e37] [cursor=pointer]: Home
+          - listitem [ref=e38]:
+            - button "Campaigns" [ref=e39] [cursor=pointer]:
+              - text: Campaigns
+              - img [ref=e40]
+          - listitem [ref=e42]:
+            - button "Audience" [ref=e43] [cursor=pointer]:
+              - text: Audience
+              - img [ref=e44]
+          - listitem [ref=e46]:
+            - button "Assets" [ref=e47] [cursor=pointer]:
+              - text: Assets
+              - img [ref=e48]
+          - listitem [ref=e50]:
+            - button "Reporting" [ref=e51] [cursor=pointer]:
+              - text: Reporting
+              - img [ref=e52]
+          - listitem [ref=e54]:
+            - button "Admin" [ref=e55] [cursor=pointer]:
+              - text: Admin
+              - img [ref=e56]
+      - button "Search" [ref=e58] [cursor=pointer]:
+        - img [ref=e59]
+        - generic [ref=e61]: Search…
+        - generic [ref=e62]: ⌘K
+      - button "What's New" [ref=e63] [cursor=pointer]
+      - 'button "Role: Admin" [ref=e65] [cursor=pointer]':
+        - generic [ref=e66]: Role
+        - generic [ref=e67]: Admin
+        - img [ref=e69]
+      - button "User profile" [ref=e74] [cursor=pointer]:
+        - generic [ref=e75]: BK
+  - generic [ref=e76]:
+    - generic [ref=e77]:
+      - navigation "breadcrumb" [ref=e78]:
+        - list [ref=e79]:
+          - listitem [ref=e80]:
+            - link "Audience" [ref=e81] [cursor=pointer]:
+              - /url: /audiences/databases
+          - listitem [ref=e82]:
+            - img [ref=e83]
+          - listitem [ref=e85]:
+            - link "Connectors" [disabled] [ref=e86]
+      - generic [ref=e87]:
+        - generic [ref=e88]:
+          - heading "Connectors" [level=1] [ref=e89]
+          - paragraph [ref=e90]: 5 connections · 11 automations
+        - button "+ New Connection" [ref=e91] [cursor=pointer]
+      - generic [ref=e92]:
+        - generic [ref=e94]:
+          - generic [ref=e95] [cursor=pointer]:
+            - generic [ref=e96]:
+              - img [ref=e98]
+              - generic [ref=e100]:
+                - img "AWS S3 bucket" [ref=e101]:
+                  - img [ref=e102]
+                - generic [ref=e105]: "AWS S3:"
+                - generic [ref=e106]: Spa AWS S3 Bucket
+            - generic [ref=e107]: 4 of 5 automations active
+            - button "Connection actions" [ref=e109]:
+              - img [ref=e110]
+          - generic [ref=e112]:
+            - 'button "Automation: Daily Contact Import" [ref=e113] [cursor=pointer]':
+              - generic [ref=e114]:
+                - img [ref=e116]
+                - generic [ref=e118]: Daily Contact Import
+              - generic [ref=e119]:
+                - img [ref=e120]
+                - text: Contacts
+              - generic [ref=e122]:
+                - generic [ref=e123]: Completed
+                - generic [ref=e124]: 2 minutes ago
+              - generic [ref=e125]:
+                - switch [checked] [ref=e127]
+                - button "Automation actions" [ref=e128]:
+                  - img [ref=e129]
+            - 'button "Automation: Treatment History Sync" [ref=e131] [cursor=pointer]':
+              - generic [ref=e132]:
+                - img [ref=e134]
+                - generic [ref=e136]: Treatment History Sync
+              - generic [ref=e137]:
+                - img [ref=e138]
+                - text: treatments
+              - generic [ref=e140]:
+                - generic [ref=e141]: Completed
+                - generic [ref=e142]: 2 minutes ago
+              - generic [ref=e143]:
+                - switch [checked] [ref=e145]
+                - button "Automation actions" [ref=e146]:
+                  - img [ref=e147]
+            - 'button "Automation: Daily Contact Import" [ref=e149] [cursor=pointer]':
+              - generic [ref=e150]:
+                - img [ref=e152]
+                - generic [ref=e154]: Daily Contact Import
+              - generic [ref=e155]:
+                - img [ref=e156]
+                - text: Contacts
+              - generic [ref=e158]:
+                - generic [ref=e159]: Completed
+                - generic [ref=e160]: 2 minutes ago
+              - generic [ref=e161]:
+                - switch [checked] [ref=e163]
+                - button "Automation actions" [ref=e164]:
+                  - img [ref=e165]
+            - 'button "Automation: Product Catalogue Import" [ref=e167] [cursor=pointer]':
+              - generic [ref=e168]:
+                - img [ref=e170]
+                - generic [ref=e172]: Product Catalogue Import
+              - generic [ref=e173]:
+                - img [ref=e174]
+                - text: products
+              - generic [ref=e176]:
+                - generic [ref=e177]: Completed
+                - generic [ref=e178]: 2 minutes ago
+              - generic [ref=e179]:
+                - switch [ref=e181]
+                - button "Automation actions" [ref=e182]:
+                  - img [ref=e183]
+            - 'button "Automation: Customer Treatment Summary Export" [ref=e185] [cursor=pointer]':
+              - generic [ref=e186]:
+                - img [ref=e188]
+                - generic [ref=e190]: Customer Treatment Summary Export
+              - generic [ref=e191]:
+                - img [ref=e192]
+                - text: treatments +
+                - img [ref=e194]
+                - text: contacts
+              - generic [ref=e196]:
+                - generic [ref=e197]: Completed
+                - generic [ref=e198]: 2 minutes ago
+              - generic [ref=e199]:
+                - switch [checked] [ref=e201]
+                - button "Automation actions" [ref=e202]:
+                  - img [ref=e203]
+            - button "+ Add Automation" [ref=e205] [cursor=pointer]
+        - generic [ref=e207]:
+          - generic [ref=e208] [cursor=pointer]:
+            - generic [ref=e209]:
+              - img [ref=e211]
+              - generic [ref=e213]:
+                - img "SFTP server" [ref=e214]:
+                  - img [ref=e215]
+                - generic [ref=e217]: "SFTP:"
+                - generic [ref=e218]: Spa SFTP Server
+            - generic [ref=e219]: 3 of 3 automations active
+            - button "Connection actions" [ref=e221]:
+              - img [ref=e222]
+          - generic [ref=e224]:
+            - 'button "Automation: Contact Export to CRM" [ref=e225] [cursor=pointer]':
+              - generic [ref=e226]:
+                - img [ref=e228]
+                - generic [ref=e230]: Contact Export to CRM
+              - generic [ref=e231]:
+                - img [ref=e232]
+                - text: Contacts
+              - generic [ref=e234]:
+                - generic [ref=e235]: Completed
+                - generic [ref=e236]: 2 minutes ago
+              - generic [ref=e237]:
+                - switch [checked] [ref=e239]
+                - button "Automation actions" [ref=e240]:
+                  - img [ref=e241]
+            - 'button "Automation: Booking Data Import" [ref=e243] [cursor=pointer]':
+              - generic [ref=e244]:
+                - img [ref=e246]
+                - generic [ref=e248]: Booking Data Import
+              - generic [ref=e249]:
+                - img [ref=e250]
+                - text: treatments
+              - generic [ref=e252]:
+                - generic [ref=e253]: Completed
+                - generic [ref=e254]: 2 minutes ago
+              - generic [ref=e255]:
+                - switch [checked] [ref=e257]
+                - button "Automation actions" [ref=e258]:
+                  - img [ref=e259]
+            - 'button "Automation: Loyalty Members Sync" [ref=e261] [cursor=pointer]':
+              - generic [ref=e262]:
+                - img [ref=e264]
+                - generic [ref=e266]: Loyalty Members Sync
+              - generic [ref=e267]:
+                - img [ref=e268]
+                - text: Contacts
+              - generic [ref=e270]:
+                - generic [ref=e271]: Completed
+                - generic [ref=e272]: 2 minutes ago
+              - generic [ref=e273]:
+                - switch [checked] [ref=e275]
+                - button "Automation actions" [ref=e276]:
+                  - img [ref=e277]
+            - button "+ Add Automation" [ref=e279] [cursor=pointer]
+        - generic [ref=e281]:
+          - generic [ref=e282] [cursor=pointer]:
+            - generic [ref=e283]:
+              - img [ref=e285]
+              - generic [ref=e287]:
+                - img "AWS S3 bucket" [ref=e288]:
+                  - img [ref=e289]
+                - generic [ref=e292]: "AWS S3:"
+                - generic [ref=e293]: Spa Legacy AWS S3 Import
+            - button "Fix connection" [ref=e294]:
+              - img
+              - text: Fix connection
+            - button "Connection actions" [ref=e296]:
+              - img [ref=e297]
+          - generic [ref=e299]:
+            - 'button "Automation: Legacy Contact Sync" [ref=e300] [cursor=pointer]':
+              - generic [ref=e301]:
+                - img [ref=e303]
+                - generic [ref=e305]: Legacy Contact Sync
+              - generic [ref=e306]:
+                - img [ref=e307]
+                - text: Contacts
+              - generic [ref=e309]:
+                - generic [ref=e310]: Completed
+                - generic [ref=e311]: 2 minutes ago
+              - generic [ref=e312]:
+                - switch [checked] [ref=e314]
+                - button "Automation actions" [ref=e315]:
+                  - img [ref=e316]
+            - 'button "Automation: Legacy Transaction Import" [ref=e318] [cursor=pointer]':
+              - generic [ref=e319]:
+                - img [ref=e321]
+                - generic [ref=e323]: Legacy Transaction Import
+              - generic [ref=e324]:
+                - img [ref=e325]
+                - text: treatments
+              - generic [ref=e327]:
+                - generic [ref=e328]: Completed
+                - generic [ref=e329]: 2 minutes ago
+              - generic [ref=e330]:
+                - switch [checked] [ref=e332]
+                - button "Automation actions" [ref=e333]:
+                  - img [ref=e334]
+        - generic [ref=e337]:
+          - generic [ref=e338] [cursor=pointer]:
+            - generic [ref=e339]:
+              - img [ref=e341]
+              - generic [ref=e343]:
+                - img "SFTP server" [ref=e344]:
+                  - img [ref=e345]
+                - generic [ref=e347]: "SFTP:"
+                - generic [ref=e348]: General SFTP Database
+            - generic [ref=e349]: 1 of 1 automations active
+            - button "Connection actions" [ref=e351]:
+              - img [ref=e352]
+          - generic [ref=e354]:
+            - 'button "Automation: Weekly Treatment Sales" [ref=e355] [cursor=pointer]':
+              - generic [ref=e356]:
+                - img [ref=e358]
+                - generic [ref=e360]: Weekly Treatment Sales
+              - generic [ref=e361]:
+                - img [ref=e362]
+                - text: Transactional
+              - generic [ref=e364]:
+                - generic [ref=e365]: Completed
+                - generic [ref=e366]: 2 minutes ago
+              - generic [ref=e367]:
+                - switch [checked] [ref=e369]
+                - button "Automation actions" [ref=e370]:
+                  - img [ref=e371]
+            - button "+ Add Automation" [ref=e373] [cursor=pointer]
+        - generic [ref=e375]:
+          - generic [ref=e376] [cursor=pointer]:
+            - generic [ref=e377]:
+              - img [ref=e379]
+              - generic [ref=e381]:
+                - img "Azure Blob storage" [ref=e382]:
+                  - img [ref=e383]
+                - generic [ref=e388]: "Azure Blob:"
+                - generic [ref=e389]: Spa Azure Blob Storage
+            - button "Add automation" [ref=e390]:
+              - img
+              - text: Add automation
+            - button "Connection actions" [ref=e392]:
+              - img [ref=e393]
+          - button "+ Add Automation" [ref=e396] [cursor=pointer]
+    - button "Toggle feedback panel" [ref=e397] [cursor=pointer]:
+      - img [ref=e398]
+      - generic [ref=e400]: "1"
+    - region "Notifications alt+T"
+  - status

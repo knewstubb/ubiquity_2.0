@@ -1,0 +1,20 @@
+{
+  "enabled": true,
+  "name": "UX Doc Prompt",
+  "description": "When a new modal, sheet, wizard, or panel component is created, prompts to create a UX documentation page in docs/ux/.",
+  "version": "2",
+  "when": {
+    "type": "fileCreated",
+    "patterns": [
+      "src/components/**/Modal*.tsx",
+      "src/components/**/*Modal.tsx",
+      "src/components/**/*Sheet*.tsx",
+      "src/components/**/*Wizard*.tsx",
+      "src/components/**/*Panel*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A new component file was just created that appears to be a modal, sheet, wizard step, or panel. Check if it has its own title, internal state, or multi-step logic. If it does, ask the user: \"This looks like it needs its own UX doc in docs/ux/. Should I create one using the template?\"\n\nIf the user confirms:\n1. Create the doc in the appropriate subfolder of docs/ux/ using the template from docs/ux/_template.md\n2. Pre-fill what you can infer from the component code (layout, interactions, states, components used)\n3. Reference relevant docs/ui/patterns/ docs for standard patterns (form-rhythm for forms, empty-states for empty views, etc.)\n4. Mark any undecided behaviour with 'TBD' so the Design Decision Sync hook picks it up"
+  }
+}

@@ -2,17 +2,32 @@ export type PathMode = 'automatic' | 'base' | 'custom';
 export type ImportDataType = 'contact' | 'transactional' | 'both';
 export type UpdateType = 'append-update' | 'append' | 'update';
 export type BlankValueHandling = 'preserve' | 'import';
+export type CsvDelimiter = 'comma' | 'tab' | 'pipe' | 'semicolon';
+export type CsvEncoding = 'utf-8' | 'iso-8859-1' | 'windows-1252';
+
+export interface CsvFormatConfig {
+  delimiter: CsvDelimiter;
+  encoding: CsvEncoding;
+  hasHeaderRow: boolean;
+}
+
+export interface DedupeConfig {
+  enabled: boolean;
+  fields: string[];
+}
 
 export interface ContactConfig {
   updateType: UpdateType;
   blankValueHandling: BlankValueHandling;
   matchingFields: string[];
+  dedupe: DedupeConfig;
 }
 
 export interface TransactionalConfig {
   updateType: UpdateType;
   blankValueHandling: BlankValueHandling;
   matchingFields: string[];
+  dedupe: DedupeConfig;
 }
 
 export interface FieldMapping {
@@ -42,11 +57,25 @@ export interface FilePathConfig {
   fileNamePattern: string;
 }
 
+export interface ImportDefaultRow {
+  targetField: string;
+  mode: 'fixed' | 'send-date';
+  fixedValue?: string;
+  sendSchedule?: {
+    days: number[]; // 0=Mon, 1=Tue, ..., 6=Sun
+    includeTime: boolean;
+    hours: string[]; // e.g. ["05:00", "09:00"]
+    activePeriodsOnly: boolean;
+    avoidHolidays: boolean;
+  };
+}
+
 export interface ImporterConfig {
   connectionId: string;
   name: string;
   dataType: ImportDataType | null;
   filePathConfig: FilePathConfig;
+  csvFormat: CsvFormatConfig;
   notifications: NotificationConfig;
   contactConfig: ContactConfig;
   contactMapping: FieldMapping[];
@@ -56,18 +85,27 @@ export interface ImporterConfig {
   csvHeaders?: string[];
   csvExampleValues?: Record<string, string>;
   lookupMappings?: LookupMapping[];
+  importDefaults?: ImportDefaultRow[];
 }
 
 export const DEFAULT_CONTACT_CONFIG: ContactConfig = {
   updateType: 'append-update',
   blankValueHandling: 'preserve',
   matchingFields: ['Email', 'Customer ID'],
+  dedupe: { enabled: false, fields: [] },
 };
 
 export const DEFAULT_TRANSACTIONAL_CONFIG: TransactionalConfig = {
   updateType: 'append-update',
   blankValueHandling: 'preserve',
   matchingFields: ['Customer ID'],
+  dedupe: { enabled: false, fields: [] },
+};
+
+export const DEFAULT_CSV_FORMAT_CONFIG: CsvFormatConfig = {
+  delimiter: 'comma',
+  encoding: 'utf-8',
+  hasHeaderRow: true,
 };
 
 export const DEFAULT_NOTIFICATION_CONFIG: NotificationConfig = {

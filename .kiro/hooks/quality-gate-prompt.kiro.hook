@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Quality Gate Prompt",
+  "description": "After agent work completes, prompts for a TFC assessment or design review if UI files were changed.",
+  "version": "2",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "The agent just finished working. If the work involved creating or modifying UI components or pages (check if any .tsx files in src/pages/ or src/components/ were edited), briefly ask: 'Want me to run a quick TFC assessment or design review on what just changed?' Keep it to one line — don't run anything automatically."
+  }
+}

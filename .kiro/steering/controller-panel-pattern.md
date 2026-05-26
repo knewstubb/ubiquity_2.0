@@ -63,30 +63,82 @@ Section headers use `font-semibold` (600) while field labels use `font-medium` (
 | Panel padding | `p-4` (16px) | Container |
 | Between sections | `space-y-4` (16px) | Parent wrapper |
 | Header → first control | `mb-1.5` (6px) | Section header |
-| Between toggle/counter rows | `space-y-2` (8px) | Within section |
-| Between inputs/selects | `space-y-1.5` (6px) | Within section |
+| Between toggle/counter rows | `space-y-2.5` (10px) | Within section |
+| Between inputs/selects | `space-y-2.5` (10px) | Within section |
 | Section divider | `pt-3 mt-3 border-t border-border` | Between sections |
-| Special footer section | `mt-3 pt-3 border-t border-border` | Bottom |
+| Reset button | `mt-3 pt-3 border-t border-border` | Always at bottom, pinned |
+
+## Control Sizing — CRITICAL
+
+All controls in controller panels use compact sizes:
+
+| Control | Size | Details |
+|---|---|---|
+| Switch | `size="sm"` | h-5 w-9 — never use default size in controllers |
+| NumberStepper | `size="sm"` | h-7 — inline with label (label left, stepper right) |
+| Text input | `h-7 text-xs` | Compact height, smaller text |
+| Select | `h-7 text-xs` on SelectTrigger | Compact height, smaller text |
+| Reset button | `variant="outline" size="sm" h-7 text-xs` | Outline style, compact |
+
+### NumberStepper Layout
+
+NumberSteppers always render inline with their label — same layout as switches:
+
+```
+<div className="flex items-center justify-between">
+  <p className="text-sm font-semibold text-muted-foreground m-0">Label</p>
+  <NumberStepper value={...} onValueChange={...} size="sm" variant="plain" />
+</div>
+```
+
+Never stack a NumberStepper below its label.
+
+### NumberStepper Variants in Controllers
+
+- `variant="plain"` — when the value is always meaningful (min > 0, e.g. column count)
+- `variant="toggle"` — when 0 = off and 1+ = on (e.g. nesting depth, border radius)
+
+## Panel Structure
+
+The controller panel uses `flex flex-col` so the reset button pins to the bottom:
+
+```
+<div className="w-56 shrink-0 bg-secondary rounded-lg p-4 flex flex-col">
+  <div className="flex-1 space-y-4">
+    {/* Controls */}
+  </div>
+  <div className="mt-3 pt-3 border-t border-border">
+    <Button variant="outline" size="sm" className="w-full h-7 text-xs" ... >
+      Reset
+    </Button>
+  </div>
+</div>
+```
+
+- Panel is `flex flex-col` — controls fill available space, reset stays at bottom
+- Reset button always visible, disabled when state matches defaults
+- Border-t separator above the reset button
 
 ## Control Types
 
 | Control | Use When | Layout |
 |---|---|---|
-| Switch | Binary on/off | Label left, Switch right, `flex items-center justify-between` |
-| Select (dropdown) | 3+ mutually exclusive options | Full-width below header, `h-8 text-sm` |
+| Switch (`size="sm"`) | Binary on/off | Label left, Switch right, `flex items-center justify-between` |
+| Select (dropdown) | 3+ mutually exclusive options | Full-width below label |
 | Segmented control | Exactly 2 mutually exclusive options | Full-width, use SegmentedControl component |
-| Text input | Editable strings | Full-width, `h-8 text-sm` — use `<Input>` component |
+| Text input (`h-7 text-xs`) | Editable strings | Full-width below label |
 | Range slider | Relative numeric value (%, opacity) | Full-width, show value in header |
-| Counter (−/n/+) | Small integer with tight bounds (1–5) | Label left, buttons right |
-| Counter (green/active) | Value that both enables AND increases (e.g. "0 = off, 1+ = on") | Same as counter but value text turns `text-primary` when value > 0 |
+| NumberStepper (`size="sm"`) | Small integer with tight bounds | Label left, stepper right, `flex items-center justify-between` |
 | Button pair | Demo navigation (Back/Next) | Full-width row, `flex gap-2` |
 | Colour picker | Colour value | Select dropdown with token colour options and colour swatch |
 
 ### Control Type Rules
 
-- **Never use radio buttons in controller panels.** Use a dropdown selector for 3+ options, or a segmented control for exactly 2 options. Note: `RadioControl` exists as a valid library component for use in forms/features — it's just not used in controller panels.
-- **Counter (active variant):** Use `variant="active"` on `CounterControl` when the value both turns something on AND controls its magnitude (e.g. 0 = disabled, 1+ = active count). The `text-primary` highlight on the value signals "this is active."
-- **Counter (default):** Use when the value is purely numeric and doesn't represent an on/off state.
+- **Never use radio buttons in controller panels.** Use a dropdown selector for 3+ options, or a segmented control for exactly 2 options.
+- **NumberStepper (toggle variant):** Use `variant="toggle"` when the value both turns something on AND controls its magnitude (e.g. 0 = disabled, 1+ = active count). Shows number in a green circle when active.
+- **NumberStepper (plain variant):** Use `variant="plain"` (default) when the value is purely numeric and doesn't represent an on/off state.
+- **Switch always uses `size="sm"`** in controller panels — never the default size.
+- **Reset button always uses `variant="outline"`** — never secondary or ghost.
 
 ## Component Reuse Rule — CRITICAL
 

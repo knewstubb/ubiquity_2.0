@@ -11,7 +11,7 @@ export function ToggleControl({ value, onChange, label }: ToggleControlProps) {
   return (
     <div className="flex items-center justify-between gap-3">
       <Label className="text-sm font-medium text-muted-foreground">{label}</Label>
-      <Switch checked={value} onCheckedChange={onChange} className="scale-80" />
+      <Switch checked={value} onCheckedChange={onChange} size="sm" />
     </div>
   )
 }

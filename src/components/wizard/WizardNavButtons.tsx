@@ -1,4 +1,5 @@
 import { Button } from '../ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 interface WizardNavButtonsProps {
   onBack: () => void;
@@ -8,6 +9,8 @@ interface WizardNavButtonsProps {
   isLast: boolean;
   showBack?: boolean;
   submitLabel?: string;
+  /** Reason the Next button is disabled — shown as tooltip on hover */
+  disabledReason?: string;
 }
 
 export function WizardNavButtons({
@@ -18,7 +21,14 @@ export function WizardNavButtons({
   isLast,
   showBack = true,
   submitLabel,
+  disabledReason,
 }: WizardNavButtonsProps) {
+  const nextButton = (
+    <Button disabled={!canProceed} onClick={onNext}>
+      {isLast ? (submitLabel ?? 'Save') : 'Next'}
+    </Button>
+  );
+
   return (
     <div className="flex items-center justify-end gap-3">
       <Button variant="ghost" onClick={onCancel}>
@@ -27,9 +37,20 @@ export function WizardNavButtons({
       <Button variant="outline" onClick={onBack} disabled={!showBack}>
         Back
       </Button>
-      <Button disabled={!canProceed} onClick={onNext}>
-        {isLast ? (submitLabel ?? 'Save') : 'Next'}
-      </Button>
+      {!canProceed && disabledReason ? (
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span tabIndex={0}>{nextButton}</span>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              {disabledReason}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : (
+        nextButton
+      )}
     </div>
   );
 }

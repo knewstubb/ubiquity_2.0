@@ -27,6 +27,10 @@
   --popover: #FFFFFF;
   --popover-foreground: #27272A;
 
+  /* Tooltip */
+  --tooltip: #27272A;
+  --tooltip-foreground: #FFFFFF;
+
   /* Primary */
   --primary: #14B88A;
   --primary-foreground: #FFFFFF;
@@ -143,6 +147,10 @@
   --surface: #000000;
   --popover: #09090B;
   --popover-foreground: #FAFAFA;
+
+  /* Tooltip */
+  --tooltip: #FAFAFA;
+  --tooltip-foreground: #18181B;
 
   /* Primary */
   --primary: #14B88A;
@@ -264,6 +272,9 @@
 
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+
+  --color-tooltip: var(--tooltip);
+  --color-tooltip-foreground: var(--tooltip-foreground);
 
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);

@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { cn } from '@/lib/utils'
 
 const SAMPLE_TABS = ['Overview', 'Contacts', 'Transactional', 'Activity', 'Settings']
 const SAMPLE_BREADCRUMBS = [
@@ -168,16 +167,9 @@ function PageHeaderPreview({
         {/* Row 3: Tabs */}
         {tabCount > 0 && (
           <Tabs value={activeTab} onValueChange={onTabChange}>
-            <TabsList className="bg-transparent rounded-none h-auto p-0 gap-0 border-b-2 border-border -mx-8 px-8 w-[calc(100%+4rem)]">
+            <TabsList variant="underline" className="-mx-8 px-8 w-[calc(100%+4rem)]">
               {visibleTabs.map((tab) => (
-                <TabsTrigger
-                  key={tab}
-                  value={tab}
-                  className={cn(
-                    'rounded-none px-4 py-2.5 text-sm font-medium text-muted-foreground bg-transparent shadow-none border-b-2 border-transparent -mb-[2px] transition-colors duration-150 hover:text-foreground',
-                    'data-[state=active]:text-primary data-[state=active]:border-b-primary data-[state=active]:font-semibold data-[state=active]:shadow-none data-[state=active]:bg-transparent'
-                  )}
-                >
+                <TabsTrigger key={tab} value={tab}>
                   {tab}
                 </TabsTrigger>
               ))}

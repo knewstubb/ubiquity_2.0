@@ -1,0 +1,471 @@
+- generic [ref=e2]:
+  - navigation "Main navigation" [ref=e17]:
+    - generic [ref=e18]:
+      - button "UbiQuity home" [ref=e19] [cursor=pointer]:
+        - generic [ref=e20]: U
+      - button "Serenity Spa Group" [ref=e23] [cursor=pointer]:
+        - generic [ref=e24]: Serenity Spa Group
+        - img [ref=e26]
+      - navigation "Main" [ref=e29]:
+        - list [ref=e31]:
+          - listitem [ref=e32]:
+            - generic [ref=e33] [cursor=pointer]: Home
+          - listitem [ref=e34]:
+            - button "Campaigns" [ref=e35] [cursor=pointer]:
+              - text: Campaigns
+              - img [ref=e36]
+          - listitem [ref=e38]:
+            - button "Audience" [ref=e39] [cursor=pointer]:
+              - text: Audience
+              - img [ref=e40]
+          - listitem [ref=e42]:
+            - button "Assets" [ref=e43] [cursor=pointer]:
+              - text: Assets
+              - img [ref=e44]
+          - listitem [ref=e46]:
+            - button "Reporting" [ref=e47] [cursor=pointer]:
+              - text: Reporting
+              - img [ref=e48]
+          - listitem [ref=e50]:
+            - button "Admin" [ref=e51] [cursor=pointer]:
+              - text: Admin
+              - img [ref=e52]
+      - button "Search" [ref=e54] [cursor=pointer]:
+        - img [ref=e55]
+        - generic [ref=e57]: Search…
+        - generic [ref=e58]: ⌘K
+      - button "What's New" [ref=e59] [cursor=pointer]
+      - 'button "Role: Admin" [ref=e61] [cursor=pointer]':
+        - generic [ref=e62]: Role
+        - generic [ref=e63]: Admin
+        - img [ref=e65]
+      - button "User profile" [ref=e70] [cursor=pointer]:
+        - generic [ref=e71]: BK
+  - generic [ref=e72]:
+    - generic [ref=e74]:
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - generic [ref=e78] [cursor=pointer]:
+            - img [ref=e79]
+            - text: Tokens
+          - list [ref=e82]:
+            - listitem [ref=e83]:
+              - link "Colours" [ref=e84] [cursor=pointer]:
+                - /url: /admin/components/tokens/colours
+            - listitem [ref=e85]:
+              - link "Icons" [ref=e86] [cursor=pointer]:
+                - /url: /admin/components/tokens/icons
+            - listitem [ref=e87]:
+              - link "Radius" [ref=e88] [cursor=pointer]:
+                - /url: /admin/components/tokens/radius
+            - listitem [ref=e89]:
+              - link "Shadows" [ref=e90] [cursor=pointer]:
+                - /url: /admin/components/tokens/shadows
+            - listitem [ref=e91]:
+              - link "Sizing & Borders" [ref=e92] [cursor=pointer]:
+                - /url: /admin/components/tokens/sizing
+            - listitem [ref=e93]:
+              - link "Spacing" [ref=e94] [cursor=pointer]:
+                - /url: /admin/components/tokens/spacing
+            - listitem [ref=e95]:
+              - link "Typography" [ref=e96] [cursor=pointer]:
+                - /url: /admin/components/tokens/typography
+        - generic [ref=e97]:
+          - generic [ref=e98] [cursor=pointer]:
+            - img [ref=e99]
+            - text: Atoms
+          - list [ref=e102]:
+            - listitem [ref=e103]:
+              - link "Avatar" [ref=e104] [cursor=pointer]:
+                - /url: /admin/components/atoms/avatar
+            - listitem [ref=e105]:
+              - link "Badge" [ref=e106] [cursor=pointer]:
+                - /url: /admin/components/atoms/badge
+            - listitem [ref=e107]:
+              - link "Close Button" [ref=e108] [cursor=pointer]:
+                - /url: /admin/components/atoms/close-button
+            - listitem [ref=e109]:
+              - link "Label" [ref=e110] [cursor=pointer]:
+                - /url: /admin/components/atoms/label
+            - listitem [ref=e111]:
+              - link "Progress" [ref=e112] [cursor=pointer]:
+                - /url: /admin/components/atoms/progress
+            - listitem [ref=e113]:
+              - link "SectionDivider" [ref=e114] [cursor=pointer]:
+                - /url: /admin/components/atoms/section-divider
+            - listitem [ref=e115]:
+              - link "Separator" [ref=e116] [cursor=pointer]:
+                - /url: /admin/components/atoms/separator
+            - listitem [ref=e117]:
+              - link "Skeleton" [ref=e118] [cursor=pointer]:
+                - /url: /admin/components/atoms/skeleton
+            - listitem [ref=e119]:
+              - link "Toggle" [ref=e120] [cursor=pointer]:
+                - /url: /admin/components/atoms/shadcn-toggle
+        - generic [ref=e121]:
+          - generic [ref=e122] [cursor=pointer]:
+            - img [ref=e123]
+            - text: Inputs
+          - list [ref=e126]:
+            - listitem [ref=e127]:
+              - link "Button" [ref=e128] [cursor=pointer]:
+                - /url: /admin/components/inputs/shadcn-button
+            - listitem [ref=e129]:
+              - link "Calendar" [ref=e130] [cursor=pointer]:
+                - /url: /admin/components/inputs/calendar
+            - listitem [ref=e131]:
+              - link "CardSelector" [ref=e132] [cursor=pointer]:
+                - /url: /admin/components/inputs/card-selector
+            - listitem [ref=e133]:
+              - link "Checkbox" [ref=e134] [cursor=pointer]:
+                - /url: /admin/components/inputs/shadcn-checkbox
+            - listitem [ref=e135]:
+              - link "CheckboxCard" [ref=e136] [cursor=pointer]:
+                - /url: /admin/components/inputs/checkbox-card
+            - listitem [ref=e137]:
+              - link "Chip" [ref=e138] [cursor=pointer]:
+                - /url: /admin/components/inputs/chip
+            - listitem [ref=e139]:
+              - link "ChipInput" [ref=e140] [cursor=pointer]:
+                - /url: /admin/components/inputs/chip-input
+            - listitem [ref=e141]:
+              - link "Combobox" [ref=e142] [cursor=pointer]:
+                - /url: /admin/components/inputs/combobox
+            - listitem [ref=e143]:
+              - link "DateRangePicker" [ref=e144] [cursor=pointer]:
+                - /url: /admin/components/inputs/date-range-picker
+            - listitem [ref=e145]:
+              - link "DayPicker" [ref=e146] [cursor=pointer]:
+                - /url: /admin/components/inputs/day-picker
+            - listitem [ref=e147]:
+              - link "Form" [ref=e148] [cursor=pointer]:
+                - /url: /admin/components/inputs/form
+            - listitem [ref=e149]:
+              - link "Input" [ref=e150] [cursor=pointer]:
+                - /url: /admin/components/inputs/input
+            - listitem [ref=e151]:
+              - link "InputOTP" [ref=e152] [cursor=pointer]:
+                - /url: /admin/components/inputs/input-otp
+            - listitem [ref=e153]:
+              - link "NumberStepper" [ref=e154] [cursor=pointer]:
+                - /url: /admin/components/inputs/number-stepper
+            - listitem [ref=e155]:
+              - link "PrefixInput" [ref=e156] [cursor=pointer]:
+                - /url: /admin/components/inputs/prefix-input
+            - listitem [ref=e157]:
+              - link "RadioGroup" [ref=e158] [cursor=pointer]:
+                - /url: /admin/components/inputs/radio-group
+            - listitem [ref=e159]:
+              - link "SegmentedControl" [ref=e160] [cursor=pointer]:
+                - /url: /admin/components/inputs/segmented-control
+            - listitem [ref=e161]:
+              - link "Select" [ref=e162] [cursor=pointer]:
+                - /url: /admin/components/inputs/select
+            - listitem [ref=e163]:
+              - link "Slider" [ref=e164] [cursor=pointer]:
+                - /url: /admin/components/inputs/slider
+            - listitem [ref=e165]:
+              - link "SplitButton" [ref=e166] [cursor=pointer]:
+                - /url: /admin/components/inputs/split-button
+            - listitem [ref=e167]:
+              - link "Switch" [ref=e168] [cursor=pointer]:
+                - /url: /admin/components/inputs/switch
+            - listitem [ref=e169]:
+              - link "Textarea" [ref=e170] [cursor=pointer]:
+                - /url: /admin/components/inputs/textarea
+            - listitem [ref=e171]:
+              - link "ToggleGroup" [ref=e172] [cursor=pointer]:
+                - /url: /admin/components/inputs/toggle-group
+        - generic [ref=e173]:
+          - generic [ref=e174] [cursor=pointer]:
+            - img [ref=e175]
+            - text: Display
+          - list [ref=e178]:
+            - listitem [ref=e179]:
+              - link "Card" [ref=e180] [cursor=pointer]:
+                - /url: /admin/components/display/card
+            - listitem [ref=e181]:
+              - link "DataTable" [ref=e182] [cursor=pointer]:
+                - /url: /admin/components/display/data-table
+            - listitem [ref=e183]:
+              - link "MetricCard" [ref=e184] [cursor=pointer]:
+                - /url: /admin/components/display/metric-card
+            - listitem [ref=e185]:
+              - link "Table" [ref=e186] [cursor=pointer]:
+                - /url: /admin/components/display/table
+        - generic [ref=e187]:
+          - generic [ref=e188] [cursor=pointer]:
+            - img [ref=e189]
+            - text: Feedback
+          - list [ref=e192]:
+            - listitem [ref=e193]:
+              - link "Alert" [ref=e194] [cursor=pointer]:
+                - /url: /admin/components/feedback/alert
+            - listitem [ref=e195]:
+              - link "AlertDialog" [ref=e196] [cursor=pointer]:
+                - /url: /admin/components/feedback/alert-dialog
+            - listitem [ref=e197]:
+              - link "Dialog" [ref=e198] [cursor=pointer]:
+                - /url: /admin/components/feedback/dialog
+            - listitem [ref=e199]:
+              - link "HelpPopover" [ref=e200] [cursor=pointer]:
+                - /url: /admin/components/feedback/help-popover
+            - listitem [ref=e201]:
+              - link "HoverCard" [ref=e202] [cursor=pointer]:
+                - /url: /admin/components/feedback/hover-card
+            - listitem [ref=e203]:
+              - link "Modal" [ref=e204] [cursor=pointer]:
+                - /url: /admin/components/feedback/modal
+            - listitem [ref=e205]:
+              - link "Popover" [ref=e206] [cursor=pointer]:
+                - /url: /admin/components/feedback/popover
+            - listitem [ref=e207]:
+              - link "Sheet" [ref=e208] [cursor=pointer]:
+                - /url: /admin/components/feedback/sheet
+            - listitem [ref=e209]:
+              - link "Sonner" [ref=e210] [cursor=pointer]:
+                - /url: /admin/components/feedback/sonner
+            - listitem [ref=e211]:
+              - link "Toast" [ref=e212] [cursor=pointer]:
+                - /url: /admin/components/feedback/toast
+            - listitem [ref=e213]:
+              - link "Tooltip" [ref=e214] [cursor=pointer]:
+                - /url: /admin/components/feedback/tooltip
+        - generic [ref=e215]:
+          - generic [ref=e216] [cursor=pointer]:
+            - img [ref=e217]
+            - text: Navigation
+          - list [ref=e220]:
+            - listitem [ref=e221]:
+              - link "Accordion" [ref=e222] [cursor=pointer]:
+                - /url: /admin/components/navigation/accordion
+            - listitem [ref=e223]:
+              - link "Breadcrumb" [ref=e224] [cursor=pointer]:
+                - /url: /admin/components/navigation/breadcrumb
+            - listitem [ref=e225]:
+              - link "Collapsible" [ref=e226] [cursor=pointer]:
+                - /url: /admin/components/navigation/collapsible
+            - listitem [ref=e227]:
+              - link "Command" [ref=e228] [cursor=pointer]:
+                - /url: /admin/components/navigation/command
+            - listitem [ref=e229]:
+              - link "ContextMenu" [ref=e230] [cursor=pointer]:
+                - /url: /admin/components/navigation/context-menu
+            - listitem [ref=e231]:
+              - link "DropdownMenu" [ref=e232] [cursor=pointer]:
+                - /url: /admin/components/navigation/dropdown-menu
+            - listitem [ref=e233]:
+              - link "Menubar" [ref=e234] [cursor=pointer]:
+                - /url: /admin/components/navigation/menubar
+            - listitem [ref=e235]:
+              - link "NavigationMenu" [ref=e236] [cursor=pointer]:
+                - /url: /admin/components/navigation/navigation-menu
+            - listitem [ref=e237]:
+              - link "Pagination" [ref=e238] [cursor=pointer]:
+                - /url: /admin/components/navigation/pagination
+            - listitem [ref=e239]:
+              - link "ScrollArea" [ref=e240] [cursor=pointer]:
+                - /url: /admin/components/navigation/scroll-area
+            - listitem [ref=e241]:
+              - link "Tabs" [ref=e242] [cursor=pointer]:
+                - /url: /admin/components/navigation/tabs
+        - generic [ref=e243]:
+          - generic [ref=e244] [cursor=pointer]:
+            - img [ref=e245]
+            - text: Compositions
+          - list [ref=e248]:
+            - listitem [ref=e249]:
+              - link "ChooserModal" [ref=e250] [cursor=pointer]:
+                - /url: /admin/components/compositions/chooser-modal
+            - listitem [ref=e251]:
+              - link "Controls Panel" [ref=e252] [cursor=pointer]:
+                - /url: /admin/components/compositions/controls-panel
+            - listitem [ref=e253]:
+              - link "Stepper" [ref=e254] [cursor=pointer]:
+                - /url: /admin/components/compositions/stepper
+        - generic [ref=e255]:
+          - generic [ref=e256] [cursor=pointer]:
+            - img [ref=e257]
+            - text: Sandboxes
+          - list [ref=e260]:
+            - listitem [ref=e261]:
+              - link "Card List" [ref=e262] [cursor=pointer]:
+                - /url: /admin/components/sandboxes/card-list
+            - listitem [ref=e263]:
+              - link "PageHeader" [ref=e264] [cursor=pointer]:
+                - /url: /admin/components/sandboxes/page-header
+            - listitem [ref=e265]:
+              - link "Reorderable List" [ref=e266] [cursor=pointer]:
+                - /url: /admin/components/sandboxes/reorderable-list
+            - listitem [ref=e267]:
+              - link "Table Sandbox" [ref=e268] [cursor=pointer]:
+                - /url: /admin/components/sandboxes/table-sandbox
+      - main [ref=e269]:
+        - generic [ref=e270]:
+          - navigation "breadcrumb" [ref=e271]:
+            - list [ref=e272]:
+              - listitem [ref=e273]:
+                - link "Components" [ref=e274] [cursor=pointer]:
+                  - /url: /admin/components
+              - listitem [ref=e275]:
+                - img [ref=e276]
+              - listitem [ref=e278]:
+                - link "Display" [ref=e279] [cursor=pointer]:
+                  - /url: /admin/components/display
+              - listitem [ref=e280]:
+                - img [ref=e281]
+              - listitem [ref=e283]:
+                - link "Table" [disabled] [ref=e284]
+          - generic [ref=e285]:
+            - generic [ref=e286]:
+              - heading "Table" [level=1] [ref=e287]
+              - paragraph [ref=e288]: Structured data table with header, body, and footer sections.
+              - generic [ref=e289]: display
+            - generic [ref=e291]:
+              - table [ref=e295]:
+                - rowgroup [ref=e296]:
+                  - row "Campaign Status Open Rate Click Rate Date" [ref=e297]:
+                    - columnheader "Campaign" [ref=e298]
+                    - columnheader "Status" [ref=e299]
+                    - columnheader "Open Rate" [ref=e300]
+                    - columnheader "Click Rate" [ref=e301]
+                    - columnheader "Date" [ref=e302]
+                - rowgroup [ref=e303]:
+                  - row "Summer Sale 2024 Sent 42.3% 8.7% 2024-06-15" [ref=e304]:
+                    - cell "Summer Sale 2024" [ref=e305]:
+                      - generic [ref=e307]: Summer Sale 2024
+                    - cell "Sent" [ref=e308]
+                    - cell "42.3%" [ref=e309]
+                    - cell "8.7%" [ref=e310]
+                    - cell "2024-06-15" [ref=e311]
+                  - row "Welcome Series Active 65.1% 12.4% 2024-05-01" [ref=e312]:
+                    - cell "Welcome Series" [ref=e313]:
+                      - generic [ref=e315]: Welcome Series
+                    - cell "Active" [ref=e316]
+                    - cell "65.1%" [ref=e317]
+                    - cell "12.4%" [ref=e318]
+                    - cell "2024-05-01" [ref=e319]
+                  - row "Re-engagement Draft — — 2024-07-01" [ref=e320]:
+                    - cell "Re-engagement" [ref=e321]:
+                      - generic [ref=e323]: Re-engagement
+                    - cell "Draft" [ref=e324]
+                    - cell "—" [ref=e325]
+                    - cell "—" [ref=e326]
+                    - cell "2024-07-01" [ref=e327]
+                  - row "Product Launch Scheduled — — 2024-07-10" [ref=e328]:
+                    - cell "Product Launch" [ref=e329]:
+                      - generic [ref=e331]: Product Launch
+                    - cell "Scheduled" [ref=e332]
+                    - cell "—" [ref=e333]
+                    - cell "—" [ref=e334]
+                    - cell "2024-07-10" [ref=e335]
+                  - 'row "Newsletter #42 Sent 38.9% 5.2% 2024-06-01" [ref=e336]':
+                    - 'cell "Newsletter #42" [ref=e337]':
+                      - generic [ref=e339]: "Newsletter #42"
+                    - cell "Sent" [ref=e340]
+                    - cell "38.9%" [ref=e341]
+                    - cell "5.2%" [ref=e342]
+                    - cell "2024-06-01" [ref=e343]
+                  - row "Flash Promo Sent 51.2% 11.0% 2024-06-20" [ref=e344]:
+                    - cell "Flash Promo" [ref=e345]:
+                      - generic [ref=e347]: Flash Promo
+                    - cell "Sent" [ref=e348]
+                    - cell "51.2%" [ref=e349]
+                    - cell "11.0%" [ref=e350]
+                    - cell "2024-06-20" [ref=e351]
+                  - row "Loyalty Rewards Active 47.8% 9.3% 2024-05-15" [ref=e352]:
+                    - cell "Loyalty Rewards" [ref=e353]:
+                      - generic [ref=e355]: Loyalty Rewards
+                    - cell "Active" [ref=e356]
+                    - cell "47.8%" [ref=e357]
+                    - cell "9.3%" [ref=e358]
+                    - cell "2024-05-15" [ref=e359]
+              - generic [ref=e360]:
+                - generic [ref=e361]:
+                  - paragraph [ref=e362]: Density
+                  - combobox [ref=e363] [cursor=pointer]:
+                    - generic: Default
+                    - img [ref=e364]
+                - generic [ref=e366]:
+                  - paragraph [ref=e367]: Container
+                  - combobox [ref=e368] [cursor=pointer]:
+                    - generic: Borderless
+                    - img [ref=e369]
+                - generic [ref=e371]:
+                  - paragraph [ref=e372]: Borders
+                  - combobox [ref=e373] [cursor=pointer]:
+                    - generic: Row borders
+                    - img [ref=e374]
+                - generic [ref=e376]:
+                  - paragraph [ref=e377]: Columns
+                  - generic [ref=e378]:
+                    - button "Decrease" [ref=e379] [cursor=pointer]:
+                      - img [ref=e380]
+                    - generic [ref=e382]: "5"
+                    - button "Increase" [disabled] [ref=e383]:
+                      - img [ref=e384]
+                - generic [ref=e386]:
+                  - paragraph [ref=e387]: Rows
+                  - generic [ref=e388]:
+                    - button "Decrease" [ref=e389] [cursor=pointer]:
+                      - img [ref=e390]
+                    - generic [ref=e392]: "8"
+                    - button "Increase" [ref=e393] [cursor=pointer]:
+                      - img [ref=e394]
+                - generic [ref=e396]:
+                  - paragraph [ref=e397]: Nesting Depth
+                  - generic [ref=e398]:
+                    - button "Decrease" [disabled] [ref=e399]:
+                      - img [ref=e400]
+                    - generic [ref=e402]: "0"
+                    - button "Increase" [ref=e403] [cursor=pointer]:
+                      - img [ref=e404]
+                - generic [ref=e406]:
+                  - generic [ref=e407]:
+                    - generic [ref=e408]: Show Header
+                    - switch "Show Header" [checked] [ref=e409] [cursor=pointer]
+                  - generic [ref=e410]:
+                    - generic [ref=e411]: Striped
+                    - switch "Striped" [checked] [active] [ref=e412] [cursor=pointer]
+                  - generic [ref=e413]:
+                    - generic [ref=e414]: Sticky Header
+                    - switch "Sticky Header" [ref=e415] [cursor=pointer]
+                - button "Reset" [ref=e450] [cursor=pointer]
+                - generic [ref=e416]:
+                  - paragraph [ref=e417]: Used in
+                  - generic [ref=e418]:
+                    - link "Billing Report" [ref=e419] [cursor=pointer]:
+                      - /url: /admin/billing
+                    - link "DataTable" [ref=e420] [cursor=pointer]:
+                      - /url: /admin/components/display/data-table
+            - generic [ref=e421]:
+              - generic [ref=e422]:
+                - heading "Design guidance" [level=2] [ref=e423]
+                - generic [ref=e424]:
+                  - heading "What" [level=3] [ref=e425]
+                  - paragraph [ref=e426]: Low-level table primitives — thin wrappers around native HTML table elements with consistent spacing, border, and typography tokens.
+                - generic [ref=e427]:
+                  - heading "When to use" [level=3] [ref=e428]
+                  - list [ref=e429]:
+                    - listitem [ref=e430]: Custom or hierarchical tables where DataTable column-driven API does not fit
+                    - listitem [ref=e431]: Tree/expandable rows, key-value layouts, or nested sub-tables
+                    - listitem [ref=e432]: For standard data-driven tables with sorting and selection, prefer DataTable instead
+                - generic [ref=e433]:
+                  - heading "Overflow" [level=3] [ref=e434]
+                  - paragraph [ref=e435]: The Table wrapper provides overflow-x-auto for horizontal scroll. For sticky headers, wrap in a height-restricted container with overflow-y-auto.
+                - generic [ref=e436]:
+                  - heading "Selection" [level=3] [ref=e437]
+                  - paragraph [ref=e438]: Apply data-state="selected" to TableRow for selected styling (bg-accent/30). Selection logic lives in the consumer.
+              - generic [ref=e440]:
+                - generic [ref=e441]: Used by
+                - generic [ref=e442]:
+                  - link "Table Sandbox" [ref=e443] [cursor=pointer]:
+                    - /url: /admin/components/sandboxes/table-sandbox
+                    - generic [ref=e444]: Table Sandbox
+                  - link "DataTable" [ref=e445] [cursor=pointer]:
+                    - /url: /admin/components/display/data-table
+                    - generic [ref=e446]: DataTable
+    - button "Toggle feedback panel" [ref=e447] [cursor=pointer]:
+      - img [ref=e448]
+    - region "Notifications alt+T"
+  - status

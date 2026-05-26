@@ -1,10 +1,14 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { Plus, X, UploadSimple, ArrowLeft } from '@phosphor-icons/react';
+import { Plus, X, UploadSimple, ArrowLeft, WarningCircle, CalendarBlank } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
+import { Combobox } from '../ui/combobox';
+import { Badge } from '../ui/badge';
 import { HelpPopover } from '@/components/composed/help-popover';
-import type { FieldMapping, LookupMapping } from '../../models/importer';
+import type { FieldMapping, LookupMapping, ImportDefaultRow } from '../../models/importer';
 import { CONTACT_LOOKUP_FIELDS } from '../../models/importer';
+import { SetImportDefaultModal } from './SetImportDefaultModal';
+import type { AvailableField } from './SetImportDefaultModal';
 
 /* ── Types ── */
 
@@ -16,6 +20,14 @@ interface MappingRow {
   exampleValue: string;
   status: MappingStatus;
   duplicateSources: string[];
+}
+
+interface ImportDefaultMappingRow {
+  sourceField: '__import_default__';
+  targetField: string;
+  exampleValue: string;
+  status: 'normal';
+  defaultRow: ImportDefaultRow;
 }
 
 interface ImportMappingStepProps {
@@ -32,6 +44,7 @@ interface ImportMappingStepProps {
 /* ── Target field constants (UbiQuity schema fields) ── */
 
 const CONTACT_TARGET_FIELDS = [
+  '[[Ignore Column]]',
   'customer_id',
   'policy_id',
   'policy_start_date',
@@ -42,10 +55,10 @@ const CONTACT_TARGET_FIELDS = [
   'last_name',
   'phone',
   'membership_tier',
-  '[[Ignore Field]]',
 ];
 
 const TRANSACTIONAL_TARGET_FIELDS = [
+  '[[Ignore Column]]',
   'transaction_id',
   'customer_reference',
   'treatment_type',
@@ -53,10 +66,25 @@ const TRANSACTIONAL_TARGET_FIELDS = [
   'duration_minutes',
   'price',
   'therapist_name',
-  '[[Ignore Field]]',
 ];
 
 /* ── Helpers ── */
+
+/** Infer field type from field name for import default modal */
+function inferFieldType(fieldName: string): 'text' | 'number' | 'date' | 'datetime' | 'boolean' {
+  const lower = fieldName.toLowerCase();
+  if (lower.includes('date')) return 'date';
+  if (lower.includes('price') || lower.includes('minutes') || lower.includes('duration')) return 'number';
+  if (
+    lower.includes('id') ||
+    lower.includes('name') ||
+    lower.includes('address') ||
+    lower.includes('tier') ||
+    lower.includes('type') ||
+    lower.includes('greeting')
+  ) return 'text';
+  return 'text';
+}
 
 function buildRows(
   sourceFields: string[],
@@ -89,7 +117,7 @@ function buildRows(
 function recalcStatuses(rows: MappingRow[]): MappingRow[] {
   const counts = new Map<string, number>();
   for (const r of rows) {
-    if (r.targetField && r.targetField !== '[[Ignore Field]]') {
+    if (r.targetField && r.targetField !== '[[Ignore Column]]') {
       counts.set(r.targetField, (counts.get(r.targetField) ?? 0) + 1);
     }
   }
@@ -97,7 +125,7 @@ function recalcStatuses(rows: MappingRow[]): MappingRow[] {
   // Build a map of target → list of source fields for duplicate tooltips
   const targetToSources = new Map<string, string[]>();
   for (const r of rows) {
-    if (r.targetField && r.targetField !== '[[Ignore Field]]') {
+    if (r.targetField && r.targetField !== '[[Ignore Column]]') {
       const list = targetToSources.get(r.targetField) ?? [];
       list.push(r.sourceField);
       targetToSources.set(r.targetField, list);
@@ -109,7 +137,7 @@ function recalcStatuses(rows: MappingRow[]): MappingRow[] {
       return { ...r, status: 'no-match' as const, duplicateSources: [] };
     }
     if (
-      r.targetField !== '[[Ignore Field]]' &&
+      r.targetField !== '[[Ignore Column]]' &&
       (counts.get(r.targetField) ?? 0) > 1
     ) {
       const others = (targetToSources.get(r.targetField) ?? []).filter(
@@ -161,7 +189,7 @@ function autoMatchField(sourceHeader: string, targetFields: string[]): string {
   // Build a reverse lookup: normalized alias → target field key
   const targetByNormalized = new Map<string, string>();
   for (const tf of targetFields) {
-    if (tf === '[[Ignore Field]]') continue;
+    if (tf === '[[Ignore Column]]') continue;
     targetByNormalized.set(normalize(tf), tf);
   }
 
@@ -207,42 +235,16 @@ function autoMapHeaders(
 
 function DuplicateWarningIcon({ tooltip }: { tooltip: string }) {
   return (
-    <span className="relative inline-flex cursor-pointer group">
-      <svg
-        className="shrink-0 w-[22px] h-[22px] flex items-center justify-center text-destructive"
-        width="22"
-        height="22"
-        viewBox="0 0 18 18"
-        fill="none"
-        aria-label="Duplicate mapping"
-      >
-        <path d="M9 1.5L16.5 15H1.5L9 1.5Z" fill="currentColor" opacity="0.15" />
-        <path d="M9 1.5L16.5 15H1.5L9 1.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-        <path d="M9 7v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="9" cy="12.5" r="0.75" fill="currentColor" />
-      </svg>
-      <span className="hidden group-hover:block absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-[280px] py-2.5 px-3.5 rounded-lg text-[13px] font-medium leading-[18px] text-primary-foreground z-50 pointer-events-none whitespace-normal bg-destructive">{tooltip}</span>
+    <span className="relative inline-flex cursor-pointer group" title={tooltip}>
+      <WarningCircle size={16} weight="regular" className="shrink-0 text-destructive" aria-label="Duplicate mapping" />
     </span>
   );
 }
 
 function NoMatchWarningIcon() {
   return (
-    <span className="relative inline-flex cursor-pointer group">
-      <svg
-        className="shrink-0 w-[22px] h-[22px] flex items-center justify-center text-warning"
-        width="22"
-        height="22"
-        viewBox="0 0 18 18"
-        fill="none"
-        aria-label="No match found"
-      >
-        <circle cx="9" cy="9" r="7.5" fill="currentColor" opacity="0.15" />
-        <circle cx="9" cy="9" r="7.5" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M9 6v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="9" cy="12" r="0.75" fill="currentColor" />
-      </svg>
-      <span className="hidden group-hover:block absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-[280px] py-2.5 px-3.5 rounded-lg text-[13px] font-medium leading-[18px] text-primary-foreground z-50 pointer-events-none whitespace-normal bg-warning">No matching UbiQuity field was found. Select one manually or set to [[Ignore Field]].</span>
+    <span className="relative inline-flex cursor-pointer group" title="No matching column found">
+      <WarningCircle size={16} weight="regular" className="shrink-0 text-warning" aria-label="No match found" />
     </span>
   );
 }
@@ -263,6 +265,10 @@ export function ImportMappingStep({
 
   const hasHeaders = csvHeaders && csvHeaders.length > 0;
 
+  // Import default modal state
+  const [defaultModalOpen, setDefaultModalOpen] = useState(false);
+  const [importDefaults, setImportDefaults] = useState<ImportDefaultMappingRow[]>([]);
+
   // Build initial mappings from the value prop using CSV headers as source fields
   const [rows, setRows] = useState<MappingRow[]>(() => {
     if (!hasHeaders) return [];
@@ -282,7 +288,7 @@ export function ImportMappingStep({
   useEffect(() => {
     if (!hasHeaders) return;
     const mappings: FieldMapping[] = rows
-      .filter((r) => r.targetField && r.targetField !== '[[Ignore Field]]')
+      .filter((r) => r.targetField && r.targetField !== '[[Ignore Column]]')
       .map((r) => ({ sourceField: r.sourceField, targetField: r.targetField }));
     onUpdate(mappings);
   }, [rows]);
@@ -298,6 +304,37 @@ export function ImportMappingStep({
     },
     [],
   );
+
+  // Compute available fields for the import default modal (not already mapped)
+  const availableDefaultFields: AvailableField[] = useMemo(() => {
+    const mappedTargets = new Set(rows.map((r) => r.targetField).filter(Boolean));
+    const defaultTargets = new Set(importDefaults.map((d) => d.targetField));
+
+    return targetFields
+      .filter((tf) => tf !== '[[Ignore Column]]' && !mappedTargets.has(tf) && !defaultTargets.has(tf))
+      .map((tf) => ({
+        value: tf,
+        label: tf,
+        type: inferFieldType(tf),
+      }));
+  }, [targetFields, rows, importDefaults]);
+
+  // Handle import default submission
+  function handleImportDefaultSubmit(defaultRow: ImportDefaultRow) {
+    const newRow: ImportDefaultMappingRow = {
+      sourceField: '__import_default__',
+      targetField: defaultRow.targetField,
+      exampleValue: defaultRow.mode === 'fixed' ? (defaultRow.fixedValue ?? '') : 'Next send date',
+      status: 'normal',
+      defaultRow,
+    };
+    setImportDefaults((prev) => [...prev, newRow]);
+    setDefaultModalOpen(false);
+  }
+
+  function handleRemoveImportDefault(targetField: string) {
+    setImportDefaults((prev) => prev.filter((d) => d.targetField !== targetField));
+  }
 
   // Lookup field mapping state (transactional only)
   const [lookupRows, setLookupRows] = useState<LookupMapping[]>(() => {
@@ -361,8 +398,6 @@ export function ImportMappingStep({
   if (!hasHeaders) {
     return (
       <div className="flex flex-col gap-6">
-        <h3 className="m-0 text-xl font-semibold text-primary">{title}</h3>
-        <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Map your file columns to UbiQuity fields.</p>
         <div className="border border-dashed border-border rounded-lg bg-secondary/30 py-16 px-8 flex flex-col items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
             <UploadSimple size={24} className="text-muted-foreground" />
@@ -394,8 +429,6 @@ export function ImportMappingStep({
 
   return (
     <div className="flex flex-col gap-6">
-      <h3 className="m-0 text-xl font-semibold text-primary">{title}</h3>
-      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Map your file columns to UbiQuity fields.</p>
 
       {/* Lookup Field Mapping — transactional only */}
       {type === 'transactional' && (
@@ -435,37 +468,29 @@ export function ImportMappingStep({
                 data-testid={`lookup-row-${idx}`}
               >
                 {/* File Column dropdown */}
-                <select
-                  className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8 disabled:opacity-50 disabled:cursor-not-allowed"
+                <Combobox
                   value={row.sourceField}
-                  onChange={(e) => handleLookupSourceChange(idx, e.target.value)}
+                  onValueChange={(val) => handleLookupSourceChange(idx, val)}
+                  options={[
+                    ...(csvHeaders ?? []).map((header) => ({
+                      value: header,
+                      label: header,
+                    })),
+                  ]}
+                  placeholder="— select —"
                   disabled={!hasHeaders}
-                  aria-label={`Lookup file column ${idx + 1}`}
-                  data-testid={`lookup-source-${idx}`}
-                >
-                  <option value="">— select —</option>
-                  {(csvHeaders ?? []).map((header) => (
-                    <option key={header} value={header}>
-                      {header}
-                    </option>
-                  ))}
-                </select>
+                />
 
                 {/* Contact Table Column dropdown */}
-                <select
-                  className="w-full py-2 px-3 text-sm border border-border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8"
+                <Combobox
                   value={row.contactField}
-                  onChange={(e) => handleLookupContactChange(idx, e.target.value)}
-                  aria-label={`Lookup contact column ${idx + 1}`}
-                  data-testid={`lookup-contact-${idx}`}
-                >
-                  <option value="">— select —</option>
-                  {CONTACT_LOOKUP_FIELDS.map((field) => (
-                    <option key={field} value={field}>
-                      {field}
-                    </option>
-                  ))}
-                </select>
+                  onValueChange={(val) => handleLookupContactChange(idx, val)}
+                  options={CONTACT_LOOKUP_FIELDS.map((field) => ({
+                    value: field,
+                    label: field,
+                  }))}
+                  placeholder="— select —"
+                />
 
                 {/* Remove button — visible when > 1 row */}
                 <div className="flex items-center justify-center">
@@ -500,28 +525,15 @@ export function ImportMappingStep({
         </div>
       )}
 
-      {/* Transactional Database Mapping */}
+      {/* Database Mapping */}
       <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <h4 className="m-0 text-base font-semibold text-foreground">Transactional Database Mapping</h4>
-          <HelpPopover
-            title="How does mapping work for transactional data?"
-            width="wide"
-            body={
-              <>
-                <p className="m-0 mb-2">This works the same as contact mapping. Match each column in your file to a field in the transactional table. Columns set to [[Ignore Field]] won't be imported.</p>
-                <p className="m-0">Columns showing "Mapped in other context" are already mapped in the contact mapping step and can't be remapped here. This is normal for files that import to both contacts and transactional data. Some columns serve the contact side, others serve the transactional side.</p>
-              </>
-            }
-          />
-        </div>
 
       <div className="border border-border rounded-lg bg-background overflow-hidden">
         {/* Header */}
         <div className="grid grid-cols-[1fr_32px_1.2fr_32px_1fr] items-center py-3 px-4 bg-secondary border-b border-border">
-          <span className="text-sm font-semibold text-muted-foreground m-0">Data To Be Mapped</span>
+          <span className="text-sm font-semibold text-muted-foreground m-0">Columns from File</span>
           <span />
-          <span className="text-sm font-semibold text-muted-foreground m-0">Ubiquity Fields</span>
+          <span className="text-sm font-semibold text-muted-foreground m-0">Columns in Ubiquity</span>
           <span />
           <span className="text-sm font-semibold text-muted-foreground m-0">Example Values</span>
         </div>
@@ -546,30 +558,13 @@ export function ImportMappingStep({
 
             {/* Dropdown */}
             <div className="relative w-full">
-              <select
-                className={cn(
-                  "w-full py-2 px-3 text-sm border rounded-md bg-background text-foreground outline-none cursor-pointer transition-colors duration-150 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2712%27%20height%3D%278%27%20viewBox%3D%270%200%2012%208%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M1%201.5L6%206.5L11%201.5%27%20stroke%3D%27%23737373%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_12px_center] pr-8",
-                  row.status === 'duplicate' && "border-destructive focus:border-destructive focus:shadow-ring-destructive",
-                  row.status === 'no-match' && "border-warning focus:border-warning focus:shadow-[0_0_0_2px_rgba(245,158,11,0.15)]",
-                  row.status === 'normal' && "border-border focus:border-primary focus:shadow-ring"
-                )}
+              <Combobox
                 value={row.targetField}
-                onChange={(e) => handleTargetChange(idx, e.target.value)}
-                aria-label={`Map ${row.sourceField} to UbiQuity field`}
-                data-testid={`mapping-select-${row.sourceField}`}
-              >
-                {row.status === 'no-match' && (
-                  <option value="">no match found</option>
-                )}
-                {!row.targetField && row.status !== 'no-match' && (
-                  <option value="">— select —</option>
-                )}
-                {targetFields.map((tf) => (
-                  <option key={tf} value={tf}>
-                    {tf}
-                  </option>
-                ))}
-              </select>
+                onValueChange={(val) => handleTargetChange(idx, val)}
+                options={targetFields.map((tf) => ({ value: tf, label: tf }))}
+                placeholder={row.status === 'no-match' ? 'no match found' : '— select —'}
+                status={row.status === 'duplicate' ? 'error' : row.status === 'no-match' ? 'warning' : 'normal'}
+              />
             </div>
 
             {/* Equals */}
@@ -578,33 +573,98 @@ export function ImportMappingStep({
             </span>
 
             {/* Example value + warning */}
-            <div className="flex items-center gap-2 min-h-[20px]">
+            <div className="flex items-center gap-1.5 min-h-[20px]">
               {row.status === 'duplicate' && (
-                <DuplicateWarningIcon
-                  tooltip={`This field is also mapped to ${row.duplicateSources.map(s => `[${s}]`).join(' and ')}. This can only be mapped to a single field.`}
-                />
+                <>
+                  <DuplicateWarningIcon
+                    tooltip={`This field is also mapped to ${row.duplicateSources.map(s => `[${s}]`).join(' and ')}. This can only be mapped to a single field.`}
+                  />
+                  <span className="text-xs text-destructive">Duplicate mapping</span>
+                </>
               )}
-              {row.status === 'no-match' && <NoMatchWarningIcon />}
-              <span className="text-sm text-tertiary-foreground m-0 overflow-hidden text-ellipsis whitespace-nowrap">
-                {row.targetField === '[[Ignore Field]]'
-                  ? '—'
-                  : row.exampleValue}
-              </span>
+              {row.status === 'no-match' && (
+                <>
+                  <NoMatchWarningIcon />
+                  <span className="text-xs text-warning">No match found</span>
+                </>
+              )}
+              {row.status === 'normal' && (
+                <span className="text-sm text-tertiary-foreground m-0 overflow-hidden text-ellipsis whitespace-nowrap">
+                  {row.targetField === '[[Ignore Column]]'
+                    ? '—'
+                    : row.exampleValue}
+                </span>
+              )}
             </div>
           </div>
         ))}
 
-        {/* Add New Field button — inside table */}
+        {/* Import default rows */}
+        {importDefaults.map((defaultRow) => (
+          <div
+            className="grid grid-cols-[1fr_40px_1.2fr_40px_1fr] items-center py-2 px-4"
+            key={`default-${defaultRow.targetField}`}
+          >
+            {/* Source field — badge */}
+            <div>
+              <Badge variant="default-subtle">Import Default</Badge>
+            </div>
+
+            {/* Arrow */}
+            <span className="text-sm text-tertiary-foreground text-center select-none" aria-hidden="true">
+              →
+            </span>
+
+            {/* Target field — plain text, aligned with Combobox text above */}
+            <span className="text-sm font-medium text-foreground m-0 pl-3">
+              {defaultRow.targetField}
+            </span>
+
+            {/* Equals */}
+            <span className="text-sm text-tertiary-foreground text-center select-none" aria-hidden="true">
+              =
+            </span>
+
+            {/* Example value + delete */}
+            <div className="flex items-center gap-1.5 min-h-[20px]">
+              {defaultRow.defaultRow.mode === 'send-date' && (
+                <CalendarBlank size={14} className="text-primary shrink-0" />
+              )}
+              <span className="text-sm text-tertiary-foreground m-0 overflow-hidden text-ellipsis whitespace-nowrap flex-1">
+                {defaultRow.exampleValue}
+              </span>
+              <button
+                type="button"
+                className="shrink-0 p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                onClick={() => handleRemoveImportDefault(defaultRow.targetField)}
+                aria-label={`Remove import default for ${defaultRow.targetField}`}
+              >
+                <X size={14} weight="bold" />
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {/* Set import default button — inside table */}
         <div className="py-2 px-4 border-t border-border">
           <button
             type="button"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary leading-none hover:underline underline-offset-4"
+            onClick={() => setDefaultModalOpen(true)}
           >
             <Plus size={12} weight="bold" className="shrink-0" />
-            <span>Add New Field</span>
+            <span>Set import default</span>
           </button>
         </div>
       </div>
+
+      {/* Import Default Modal */}
+      <SetImportDefaultModal
+        open={defaultModalOpen}
+        onOpenChange={setDefaultModalOpen}
+        availableFields={availableDefaultFields}
+        onSubmit={handleImportDefaultSubmit}
+      />
       </div>
     </div>
   );

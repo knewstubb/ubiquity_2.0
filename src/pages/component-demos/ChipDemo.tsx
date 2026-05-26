@@ -9,6 +9,7 @@ interface ChipDemoProps {
   size?: string
   'show-icon'?: boolean
   selectable?: boolean
+  used?: boolean
   disabled?: boolean
 }
 
@@ -18,10 +19,11 @@ export default function ChipDemo(props: ChipDemoProps) {
 
   const hasControls = props.variant !== undefined
 
-  const variant = (props.variant ?? 'default') as 'default' | 'outline' | 'mint' | 'red'
+  const variant = (props.variant ?? 'default') as 'default' | 'outline' | 'mint' | 'red' | 'insertable'
   const size = (props.size ?? 'default') as 'sm' | 'default'
   const showIcon = props['show-icon'] ?? false
   const selectable = props.selectable ?? false
+  const used = props.used ?? false
   const disabled = props.disabled ?? false
 
   function handleDismiss(chip: string) {
@@ -44,6 +46,25 @@ export default function ChipDemo(props: ChipDemoProps) {
   }
 
   if (hasControls) {
+    // Insertable variant — uses onClick, not onDismiss
+    if (variant === 'insertable') {
+      return (
+        <div className="flex flex-wrap gap-2">
+          {chips.map((chip) => (
+            <Chip
+              key={chip}
+              label={`{${chip.toLowerCase().replace(/\s/g, '_')}}`}
+              variant="insertable"
+              used={used}
+              size={size}
+              disabled={disabled}
+              onClick={() => {}}
+            />
+          ))}
+        </div>
+      )
+    }
+
     return (
       <div className="flex flex-wrap gap-2">
         {chips.map((chip) => (

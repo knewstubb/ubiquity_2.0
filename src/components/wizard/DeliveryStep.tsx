@@ -55,8 +55,6 @@ export function DeliveryStep({ draft, onUpdate }: DeliveryStepProps) {
 
   return (
     <div className="flex flex-col gap-8" data-testid="delivery-step">
-      <h3 className="m-0 text-xl font-semibold text-primary">Schedule</h3>
-      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Set the export schedule and notification preferences.</p>
 
       {/* ── Schedule Section ── */}
       <div className="flex items-start gap-14">

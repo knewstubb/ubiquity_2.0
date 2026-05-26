@@ -18,6 +18,7 @@ import {
   DEFAULT_CONTACT_CONFIG,
   DEFAULT_TRANSACTIONAL_CONFIG,
   DEFAULT_NOTIFICATION_CONFIG,
+  DEFAULT_CSV_FORMAT_CONFIG,
 } from '../../models/importer';
 
 interface ImporterWizardModalProps {
@@ -90,6 +91,7 @@ function createDefaultConfig(
       ...DEFAULT_FILE_PATH_CONFIG,
       folderName: toKebabCase(name),
     },
+    csvFormat: { ...DEFAULT_CSV_FORMAT_CONFIG },
     notifications: { ...DEFAULT_NOTIFICATION_CONFIG },
     contactConfig: { ...DEFAULT_CONTACT_CONFIG },
     contactMapping: [],
@@ -173,6 +175,23 @@ export function ImporterWizardModal({
 
     return true;
   }, [currentStep, config.name, config.dataType, config.csvHeaders, config.notifications, steps, notificationsValid]);
+
+  const disabledReason = useMemo(() => {
+    if (canProceed) return undefined;
+    const stepLabel = steps[currentStep]?.label;
+
+    if (currentStep === 0) {
+      if (!config.name.trim()) return 'Importer name is required';
+      if (!config.dataType) return 'Select a data type';
+      if (!existingConfig && (config.csvHeaders?.length ?? 0) === 0) return 'Upload a sample CSV file';
+    }
+
+    if (stepLabel === 'Notifications') {
+      return 'At least one failure notification email is required';
+    }
+
+    return 'Complete all required fields to continue';
+  }, [canProceed, currentStep, config.name, config.dataType, config.csvHeaders, steps, existingConfig]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -277,6 +296,19 @@ export function ImporterWizardModal({
     setCompletedSteps((prev) => prev.filter((s) => s <= maxStep));
   }, [steps.length, currentStep]);
 
+  const stepDescriptions: Record<string, string> = {
+    'File Settings': 'Configure how files are read and where they are stored.',
+    'Contact Configuration': 'Set how records are matched, updated, and deduplicated.',
+    'Transactional Configuration': 'Set how records are matched, updated, and deduplicated.',
+    'Configuration': 'Set how records are matched, updated, and deduplicated.',
+    'Contact Mapping': 'Map the columns from your sample file to the columns in your Ubiquity database.',
+    'Transactional Mapping': 'Map the columns from your sample file to the columns in your Ubiquity database.',
+    'Mapping': 'Map the columns from your sample file to the columns in your Ubiquity database.',
+    'Notifications': 'Configure who gets notified about import results.',
+    'Review': 'Review your importer configuration before saving.',
+  };
+  const stepDescription = stepDescriptions[steps[currentStep]?.label] ?? '';
+
   const stepContent = (() => {
     const stepLabel = steps[currentStep]?.label;
 
@@ -287,6 +319,7 @@ export function ImporterWizardModal({
           basePath={basePath}
           connectionName={connection?.name ?? ''}
           onUpdate={handleConfigUpdate}
+          isEditing={!!existingConfig}
         />
       );
     }
@@ -332,11 +365,11 @@ export function ImporterWizardModal({
             <div className="w-10 h-10 flex items-center justify-center text-primary mb-1">
               <DownloadSimple size={56} />
             </div>
-            <h2 id="importer-wizard-title" className="m-0 text-base font-bold text-muted-foreground leading-snug">
-              Importer
+            <h2 id="importer-wizard-title" className="m-0 text-lg font-bold text-muted-foreground leading-snug">
+              {existingConfig ? 'Edit Importer' : 'New Importer'}
             </h2>
             <span className="text-[11px] font-medium text-tertiary-foreground uppercase tracking-wider">
-              {connection?.name ?? ''}
+              Connector: {connection?.name ?? ''}
             </span>
           </div>
           <Stepper
@@ -350,14 +383,20 @@ export function ImporterWizardModal({
 
         {/* Right content area */}
         <div className="flex-1 flex flex-col min-w-0 bg-background relative">
-          <CloseButton
-            onClick={handleCloseClick}
-            aria-label="Close wizard"
-            data-testid="importer-close-button"
-            className="absolute top-8 right-8 z-10"
-          />
+          {/* Fixed header — title + close button */}
+          <div className="shrink-0 flex items-start justify-between px-8 pt-8 pb-8">
+            <div>
+              <h3 className="m-0 text-xl font-semibold text-primary">{steps[currentStep]?.label}</h3>
+              <p className="mt-1 mb-0 text-sm text-tertiary-foreground">{stepDescription}</p>
+            </div>
+            <CloseButton
+              onClick={handleCloseClick}
+              aria-label="Close wizard"
+              data-testid="importer-close-button"
+            />
+          </div>
 
-          <div className="flex-1 overflow-y-auto px-8 pt-8 pb-8 flex flex-col gap-6 scrollbar-gutter-stable">
+          <div className="flex-1 overflow-y-auto px-8 pb-8 flex flex-col gap-6 scrollbar-gutter-stable">
             {stepContent}
           </div>
 
@@ -370,6 +409,7 @@ export function ImporterWizardModal({
               isLast={currentStep === lastStepIndex}
               showBack={currentStep > 0}
               submitLabel={existingConfig ? (isDirty ? 'Save Changes' : 'Done') : 'Create Importer'}
+              disabledReason={disabledReason}
             />
           </div>
         </div>

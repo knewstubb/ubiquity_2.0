@@ -19,6 +19,8 @@ export const TOKEN_DESCRIPTIONS: Record<string, TokenDescription> = {
   'surface': { description: 'Flat content surface', usage: 'Flat content areas, list items, table rows, inline panels' },
   'popover': { description: 'Popover/dropdown surface', usage: 'Dropdown menus, tooltips, popovers' },
   'popover-foreground': { description: 'Text in popovers', usage: 'Text inside dropdown menus and tooltips' },
+  'tooltip': { description: 'Tooltip surface', usage: 'Dark tooltip background' },
+  'tooltip-foreground': { description: 'Text in tooltips', usage: 'Light text on tooltip background' },
 
   // Primary
   'primary': { description: 'Primary brand colour', usage: 'Primary buttons, active nav indicators, links' },
@@ -102,7 +104,7 @@ export const TOKEN_DESCRIPTIONS: Record<string, TokenDescription> = {
 };
 
 export const COLOUR_TOKEN_GROUPS: { name: string; tokens: string[] }[] = [
-  { name: 'Core Surfaces', tokens: ['background', 'foreground', 'card', 'card-foreground', 'surface', 'popover', 'popover-foreground'] },
+  { name: 'Core Surfaces', tokens: ['background', 'foreground', 'card', 'card-foreground', 'surface', 'popover', 'popover-foreground', 'tooltip', 'tooltip-foreground'] },
   { name: 'Primary', tokens: ['primary', 'primary-foreground'] },
   { name: 'Secondary', tokens: ['secondary', 'secondary-foreground'] },
   { name: 'Muted', tokens: ['muted', 'muted-foreground', 'tertiary-foreground'] },
@@ -135,6 +137,8 @@ export const DEFAULT_TOKEN_CONFIG: TokenConfig = {
     'surface': { light: 'white', dark: 'black' },
     'popover': { light: 'white', dark: 'zinc-900' },
     'popover-foreground': { light: 'zinc-800', dark: 'zinc-50' },
+    'tooltip': { light: 'zinc-800', dark: 'zinc-50' },
+    'tooltip-foreground': { light: 'white', dark: 'zinc-900' },
 
     // Primary
     'primary': { light: 'mint-500', dark: 'mint-500' },

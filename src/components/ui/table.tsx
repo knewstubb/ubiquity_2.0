@@ -1,3 +1,21 @@
+/**
+ * @component Table
+ * @description Low-level table primitives (Table, TableHeader, TableBody, TableFooter,
+ * TableRow, TableHead, TableCell, TableCaption). Thin wrappers around native HTML table
+ * elements with consistent spacing, border, and typography tokens applied.
+ *
+ * @designDecisions
+ * - Wrapper div provides overflow-x-auto for horizontal scroll on wide tables.
+ *   Vertical scroll (for sticky headers) is the parent's responsibility.
+ * - Border on rows (border-border/50) rather than cells — cleaner visual rhythm.
+ * - Selected row state via data-[state=selected] attribute — keeps selection logic
+ *   in the consumer (e.g. DataTable) while styling stays here.
+ *
+ * @usage
+ * - Use these primitives directly for custom/tree/hierarchical tables.
+ * - For data-driven tables with sorting, selection, and density, prefer the
+ *   composed DataTable component which builds on these primitives.
+ */
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -6,7 +24,7 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
+  <div className="relative w-full overflow-x-auto">
     <table
       ref={ref}
       className={cn("w-full caption-bottom text-sm", className)}
@@ -20,7 +38,7 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
+  <thead ref={ref} className={cn("[&_tr]:border-b [&_tr]:border-border", className)} {...props} />
 ))
 TableHeader.displayName = "TableHeader"
 
@@ -58,7 +76,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+      "border-b border-border/50 transition-colors data-[state=selected]:bg-accent/30",
       className
     )}
     {...props}
@@ -73,7 +91,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
+      "px-4 py-2.5 text-left align-middle font-semibold text-muted-foreground [&:has([role=checkbox])]:pr-0",
       className
     )}
     {...props}
@@ -87,7 +105,7 @@ const TableCell = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
+    className={cn("px-4 py-3 align-middle [&:has([role=checkbox])]:pr-0", className)}
     {...props}
   />
 ))

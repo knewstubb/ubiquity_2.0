@@ -9,6 +9,8 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { ChooserModal, type ChooserOption } from '@/components/composed/chooser-modal'
+import { ChipInput } from '@/components/composed/chip-input'
+import { SectionDivider } from '@/components/composed/section-divider'
 import { CloseButton } from '@/components/ui/close-button'
 
 type ConnectionType = 'aws-s3' | 'azure-blob' | 'sftp'
@@ -32,6 +34,7 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
     editConnection ? (editConnection.protocol === 'S3' ? 'aws-s3' : editConnection.protocol === 'Azure Blob' ? 'azure-blob' : 'sftp') : null,
   )
   const [basePath, setBasePath] = useState(editConnection?.basePath ?? '')
+  const [alertEmails, setAlertEmails] = useState<string[]>(editConnection?.alertEmails ?? ['contact@gmail.com'])
 
   // Step 2 — AWS S3
   const s3Config = editConnection?.protocol === 'S3' ? editConnection.config as { region: string; bucket: string; prefix: string; accessKeyId?: string; secretAccessKey?: string } : null
@@ -80,6 +83,13 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
       accountName !== (blobConfig?.accountName ?? '') ||
       sasToken !== (blobConfig?.sasToken ?? '')
     ))
+  ) : true
+
+  // Track whether ANY field has changed (for button label)
+  const hasAnyChange = isEditing ? (
+    hasConnectionChanged ||
+    name !== (editConnection?.name ?? '') ||
+    basePath !== (editConnection?.basePath ?? '')
   ) : true
 
   const canProceedStep1 = connectionType !== null
@@ -159,17 +169,22 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
   return (
     <Dialog open={true} onOpenChange={(open) => { if (!open) onClose() }}>
       <DialogContent className="max-w-[560px] p-0 gap-0">
-        <DialogHeader className="border-b border-border px-6 py-6 space-y-0">
-          <div className="flex items-center justify-between">
-            <DialogTitle>
-              {isEditing ? (editConnection.name || `Edit ${getTypeLabel()} Connection`) : `Set Up ${getTypeLabel()} Connection`}
-            </DialogTitle>
+        <DialogHeader className="border-b border-border px-6 py-6 space-y-0 items-start">
+            <div className="flex flex-col gap-0.5">
+              <DialogTitle>
+                {isEditing ? (editConnection.name || `Edit ${getTypeLabel()} Connection`) : `Set Up ${getTypeLabel()} Connection`}
+              </DialogTitle>
+              <p className="text-sm text-muted-foreground m-0">
+                {connectionType === 'aws-s3' && `S3 connection${awsRegion ? ` · ${awsRegion}` : ''}`}
+                {connectionType === 'azure-blob' && `Azure Blob${accountName ? ` · ${accountName}` : ''}`}
+                {connectionType === 'sftp' && `SFTP${hostname ? ` · ${hostname}` : ''}`}
+              </p>
+            </div>
             <CloseButton
               size="lg"
               onClick={onClose}
               aria-label="Close"
             />
-          </div>
           <DialogDescription className="sr-only">Configure connection settings</DialogDescription>
         </DialogHeader>
 
@@ -183,8 +198,8 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
           <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="button" onClick={handleCreate} disabled={!testPassed}>
-            {isEditing ? 'Update Connection' : 'Create Connection'}
+          <Button type="button" onClick={handleCreate} disabled={!isEditing && !testPassed}>
+            {isEditing ? (hasAnyChange ? 'Save Changes' : 'Done') : 'Create Connection'}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -205,80 +220,79 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
             <Label htmlFor="conn-base-path">Base Path</Label>
             <Input id="conn-base-path" type="text" placeholder="/company/inbound/" value={basePath} onChange={(e) => setBasePath(e.target.value)} />
           </div>
+          <ChipInput values={alertEmails} onChange={setAlertEmails} label="Alert Email(s)" type="email" placeholder="Add email…" aria-label="Alert email addresses" />
         </div>
+
+        <SectionDivider label="Connection Settings" />
 
         {/* Connection Settings section */}
-        <div>
-          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Connection Settings</h3>
-          <div className="space-y-3">
-            <div className="space-y-2">
-              <Label htmlFor="aws-region">AWS Region</Label>
-              <Select value={awsRegion} onValueChange={setAwsRegion}>
-                <SelectTrigger id="aws-region">
-                  <SelectValue placeholder="Select Region" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="us-east-1">us-east-1</SelectItem>
-                  <SelectItem value="us-west-2">us-west-2</SelectItem>
-                  <SelectItem value="eu-west-1">eu-west-1</SelectItem>
-                  <SelectItem value="ap-southeast-2">ap-southeast-2</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bucket-name">Bucket Name</Label>
-              <Input id="bucket-name" type="text" placeholder="Add bucket" value={bucketName} onChange={(e) => setBucketName(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="s3-prefix">Prefix (optional)</Label>
-              <Input id="s3-prefix" type="text" placeholder="Add prefix" value={prefix} onChange={(e) => setPrefix(e.target.value)} />
-            </div>
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <Label htmlFor="aws-region">AWS Region</Label>
+            <Select value={awsRegion} onValueChange={setAwsRegion}>
+              <SelectTrigger id="aws-region">
+                <SelectValue placeholder="Select Region" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="us-east-1">us-east-1</SelectItem>
+                <SelectItem value="us-west-2">us-west-2</SelectItem>
+                <SelectItem value="eu-west-1">eu-west-1</SelectItem>
+                <SelectItem value="ap-southeast-2">ap-southeast-2</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bucket-name">Bucket Name</Label>
+            <Input id="bucket-name" type="text" placeholder="Add bucket" value={bucketName} onChange={(e) => setBucketName(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="s3-prefix">Prefix (optional)</Label>
+            <Input id="s3-prefix" type="text" placeholder="Add prefix" value={prefix} onChange={(e) => setPrefix(e.target.value)} />
           </div>
         </div>
 
+        <SectionDivider label="Authentication" />
+
         {/* Authentication section */}
-        <div className="bg-secondary rounded-lg px-5 py-5">
-          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Authentication</h3>
-          <div className="space-y-3">
-            <div className="space-y-2">
-              <Label htmlFor="aws-auth-method">Authentication Method</Label>
-              <Select value={awsAuthMethod} onValueChange={(v) => setAwsAuthMethod(v as AwsAuthMethod)}>
-                <SelectTrigger id="aws-auth-method">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="access-key">Access Key</SelectItem>
-                  <SelectItem value="iam-role">IAM Role</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {awsAuthMethod === 'access-key' ? (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="access-key-id">Access Key ID</Label>
-                  <Input id="access-key-id" type="text" value={accessKeyId} onChange={(e) => setAccessKeyId(e.target.value)} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="secret-access-key">Secret Access Key</Label>
-                  <Input id="secret-access-key" type="password" value={secretAccessKey} onChange={(e) => setSecretAccessKey(e.target.value)} />
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="aws-account-id">AWS Account ID</Label>
-                  <Input id="aws-account-id" type="text" value={awsAccountId} onChange={(e) => setAwsAccountId(e.target.value)} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="iam-role-arn">IAM Role ARN</Label>
-                  <Input id="iam-role-arn" type="text" value={iamRoleArn} onChange={(e) => setIamRoleArn(e.target.value)} />
-                </div>
-              </>
-            )}
-
-            {renderTestConnectionRow()}
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <Label htmlFor="aws-auth-method">Authentication Method</Label>
+            <Select value={awsAuthMethod} onValueChange={(v) => setAwsAuthMethod(v as AwsAuthMethod)}>
+              <SelectTrigger id="aws-auth-method">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="access-key">Access Key</SelectItem>
+                <SelectItem value="iam-role">IAM Role</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+
+          {awsAuthMethod === 'access-key' ? (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="access-key-id">Access Key ID</Label>
+                <Input id="access-key-id" type="text" value={accessKeyId} onChange={(e) => setAccessKeyId(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="secret-access-key">Secret Access Key</Label>
+                <Input id="secret-access-key" type="password" value={secretAccessKey} onChange={(e) => setSecretAccessKey(e.target.value)} />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="aws-account-id">AWS Account ID</Label>
+                <Input id="aws-account-id" type="text" value={awsAccountId} onChange={(e) => setAwsAccountId(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="iam-role-arn">IAM Role ARN</Label>
+                <Input id="iam-role-arn" type="text" value={iamRoleArn} onChange={(e) => setIamRoleArn(e.target.value)} />
+              </div>
+            </>
+          )}
+
+          {renderTestConnectionRow()}
         </div>
       </div>
     )
@@ -298,34 +312,33 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
             <Label htmlFor="conn-base-path">Base Path</Label>
             <Input id="conn-base-path" type="text" placeholder="/company/inbound/" value={basePath} onChange={(e) => setBasePath(e.target.value)} />
           </div>
+          <ChipInput values={alertEmails} onChange={setAlertEmails} label="Alert Email(s)" type="email" placeholder="Add email…" aria-label="Alert email addresses" />
         </div>
+
+        <SectionDivider label="Connection Settings" />
 
         {/* Connection Settings section */}
-        <div>
-          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Connection Settings</h3>
-          <div className="space-y-3">
-            <div className="space-y-2">
-              <Label htmlFor="container-name">Container Name</Label>
-              <Input id="container-name" type="text" value={containerName} onChange={(e) => setContainerName(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="account-name">Account Name</Label>
-              <Input id="account-name" type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)} />
-            </div>
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <Label htmlFor="container-name">Container Name</Label>
+            <Input id="container-name" type="text" value={containerName} onChange={(e) => setContainerName(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="account-name">Account Name</Label>
+            <Input id="account-name" type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)} />
           </div>
         </div>
 
-        {/* Authentication section */}
-        <div className="bg-secondary rounded-lg px-5 py-5">
-          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Authentication</h3>
-          <div className="space-y-3">
-            <div className="space-y-2">
-              <Label htmlFor="sas-token">SAS Token</Label>
-              <Input id="sas-token" type="text" value={sasToken} onChange={(e) => setSasToken(e.target.value)} />
-            </div>
+        <SectionDivider label="Authentication" />
 
-            {renderTestConnectionRow()}
+        {/* Authentication section */}
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <Label htmlFor="sas-token">SAS Token</Label>
+            <Input id="sas-token" type="text" value={sasToken} onChange={(e) => setSasToken(e.target.value)} />
           </div>
+
+          {renderTestConnectionRow()}
         </div>
       </div>
     )
@@ -345,38 +358,37 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
             <Label htmlFor="conn-base-path">Base Path</Label>
             <Input id="conn-base-path" type="text" placeholder="/company/inbound/" value={basePath} onChange={(e) => setBasePath(e.target.value)} />
           </div>
+          <ChipInput values={alertEmails} onChange={setAlertEmails} label="Alert Email(s)" type="email" placeholder="Add email…" aria-label="Alert email addresses" />
         </div>
+
+        <SectionDivider label="Connection Settings" />
 
         {/* Connection Settings section */}
-        <div>
-          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Connection Settings</h3>
-          <div className="space-y-3">
-            <div className="space-y-2">
-              <Label htmlFor="sftp-hostname">Hostname</Label>
-              <Input id="sftp-hostname" type="text" value={hostname} onChange={(e) => setHostname(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="sftp-port">Port</Label>
-              <Input id="sftp-port" type="text" value={port} onChange={(e) => setPort(e.target.value)} />
-            </div>
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <Label htmlFor="sftp-hostname">Hostname</Label>
+            <Input id="sftp-hostname" type="text" value={hostname} onChange={(e) => setHostname(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="sftp-port">Port</Label>
+            <Input id="sftp-port" type="text" value={port} onChange={(e) => setPort(e.target.value)} />
           </div>
         </div>
 
-        {/* Authentication section */}
-        <div className="bg-secondary rounded-lg px-5 py-5">
-          <h3 className="text-base font-semibold tracking-wide text-foreground mb-2">Authentication</h3>
-          <div className="space-y-3">
-            <div className="space-y-2">
-              <Label htmlFor="sftp-username">Username</Label>
-              <Input id="sftp-username" type="text" value={sftpUsername} onChange={(e) => setSftpUsername(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="sftp-ssh-key">Public SSH Key</Label>
-              <Textarea id="sftp-ssh-key" value={sshKey} onChange={(e) => setSshKey(e.target.value)} />
-            </div>
+        <SectionDivider label="Authentication" />
 
-            {renderTestConnectionRow()}
+        {/* Authentication section */}
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <Label htmlFor="sftp-username">Username</Label>
+            <Input id="sftp-username" type="text" value={sftpUsername} onChange={(e) => setSftpUsername(e.target.value)} />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="sftp-ssh-key">Public SSH Key</Label>
+            <Textarea id="sftp-ssh-key" value={sshKey} onChange={(e) => setSshKey(e.target.value)} />
+          </div>
+
+          {renderTestConnectionRow()}
         </div>
       </div>
     )

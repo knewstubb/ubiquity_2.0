@@ -16,7 +16,7 @@ export function TextControl({ value, onChange, label, hideLabel }: TextControlPr
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-8 text-sm"
+        className="h-7 text-xs"
         placeholder={label}
       />
     )
@@ -31,7 +31,7 @@ export function TextControl({ value, onChange, label, hideLabel }: TextControlPr
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-8 text-sm"
+        className="h-7 text-xs"
       />
     </div>
   )

@@ -1,0 +1,404 @@
+- generic:
+  - generic:
+    - navigation:
+      - generic:
+        - button:
+          - generic: U
+        - generic:
+          - button:
+            - generic: Serenity Spa Group
+            - generic:
+              - img
+        - navigation:
+          - generic:
+            - list:
+              - listitem:
+                - generic: Home
+              - listitem:
+                - button:
+                  - text: Campaigns
+                  - img
+              - listitem:
+                - button:
+                  - text: Audience
+                  - img
+              - listitem:
+                - button:
+                  - text: Assets
+                  - img
+              - listitem:
+                - button:
+                  - text: Reporting
+                  - img
+              - listitem:
+                - button:
+                  - text: Admin
+                  - img
+        - button:
+          - img
+          - generic: Search…
+          - generic: ⌘K
+        - button: What's New
+        - generic:
+          - button:
+            - generic: Role
+            - generic: Admin
+            - generic:
+              - img
+        - generic:
+          - generic:
+            - button:
+              - generic: BK
+    - generic:
+      - generic:
+        - navigation:
+          - list:
+            - listitem:
+              - link:
+                - /url: /audiences/databases
+                - text: Audience
+            - listitem:
+              - img
+            - listitem:
+              - link [disabled]: Connectors
+        - generic:
+          - generic:
+            - heading [level=1]: Connectors
+            - paragraph: 5 connections · 11 automations
+          - button: + New Connection
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img:
+                      - img
+                    - generic: "AWS S3:"
+                    - generic: Spa AWS S3 Bucket
+                - generic: 4 of 5 automations active
+                - generic:
+                  - button:
+                    - img
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Daily Contact Import
+                  - generic:
+                    - img
+                    - text: Contacts
+                  - generic:
+                    - generic: Completed
+                    - generic: 2 minutes ago
+                  - generic:
+                    - generic:
+                      - switch [checked]
+                    - button:
+                      - img
+                - button:
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Treatment History Sync
+                  - generic:
+                    - img
+                    - text: treatments
+                  - generic:
+                    - generic: Completed
+                    - generic: 2 minutes ago
+                  - generic:
+                    - generic:
+                      - switch [checked]
+                    - button:
+                      - img
+                - button:
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Daily Contact Import
+                  - generic:
+                    - img
+                    - text: Contacts
+                  - generic:
+                    - generic: Completed
+                    - generic: 2 minutes ago
+                  - generic:
+                    - generic:
+                      - switch [checked]
+                    - button:
+                      - img
+                - button:
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Product Catalogue Import
+                  - generic:
+                    - img
+                    - text: products
+                  - generic:
+                    - generic: Completed
+                    - generic: 2 minutes ago
+                  - generic:
+                    - generic:
+                      - switch
+                    - button:
+                      - img
+                - button:
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Customer Treatment Summary Export
+                  - generic:
+                    - img
+                    - text: treatments +
+                    - img
+                    - text: contacts
+                  - generic:
+                    - generic: Completed
+                    - generic: 2 minutes ago
+                  - generic:
+                    - generic:
+                      - switch [checked]
+                    - button:
+                      - img
+                - button: + Add Automation
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img:
+                      - img
+                    - generic: "SFTP:"
+                    - generic: Spa SFTP Server
+                - generic: 3 of 3 automations active
+                - generic:
+                  - button:
+                    - img
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Contact Export to CRM
+                  - generic:
+                    - img
+                    - text: Contacts
+                  - generic:
+                    - generic: Completed
+                    - generic: 2 minutes ago
+                  - generic:
+                    - generic:
+                      - switch [checked]
+                    - button:
+                      - img
+                - button:
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Booking Data Import
+                  - generic:
+                    - img
+                    - text: treatments
+                  - generic:
+                    - generic: Completed
+                    - generic: 2 minutes ago
+                  - generic:
+                    - generic:
+                      - switch [checked]
+                    - button:
+                      - img
+                - button:
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Loyalty Members Sync
+                  - generic:
+                    - img
+                    - text: Contacts
+                  - generic:
+                    - generic: Completed
+                    - generic: 2 minutes ago
+                  - generic:
+                    - generic:
+                      - switch [checked]
+                    - button:
+                      - img
+                - button: + Add Automation
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img:
+                      - img
+                    - generic: "AWS S3:"
+                    - generic: Spa Legacy AWS S3 Import
+                - button:
+                  - img
+                  - text: Fix connection
+                - generic:
+                  - button:
+                    - img
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Legacy Contact Sync
+                  - generic:
+                    - img
+                    - text: Contacts
+                  - generic:
+                    - generic: Completed
+                    - generic: 2 minutes ago
+                  - generic:
+                    - generic:
+                      - switch [checked]
+                    - button:
+                      - img
+                - button:
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Legacy Transaction Import
+                  - generic:
+                    - img
+                    - text: treatments
+                  - generic:
+                    - generic: Completed
+                    - generic: 2 minutes ago
+                  - generic:
+                    - generic:
+                      - switch [checked]
+                    - button:
+                      - img
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img:
+                      - img
+                    - generic: "SFTP:"
+                    - generic: General SFTP Database
+                - generic: 1 of 1 automations active
+                - generic:
+                  - button:
+                    - img
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: Weekly Treatment Sales
+                  - generic:
+                    - img
+                    - text: Transactional
+                  - generic:
+                    - generic: Completed
+                    - generic: 2 minutes ago
+                  - generic:
+                    - generic:
+                      - switch [checked]
+                    - button:
+                      - img
+                - button: + Add Automation
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img:
+                      - img
+                    - generic: "Azure Blob:"
+                    - generic: Spa Azure Blob Storage
+                - button:
+                  - img
+                  - text: Add automation
+                - generic:
+                  - button:
+                    - img
+              - generic:
+                - button: + Add Automation
+      - button:
+        - img
+        - generic: "1"
+      - region "Notifications alt+T"
+    - status
+  - dialog "Set Up AWS S3 Connection" [ref=e446]:
+    - generic [ref=e447]:
+      - generic [ref=e448]:
+        - heading "Set Up AWS S3 Connection" [level=2] [ref=e449]
+        - paragraph [ref=e450]: S3 connection
+      - button "Close" [active] [ref=e451] [cursor=pointer]:
+        - img [ref=e452]
+        - generic [ref=e454]: Close
+      - paragraph [ref=e455]: Configure connection settings
+    - generic [ref=e457]:
+      - generic [ref=e458]:
+        - generic [ref=e459]:
+          - text: Connection Name
+          - textbox "Connection Name" [ref=e460]:
+            - /placeholder: Enter connection name
+        - generic [ref=e461]:
+          - text: Base Path
+          - textbox "Base Path" [ref=e462]:
+            - /placeholder: /company/inbound/
+        - generic [ref=e463]:
+          - paragraph [ref=e465]: Alert Email(s)
+          - generic [ref=e467]:
+            - generic [ref=e468]:
+              - text: contact@gmail.com
+              - button "Remove contact@gmail.com" [ref=e469] [cursor=pointer]:
+                - img [ref=e470]
+            - textbox "Alert email addresses" [ref=e472]:
+              - /placeholder: ""
+            - button "Clear all" [ref=e474] [cursor=pointer]:
+              - img [ref=e475]
+      - generic [ref=e479]: Connection Settings
+      - generic [ref=e481]:
+        - generic [ref=e482]:
+          - text: AWS Region
+          - combobox "AWS Region" [ref=e483] [cursor=pointer]:
+            - generic: Select Region
+            - img [ref=e484]
+        - generic [ref=e486]:
+          - text: Bucket Name
+          - textbox "Bucket Name" [ref=e487]:
+            - /placeholder: Add bucket
+        - generic [ref=e488]:
+          - text: Prefix (optional)
+          - textbox "Prefix (optional)" [ref=e489]:
+            - /placeholder: Add prefix
+      - generic [ref=e492]: Authentication
+      - generic [ref=e494]:
+        - generic [ref=e495]:
+          - text: Authentication Method
+          - combobox "Authentication Method" [ref=e496] [cursor=pointer]:
+            - generic: Access Key
+            - img [ref=e497]
+        - generic [ref=e499]:
+          - text: Access Key ID
+          - textbox "Access Key ID" [ref=e500]
+        - generic [ref=e501]:
+          - text: Secret Access Key
+          - textbox "Secret Access Key" [ref=e502]
+        - generic [ref=e503]:
+          - generic [ref=e504]: Test your connection settings
+          - button "Test Connection" [ref=e505] [cursor=pointer]
+    - generic [ref=e506]:
+      - button "Cancel" [ref=e507] [cursor=pointer]
+      - button "Create Connection" [disabled]

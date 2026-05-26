@@ -1,0 +1,16 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: U
+      - generic [ref=e7]: biquity
+    - heading "Sign in to your account" [level=1] [ref=e8]
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Email
+        - textbox "Email" [ref=e12]: knewstubb@gmail.com
+      - generic [ref=e13]:
+        - generic [ref=e14]: Password
+        - textbox "Password" [ref=e15]: 10MoanaRoad
+      - alert [ref=e18]: Invalid email or password
+      - button "Sign In" [ref=e16] [cursor=pointer]
+  - status

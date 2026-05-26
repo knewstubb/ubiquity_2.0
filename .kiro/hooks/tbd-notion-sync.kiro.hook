@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "name": "Design Decision Sync",
+  "description": "When a docs/ux/ file, design token file, or component file is edited, scans for TBD markers and syncs them to the Notion 'Design Decisions (TBD Tracker)' database — creating new items for new TBDs and marking items Done when TBDs are resolved. Categorises decisions as UX, UI, or Technical based on file location.",
+  "version": "2",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "docs/ux/**/*.md",
+      "docs/ui/**/*.md",
+      "docs/design-tokens.md",
+      "src/components/ui/**/*.tsx",
+      "src/components/composed/**/*.tsx",
+      "src/styles/globals.css"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A design-related file was just edited. Scan the file for any lines containing 'TBD' (case-insensitive). Compare against the Notion database 'Design Decisions (TBD Tracker)' (data source: collection://a7288b72-685a-47e4-b5dd-a37179de57c5). For each TBD found in the file that doesn't have a matching open item in Notion, create a new page with Status='To-do', Assignee set to user ID 'a28080c2-1e34-44b7-82d5-18965475a7a9' (Brad Knewstubb), the Decision text extracted from context around the TBD, the Page field set to the file path, Context describing what needs to be decided, and Type set based on the file location: 'UX' for docs/ux/ files, 'UI' for docs/ui/ files, component files (src/components/), and design token files (docs/design-tokens.md, src/styles/), or 'Technical' for anything else. For any existing open items in Notion whose Page matches this file but whose TBD text is no longer present in the file, update their Status to 'Complete' and set the Resolved date to today. Do not create duplicates — match on Decision text similarity. Status workflow: 'To-do' → 'In progress' → 'Complete'."
+  }
+}

@@ -5,7 +5,9 @@ import type { NotificationConfig as ExporterNotificationConfig, ScheduleConfig }
 export type ExportDataType =
   | 'contact'
   | 'transactional'
-  | 'transactional_with_contact';
+  | 'mailout';
+
+export type ExportSources = ExportDataType[];
 
 export type TransactionalSource = 'treatments' | 'products';
 

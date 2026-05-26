@@ -106,18 +106,24 @@ small {
 
 /* ── Scrollbar (Webkit) ── */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F4F4F5;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #A1A1AA;
+  background: transparent;
   border-radius: 9999px;
+  transition: background 0.2s;
+}
+
+*:hover > ::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-border);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #71717A;
+  background: var(--neutral-hover);
 }

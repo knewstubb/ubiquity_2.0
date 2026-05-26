@@ -103,14 +103,12 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }
 
   return (
     <div className="flex flex-col gap-8">
-      <h3 className="m-0 text-xl font-semibold text-primary">Notifications</h3>
-      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Choose who gets notified when imports run, fail, or files are missing.</p>
 
-      {/* ── Row 1: Failure (required) ── */}
+      {/* ── Row 1: Failure ── */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">Failure (required)</p>
+            <p className="text-sm font-semibold text-foreground m-0">Failure <span className="text-destructive">*</span></p>
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">
             Be alerted by email when a connector run fails

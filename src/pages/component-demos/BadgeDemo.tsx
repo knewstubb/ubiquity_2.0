@@ -10,6 +10,7 @@ interface BadgeDemoProps {
   size?: 'sm' | 'default' | 'lg'
   'show-icon'?: boolean
   outline?: boolean
+  clickable?: boolean
 }
 
 const SIZE_CLASSES = {
@@ -28,6 +29,8 @@ export default function BadgeDemo(props: BadgeDemoProps) {
     const showIcon = props['show-icon'] ?? false
     const sizeClass = SIZE_CLASSES[size]
     const isOutline = props.outline ?? false
+    const isClickable = props.clickable ?? false
+    const clickableClass = isClickable ? 'cursor-pointer hover:brightness-90 transition-all' : ''
 
     // Semantic mode uses Badge variants directly
     if (mode === 'semantic') {
@@ -53,7 +56,7 @@ export default function BadgeDemo(props: BadgeDemoProps) {
         : (solidVariantMap[semanticColour] ?? 'success')
 
       return (
-        <Badge variant={variant as any} className={sizeClass}>
+        <Badge variant={variant as any} className={cn(sizeClass, clickableClass)}>
           {showIcon && <CheckCircle size={12} weight="fill" />}
           {text}
         </Badge>
@@ -68,7 +71,7 @@ export default function BadgeDemo(props: BadgeDemoProps) {
 
     return (
       <span
-        className={cn('inline-flex items-center gap-1 rounded-full font-semibold border', sizeClass)}
+        className={cn('inline-flex items-center gap-1 rounded-full font-semibold border', sizeClass, clickableClass)}
         style={style}
       >
         {showIcon && <CheckCircle size={12} weight="fill" />}

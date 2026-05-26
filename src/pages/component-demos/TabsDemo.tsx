@@ -3,14 +3,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 interface TabsDemoProps {
   'tab-count'?: number
+  'show-badge'?: boolean
   orientation?: string
   'show-content'?: boolean
+  variant?: string
+  size?: string
 }
 
 export default function TabsDemo(props: TabsDemoProps) {
   const tabCount = props['tab-count']
+  const showBadge = props['show-badge'] ?? false
   const orientation = props.orientation
   const showContent = props['show-content']
+  const variant = (props.variant ?? 'pill') as 'pill' | 'underline'
+  const size = (props.size ?? 'default') as 'default' | 'compact'
 
   const hasControls = tabCount !== undefined
 
@@ -24,18 +30,20 @@ export default function TabsDemo(props: TabsDemoProps) {
       'Recent activity and audit log.',
       'System logs and debugging info.',
     ]
+    const badgeCounts = [12, 5, 3, 8, 2, 1]
     const tabs = Array.from({ length: tabCount }, (_, i) => ({
       value: `tab-${i}`,
       label: tabLabels[i] || `Tab ${i + 1}`,
       description: tabDescriptions[i] || `Content for tab ${i + 1}.`,
+      badge: showBadge ? badgeCounts[i] : undefined,
     }))
 
     return (
       <div className="max-w-lg">
         <Tabs defaultValue="tab-0" orientation={orientation === 'vertical' ? 'vertical' : 'horizontal'} className={orientation === 'vertical' ? 'flex gap-4' : ''}>
-          <TabsList className={orientation === 'vertical' ? 'flex-col h-auto' : ''}>
+          <TabsList variant={variant} size={size} className={orientation === 'vertical' ? 'flex-col h-auto' : ''}>
             {tabs.map((tab) => (
-              <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
+              <TabsTrigger key={tab.value} value={tab.value} badge={tab.badge}>{tab.label}</TabsTrigger>
             ))}
           </TabsList>
           {showContent && tabs.map((tab) => (

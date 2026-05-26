@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { UploadSimple, X, FileCsv } from '@phosphor-icons/react';
+import { UploadSimple, X, FileCsv, CaretDown, CaretUp } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { SegmentedControl } from '@/components/composed/segmented-control';
 import { PrefixInput } from '@/components/composed/prefix-input';
@@ -7,13 +7,14 @@ import { HelpPopover } from '@/components/composed/help-popover';
 import { Input } from '../ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 import { parse } from '../../utils/csv-parser';
-import type { ImporterConfig, PathMode, ImportDataType } from '../../models/importer';
+import type { ImporterConfig, PathMode, ImportDataType, CsvDelimiter, CsvEncoding } from '../../models/importer';
 
 interface FileSettingsStepProps {
   config: ImporterConfig;
   basePath: string;
   connectionName: string;
   onUpdate: (patch: Partial<ImporterConfig>) => void;
+  isEditing?: boolean;
 }
 
 const PATH_MODES: { value: PathMode; label: string }[] = [
@@ -40,11 +41,13 @@ export function FileSettingsStep({
   basePath,
   connectionName,
   onUpdate,
+  isEditing = false,
 }: FileSettingsStepProps) {
   const [patternError, setPatternError] = useState('');
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [transactionalTable, setTransactionalTable] = useState(config.transactionalTable ?? '');
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { filePathConfig, dataType } = config;
   const { pathMode, folderName, readPath, errorFolderPath, archiveFolderPath, fileNamePattern } =
@@ -68,16 +71,19 @@ export function FileSettingsStep({
   }
 
   function validateFilePattern(value: string) {
-    if (!value.includes('*')) {
-      setPatternError('');
+    const wildcardCount = (value.match(/\*/g) || []).length;
+    if (wildcardCount > 1) {
+      setPatternError('Only one wildcard (*) is allowed per pattern');
       return;
     }
-    const beforeWildcard = value.split('*')[0];
-    if (beforeWildcard.length === 0) {
-      setPatternError('A filename must be included when using a wildcard');
-    } else {
-      setPatternError('');
+    if (wildcardCount === 1) {
+      const beforeWildcard = value.split('*')[0];
+      if (beforeWildcard.length === 0) {
+        setPatternError('A filename must be included when using a wildcard');
+        return;
+      }
     }
+    setPatternError('');
   }
 
   function handleFileSelect(file: File) {
@@ -167,13 +173,11 @@ export function FileSettingsStep({
 
   return (
     <div className="flex flex-col gap-8">
-      <h3 className="m-0 text-xl font-semibold text-primary">File Settings</h3>
-      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Configure how files are read and where they are stored.</p>
 
       {/* Name */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
-          <p className="text-sm font-semibold text-foreground m-0">Importer Name</p>
+          <p className="text-sm font-semibold text-foreground m-0">Importer Name <span className="text-destructive">*</span></p>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">A unique name for this importer</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
@@ -225,7 +229,7 @@ export function FileSettingsStep({
                   title="Must be unique. Lowercase letters and hyphens only."
                 />
               </div>
-              <div className="bg-accent border border-primary rounded-lg py-3 px-4 flex flex-col gap-1">
+              <div className="bg-accent rounded-lg py-3 px-4 flex flex-col gap-1">
                 <p className="text-xs font-semibold text-primary m-0 mb-1">Folders that will be created</p>
                 <p className="text-xs text-primary font-normal m-0 leading-relaxed">{`${effectiveBasePath}${folderName || 'your-folder'}/`}</p>
                 <p className="text-xs text-primary font-normal m-0 leading-relaxed">{`${effectiveBasePath}${folderName || 'your-folder'}/error/`}</p>
@@ -250,15 +254,27 @@ export function FileSettingsStep({
           {pathMode === 'custom' && (
             <>
               <div>
-                <p className="text-xs font-medium text-muted-foreground m-0">Read Path</p>
+                <p className="text-xs font-medium text-muted-foreground m-0">Read Path <span className="text-destructive">*</span></p>
                 <Input
                   value={readPath}
-                  onChange={(e) => updatePath({ readPath: e.target.value })}
+                  onChange={(e) => {
+                    const newReadPath = e.target.value;
+                    const basePath = newReadPath.replace(/\/$/, '');
+                    const patch: Partial<typeof filePathConfig> = { readPath: newReadPath };
+                    // Autocomplete error and archive paths when they're empty or match the previous auto-generated value
+                    if (!errorFolderPath || errorFolderPath === readPath.replace(/\/$/, '') + '/error/') {
+                      patch.errorFolderPath = basePath ? basePath + '/error/' : '';
+                    }
+                    if (!archiveFolderPath || archiveFolderPath === readPath.replace(/\/$/, '') + '/archive/') {
+                      patch.archiveFolderPath = basePath ? basePath + '/archive/' : '';
+                    }
+                    updatePath(patch);
+                  }}
                   placeholder="/custom/inbound/"
                 />
               </div>
               <div>
-                <p className="text-xs font-medium text-muted-foreground m-0">Error Folder Path</p>
+                <p className="text-xs font-medium text-muted-foreground m-0">Error Folder Path <span className="text-destructive">*</span></p>
                 <Input
                   value={errorFolderPath}
                   onChange={(e) => updatePath({ errorFolderPath: e.target.value })}
@@ -266,7 +282,7 @@ export function FileSettingsStep({
                 />
               </div>
               <div>
-                <p className="text-xs font-medium text-muted-foreground m-0">Archive Folder Path</p>
+                <p className="text-xs font-medium text-muted-foreground m-0">Archive Folder Path <span className="text-destructive">*</span></p>
                 <Input
                   value={archiveFolderPath}
                   onChange={(e) => updatePath({ archiveFolderPath: e.target.value })}
@@ -278,11 +294,11 @@ export function FileSettingsStep({
         </div>
       </div>
 
-      {/* Sample File */}
+      {/* Sample CSV */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">Sample File</p>
+            <p className="text-sm font-semibold text-foreground m-0">Sample CSV {!isEditing && <span className="text-destructive">*</span>}</p>
             <HelpPopover
               title="Why does the sample file matter?"
               body="Your sample file defines the permanent column structure for this importer. Every production file you import later must match this exact format — same columns, same order. The file must be a CSV and under 50MB."
@@ -302,44 +318,63 @@ export function FileSettingsStep({
             aria-hidden="true"
             tabIndex={-1}
           />
-          {uploadedFileName ? (
-            <div className="border border-border rounded-md py-2 px-4 flex flex-row items-center gap-2 h-10">
-              <FileCsv size={20} className="text-primary shrink-0" />
-              <p className="text-sm text-foreground m-0 flex-1 truncate">
-                {truncateFilename(uploadedFileName)}
-              </p>
-              <button
-                type="button"
-                onClick={handleRemoveFile}
-                className="text-tertiary-foreground hover:text-foreground transition-colors p-0.5 rounded"
-                aria-label="Remove file"
-              >
-                <X size={16} />
-              </button>
-            </div>
-          ) : (
-            <div
-              className={cn(
-                "border-2 border-dashed rounded-md py-2 px-4 flex flex-row items-center gap-2 cursor-pointer h-10 transition-colors duration-150 hover:border-primary hover:bg-accent",
-                fileError ? "border-destructive" : "border-border"
-              )}
-              role="button"
-              tabIndex={0}
-              aria-label="Upload sample file"
-              onClick={handleDropzoneClick}
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDropzoneClick(); }}
-            >
-              <div className="text-tertiary-foreground flex items-center">
-                <UploadSimple size={20} />
+          <div className="flex flex-col">
+            {uploadedFileName ? (
+              <div className="border-[1.5px] border-border rounded-md py-2 px-4 flex flex-row items-center gap-2 h-14">
+                <FileCsv size={20} className="text-primary shrink-0" />
+                <p className="text-sm text-foreground m-0 flex-1 truncate">
+                  {truncateFilename(uploadedFileName)}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleRemoveFile}
+                  className="text-tertiary-foreground hover:text-foreground transition-colors p-0.5 rounded"
+                  aria-label="Remove file"
+                >
+                  <X size={16} />
+                </button>
               </div>
-              <p className="text-sm text-tertiary-foreground m-0 whitespace-nowrap">
-                Drag & drop a file here, or{' '}
-                <span className="text-primary font-medium underline cursor-pointer">browse</span>
-              </p>
-            </div>
-          )}
+            ) : (
+              <div
+                className={cn(
+                  "border-2 border-dashed rounded-md flex items-center justify-center gap-2 cursor-pointer h-14 transition-colors duration-150 hover:border-primary hover:bg-accent",
+                  fileError ? "border-destructive" : "border-border"
+                )}
+                role="button"
+                tabIndex={0}
+                aria-label="Upload sample file"
+                onClick={handleDropzoneClick}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDropzoneClick(); }}
+              >
+                <div className="text-tertiary-foreground flex items-center">
+                  <UploadSimple size={20} />
+                </div>
+                <p className="text-sm text-tertiary-foreground m-0 whitespace-nowrap">
+                  Drag & drop a file here, or{' '}
+                  <span className="text-primary font-medium underline cursor-pointer">browse</span>
+                </p>
+              </div>
+            )}
+
+            {/* Advanced toggle link */}
+            <button
+              type="button"
+              className="mt-2 flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors bg-transparent border-none cursor-pointer p-0"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+            >
+              {showAdvanced ? <CaretUp size={12} /> : <CaretDown size={12} />}
+              {showAdvanced ? 'Hide advanced options' : 'Advanced options'}
+            </button>
+
+            {/* Advanced fields — indented in a subtle box */}
+            {showAdvanced && (
+              <div className="mt-3 bg-secondary rounded-md px-4 py-3">
+                <CsvFormatFields config={config} onUpdate={onUpdate} />
+              </div>
+            )}
+          </div>
           {fileError && (
             <p className="text-xs text-destructive -mt-1 mb-0">{fileError}</p>
           )}
@@ -378,7 +413,7 @@ export function FileSettingsStep({
               patternError && "border-destructive focus-visible:border-destructive focus-visible:shadow-ring-destructive"
             )}
             value={fileNamePattern}
-            onChange={(e) => updatePath({ fileNamePattern: e.target.value })}
+            onChange={(e) => { updatePath({ fileNamePattern: e.target.value }); validateFilePattern(e.target.value); }}
             onBlur={(e) => validateFilePattern(e.target.value)}
             placeholder="filename*.csv"
             title="Which filenames to look for. Use * to match any characters."
@@ -454,3 +489,64 @@ export function FileSettingsStep({
 }
 
 
+
+
+/* ── CSV Format Fields (inside dropzone card) ── */
+
+const DELIMITER_OPTIONS: { value: CsvDelimiter; label: string }[] = [
+  { value: 'comma', label: 'Comma (,)' },
+  { value: 'tab', label: 'Tab' },
+  { value: 'pipe', label: 'Pipe (|)' },
+  { value: 'semicolon', label: 'Semicolon (;)' },
+];
+
+const ENCODING_OPTIONS: { value: CsvEncoding; label: string }[] = [
+  { value: 'utf-8', label: 'UTF-8' },
+  { value: 'iso-8859-1', label: 'ISO-8859-1' },
+  { value: 'windows-1252', label: 'Windows-1252' },
+];
+
+function CsvFormatFields({ config, onUpdate }: { config: ImporterConfig; onUpdate: (patch: Partial<ImporterConfig>) => void }) {
+  const csvFormat = config.csvFormat ?? { delimiter: 'comma' as CsvDelimiter, encoding: 'utf-8' as CsvEncoding, hasHeaderRow: true };
+
+  function updateCsvFormat(patch: Partial<typeof csvFormat>) {
+    onUpdate({ csvFormat: { ...csvFormat, ...patch } });
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <div>
+        <p className="text-xs font-medium text-muted-foreground m-0">Delimiter</p>
+        <Select
+          value={csvFormat.delimiter}
+          onValueChange={(v) => updateCsvFormat({ delimiter: v as CsvDelimiter })}
+        >
+          <SelectTrigger aria-label="CSV delimiter">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {DELIMITER_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
+        <p className="text-xs font-medium text-muted-foreground m-0">Encoding</p>
+        <Select
+          value={csvFormat.encoding}
+          onValueChange={(v) => updateCsvFormat({ encoding: v as CsvEncoding })}
+        >
+          <SelectTrigger aria-label="File encoding">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {ENCODING_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  );
+}

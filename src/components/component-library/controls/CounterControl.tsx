@@ -1,6 +1,5 @@
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
+import { NumberStepper } from '@/components/composed/number-stepper'
 
 interface CounterControlProps {
   value: number
@@ -9,44 +8,25 @@ interface CounterControlProps {
   min: number
   max: number
   step: number
-  /** When 'active', the value display turns teal/green when value > 0 */
+  /** When 'active', the value display turns teal/green when value > min */
   variant?: 'default' | 'active'
 }
 
 export function CounterControl({ value, onChange, label, min, max, step, variant = 'default' }: CounterControlProps) {
-  const isActive = variant === 'active' && value > 0
-
   return (
     <div className="flex items-center justify-between gap-3">
       <Label className="text-sm font-medium text-muted-foreground">
         {label}
       </Label>
-      <div className="flex items-center gap-1">
-        <Button
-          variant="secondaryOutline"
-          size="icon"
-          className="h-6 w-6 shrink-0"
-          disabled={value <= min}
-          onClick={() => onChange(Math.max(min, value - step))}
-        >
-          −
-        </Button>
-        <span className={cn(
-          "w-6 text-center text-xs font-medium tabular-nums",
-          isActive && "text-primary"
-        )}>
-          {value}
-        </span>
-        <Button
-          variant="secondaryOutline"
-          size="icon"
-          className="h-6 w-6 shrink-0"
-          disabled={value >= max}
-          onClick={() => onChange(Math.min(max, value + step))}
-        >
-          +
-        </Button>
-      </div>
+      <NumberStepper
+        value={value}
+        onValueChange={onChange}
+        min={min}
+        max={max}
+        step={step}
+        size="sm"
+        variant={variant === 'active' ? 'toggle' : 'plain'}
+      />
     </div>
   )
 }

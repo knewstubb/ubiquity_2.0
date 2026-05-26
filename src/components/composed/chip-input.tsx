@@ -1,3 +1,24 @@
+/**
+ * @component ChipInput
+ * @description Multi-value input that converts typed text into removable chips.
+ * Supports free-text entry (Enter/Tab/comma to commit) and optional dropdown selection.
+ *
+ * @designDecisions
+ * - Chips use pill shape (rounded-full) with primary border to distinguish from static badges
+ * - Validation pill appears below the input to give immediate feedback without blocking entry
+ * - Dropdown stays open after selection so users can pick multiple options in sequence
+ * - 4px radius on the container per docs/ui/borders-radius.md
+ *
+ * @usage
+ * - Use for multi-email fields (recipients, CC, alert emails)
+ * - Use with options prop for constrained multi-select (e.g. selecting from a list of roles)
+ * - Prefer over a multi-select dropdown when users need to see all selected values at once
+ *
+ * @sizes
+ * - sm: compact contexts like table filters or inline forms
+ * - default: standard form fields
+ * - lg: prominent inputs or touch-friendly contexts
+ */
 import { useState, useRef, type KeyboardEvent } from 'react';
 import { X, CaretDown, EnvelopeSimple } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
@@ -100,7 +121,7 @@ export function ChipInput({
     if (!values.includes(option)) {
       onChange([...values, option]);
     }
-    setDropdownOpen(false);
+    setInputValue('');
     inputRef.current?.focus();
   }
 

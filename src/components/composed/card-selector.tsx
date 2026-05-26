@@ -1,3 +1,26 @@
+/**
+ * @component CardSelector
+ * @description Selectable card with icon, label, and checkmark badge for single/multi-choice selections.
+ *
+ * @designDecisions
+ * - Uses bg-accent (not bg-secondary) for selected state to provide clear visual distinction
+ * - Shadow-md on selected state reinforces elevation hierarchy (selected = raised)
+ * - Selected hover deepens shadow (shadow-lg) rather than changing colour — already at full teal
+ * - Unselected hover previews the selected palette (teal border + text + accent/25 bg)
+ * - Checkmark badge positioned -top-2 -right-2 to overlap border without clipping content
+ * - transition-colors (not transition-all) to avoid animating shadow/transform on hover
+ * - Disabled state relies on native HTML disabled attribute (no explicit opacity class)
+ *
+ * @usage
+ * - Use for 2–6 option selections where each option benefits from an icon
+ * - Prefer over radio buttons when options are visual/categorical
+ * - Wrap in a grid container at the usage site to control layout
+ *
+ * @variants
+ * - selected: teal border, accent background, shadow-md, hover deepens to shadow-lg, checkmark badge
+ * - unselected: neutral border, background, muted text, hover previews teal palette
+ * - disabled: native HTML disabled (no pointer events via browser default)
+ */
 import { Check } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 
@@ -22,13 +45,13 @@ export function CardSelector({
     <button
       type="button"
       className={cn(
-        'relative flex flex-col items-center justify-center gap-2 rounded-md border px-4 py-3 transition-all',
-        'hover:border-primary hover:bg-success-subtle hover:text-primary hover:shadow-md',
+        'relative flex flex-col items-center justify-center gap-2 rounded-md border px-4 py-3 transition-colors duration-150',
         'active:translate-y-px',
         'disabled:opacity-50 disabled:pointer-events-none',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         selected
-          ? 'border-primary text-primary bg-white shadow-md'
-          : 'border-border text-muted-foreground bg-secondary',
+          ? 'border-primary text-primary bg-accent shadow-md hover:shadow-lg'
+          : 'border-border text-muted-foreground bg-background hover:border-primary hover:text-primary hover:bg-accent/25',
         className
       )}
       onClick={onClick}

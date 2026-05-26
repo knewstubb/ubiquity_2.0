@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CaretDown, X } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { HelpPopover } from '@/components/composed/help-popover';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
+import { Switch } from '../ui/switch';
+import { Label } from '../ui/label';
 import type { ContactConfig, TransactionalConfig } from '../../models/importer';
 
 interface ImportConfigStepProps {
@@ -60,18 +62,35 @@ interface ChipInputProps {
 
 function ChipInput({ chips, onRemove, onAdd, onClearAll, availableOptions }: ChipInputProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const remaining = availableOptions.filter((o) => !chips.includes(o));
+  const filtered = remaining.filter((o) => o.toLowerCase().includes(search.toLowerCase()));
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+        setSearch('');
+      }
+    }
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [dropdownOpen]);
 
   return (
-    <div>
-      <p className="text-xs font-medium text-muted-foreground m-0">Fields to be Matched</p>
+    <div ref={containerRef}>
+      <p className="text-xs font-medium text-muted-foreground m-0">Columns to be Matched</p>
       <div className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] relative cursor-text bg-background focus-within:border-primary focus-within:shadow-ring">
         {chips.map((chip) => (
           <span key={chip} className="inline-flex items-center gap-1 border border-primary text-primary rounded-full py-1 px-2 text-xs font-medium leading-none whitespace-nowrap">
             {chip}
             <button
               type="button"
-              className="bg-transparent border-none text-primary cursor-pointer p-0 leading-none flex items-center hover:text-foreground"
+              className="bg-transparent border-none text-primary cursor-pointer p-0 leading-none flex items-center hover:text-destructive"
               onClick={() => onRemove(chip)}
               aria-label={`Remove ${chip}`}
             >
@@ -80,9 +99,11 @@ function ChipInput({ chips, onRemove, onAdd, onClearAll, availableOptions }: Chi
           </span>
         ))}
         <input
+          ref={inputRef}
           className="border-none outline-none text-sm text-foreground bg-transparent flex-1 min-w-[80px] py-0.5 px-0 placeholder:text-tertiary-foreground"
-          placeholder={chips.length === 0 ? 'Select fields…' : ''}
-          readOnly
+          placeholder={chips.length === 0 ? 'Search columns…' : 'Search…'}
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); setDropdownOpen(true); }}
           onFocus={() => setDropdownOpen(true)}
         />
         <div className="flex items-center gap-1 ml-auto">
@@ -99,15 +120,15 @@ function ChipInput({ chips, onRemove, onAdd, onClearAll, availableOptions }: Chi
           <button
             type="button"
             className="bg-transparent border-none text-tertiary-foreground cursor-pointer p-0.5 leading-none flex items-center hover:text-muted-foreground"
-            onClick={() => setDropdownOpen((v) => !v)}
+            onClick={() => { setDropdownOpen((v) => !v); if (!dropdownOpen) inputRef.current?.focus(); }}
             aria-label="Toggle field dropdown"
           >
             <CaretDown size={12} />
           </button>
         </div>
-        {dropdownOpen && remaining.length > 0 && (
+        {dropdownOpen && filtered.length > 0 && (
           <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-50 bg-background border border-border rounded-md shadow-md max-h-[180px] overflow-y-auto">
-            {remaining.map((option) => (
+            {filtered.map((option) => (
               <div
                 key={option}
                 className="py-2 px-3 text-sm text-foreground cursor-pointer transition-colors duration-150 hover:bg-accent hover:text-accent-hover"
@@ -115,13 +136,8 @@ function ChipInput({ chips, onRemove, onAdd, onClearAll, availableOptions }: Chi
                 aria-selected={false}
                 onClick={() => {
                   onAdd(option);
-                  setDropdownOpen(false);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    onAdd(option);
-                    setDropdownOpen(false);
-                  }
+                  setSearch('');
+                  inputRef.current?.focus();
                 }}
                 tabIndex={0}
               >
@@ -130,10 +146,17 @@ function ChipInput({ chips, onRemove, onAdd, onClearAll, availableOptions }: Chi
             ))}
           </div>
         )}
-        {dropdownOpen && remaining.length === 0 && (
-          <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-50 bg-background border border-border rounded-md shadow-md max-h-[180px] overflow-y-auto">
+        {dropdownOpen && remaining.length > 0 && filtered.length === 0 && (
+          <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-50 bg-background border border-border rounded-md shadow-md">
             <div className="py-2 px-3 text-sm text-tertiary-foreground cursor-default">
-              No more fields available
+              No matching columns
+            </div>
+          </div>
+        )}
+        {dropdownOpen && remaining.length === 0 && (
+          <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-50 bg-background border border-border rounded-md shadow-md">
+            <div className="py-2 px-3 text-sm text-tertiary-foreground cursor-default">
+              No more columns available
             </div>
           </div>
         )}
@@ -147,6 +170,8 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
   const [updateType, setUpdateType] = useState<UpdateType>(value.updateType);
   const [blankMode, setBlankMode] = useState<BlankValueMode>(value.blankValueHandling);
   const [chips, setChips] = useState<string[]>(value.matchingFields);
+  const [dedupeEnabled, setDedupeEnabled] = useState(value.dedupe?.enabled ?? false);
+  const [dedupeFields, setDedupeFields] = useState<string[]>(value.dedupe?.fields ?? []);
 
   const pageTitle = type === 'contact' ? 'Contact Configuration' : 'Transactional Configuration';
 
@@ -156,8 +181,9 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
       updateType,
       blankValueHandling: blankMode,
       matchingFields: chips,
+      dedupe: { enabled: dedupeEnabled, fields: dedupeFields },
     });
-  }, [updateType, blankMode, chips]);
+  }, [updateType, blankMode, chips, dedupeEnabled, dedupeFields]);
 
   const handleRemoveChip = (chip: string) => {
     setChips((prev) => prev.filter((c) => c !== chip));
@@ -173,9 +199,6 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
 
   return (
     <div className="flex flex-col gap-8">
-      <h3 className="m-0 text-xl font-semibold text-primary">{pageTitle}</h3>
-      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Set how records are matched, updated, and deduplicated.</p>
-
       {/* Update Type */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
@@ -286,18 +309,18 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
       </div>
       )}
 
-      {/* Matching Fields */}
+      {/* Matching Columns */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">Matching Fields</p>
+            <p className="text-sm font-semibold text-foreground m-0">Matching Columns</p>
             <HelpPopover
               title="How does UbiQuity know if a record already exists?"
-              body="Matching Fields are the columns used to decide whether each row is new or an update. Choose fields that uniquely identify a record, like Customer ID."
+              body="Matching Columns are the columns used to decide whether each row is new or an update. Choose columns that uniquely identify a record, like Customer ID."
             />
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">
-            Select the fields that will be used for matching records during updates
+            Select the columns that will be used for matching records during updates
           </p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
@@ -310,8 +333,155 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
           />
         </div>
       </div>
+
+      {/* Dedupe */}
+      <div className="flex items-start gap-14">
+        <div className="w-40 shrink-0 pt-0 relative">
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm font-semibold text-foreground m-0">Dedupe</p>
+            <HelpPopover
+              title="How does deduplication work?"
+              width="wide"
+              body={
+                <>
+                  <p className="m-0 mb-2">When enabled, UbiQuity checks for duplicate contact records in your file before importing. You choose which column to deduplicate on in the mapping step.</p>
+                  <p className="m-0">Dedupe only applies within a single file. It does not check against contacts already in UbiQuity. To control how existing contacts are handled, use the Update Type setting in the Configuration step.</p>
+                </>
+              }
+            />
+          </div>
+          <p className="text-xs text-tertiary-foreground mt-1 mb-0">
+            Remove duplicate contact records in a column
+          </p>
+        </div>
+        <div className="w-[552px]">
+          <div className="flex items-start gap-3">
+            <div className="flex items-center gap-2 shrink-0 h-10">
+              <Label htmlFor="dedupe-toggle" className="text-sm text-foreground">Enable</Label>
+              <Switch
+                id="dedupe-toggle"
+                checked={dedupeEnabled}
+                onCheckedChange={(checked) => setDedupeEnabled(checked)}
+              />
+            </div>
+            {dedupeEnabled && (
+              <DedupeFieldInput
+                fields={dedupeFields}
+                onRemove={(field) => setDedupeFields((prev) => prev.filter((f) => f !== field))}
+                onAdd={(field) => setDedupeFields((prev) => prev.includes(field) ? prev : [...prev, field])}
+                availableOptions={ALL_FIELD_OPTIONS}
+              />
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
 
+
+
+/* ── Dedupe Field Chip Input ── */
+
+interface DedupeFieldInputProps {
+  fields: string[];
+  onRemove: (field: string) => void;
+  onAdd: (field: string) => void;
+  availableOptions: string[];
+}
+
+function DedupeFieldInput({ fields, onRemove, onAdd, availableOptions }: DedupeFieldInputProps) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const remaining = availableOptions.filter((o) => !fields.includes(o));
+  const filtered = remaining.filter((o) => o.toLowerCase().includes(search.toLowerCase()));
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+        setSearch('');
+      }
+    }
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [dropdownOpen]);
+
+  return (
+    <div className="flex-1 relative" ref={containerRef}>
+      <div
+        className="border border-border rounded-md py-1.5 px-2 flex flex-wrap items-center gap-1.5 min-h-[40px] cursor-text bg-background focus-within:border-primary focus-within:shadow-ring"
+        onClick={() => { setDropdownOpen(true); inputRef.current?.focus(); }}
+      >
+        {fields.map((field) => (
+          <span key={field} className="inline-flex items-center gap-1 border border-primary text-primary rounded-full py-1 px-2 text-xs font-medium leading-none whitespace-nowrap">
+            {field}
+            <button
+              type="button"
+              className="bg-transparent border-none text-primary cursor-pointer p-0 leading-none flex items-center hover:text-destructive"
+              onClick={(e) => { e.stopPropagation(); onRemove(field); }}
+              aria-label={`Remove ${field}`}
+            >
+              <X size={10} weight="bold" />
+            </button>
+          </span>
+        ))}
+        <input
+          ref={inputRef}
+          className="border-none outline-none text-sm text-foreground bg-transparent flex-1 min-w-[80px] py-0.5 px-0 placeholder:text-tertiary-foreground"
+          placeholder={fields.length === 0 ? 'Search columns…' : 'Search…'}
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); setDropdownOpen(true); }}
+          onFocus={() => setDropdownOpen(true)}
+        />
+        <button
+          type="button"
+          className="ml-auto bg-transparent border-none text-tertiary-foreground cursor-pointer p-0.5 leading-none flex items-center hover:text-muted-foreground shrink-0"
+          onClick={(e) => { e.stopPropagation(); setDropdownOpen((v) => !v); if (!dropdownOpen) inputRef.current?.focus(); }}
+          aria-label="Toggle column dropdown"
+        >
+          <CaretDown size={12} />
+        </button>
+      </div>
+      {dropdownOpen && filtered.length > 0 && (
+        <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-50 bg-background border border-border rounded-md shadow-md max-h-[180px] overflow-y-auto">
+          {filtered.map((option) => (
+            <div
+              key={option}
+              className="py-2 px-3 text-sm text-foreground cursor-pointer transition-colors duration-150 hover:bg-accent hover:text-accent-hover"
+              role="option"
+              aria-selected={false}
+              onClick={() => {
+                onAdd(option);
+                setSearch('');
+                inputRef.current?.focus();
+              }}
+              tabIndex={0}
+            >
+              {option}
+            </div>
+          ))}
+        </div>
+      )}
+      {dropdownOpen && remaining.length > 0 && filtered.length === 0 && (
+        <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-50 bg-background border border-border rounded-md shadow-md">
+          <div className="py-2 px-3 text-sm text-tertiary-foreground cursor-default">
+            No matching columns
+          </div>
+        </div>
+      )}
+      {dropdownOpen && remaining.length === 0 && (
+        <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-50 bg-background border border-border rounded-md shadow-md">
+          <div className="py-2 px-3 text-sm text-tertiary-foreground cursor-default">
+            No more columns available
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

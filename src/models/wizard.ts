@@ -23,6 +23,7 @@ export interface WizardDraft {
   connectionId: string | null;
   name: string;
   dataType: ExportDataType | null;
+  selectedSources?: ExportDataType[];
   transactionalSource: TransactionalSource | null;
   enrichmentKeyField: string | null;
   selectedFields: SelectedField[];

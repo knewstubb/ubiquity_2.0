@@ -1,6 +1,4 @@
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowSquareOut } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 import { isVisible } from '@/lib/useControlValues'
 import { Button } from '@/components/ui/button'
@@ -15,7 +13,7 @@ import { PrefixInputControl } from './controls/PrefixInputControl'
 import { ChipArrayControl } from './controls/ChipArrayControl'
 import { ButtonPairControl } from './controls/ButtonPairControl'
 import { CounterControl } from './controls/CounterControl'
-import type { PropDefinition, UsedInLink, ControlValue } from '@/data/componentRegistry'
+import type { PropDefinition, ControlValue } from '@/data/componentRegistry'
 
 export interface SectionGroup {
   section: string | null
@@ -70,7 +68,6 @@ interface ControlsPanelProps {
   onChange: (name: string, value: ControlValue) => void
   onReset: () => void
   isDirty: boolean
-  usedIn?: UsedInLink[]
   renderControls?: (
     values: Record<string, ControlValue>,
     setValue: (name: string, value: ControlValue) => void
@@ -87,7 +84,6 @@ export function ControlsPanel({
   onChange,
   onReset,
   isDirty,
-  usedIn,
   renderControls,
   sectionSpacing = 'space-y-4',
   showDividers = true,
@@ -224,6 +220,7 @@ export function ControlsPanel({
             min={prop.min ?? 0}
             max={prop.max ?? 100}
             step={prop.step ?? 1}
+            variant={prop.variant ?? (prop.min === 0 ? 'active' : 'default')}
           />
         )
       default:
@@ -246,9 +243,9 @@ export function ControlsPanel({
   const customSlot = renderControls ? renderControls(values, onChange) : null
 
   return (
-    <div className={cn("shrink-0 bg-secondary rounded-lg p-4", panelWidth)}>
+    <div className={cn("shrink-0 bg-secondary rounded-lg p-4 flex flex-col", panelWidth)}>
       {/* Controls — grouped by section */}
-      <div className={sectionSpacing}>
+      <div className={cn("flex-1", sectionSpacing)}>
         {sections.map((group, groupIndex) => (
           <div key={group.section ?? `ungrouped-${groupIndex}`} className={cn(groupIndex > 0 && showDividers && 'pt-3 mt-3 border-t border-border')}>
             {/* Show section header: named sections always, "General" only when other named sections exist */}
@@ -257,7 +254,7 @@ export function ControlsPanel({
                 {group.section ?? 'General'}
               </h4>
             )}
-            <div className="space-y-1.5">
+            <div className="space-y-2.5">
               {group.controls
                 .filter((prop) => isVisible(prop, values, propControls))
                 .map((prop) => renderControl(prop))}
@@ -273,34 +270,12 @@ export function ControlsPanel({
         </div>
       )}
 
-      {/* View in context */}
-      {usedIn && usedIn.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-border">
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-sm font-medium text-muted-foreground">Used in</span>
-            {usedIn.map((link) => (
-              <Link
-                key={link.route}
-                to={link.route}
-                className={cn(
-                  'inline-flex items-center gap-1 text-xs text-primary',
-                  'hover:underline'
-                )}
-              >
-                <ArrowSquareOut size={12} />
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Reset button — always visible, disabled when clean */}
       <div className="mt-3 pt-3 border-t border-border">
         <Button
-          variant="secondaryOutline"
+          variant="outline"
           size="sm"
-          className="w-full h-8 text-xs"
+          className="w-full h-7 text-xs"
           onClick={onReset}
           disabled={!isDirty}
         >

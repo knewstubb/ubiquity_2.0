@@ -1,0 +1,79 @@
+- generic [ref=e2]:
+  - navigation "Main navigation" [ref=e4]:
+    - generic [ref=e5]:
+      - button "UbiQuity home" [ref=e6] [cursor=pointer]:
+        - generic [ref=e7]: U
+      - button "Serenity Spa Group" [ref=e10] [cursor=pointer]:
+        - generic [ref=e11]: Serenity Spa Group
+        - img [ref=e13]
+      - navigation "Main" [ref=e16]:
+        - list [ref=e18]:
+          - listitem [ref=e19]:
+            - generic [ref=e20] [cursor=pointer]: Home
+          - listitem [ref=e21]:
+            - button "Campaigns" [ref=e22] [cursor=pointer]:
+              - text: Campaigns
+              - img [ref=e23]
+          - listitem [ref=e25]:
+            - button "Audience" [expanded] [active] [ref=e26] [cursor=pointer]:
+              - text: Audience
+              - img [ref=e27]
+            - generic "Audience" [ref=e82]:
+              - list [ref=e83]:
+                - listitem [ref=e84]:
+                  - link "Databases" [ref=e85] [cursor=pointer]:
+                    - /url: /audiences/databases
+                - listitem [ref=e86]:
+                  - link "Segments" [ref=e87] [cursor=pointer]:
+                    - /url: /audiences/segments
+                - listitem [ref=e88]:
+                  - link "Connectors" [ref=e89] [cursor=pointer]:
+                    - /url: /
+                - listitem [ref=e90]:
+                  - link "Fields & Config" [ref=e91] [cursor=pointer]:
+                    - /url: /audiences/attributes
+          - listitem [ref=e29]:
+            - button "Assets" [ref=e30] [cursor=pointer]:
+              - text: Assets
+              - img [ref=e31]
+          - listitem [ref=e33]:
+            - button "Reporting" [ref=e34] [cursor=pointer]:
+              - text: Reporting
+              - img [ref=e35]
+          - listitem [ref=e37]:
+            - button "Admin" [ref=e38] [cursor=pointer]:
+              - text: Admin
+              - img [ref=e39]
+      - button "Search" [ref=e41] [cursor=pointer]:
+        - img [ref=e42]
+        - generic [ref=e44]: Search…
+        - generic [ref=e45]: ⌘K
+      - button "What's New" [ref=e46] [cursor=pointer]
+      - 'button "Role: Admin" [ref=e48] [cursor=pointer]':
+        - generic [ref=e49]: Role
+        - generic [ref=e50]: Admin
+        - img [ref=e52]
+      - button "User profile" [ref=e57] [cursor=pointer]:
+        - generic [ref=e58]: BK
+  - generic [ref=e59]:
+    - generic [ref=e60]:
+      - generic [ref=e62]:
+        - heading "Dashboard" [level=1] [ref=e63]
+        - paragraph [ref=e64]: Overview of your workspace
+      - generic [ref=e65]:
+        - generic [ref=e66]:
+          - paragraph [ref=e67]: Total Contacts
+          - paragraph [ref=e68]: "50"
+        - generic [ref=e69]:
+          - paragraph [ref=e70]: Active Campaigns
+          - paragraph [ref=e71]: "2"
+        - generic [ref=e72]:
+          - paragraph [ref=e73]: Active Journeys
+          - paragraph [ref=e74]: "7"
+        - generic [ref=e75]:
+          - paragraph [ref=e76]: Total Segments
+          - paragraph [ref=e77]: "6"
+    - button "Toggle feedback panel" [ref=e78] [cursor=pointer]:
+      - img [ref=e79]
+    - region "Notifications alt+T"
+  - status

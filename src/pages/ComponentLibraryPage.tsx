@@ -4,6 +4,7 @@ import { CaretRight, CaretDown } from '@phosphor-icons/react'
 import { componentRegistry } from '../data/componentRegistry'
 import type { ComponentCategory, PropDefinition } from '../data/componentRegistry'
 import { cn } from '../lib/utils'
+import { Badge } from '../components/ui/badge'
 import { useControlValues } from '../lib/useControlValues'
 import { ControlsPanel } from '../components/component-library/ControlsPanel'
 import {
@@ -33,11 +34,13 @@ interface CategoryDef {
 
 const CATEGORIES: CategoryDef[] = [
   { id: 'tokens', label: 'Tokens' },
+  { id: 'atoms', label: 'Atoms' },
   { id: 'inputs', label: 'Inputs' },
   { id: 'display', label: 'Display' },
   { id: 'feedback', label: 'Feedback' },
   { id: 'navigation', label: 'Navigation' },
   { id: 'compositions', label: 'Compositions' },
+  { id: 'sandboxes', label: 'Sandboxes' },
 ]
 
 function ComponentBreadcrumbs() {
@@ -234,7 +237,6 @@ export function ComponentDemoView() {
             onChange={setValue}
             onReset={resetAll}
             isDirty={isDirty}
-            usedIn={entry.usedIn}
             renderControls={entry.renderControls}
           />
         </div>
@@ -250,7 +252,7 @@ export function ComponentDemoView() {
       )}
 
       {/* Design Guidance + Relationships (side by side) */}
-      {(entry.designGuidance?.length || entry.usesComponents?.length || entry.usedIn?.length || componentRegistry.some((c) => c.usesComponents?.includes(entry.name))) && (
+      {(entry.designGuidance?.length || entry.usesComponents?.length || componentRegistry.some((c) => c.usesComponents?.includes(entry.name))) && (
         <div className="flex gap-6 pt-5 border-t border-border">
           {/* Design Guidance — left column */}
           {entry.designGuidance && entry.designGuidance.length > 0 && (
@@ -278,7 +280,7 @@ export function ComponentDemoView() {
             const usedBy = componentRegistry.filter(
               (c) => c.usesComponents?.includes(entry.name)
             )
-            const hasRelationships = (entry.usesComponents && entry.usesComponents.length > 0) || usedBy.length > 0 || (entry.usedIn && entry.usedIn.length > 0)
+            const hasRelationships = (entry.usesComponents && entry.usesComponents.length > 0) || usedBy.length > 0
             if (!hasRelationships) return null
             return (
               <div className="w-56 shrink-0 flex flex-col gap-4">
@@ -294,16 +296,17 @@ export function ComponentDemoView() {
                             <Link
                               key={compName}
                               to={`/admin/components/${linked.category}/${linked.slug}`}
-                              className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
                             >
-                              {compName}
+                              <Badge variant="neutral-subtle" className="cursor-pointer hover:brightness-90 transition-all">
+                                {compName}
+                              </Badge>
                             </Link>
                           )
                         }
                         return (
-                          <span key={compName} className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-secondary text-tertiary-foreground border border-border">
+                          <Badge key={compName} variant="neutral-subtle">
                             {compName}
-                          </span>
+                          </Badge>
                         )
                       })}
                     </div>
@@ -319,32 +322,16 @@ export function ComponentDemoView() {
                         <Link
                           key={comp.slug}
                           to={`/admin/components/${comp.category}/${comp.slug}`}
-                          className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-secondary text-foreground border border-border hover:border-primary hover:text-primary transition-colors"
                         >
-                          {comp.name}
+                          <Badge variant="neutral-subtle" className="cursor-pointer hover:brightness-90 transition-all">
+                            {comp.name}
+                          </Badge>
                         </Link>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* Used in */}
-                {entry.usedIn && entry.usedIn.length > 0 && (
-                  <div className="flex flex-col gap-1.5">
-                    <span className="text-xs text-muted-foreground font-medium">Used in</span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {entry.usedIn.map((link) => (
-                        <Link
-                          key={link.route}
-                          to={link.route}
-                          className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-secondary text-foreground border border-border hover:border-primary hover:text-primary transition-colors"
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             )
           })()}

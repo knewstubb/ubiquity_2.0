@@ -96,8 +96,6 @@ export function ReviewStep({ draft, onEditStep }: ReviewStepProps) {
 
   return (
     <div className="flex flex-col gap-6" data-testid="review-step">
-      <h3 className="m-0 text-xl font-semibold text-primary">Review</h3>
-      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Review your automation configuration before saving.</p>
 
       {/* Data Source — Step 0 */}
       <div className="border-l-2 border-primary pl-4">

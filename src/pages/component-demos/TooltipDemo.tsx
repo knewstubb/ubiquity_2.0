@@ -28,7 +28,7 @@ export default function TooltipDemo(props: TooltipDemoProps) {
             <Button variant="outline">Hover me</Button>
           </TooltipTrigger>
           <TooltipContent side={side}>
-            <p>{content}</p>
+            {content}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -46,7 +46,7 @@ export default function TooltipDemo(props: TooltipDemoProps) {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Add new campaign</p>
+              Add new campaign
             </TooltipContent>
           </Tooltip>
 
@@ -57,7 +57,7 @@ export default function TooltipDemo(props: TooltipDemoProps) {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Settings</p>
+              Settings
             </TooltipContent>
           </Tooltip>
 
@@ -68,7 +68,7 @@ export default function TooltipDemo(props: TooltipDemoProps) {
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom">
-              <p>Delete selected items</p>
+              Delete selected items
             </TooltipContent>
           </Tooltip>
 
@@ -77,7 +77,7 @@ export default function TooltipDemo(props: TooltipDemoProps) {
               <Button variant="outline">Hover me</Button>
             </TooltipTrigger>
             <TooltipContent side="right">
-              <p>Tooltip on the right</p>
+              Tooltip on the right
             </TooltipContent>
           </Tooltip>
         </div>

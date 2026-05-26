@@ -2,7 +2,7 @@ import { lazy, type LazyExoticComponent, type ComponentType, type ReactNode } fr
 import { DownloadSimple, UploadSimple, CloudArrowUp, Folder, Database, Globe, Lightning, Gear } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
 
-export type ComponentCategory = 'tokens' | 'inputs' | 'display' | 'feedback' | 'navigation' | 'compositions'
+export type ComponentCategory = 'tokens' | 'atoms' | 'inputs' | 'display' | 'feedback' | 'navigation' | 'compositions' | 'sandboxes'
 
 export type ControlType =
   | 'text' | 'textarea' | 'select' | 'toggle' | 'colour' | 'number' | 'range' | 'radio'
@@ -34,6 +34,8 @@ export interface PropDefinition {
   prefix?: string
   labels?: [string, string]
   maxItems?: number
+  /** For counter controls: 'active' shows green circle when value > min */
+  variant?: 'default' | 'active'
 }
 
 export interface UsedInLink {
@@ -181,7 +183,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Close Button',
     slug: 'close-button',
-    category: 'inputs',
+    category: 'atoms',
     description: 'Accessible close/dismiss button with size variants, used for modals, panels, banners, and dialogs.',
     component: lazy(() => import('../pages/component-demos/CloseButtonDemo')),
     propControls: [
@@ -228,9 +230,31 @@ export const componentRegistry: ComponentEntry[] = [
     component: lazy(() => import('../pages/component-demos/CheckboxDemo')),
     propControls: [
       { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Accept terms and conditions' },
-      { name: 'checked', label: 'Checked', controlType: 'toggle', defaultValue: false },
+      { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'primary', options: [
+        { label: 'Primary', value: 'primary' },
+        { label: 'Secondary', value: 'secondary' },
+      ]},
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
       { name: 'indeterminate', label: 'Indeterminate', controlType: 'toggle', defaultValue: false },
+    ],
+    designGuidance: [
+      { heading: 'What it is', content: 'A controlled checkbox built on Radix UI primitives supporting checked, unchecked, and indeterminate states.' },
+      { heading: 'When to use', content: [
+        'Binary choices in forms (agree/disagree, opt-in/out)',
+        'Multi-select lists where items can be toggled independently',
+        'Bulk selection controls (select all / partial selection)',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Mutually exclusive choices — use Radio Group instead',
+        'Toggling a live setting on/off — use Switch instead',
+        'Single binary action with immediate effect — use Switch instead',
+      ]},
+      { heading: 'Variants', content: [
+        'primary (default) — teal border and fill. Use for standard form checkboxes, filters, and preference lists.',
+        'secondary — dark neutral border and fill (matches secondary button). Use inside warning/destructive dialogs where teal clashes with the intent colour, or for high-contrast contexts like table header select-all controls.',
+      ]},
+      { heading: 'Indeterminate state', content: 'Pass checked="indeterminate" for partial-selection indicators. Renders a bold minus icon. Commonly used for "select all" when only some children are checked.' },
+      { heading: 'Pairing with Label', content: 'Always pair with a Label component for accessibility. The label should be clickable and linked via htmlFor.' },
     ],
   },
   {
@@ -276,7 +300,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Label',
     slug: 'label',
-    category: 'inputs',
+    category: 'atoms',
     description: 'Accessible form label with required indicator support.',
     component: lazy(() => import('../pages/component-demos/LabelDemo')),
     propControls: [
@@ -320,6 +344,46 @@ export const componentRegistry: ComponentEntry[] = [
     ],
   },
   {
+    name: 'Combobox',
+    slug: 'combobox',
+    category: 'inputs',
+    description: 'Searchable select with type-to-filter dropdown.',
+    component: lazy(() => import('../pages/component-demos/ComboboxDemo')),
+    propControls: [
+      { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Select a field…' },
+      { name: 'status', label: 'Status', controlType: 'select', defaultValue: 'normal', options: [
+        { label: 'Normal', value: 'normal' },
+        { label: 'Warning', value: 'warning' },
+        { label: 'Error', value: 'error' },
+      ]},
+      { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
+    ],
+    designGuidance: [
+      { heading: 'What', content: 'Searchable single-select dropdown built on Radix Popover. Provides type-ahead filtering for long option lists while matching the standard input height (h-9).' },
+      { heading: 'When to use', content: [
+        'Option list exceeds ~7 items and benefits from search filtering',
+        'Field mapping dropdowns where users pick from 20+ database columns',
+        'Timezone, country, or category selectors with searchable lists',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Short lists (≤7 items) without search need — use Select instead',
+        'Multi-select scenarios — use a multi-select or tag input',
+        'Free-text input with suggestions — use an autocomplete/typeahead',
+      ]},
+      { heading: 'Status variants', content: [
+        'normal: Default border with standard focus ring',
+        'warning: Amber border and focus ring — validation hint (e.g. "recommended but not required")',
+        'error: Red border and focus ring — validation failure',
+      ]},
+      { heading: 'Interaction patterns', content: [
+        'Search resets on close to avoid stale filter state on reopen',
+        'Popover width matches trigger via --radix-popover-trigger-width',
+        'Check icon + font-medium on selected item for clear active indication',
+        'Controlled only (value + onValueChange) — no uncontrolled mode',
+      ]},
+    ],
+  },
+  {
     name: 'Slider',
     slug: 'slider',
     category: 'inputs',
@@ -345,14 +409,29 @@ export const componentRegistry: ComponentEntry[] = [
     name: 'Switch',
     slug: 'switch',
     category: 'inputs',
-    description: 'Toggle switch for boolean on/off states.',
+    description: 'Toggle switch for boolean on/off states. Three sizes: default, small, and extra-small.',
     usesComponents: ['Label'],
     component: lazy(() => import('../pages/component-demos/SwitchDemo')),
+    designGuidance: [
+      { heading: 'Sizes', content: [
+        'Default (h-6 w-11) — standard forms and settings pages',
+        'Small (h-5 w-9) — controller panels, compact settings, table rows',
+        'XS (h-4 w-7) — inline toggles in very tight spaces',
+      ]},
+      { heading: 'When to use', content: [
+        'Binary on/off states where the result is immediate (no submit button needed)',
+        'Prefer over Checkbox when the toggle takes effect immediately',
+        'Prefer Checkbox when the change requires a form submission',
+      ]},
+    ],
     propControls: [
       { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Airplane Mode' },
-      { name: 'checked', label: 'Checked', controlType: 'toggle', defaultValue: false },
+      { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'default', options: [
+        { label: 'Default (h-6)', value: 'default' },
+        { label: 'Small (h-5)', value: 'sm' },
+        { label: 'XS (h-4)', value: 'xs' },
+      ]},
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
-      { name: 'scale', label: 'Scale', controlType: 'range', defaultValue: 100, min: 50, max: 200, step: 10 },
     ],
     usedIn: [
       { label: 'Settings', route: '/settings' },
@@ -374,7 +453,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Toggle',
     slug: 'shadcn-toggle',
-    category: 'inputs',
+    category: 'atoms',
     description: 'Pressable toggle button with on/off states.',
     component: lazy(() => import('../pages/component-demos/ToggleDemo')),
     propControls: [
@@ -439,7 +518,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Avatar',
     slug: 'avatar',
-    category: 'display',
+    category: 'atoms',
     description: 'User profile image with fallback initials.',
     component: lazy(() => import('../pages/component-demos/AvatarDemo')),
     propControls: [
@@ -459,7 +538,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Badge',
     slug: 'badge',
-    category: 'display',
+    category: 'atoms',
     description: 'Small label for status, counts, or categories.',
     component: lazy(() => import('../pages/component-demos/BadgeDemo')),
     propControls: [
@@ -500,6 +579,7 @@ export const componentRegistry: ComponentEntry[] = [
         { label: 'Large', value: 'lg' },
       ]},
       { name: 'show-icon', label: 'Show Icon', controlType: 'toggle', defaultValue: false },
+      { name: 'clickable', label: 'Clickable', controlType: 'toggle', defaultValue: false },
     ],
     usedIn: [
       { label: 'Segments', route: '/audiences/segments' },
@@ -524,7 +604,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Separator',
     slug: 'separator',
-    category: 'display',
+    category: 'atoms',
     description: 'Visual divider between content sections, horizontal or vertical.',
     component: lazy(() => import('../pages/component-demos/SeparatorDemo')),
     propControls: [
@@ -538,7 +618,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Skeleton',
     slug: 'skeleton',
-    category: 'display',
+    category: 'atoms',
     description: 'Loading placeholder with pulse animation.',
     component: lazy(() => import('../pages/component-demos/SkeletonDemo')),
     propControls: [
@@ -556,16 +636,90 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'display',
     description: 'Structured data table with header, body, and footer sections.',
     component: lazy(() => import('../pages/component-demos/TableDemo')),
-    propControls: [
-      { name: 'rowCount', label: 'Rows', controlType: 'counter', defaultValue: 5, min: 2, max: 8 },
-      { name: 'showHeader', label: 'Show Header', controlType: 'toggle', defaultValue: true },
-      { name: 'striped', label: 'Striped', controlType: 'toggle', defaultValue: false },
+    usesComponents: [],
+    designGuidance: [
+      { heading: 'What', content: 'Low-level table primitives — thin wrappers around native HTML table elements with consistent spacing, border, and typography tokens.' },
+      { heading: 'When to use', content: [
+        'Custom or hierarchical tables where DataTable column-driven API does not fit',
+        'Tree/expandable rows, key-value layouts, or nested sub-tables',
+        'For standard data-driven tables with sorting and selection, prefer DataTable instead',
+      ]},
+      { heading: 'Overflow', content: 'The Table wrapper provides overflow-x-auto for horizontal scroll. For sticky headers, wrap in a height-restricted container with overflow-y-auto.' },
+      { heading: 'Selection', content: 'Apply data-state="selected" to TableRow for selected styling (bg-accent/30). Selection logic lives in the consumer.' },
     ],
+  },
+  {
+    name: 'Table Sandbox',
+    slug: 'table-sandbox',
+    category: 'sandboxes',
+    description: 'Interactive sandbox for exploring table design language — density, borders, containers, selection, striping, and hover states.',
+    component: lazy(() => import('../pages/component-demos/TableSandboxDemo')),
+    usesComponents: ['Table', 'Badge', 'Checkbox'],
+    designGuidance: [
+      { heading: 'Purpose', content: 'Use this sandbox to explore and standardise table styling across the product. Toggle options to find the right combination for each use case.' },
+      { heading: 'Variants to consider', content: [
+        'Basic data table — simple list pages (Forms, Campaigns)',
+        'Sortable data table — column sorting with indicators',
+        'Selectable table — checkbox column + bulk action bar',
+        'Tree/expandable table — hierarchical data (Billing, Accounts)',
+        'Checkbox list — field selection, permission toggles',
+        'Key-value table — settings display, review summaries',
+      ]},
+    ],
+    propControls: [],
+  },
+  {
+    name: 'Reorderable List',
+    slug: 'reorderable-list',
+    category: 'sandboxes',
+    description: 'Interactive sandbox for reorderable checkbox lists — drag to reorder selected items, toggle selection, with configurable drag indicators and styling.',
+    component: lazy(() => import('../pages/component-demos/ReorderableListSandboxDemo')),
+    usesComponents: ['Checkbox', 'Badge'],
+    designGuidance: [
+      { heading: 'Purpose', content: 'Use this sandbox to explore reorderable list patterns — field selection with drag-to-reorder for the selected subset.' },
+      { heading: 'Pattern', content: [
+        'Selected items at the top — draggable, with drag handle + index number + teal left border',
+        'Unselected items below — not draggable, just checkboxes',
+        'Drag to reorder within the selected section only',
+        'Select All row at the top for bulk selection',
+      ]},
+      { heading: 'Use cases', content: [
+        'Exporter field mapping — select and order export columns',
+        'Permission assignment — select and prioritise roles',
+        'Column visibility — choose and order table columns',
+        'Form builder — select and order form fields',
+      ]},
+    ],
+    propControls: [],
+  },
+  {
+    name: 'Card List',
+    slug: 'card-list',
+    category: 'sandboxes',
+    description: 'Interactive sandbox for expandable card list patterns — rich list items with icons, metadata, actions, and nested content.',
+    component: lazy(() => import('../pages/component-demos/CardListSandboxDemo')),
+    usesComponents: ['Badge', 'Switch'],
+    designGuidance: [
+      { heading: 'Purpose', content: 'Use this sandbox to explore card list patterns — rich list items that are more than a table row but less than a full card grid.' },
+      { heading: 'Pattern', content: [
+        'Parent rows with icon + protocol + name + status + actions',
+        'Expandable to reveal nested child items',
+        'Error state with red left border accent',
+        'Nested items with toggle switches and metadata',
+      ]},
+      { heading: 'Use cases', content: [
+        'Connectors page — connections with nested automations',
+        'Integration list — services with nested configurations',
+        'Account hierarchy — parent accounts with children',
+        'Journey list — journeys with nested steps/branches',
+      ]},
+    ],
+    propControls: [],
   },
   {
     name: 'Progress',
     slug: 'progress',
-    category: 'display',
+    category: 'atoms',
     description: 'Progress bar showing completion percentage.',
     component: lazy(() => import('../pages/component-demos/ProgressDemo')),
     propControls: [
@@ -599,7 +753,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'alert-dialog',
     category: 'feedback',
     description: 'Confirmation dialog with neutral, warning, and destructive intent variants and tiered confirmation guards.',
-    usesComponents: ['Button', 'Input', 'Checkbox', 'Close Button'],
+    usesComponents: ['Button', 'Input', 'Checkbox', 'Label', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/AlertDialogDemo')),
     propControls: [
       { name: 'object-name', label: 'Object name', controlType: 'text', defaultValue: '' },
@@ -687,7 +841,8 @@ export const componentRegistry: ComponentEntry[] = [
     name: 'Dialog',
     slug: 'dialog',
     category: 'feedback',
-    description: 'Accessible modal dialog built on Radix UI with overlay and close button.',
+    description: 'Accessible modal dialog built on Radix UI with structured Header → Body → Footer layout and blurred overlay.',
+    usesComponents: ['Button', 'Input', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/DialogDemo')),
     propControls: [
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Edit Profile' },
@@ -698,6 +853,47 @@ export const componentRegistry: ComponentEntry[] = [
         { label: 'Default (425px)', value: 'default' },
         { label: 'Large (560px)', value: 'lg' },
       ]},
+    ],
+    designGuidance: [
+      {
+        heading: 'What is Dialog?',
+        content: 'A modal overlay built on Radix UI Dialog that uses a three-section layout: DialogHeader (title row), DialogBody (main content), and DialogFooter (action buttons). The content wrapper has zero padding — each section manages its own spacing independently.',
+      },
+      {
+        heading: 'When to use',
+        content: [
+          'Confirmations and short decision prompts',
+          'Focused forms (edit profile, rename, quick settings)',
+          'Single-action acknowledgements',
+          'Any interaction that needs to block the page and return a result',
+        ],
+      },
+      {
+        heading: 'When NOT to use',
+        content: [
+          'Multi-step wizards or complex flows — use a wider custom modal or Sheet',
+          'Non-blocking feedback — use Sonner toast instead',
+          'Destructive confirmations with guards — use AlertDialog instead',
+          'Long scrollable content — consider a Sheet or dedicated page',
+        ],
+      },
+      {
+        heading: 'Structure',
+        content: [
+          'DialogHeader — horizontal flex (items-center, justify-between), px-6 pt-6. Place title on the left, optional close button on the right.',
+          'DialogBody — padded content area (px-6 py-4). Use for form fields, messages, or any main content.',
+          'DialogFooter — right-aligned button row (px-6 py-4, gap-3). Place Cancel on the left, primary action on the right.',
+          'Sections are optional — omit any section and no leftover whitespace appears.',
+        ],
+      },
+      {
+        heading: 'Sizing',
+        content: 'Default max-width is 460px. Override via className on DialogContent for wider dialogs (e.g. max-w-lg, max-w-2xl). Keep dialogs as narrow as the content requires.',
+      },
+      {
+        heading: 'Overlay behaviour',
+        content: 'Uses backdrop-blur-xs with 50% black opacity at z-[150] — high enough to stack above nav bars, dropdowns, and tooltips without conflicting with Tailwind\'s default z-50 scale. Clicking the overlay closes the dialog by default (Radix behaviour). Escape key also dismisses.',
+      },
     ],
   },
   {
@@ -742,6 +938,21 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'tooltip',
     category: 'feedback',
     description: 'Hover-triggered informational popup with configurable placement.',
+    usesComponents: [],
+    designGuidance: [
+      {
+        heading: 'Visual style',
+        content: 'Dedicated tooltip tokens (bg-tooltip / text-tooltip-foreground) for independent theming. Built-in arrow always rendered using fill-tooltip. 4px radius, text-sm (14px). Padding (px-1.5 py-1.5) applied to an inner span so it doesn\'t affect arrow positioning.',
+      },
+      {
+        heading: 'When to use',
+        content: 'Short, non-interactive labels for icon buttons, truncated text, or abbreviated values. For richer content or interactive elements, use Popover or HoverCard instead.',
+      },
+      {
+        heading: 'Placement',
+        content: 'Supports top, right, bottom, left via the side prop. 4px sideOffset by default. Arrow auto-points toward the trigger.',
+      },
+    ],
     component: lazy(() => import('../pages/component-demos/TooltipDemo')),
     propControls: [
       { name: 'content', label: 'Content', controlType: 'text', defaultValue: 'Add to library' },
@@ -938,10 +1149,28 @@ export const componentRegistry: ComponentEntry[] = [
     name: 'Tabs',
     slug: 'tabs',
     category: 'navigation',
-    description: 'Tabbed interface for switching between content panels.',
+    description: 'Tabbed interface with pill and underline variants. Pill for content switching, underline for page-level navigation.',
     component: lazy(() => import('../pages/component-demos/TabsDemo')),
+    usesComponents: [],
+    designGuidance: [
+      { heading: 'Variants', content: [
+        'Pill (default) — grey background container, active tab gets white fill + shadow. Use inside cards/panels for content switching.',
+        'Underline — transparent background, bottom border indicator. Use for page-level navigation or data filtering.',
+      ]},
+      { heading: 'Badge', content: 'TabsTrigger accepts an optional badge prop for count indicators (e.g. filter counts, item totals). Badge styling reacts to active state via the group-data-[state=active] pattern — no extra props needed.' },
+      { heading: 'Variant inheritance', content: 'Set variant on TabsList — TabsTrigger reads it via context. No need to pass variant to each trigger.' },
+    ],
     propControls: [
+      { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'pill', options: [
+        { label: 'Pill', value: 'pill' },
+        { label: 'Underline', value: 'underline' },
+      ]},
+      { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'default', options: [
+        { label: 'Default', value: 'default' },
+        { label: 'Compact', value: 'compact' },
+      ]},
       { name: 'tab-count', label: 'Tabs', controlType: 'counter', defaultValue: 3, min: 2, max: 6 },
+      { name: 'show-badge', label: 'Show Badge', controlType: 'toggle', defaultValue: false },
       { name: 'orientation', label: 'Orientation', controlType: 'select', defaultValue: 'horizontal', options: [
         { label: 'Horizontal', value: 'horizontal' },
         { label: 'Vertical', value: 'vertical' },
@@ -958,6 +1187,26 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'card-selector',
     category: 'inputs',
     description: 'Selectable card with icon, label, and checkmark badge for single/multi-choice selections.',
+    usesComponents: [],
+    designGuidance: [
+      { heading: 'When to use', content: [
+        '2–6 option selections where each option benefits from an icon',
+        'Categorical choices (e.g. importer vs exporter, connection type)',
+        'Wizard steps where the user picks a direction before proceeding',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Long lists (7+) — use a radio group or select dropdown',
+        'Text-only options without icons — use SegmentedControl or radio buttons',
+        'Binary yes/no — use Switch or a single checkbox',
+      ]},
+      { heading: 'States', content: [
+        'Unselected: neutral border, bg-background, muted text',
+        'Selected: teal border, bg-accent, shadow-md, checkmark badge',
+        'Hover (unselected): teal border, teal text, bg-accent/25',
+        'Hover (selected): shadow deepens to shadow-lg',
+        'Disabled: native HTML disabled attribute (no pointer events)',
+      ]},
+    ],
     component: lazy(() => import('../pages/component-demos/CardSelectorDemo')),
     propControls: [
       { name: 'card-count', label: 'Cards', controlType: 'counter', defaultValue: 3, min: 2, max: 6 },
@@ -1043,8 +1292,31 @@ export const componentRegistry: ComponentEntry[] = [
     name: 'DataTable',
     slug: 'data-table',
     category: 'display',
-    description: 'Sortable data table with column headers built on shadcn Table.',
-    usesComponents: ['Table', 'Button'],
+    description: 'Generic sortable data table with density control, container styles, selection, striping, and empty state handling.',
+    usesComponents: ['Table', 'Checkbox'],
+    designGuidance: [
+      { heading: 'What', content: 'Data-driven table built on shadcn Table primitives. Accepts typed columns and renders headers, sorting, selection, and density automatically.' },
+      { heading: 'When to use', content: [
+        'Structured tabular data with optional column sorting (billing reports, user lists, audit logs)',
+        'Prefer over manual Table composition when columns are data-driven',
+        'For tree/hierarchical data, use Table primitives directly',
+        'For simple key-value display, use a description list instead',
+      ]},
+      { heading: 'Density', content: [
+        'compact: Tight padding (py-1.5 px-3, text-xs) — dense data like logs or audit trails',
+        'default: Standard padding (py-3 px-4, text-sm) — most tables',
+        'relaxed: Generous padding (py-4 px-4, text-sm) — sparse data or dashboard cards',
+      ]},
+      { heading: 'Container', content: [
+        'borderless: No wrapper styling — table sits flush in its parent',
+        'bordered: 1px border + rounded-md — standalone table with clear boundary',
+        'card: Border + rounded-lg + shadow-sm — elevated card-style presentation',
+      ]},
+      { heading: 'Selection', content: 'Enable selectable prop to add checkbox column with select-all/indeterminate support. Selected rows get bg-accent/30 fill. A bulk action bar appears below the table showing count and clear button.' },
+      { heading: 'Sorting', content: 'Columns opt-in via sortable flag. Sort cycles asc → desc → unsorted (three-state). Only the active column shows a direction arrow. Sortable headers get hover:text-primary for affordance.' },
+      { heading: 'Alignment', content: 'Use align: "right" for numeric columns (applies tabular-nums automatically). Use align: "center" sparingly for status badges.' },
+      { heading: 'Custom cells', content: 'Use the render function on a column to display badges, icons, or formatted values instead of raw text.' },
+    ],
     component: lazy(() => import('../pages/component-demos/DataTableDemo')),
   },
   {
@@ -1178,7 +1450,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'PageHeader',
     slug: 'page-header',
-    category: 'compositions',
+    category: 'sandboxes',
     description: 'Configurable page header with breadcrumbs, title, status badge, actions, tabs, filters, and bulk actions.',
     usesComponents: ['Button', 'Badge', 'Tabs', 'Input', 'Breadcrumb'],
     component: lazy(() => import('../pages/component-demos/PageHeaderDemo')),
@@ -1249,13 +1521,34 @@ export const componentRegistry: ComponentEntry[] = [
     name: 'NumberStepper',
     slug: 'number-stepper',
     category: 'inputs',
-    description: 'Compact numeric input with decrement/value/increment buttons. Value highlights in teal when active.',
-    usesComponents: ['Button'],
+    description: 'Compact numeric input with decrement/value/increment buttons. Toggle variant colours the value teal when active. Plain variant shows neutral numbers.',
+    usesComponents: [],
+    designGuidance: [
+      { heading: 'Variants', content: [
+        'Plain (default) — neutral foreground text, no state change. Use when value is always meaningful (column count, row count).',
+        'Toggle — value text turns teal (text-primary) when value > min, muted when at min. Use when 0 = off and 1+ = on (nesting depth, border radius).',
+      ]},
+      { heading: 'Sizes', content: [
+        'Default (h-9) — standard forms and panels',
+        'Small (h-7) — controller panels and compact UI',
+        'XS (h-5) — inline or very tight spaces',
+      ]},
+      { heading: 'When to use', content: [
+        'Small integer ranges with tight bounds (1-10)',
+        'Prefer over a text input when the range is small and predictable',
+        'Prefer over a slider when exact values matter more than relative position',
+      ]},
+    ],
     component: lazy(() => import('../pages/component-demos/NumberStepperDemo')),
     propControls: [
       { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'default', options: [
         { label: 'Default (h-9 / 36px)', value: 'default' },
         { label: 'Small (h-7 / 28px)', value: 'sm' },
+        { label: 'XS (h-5 / 20px)', value: 'xs' },
+      ]},
+      { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'plain', options: [
+        { label: 'Plain (magnitude)', value: 'plain' },
+        { label: 'Toggle (on/off)', value: 'toggle' },
       ]},
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
     ],
@@ -1299,7 +1592,8 @@ export const componentRegistry: ComponentEntry[] = [
     name: 'Chip',
     slug: 'chip',
     category: 'inputs',
-    description: 'Interactive label with optional dismiss button, icon, and selectable state. Used for tags, filters, and multi-select values.',
+    description: 'Interactive label with optional dismiss button, icon, selectable state, and insertable token variant. Used for tags, filters, multi-select values, and variable insertion.',
+    usedIn: [{ label: 'ChipInput', route: '/admin/components/inputs/chip-input' }, { label: 'Exporter File Naming', route: '/' }],
     component: lazy(() => import('../pages/component-demos/ChipDemo')),
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
@@ -1307,6 +1601,7 @@ export const componentRegistry: ComponentEntry[] = [
         { label: 'Outline', value: 'outline' },
         { label: 'Mint', value: 'mint' },
         { label: 'Red', value: 'red' },
+        { label: 'Insertable', value: 'insertable' },
       ]},
       { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'default', options: [
         { label: 'Small (h-6 / 24px)', value: 'sm' },
@@ -1314,12 +1609,13 @@ export const componentRegistry: ComponentEntry[] = [
       ]},
       { name: 'show-icon', label: 'Show Icon', controlType: 'toggle', defaultValue: false },
       { name: 'selectable', label: 'Selectable', controlType: 'toggle', defaultValue: false },
+      { name: 'used', label: 'Used (insertable)', controlType: 'toggle', defaultValue: false, visibleWhen: { controlName: 'variant', values: ['insertable'] } },
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
     ],
     designGuidance: [
       {
         heading: 'What is a Chip?',
-        content: 'A pill-shaped interactive label used to represent discrete values — tags, filter selections, or multi-select entries. Chips are always removable (via dismiss button) or selectable (via parent click handler), distinguishing them from static badges.',
+        content: 'A pill-shaped interactive label used to represent discrete values — tags, filter selections, multi-select entries, or insertion tokens. Renders as a <span> by default, switching to a <button> when onClick is provided for proper keyboard accessibility.',
       },
       {
         heading: 'When to use',
@@ -1327,6 +1623,7 @@ export const componentRegistry: ComponentEntry[] = [
           'Removable tags in multi-select inputs (e.g. selected fields in an importer mapping)',
           'Email address entries in recipient fields (e.g. "brad@example.com" with dismiss to remove)',
           'Filter pills in filter bars where users toggle criteria on/off',
+          'Insertion tokens / merge tags in template builders (use variant="insertable" with onClick and used)',
           'Status labels where colour semantics communicate meaning (mint = success, red = error)',
         ],
       },
@@ -1345,6 +1642,7 @@ export const componentRegistry: ComponentEntry[] = [
           'Outline — transparent with border. Lighter visual weight, good for dense lists or inside inputs where background contrast matters.',
           'Mint — green-tinted. Communicates success or positive status (e.g. "Active", "Verified", "Matched").',
           'Red — red-tinted. Communicates error or destructive status (e.g. "Failed", "Blocked", "Unmatched").',
+          'Insertable — token insertion chip. Light mint background when available, grey when used. Teal fill on hover with scale feedback on click. Uses monospace font to signal variable/token content.',
         ],
       },
       {
@@ -1355,8 +1653,12 @@ export const componentRegistry: ComponentEntry[] = [
         ],
       },
       {
-        heading: 'Selection behaviour',
-        content: 'The Chip itself does not handle click-to-select. The parent wraps it in a button or clickable container and manages selected state. When selected, the chip fills with a solid colour (primary, success, or destructive depending on variant) and switches to white text. This high-contrast treatment makes the active state immediately obvious in dense filter bars.',
+        heading: 'Click behaviour',
+        content: 'When onClick is provided, the chip renders as a <button> element with focus-visible ring for keyboard accessibility. Without onClick, it renders as a <span> and selection is managed by the parent container. When selected, the chip fills with a solid colour and switches to white text.',
+      },
+      {
+        heading: 'Insertable behaviour',
+        content: 'The insertable variant tracks a "used" state. Available tokens show a light mint background with teal text; used tokens switch to grey background with muted text. Both remain clickable (for re-insertion). Hover fills with solid teal for clear affordance.',
       },
       {
         heading: 'Dismiss behaviour',
@@ -1404,11 +1706,54 @@ export const componentRegistry: ComponentEntry[] = [
     ],
   },
   {
+    name: 'SectionDivider',
+    slug: 'section-divider',
+    category: 'atoms',
+    description: 'Labelled horizontal divider for separating logical sections in modals and forms. Supports a centred line variant and a left-aligned heading variant.',
+    component: lazy(() => import('../pages/component-demos/SectionDividerDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Use to separate logical field groups in single-step modals and dialogs.',
+        'Use "line" variant when sections are visually equal (e.g. Connection Settings, Authentication).',
+        'Use "heading" variant for longer forms where sections need stronger left-aligned hierarchy.',
+        'Do NOT use inside wizard steps — those follow the three-tier form rhythm pattern.',
+        'For a plain line without a label, use the Separator component instead.',
+      ]},
+      { heading: 'Spacing', content: 'The component applies a negative bottom margin so the label visually "owns" the section below it. Let the parent container handle the gap above.' },
+    ],
+    propControls: [
+      { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'line', options: [
+        { label: 'Line (centred)', value: 'line' },
+        { label: 'Heading (left-aligned)', value: 'heading' },
+      ]},
+      { name: 'sections', label: 'Sections', controlType: 'counter', defaultValue: 2, options: [
+        { label: '1', value: '1' },
+        { label: '2', value: '2' },
+        { label: '3', value: '3' },
+      ]},
+      { name: 'label1', label: 'Label 1', controlType: 'text', defaultValue: 'Connection Settings' },
+      { name: 'label2', label: 'Label 2', controlType: 'text', defaultValue: 'Authentication' },
+      { name: 'label3', label: 'Label 3', controlType: 'text', defaultValue: 'Notifications', visibleWhen: { prop: 'sections', equals: 3 } },
+    ],
+  },
+  {
     name: 'PrefixInput',
     slug: 'prefix-input',
     category: 'inputs',
     description: 'Input field with a non-editable prefix. Used for paths, URLs, or any value with a fixed base.',
     usesComponents: ['Input'],
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Use when a value always starts with a known, non-editable prefix (URL base path, file path root, domain).',
+        'Prefer over a disabled input + label when the prefix is structural context, not user-entered data.',
+        'For editable prefixes or suffixes, use a standard Input with adornments instead.',
+      ]},
+      { heading: 'Anatomy', content: [
+        'Outer container: flex row, h-9, border, rounded-md, overflow-hidden.',
+        'Prefix span: bg-secondary, border-r, non-interactive, select-none.',
+        'Inner Input: flex-1, border-0, rounded-none — inherits height from container.',
+      ]},
+    ],
     component: lazy(() => import('../pages/component-demos/PrefixInputDemo')),
     propControls: [
       { name: 'prefix', label: 'Prefix', controlType: 'text', defaultValue: '/company/base-path/' },
@@ -1421,7 +1766,35 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'chip-input',
     category: 'inputs',
     description: 'Multi-value text input. Type and press Enter, Tab, or comma to add chips. Shows a validation pill below the input (green when valid, red when invalid). Supports dropdown selection, clear-all, copy-from-above, and three sizes.',
-    usesComponents: ['Chip'],
+    usesComponents: [],
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Use for multi-value free-text entry (emails, tags, keywords).',
+        'Use with options prop for constrained multi-select from a predefined list.',
+        'Prefer over multi-select dropdown when all selected values should remain visible.',
+        'For single-value selection, use a standard Select or Combobox instead.',
+      ]},
+      { heading: 'Anatomy', content: [
+        'Container: bordered box with chips + inline text input.',
+        'Chips: pill-shaped (rounded-full) with primary border and X remove button.',
+        'Validation pill: appears below input showing validity of current typed value.',
+        'Dropdown (optional): absolute-positioned list of remaining selectable options.',
+        'Clear-all button: X icon at trailing edge, visible when chips exist.',
+        'Copy-from-above link: optional action in the label row for duplicating values from a sibling field.',
+      ]},
+      { heading: 'Interaction', content: [
+        'Enter, Tab, or comma commits the current input as a chip.',
+        'Backspace on empty input removes the last chip.',
+        'Dropdown stays open after selection to allow rapid multi-pick.',
+        'Clicking the validation pill (when valid) commits the value.',
+        'Blur commits any pending valid input.',
+      ]},
+      { heading: 'Sizes', content: [
+        'sm: min-h-8, compact chip padding — use in table filters or dense forms.',
+        'default: min-h-10, standard form field sizing.',
+        'lg: min-h-12, larger touch targets and text.',
+      ]},
+    ],
     component: lazy(() => import('../pages/component-demos/ChipInputDemo')),
     propControls: [
       { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Add email…' },
@@ -1437,6 +1810,47 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'validation', label: 'Validation Pill', controlType: 'toggle', defaultValue: true },
       { name: 'dropdown', label: 'Dropdown Options', controlType: 'toggle', defaultValue: false },
       { name: 'copy-from-above', label: 'Copy From Above', controlType: 'toggle', defaultValue: false },
+    ],
+  },
+  {
+    name: 'DateRangePicker',
+    slug: 'date-range-picker',
+    category: 'inputs',
+    description: 'Date range selector combining Calendar (range mode) with preset shortcuts. Uses Popover for the floating panel and Button for the trigger.',
+    usesComponents: ['Button', 'Calendar', 'Popover'],
+    component: lazy(() => import('../pages/component-demos/DateRangePickerDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Use for any date range filter where presets speed up common selections.',
+        'Pass domain-specific presets (billing cycles, quarters, months).',
+        'For single date selection, use the Calendar component directly.',
+      ]},
+      { heading: 'Anatomy', content: [
+        'Trigger: outline Button with calendar icon + formatted date range (tabular-nums)',
+        'Floating panel: Popover containing Calendar (left) + presets list (right)',
+        'Calendar: range mode via react-day-picker, handles selection and navigation',
+        'Presets: scrollable list, active preset highlighted in teal',
+      ]},
+      { heading: 'Interaction', content: [
+        'Range selection handled by Calendar component (click start, click end).',
+        'Panel closes automatically when a complete range is selected.',
+        'Clicking a preset applies it immediately and closes the panel.',
+        'Popover handles outside click, Escape, and focus management.',
+      ]},
+      { heading: 'Visual states', content: [
+        'Range edges: filled teal circles (rounded-full) — standard date picker pattern.',
+        'Range body: accent background fill (Calendar built-in).',
+        'Today: highlighted by Calendar defaults.',
+        'Active preset: teal text + semibold weight.',
+      ]},
+    ],
+    propControls: [
+      { name: 'showPresets', label: 'Show Presets', controlType: 'toggle', defaultValue: true },
+      { name: 'presetCount', label: 'Preset Count', controlType: 'counter', defaultValue: 5, options: [
+        { label: '3', value: '3' },
+        { label: '5', value: '5' },
+        { label: '10', value: '10' },
+      ]},
     ],
   },
   {
@@ -1477,6 +1891,47 @@ export const componentRegistry: ComponentEntry[] = [
         { label: 'None', value: 'none' },
       ]},
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
+    ],
+  },
+  {
+    name: 'CheckboxCard',
+    slug: 'checkbox-card',
+    category: 'inputs',
+    description: 'Selectable card with a checkbox indicator for multi-select patterns. Renders as a button with role="checkbox" for accessibility.',
+    component: lazy(() => import('../pages/component-demos/CheckboxCardDemo')),
+    usesComponents: [],
+    usedIn: [{ label: 'Exporter Wizard — Data Source', route: '/' }],
+    propControls: [
+      { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Option label' },
+      { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Optional description text' },
+      { name: 'selected', label: 'Selected', controlType: 'toggle', defaultValue: false },
+      { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
+    ],
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Multi-select option lists (data sources, permissions, feature toggles)',
+        'Any scenario where the user picks one or more items from a bounded set',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Single-select — use CardSelector or SegmentedControl instead',
+        'Simple boolean toggles — use Switch instead',
+        'Long lists (10+) — use a Checkbox list or multi-select dropdown',
+      ]},
+      { heading: 'Visual states', content: [
+        'Unselected: border-border, bg-background, hover shows border-primary + bg-accent/25 (border tints teal to hint interactivity)',
+        'Selected: border-primary, bg-accent, shadow-sm (subtle tinted fill to reinforce selection). Hover darkens to bg-accent/75 for continued interactivity feedback.',
+        'Unselected checkbox: 1px border (lighter visual weight); selected: 2px border + filled primary bg. Checkbox border tints teal on card hover to match the card border hint.',
+        'Disabled: 50% opacity, cursor-not-allowed, hover suppressed (text reverts to foreground)',
+        'Focus: 2px teal ring with 2px offset (focus-visible only)',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Renders as button with role="checkbox" and aria-checked',
+        'aria-label set to the label text for screen readers',
+        'Focus ring visible on keyboard navigation only (focus-visible)',
+      ]},
+      { heading: 'Motion', content: [
+        'All colour/border transitions use 150ms duration per docs/ui/motion.md',
+      ]},
     ],
   },
 ]

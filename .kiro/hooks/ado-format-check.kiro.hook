@@ -1,13 +1,14 @@
 {
+  "enabled": true,
   "name": "ADO Field Format Check",
-  "version": "1.0.0",
-  "description": "Before writing to any ADO work item, enforces formatting rules based on the field's current mode (HTML or markdown). Prevents writing HTML to markdown-mode fields.",
+  "description": "Before writing to any ADO work item, enforces formatting rules based on the field's current mode (HTML or markdown).",
+  "version": "2",
   "when": {
     "type": "preToolUse",
     "toolTypes": [".*update_work_item.*", ".*create_work_item.*", ".*add_child_work_items.*"]
   },
   "then": {
     "type": "askAgent",
-    "prompt": "STOP. Before writing to this ADO work item, you MUST follow these rules:\n\n**CRITICAL: Check multilineFieldsFormat FIRST**\n\nWhen UPDATING an existing work item:\n1. The get_work_item response includes `multilineFieldsFormat` which tells you the mode for each field\n2. If a field shows `\"markdown\"` → write using markdown syntax (### headings, **bold**, - bullets, - [ ] checkboxes)\n3. If a field shows `\"html\"` → write using HTML tags (<h3>, <strong>, <ul><li>, <input type=\"checkbox\" disabled>)\n4. If you write HTML to a markdown-mode field, the raw tags will display as text — this is a BREAKING error\n5. If the field contains HTML tags but is in markdown mode, CONVERT the HTML to markdown before writing\n\nWhen CREATING new work items:\n- New items default to HTML mode — write HTML\n- UNLESS you know the project has been configured to default to markdown (check recent items)\n\n**Format reference:**\n- Markdown: `### Heading`, `**bold**`, `- item`, `- [ ] checkbox`, `[text](url)`\n- HTML: `<h3>`, `<strong>`, `<ul><li>`, `<input type=\"checkbox\" disabled>`, `<a href=\"url\">text</a>`\n\nProceed with the correct format."
+    "prompt": "Before writing to this ADO work item, follow these rules:\n\n1. When UPDATING an existing work item: check `multilineFieldsFormat` in the get_work_item response. Each field can be in a DIFFERENT mode — check EACH field individually. If a field is `\"markdown\"` → write markdown. If `\"html\"` or NOT LISTED → write HTML. Writing HTML to a markdown-mode field displays raw tags as text. Writing markdown to an HTML-mode field displays raw markdown as plain text.\n\n2. When CREATING new work items via `add_child_work_items`: the Description field may default to markdown mode while AC defaults to HTML mode. After creation, check the response's `multilineFieldsFormat` and fix any fields that got the wrong format.\n\n3. If a field is in markdown mode but contains HTML tags, convert to markdown before writing.\n\nProceed with the correct format for EACH field independently."
   }
 }

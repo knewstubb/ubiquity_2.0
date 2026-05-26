@@ -1,8 +1,10 @@
 import { useCallback } from 'react';
-import { SegmentedControl } from '@/components/composed/segmented-control';
+import { cn } from '@/lib/utils';
 import { Input } from '../ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
-import { KeyFieldPicker } from './KeyFieldPicker';
+import { CheckboxCard } from '@/components/composed/checkbox-card';
+import { ChipInput } from '@/components/composed/chip-input';
+import { HelpPopover } from '@/components/composed/help-popover';
 import { FilterBuilder } from '../shared/FilterBuilder';
 import { getFieldsForDataType } from '../../data/fieldRegistry';
 import type { FilterGroup } from '../../models/segment';
@@ -14,10 +16,16 @@ interface DataSourceStepProps {
   onUpdate: (patch: Partial<WizardDraft>) => void;
 }
 
-const DATA_TYPE_OPTIONS: { value: ExportDataType; label: string }[] = [
-  { value: 'contact', label: 'Contacts' },
-  { value: 'transactional', label: 'Transactional' },
-  { value: 'transactional_with_contact', label: 'Combined' },
+interface SourceOption {
+  id: ExportDataType;
+  label: string;
+  description: string;
+}
+
+const SOURCE_OPTIONS: SourceOption[] = [
+  { id: 'contact', label: 'Contacts', description: 'Contact database records' },
+  { id: 'mailout', label: 'Mailout Data', description: 'Email send, delivery, and engagement logs' },
+  { id: 'transactional', label: 'Transactional', description: 'Purchase and activity data' },
 ];
 
 const TRANSACTIONAL_SOURCE_OPTIONS: { value: TransactionalSource; label: string }[] = [
@@ -25,18 +33,35 @@ const TRANSACTIONAL_SOURCE_OPTIONS: { value: TransactionalSource; label: string 
   { value: 'products', label: 'Products' },
 ];
 
+const JOIN_KEY_OPTIONS = [
+  { value: 'email_address', label: 'Email Address' },
+  { value: 'customer_number', label: 'Customer Number' },
+  { value: 'membership_number', label: 'Membership Number' },
+  { value: 'external_id', label: 'External ID' },
+];
+
 export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
-  const handleDataTypeSelect = useCallback(
-    (dataType: ExportDataType) => {
-      if (dataType === draft.dataType) return;
+  const selectedSources: ExportDataType[] = draft.selectedSources ?? [draft.dataType ?? 'contact'];
+
+  const handleSourceToggle = useCallback(
+    (sourceId: ExportDataType) => {
+      const current = [...selectedSources];
+      const index = current.indexOf(sourceId);
+      if (index >= 0) {
+        if (current.length <= 1) return;
+        current.splice(index, 1);
+      } else {
+        current.push(sourceId);
+      }
       onUpdate({
-        dataType,
-        transactionalSource: null,
-        enrichmentKeyField: null,
+        dataType: current[0],
+        selectedSources: current,
         selectedFields: [],
+        transactionalSource: current.includes('transactional') ? draft.transactionalSource : null,
+        enrichmentKeyField: current.length > 1 ? draft.enrichmentKeyField : null,
       });
     },
-    [draft.dataType, onUpdate],
+    [selectedSources, draft.transactionalSource, draft.enrichmentKeyField, onUpdate],
   );
 
   const handleTransactionalSourceSelect = useCallback(
@@ -48,8 +73,8 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
   );
 
   const handleKeyFieldChange = useCallback(
-    (key: string) => {
-      onUpdate({ enrichmentKeyField: key });
+    (keys: string[]) => {
+      onUpdate({ enrichmentKeyField: keys.join(',') });
     },
     [onUpdate],
   );
@@ -63,21 +88,16 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
 
   const fields = getFieldsForDataType(draft.dataType, draft.transactionalSource ?? undefined);
 
-  const showTransactionalSource =
-    draft.dataType === 'transactional' || draft.dataType === 'transactional_with_contact';
-
-  const showKeyFieldPicker =
-    (draft.dataType === 'transactional' || draft.dataType === 'transactional_with_contact');
+  const showTransactionalSource = selectedSources.includes('transactional');
+  const showJoinKey = selectedSources.length > 1;
 
   return (
     <div className="flex flex-col gap-8" data-testid="data-source-step">
-      <h3 className="m-0 text-xl font-semibold text-primary">Data Source</h3>
-      <p className="-mt-6 mb-2 text-sm text-tertiary-foreground">Choose what data to export and configure source options.</p>
 
       {/* Row 0: Name */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
-          <p className="text-sm font-semibold text-foreground m-0">Name</p>
+          <p className="text-sm font-semibold text-foreground m-0">Name <span className="text-destructive">*</span></p>
           <p className="text-xs text-tertiary-foreground mt-1 m-0">A unique name for this automation</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
@@ -90,32 +110,31 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
         </div>
       </div>
 
-      {/* Row 1: Exporting From */}
+      {/* Row 1: Exporting From — multi-select cards */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
           <div className="flex items-center gap-1.5">
             <p className="text-sm font-semibold text-foreground m-0">Exporting From</p>
           </div>
-          <p className="text-xs text-tertiary-foreground mt-1 m-0">Select the type of data to export</p>
+          <p className="text-xs text-tertiary-foreground mt-1 m-0">Select one or more data sources</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <SegmentedControl
-            options={DATA_TYPE_OPTIONS}
-            value={draft.dataType ?? 'contact'}
-            onValueChange={(v) => handleDataTypeSelect(v as ExportDataType)}
-          />
+          <div className="flex flex-col gap-2">
+            {SOURCE_OPTIONS.map((source) => (
+              <CheckboxCard
+                key={source.id}
+                selected={selectedSources.includes(source.id)}
+                onToggle={() => handleSourceToggle(source.id)}
+                label={source.label}
+                description={source.description}
+              />
+            ))}
+          </div>
 
-          {/* Database fields */}
-          {(draft.dataType === 'contact' || draft.dataType === 'transactional_with_contact') && (
-            <div>
-              <p className="text-xs font-medium text-muted-foreground m-0">Contacts Database</p>
-              <Input value="Customer Contacts" disabled />
-            </div>
-          )}
-
-          {(draft.dataType === 'transactional' || draft.dataType === 'transactional_with_contact') && (
-            <div>
-              <p className="text-xs font-medium text-muted-foreground m-0">Transactional Database</p>
+          {/* Transactional database selector — grey background under cards */}
+          {showTransactionalSource && (
+            <div className="bg-muted rounded-lg p-4">
+              <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Transactional Database</p>
               <Select onValueChange={(v) => handleTransactionalSourceSelect(v as TransactionalSource)} value={draft.transactionalSource ?? undefined}>
                 <SelectTrigger aria-label="Select transactional database">
                   <SelectValue placeholder="Select Database" />
@@ -128,30 +147,43 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
               </Select>
             </div>
           )}
+
+          {/* Join indicator — below all source content */}
+          {showJoinKey && (
+            <p className="text-xs text-primary font-medium m-0">
+              These sources will be joined using the key field below.
+            </p>
+          )}
         </div>
       </div>
 
-      {/* Row 2: Key Field */}
-      {showKeyFieldPicker && (
+      {/* Row 2: Join Key — shown when multiple sources are selected */}
+      {showJoinKey && (
         <div className="flex items-start gap-14">
           <div className="w-40 shrink-0">
             <div className="flex items-center gap-1.5">
-              <p className="text-sm font-semibold text-foreground m-0">Key Field</p>
+              <p className="text-sm font-semibold text-foreground m-0">Join Key</p>
+              <HelpPopover
+                title="How are sources joined?"
+                body="When exporting from multiple sources, records are matched using a shared key field. Choose the field that uniquely identifies a contact across all selected sources."
+              />
             </div>
-            <p className="text-xs text-tertiary-foreground mt-1 m-0">Links transactions to contact records</p>
+            <p className="text-xs text-tertiary-foreground mt-1 m-0">Links records across selected sources</p>
           </div>
           <div className="w-[552px] flex flex-col gap-3">
-            <KeyFieldPicker
-              transactionalSource={draft.transactionalSource!}
-              value={draft.enrichmentKeyField}
+            <ChipInput
+              values={draft.enrichmentKeyField ? draft.enrichmentKeyField.split(',') : []}
               onChange={handleKeyFieldChange}
+              options={JOIN_KEY_OPTIONS.map((opt) => opt.label)}
+              placeholder="Select key fields…"
+              aria-label="Join key fields"
             />
           </div>
         </div>
       )}
 
-      {/* Row 4: Filters */}
-      {draft.dataType && (
+      {/* Row 3: Filters */}
+      {selectedSources.length > 0 && (
         <div className="flex items-start gap-14">
           <div className="w-40 shrink-0">
             <div className="flex items-center gap-1.5">

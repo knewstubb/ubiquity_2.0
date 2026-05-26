@@ -1,7 +1,9 @@
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogBody,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -10,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { CloseButton } from '@/components/ui/close-button'
 
 interface DialogDemoProps {
   title?: string
@@ -19,9 +22,9 @@ interface DialogDemoProps {
 }
 
 const SIZE_CLASSES: Record<string, string> = {
-  sm: 'sm:max-w-[360px]',
-  default: 'sm:max-w-[425px]',
-  lg: 'sm:max-w-[560px]',
+  sm: 'max-w-[360px]',
+  default: '',
+  lg: 'max-w-[560px]',
 }
 
 export default function DialogDemo(props: DialogDemoProps) {
@@ -42,20 +45,28 @@ export default function DialogDemo(props: DialogDemoProps) {
         <DialogContent className={sizeClass}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
+            <DialogClose asChild>
+              <CloseButton size="sm" />
+            </DialogClose>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="ctrl-name">Name</Label>
-              <Input id="ctrl-name" placeholder="Enter name" />
+          <DialogBody>
+            <DialogDescription className="mb-4">{description}</DialogDescription>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="ctrl-name">Name</Label>
+                <Input id="ctrl-name" placeholder="Enter name" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="ctrl-email">Email</Label>
+                <Input id="ctrl-email" placeholder="Enter email" />
+              </div>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="ctrl-email">Email</Label>
-              <Input id="ctrl-email" placeholder="Enter email" />
-            </div>
-          </div>
+          </DialogBody>
           {showFooter && (
             <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="ghost">Cancel</Button>
+              </DialogClose>
               <Button type="submit">Save changes</Button>
             </DialogFooter>
           )}
@@ -70,24 +81,32 @@ export default function DialogDemo(props: DialogDemoProps) {
         <DialogTrigger asChild>
           <Button>Create New Segment</Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>New Segment</DialogTitle>
-            <DialogDescription>
+            <DialogClose asChild>
+              <CloseButton size="sm" />
+            </DialogClose>
+          </DialogHeader>
+          <DialogBody>
+            <DialogDescription className="mb-4">
               Create a new audience segment. You can add filters after creation.
             </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Segment Name</Label>
-              <Input id="name" placeholder="e.g. Gold Members" />
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name">Segment Name</Label>
+                <Input id="name" placeholder="e.g. Gold Members" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="description">Description</Label>
+                <Input id="description" placeholder="Optional description" />
+              </div>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="description">Description</Label>
-              <Input id="description" placeholder="Optional description" />
-            </div>
-          </div>
+          </DialogBody>
           <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="ghost">Cancel</Button>
+            </DialogClose>
             <Button type="submit">Create Segment</Button>
           </DialogFooter>
         </DialogContent>
