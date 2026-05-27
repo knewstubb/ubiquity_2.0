@@ -225,8 +225,13 @@ export function ComponentDemoView() {
       {hasPropControls && (
         <div className="flex gap-4 items-stretch">
           {/* Live Preview frame */}
-          <div className="flex-1 min-w-0 flex items-center justify-center p-8 border border-border rounded-lg bg-background">
-            <Suspense fallback={<div className="text-sm text-tertiary-foreground">Loading…</div>}>
+          <div className={cn(
+            "flex-1 min-w-0 border border-border rounded-lg bg-background overflow-hidden",
+            entry.demoLayout === 'full-bleed'
+              ? 'flex flex-col items-stretch'
+              : 'flex items-center justify-center p-8'
+          )}>
+            <Suspense fallback={<div className="text-sm text-tertiary-foreground p-8">Loading…</div>}>
               <DemoComponent {...values} />
             </Suspense>
           </div>
@@ -238,6 +243,7 @@ export function ComponentDemoView() {
             onReset={resetAll}
             isDirty={isDirty}
             renderControls={entry.renderControls}
+            usedIn={entry.usedIn}
           />
         </div>
       )}

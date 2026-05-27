@@ -179,7 +179,7 @@ describe('BillingTreeTable', () => {
   });
 
   describe('sort arrow indicator', () => {
-    it('shows ▲ arrow on active sort column in ascending direction', () => {
+    it('shows sort arrow icon on active sort column in ascending direction', () => {
       const tree = buildSampleTree();
       renderWithProviders(
         <BillingTreeTable
@@ -190,10 +190,13 @@ describe('BillingTreeTable', () => {
         />,
       );
 
-      expect(screen.getByText('▲')).toBeInTheDocument();
+      // ArrowUp icon rendered as SVG with h-3 w-3 class
+      const accountHeader = screen.getByText('Account').closest('th');
+      const svg = accountHeader?.querySelector('svg');
+      expect(svg).toBeInTheDocument();
     });
 
-    it('shows ▼ arrow on active sort column in descending direction', () => {
+    it('shows sort arrow icon on active sort column in descending direction', () => {
       const tree = buildSampleTree();
       renderWithProviders(
         <BillingTreeTable
@@ -204,7 +207,10 @@ describe('BillingTreeTable', () => {
         />,
       );
 
-      expect(screen.getByText('▼')).toBeInTheDocument();
+      // ArrowDown icon rendered as SVG with h-3 w-3 class
+      const accountHeader = screen.getByText('Account').closest('th');
+      const svg = accountHeader?.querySelector('svg');
+      expect(svg).toBeInTheDocument();
     });
 
     it('does not show arrow on non-active sort columns', () => {
@@ -218,9 +224,10 @@ describe('BillingTreeTable', () => {
         />,
       );
 
-      // The arrow should only appear once (on the active column)
-      const arrows = screen.queryAllByText(/[▲▼]/);
-      expect(arrows.length).toBe(1);
+      // Only the active column should have an SVG icon
+      const allHeaders = screen.getAllByRole('columnheader');
+      const headersWithSvg = allHeaders.filter(th => th.querySelector('svg'));
+      expect(headersWithSvg.length).toBe(1);
     });
 
     it('calls onToggleSort when a column header is clicked', async () => {

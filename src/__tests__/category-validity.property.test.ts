@@ -12,7 +12,7 @@ import { componentRegistry } from '../data/componentRegistry'
  * **Validates: Requirements 2.1, 2.10, 4.4**
  */
 describe('Feature: component-library-reorganisation, Property 1: Category validity', () => {
-  const validCategories = ['tokens', 'inputs', 'display', 'feedback', 'navigation', 'compositions'] as const
+  const validCategories = ['tokens', 'inputs', 'display', 'feedback', 'navigation', 'compositions', 'atoms', 'sandboxes'] as const
 
   it('every entry has a category from the valid set', () => {
     const arbEntry = fc.constantFrom(...componentRegistry)

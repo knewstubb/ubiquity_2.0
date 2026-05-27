@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { Plus, DownloadSimple, MagnifyingGlass, FunnelSimple } from '@phosphor-icons/react'
+import { Plus, DownloadSimple, MagnifyingGlass, FunnelSimple, GearSix } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuLink } from '@/components/ui/navigation-menu'
+import { cn } from '@/lib/utils'
 
 const SAMPLE_TABS = ['Overview', 'Contacts', 'Transactional', 'Activity', 'Settings']
 const SAMPLE_BREADCRUMBS = [
@@ -35,6 +37,9 @@ interface PageHeaderDemoProps {
   'show-search'?: boolean
   'bulk-count'?: number
   'body-layout'?: string
+  'gap-nav-breadcrumb'?: number
+  'gap-breadcrumb-title'?: number
+  'gap-title-tabs'?: number
 }
 
 export default function PageHeaderDemo(props: PageHeaderDemoProps) {
@@ -54,6 +59,9 @@ export default function PageHeaderDemo(props: PageHeaderDemoProps) {
       showSearch={true}
       bulkCount={0}
       bodyLayout="none"
+      gapNavBreadcrumb={16}
+      gapBreadcrumbTitle={8}
+      gapTitleTabs={16}
       activeTab={activeTab}
       onTabChange={setActiveTab}
     />
@@ -71,6 +79,9 @@ export default function PageHeaderDemo(props: PageHeaderDemoProps) {
     showSearch={props['show-search'] ?? true}
     bulkCount={props['bulk-count'] ?? 0}
     bodyLayout={props['body-layout'] ?? 'none'}
+    gapNavBreadcrumb={props['gap-nav-breadcrumb'] ?? 16}
+    gapBreadcrumbTitle={props['gap-breadcrumb-title'] ?? 8}
+    gapTitleTabs={props['gap-title-tabs'] ?? 16}
     activeTab={activeTab}
     onTabChange={setActiveTab}
   />
@@ -88,6 +99,9 @@ function PageHeaderPreview({
   showSearch,
   bulkCount,
   bodyLayout,
+  gapNavBreadcrumb,
+  gapBreadcrumbTitle,
+  gapTitleTabs,
   activeTab,
   onTabChange,
 }: {
@@ -102,6 +116,9 @@ function PageHeaderPreview({
   showSearch: boolean
   bulkCount: number
   bodyLayout: string
+  gapNavBreadcrumb: number
+  gapBreadcrumbTitle: number
+  gapTitleTabs: number
   activeTab: string
   onTabChange: (tab: string) => void
 }) {
@@ -111,13 +128,44 @@ function PageHeaderPreview({
   const showBulkActions = bulkCount > 0
 
   return (
-    <div className="border border-border rounded-lg overflow-hidden w-full">
-      <div className="bg-background border-b border-border px-8 pt-4">
+    <div className="w-full">
+      {/* Mock Nav Bar — simplified, uses library NavigationMenu component */}
+      <div className="flex items-center h-14 px-8 bg-background border-b border-border">
+        <span className="text-lg font-bold tracking-tight mr-4">
+          <span className="text-primary">U</span>
+          <span className="text-foreground">biquity</span>
+        </span>
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuLink className="cursor-default text-muted-foreground">
+                Home
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            {['Campaigns', 'Audience', 'Assets', 'Reporting', 'Admin'].map((item) => (
+              <NavigationMenuItem key={item}>
+                <NavigationMenuTrigger active={item === 'Campaigns'}>
+                  {item}
+                </NavigationMenuTrigger>
+              </NavigationMenuItem>
+            ))}
+          </NavigationMenuList>
+        </NavigationMenu>
+        <div className="ml-auto flex items-center gap-3">
+          <MagnifyingGlass size={18} className="text-muted-foreground" />
+          <GearSix size={18} className="text-muted-foreground" />
+          <div className="w-px h-5 bg-border mx-1" />
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-semibold text-primary">BK</div>
+        </div>
+      </div>
+
+      {/* Page Header */}
+      <div className="bg-background border-b border-border px-8" style={{ paddingTop: `${gapNavBreadcrumb}px` }}>
         {/* Row 1: Breadcrumbs */}
         {breadcrumbCount > 0 && (
-          <div className="mb-2">
+          <div style={{ marginBottom: `${gapBreadcrumbTitle}px` }}>
             <Breadcrumb>
-              <BreadcrumbList className="text-[13px]">
+              <BreadcrumbList>
                 {visibleBreadcrumbs.map((crumb, i) => (
                   <BreadcrumbItem key={i}>
                     {i > 0 && <BreadcrumbSeparator />}
@@ -134,7 +182,7 @@ function PageHeaderPreview({
         )}
 
         {/* Row 2: Title + Actions */}
-        <div className="flex items-start justify-between gap-6 pb-4">
+        <div className="flex items-start justify-between gap-6" style={{ paddingBottom: `${gapTitleTabs}px` }}>
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2.5">
               <h1 className="text-[22px] font-semibold text-foreground m-0">Page Title</h1>
@@ -183,7 +231,7 @@ function PageHeaderPreview({
             {showSearch && (
               <div className="relative inline-flex items-center">
                 <MagnifyingGlass size={14} weight="regular" className="absolute left-2.5 text-tertiary-foreground pointer-events-none" />
-                <Input type="text" className="pl-8 h-8 w-[180px] text-sm" placeholder="Search..." />
+                <Input type="text" className="pl-8 h-8 w-[180px]" placeholder="Search..." />
               </div>
             )}
             {filterCount > 0 && visibleFilters.map((filter) => (
@@ -204,7 +252,7 @@ function PageHeaderPreview({
             <span className="text-[13px] font-semibold text-foreground mr-2">{bulkCount} items selected</span>
             <Button variant="outline" size="sm">Move</Button>
             <Button variant="outline" size="sm">Tag</Button>
-            <Button variant="outline" size="sm" className="text-destructive border-destructive">Delete</Button>
+            <Button variant="destructiveOutline" size="sm">Delete</Button>
             <Button variant="ghost" size="sm" className="ml-auto">Clear selection</Button>
           </div>
         )}

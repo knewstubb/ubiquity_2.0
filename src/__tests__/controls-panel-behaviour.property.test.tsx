@@ -140,7 +140,10 @@ const arbNonEmptyPropDefinitions: fc.Arbitrary<PropDefinition[]> = fc
  */
 const arbUsedInLink: fc.Arbitrary<UsedInLink> = fc.record({
   label: fc.string({ minLength: 1, maxLength: 20 }).filter((s) => s.trim().length > 0),
-  route: fc.string({ minLength: 1, maxLength: 40 }).map((s) => `/${s.replace(/[^a-zA-Z0-9/-]/g, '').slice(0, 30)}`),
+  route: fc.string({ minLength: 1, maxLength: 40 }).map((s) => {
+    const cleaned = s.replace(/[^a-zA-Z0-9/-]/g, '').replace(/\/{2,}/g, '/').replace(/\/$/, '').slice(0, 30)
+    return `/${cleaned || 'page'}`
+  }),
 })
 
 const arbUsedInLinks: fc.Arbitrary<UsedInLink[]> = fc
@@ -249,6 +252,10 @@ describe('Feature: component-library-reorganisation, Property 9: Control value p
         fc.string({ minLength: 0, maxLength: 20 }),
         fc.string({ minLength: 1, maxLength: 20 }),
         (name, label, defaultValue, newValue) => {
+          // Skip when newValue equals defaultValue — React controlled inputs
+          // don't fire onChange when the value hasn't actually changed
+          if (newValue === defaultValue) return
+
           const propControls: PropDefinition[] = [
             { name, label, controlType: 'text', defaultValue },
           ]

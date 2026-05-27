@@ -1,19 +1,16 @@
 import { useCallback } from 'react';
-import { cn } from '@/lib/utils';
 import { Input } from '../ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 import { CheckboxCard } from '@/components/composed/checkbox-card';
-import { ChipInput } from '@/components/composed/chip-input';
-import { HelpPopover } from '@/components/composed/help-popover';
 import { FilterBuilder } from '../shared/FilterBuilder';
 import { getFieldsForDataType } from '../../data/fieldRegistry';
 import type { FilterGroup } from '../../models/segment';
-import type { WizardDraft } from '../../models/wizard';
+import type { ExporterWizardDraft } from '../../models/wizard';
 import type { ExportDataType, TransactionalSource } from '../../models/automation';
 
 interface DataSourceStepProps {
-  draft: WizardDraft;
-  onUpdate: (patch: Partial<WizardDraft>) => void;
+  draft: ExporterWizardDraft;
+  onUpdate: (patch: Partial<ExporterWizardDraft>) => void;
 }
 
 interface SourceOption {
@@ -33,15 +30,8 @@ const TRANSACTIONAL_SOURCE_OPTIONS: { value: TransactionalSource; label: string 
   { value: 'products', label: 'Products' },
 ];
 
-const JOIN_KEY_OPTIONS = [
-  { value: 'email_address', label: 'Email Address' },
-  { value: 'customer_number', label: 'Customer Number' },
-  { value: 'membership_number', label: 'Membership Number' },
-  { value: 'external_id', label: 'External ID' },
-];
-
 export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
-  const selectedSources: ExportDataType[] = draft.selectedSources ?? [draft.dataType ?? 'contact'];
+  const selectedSources = draft.selectedSources;
 
   const handleSourceToggle = useCallback(
     (sourceId: ExportDataType) => {
@@ -54,29 +44,20 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
         current.push(sourceId);
       }
       onUpdate({
-        dataType: current[0],
         selectedSources: current,
         selectedFields: [],
         transactionalSource: current.includes('transactional') ? draft.transactionalSource : null,
-        enrichmentKeyField: current.length > 1 ? draft.enrichmentKeyField : null,
       });
     },
-    [selectedSources, draft.transactionalSource, draft.enrichmentKeyField, onUpdate],
+    [selectedSources, draft.transactionalSource, onUpdate],
   );
 
   const handleTransactionalSourceSelect = useCallback(
     (source: TransactionalSource) => {
       if (source === draft.transactionalSource) return;
-      onUpdate({ transactionalSource: source, selectedFields: [], enrichmentKeyField: null });
+      onUpdate({ transactionalSource: source, selectedFields: [] });
     },
     [draft.transactionalSource, onUpdate],
-  );
-
-  const handleKeyFieldChange = useCallback(
-    (keys: string[]) => {
-      onUpdate({ enrichmentKeyField: keys.join(',') });
-    },
-    [onUpdate],
   );
 
   const handleFiltersUpdate = useCallback(
@@ -86,10 +67,10 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
     [onUpdate],
   );
 
-  const fields = getFieldsForDataType(draft.dataType, draft.transactionalSource ?? undefined);
+  const fields = getFieldsForDataType(selectedSources[0] ?? 'contact', draft.transactionalSource ?? undefined);
 
   const showTransactionalSource = selectedSources.includes('transactional');
-  const showJoinKey = selectedSources.length > 1;
+  const showJoinIndicator = selectedSources.length > 1;
 
   return (
     <div className="flex flex-col gap-8" data-testid="data-source-step">
@@ -149,40 +130,17 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
           )}
 
           {/* Join indicator — below all source content */}
-          {showJoinKey && (
-            <p className="text-xs text-primary font-medium m-0">
-              These sources will be joined using the key field below.
-            </p>
+          {showJoinIndicator && (
+            <div className="flex items-center gap-2 rounded-md bg-muted px-3 py-2">
+              <p className="text-xs text-muted-foreground m-0">
+                Joined by: <span className="font-medium text-foreground">Email Address</span>
+              </p>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Row 2: Join Key — shown when multiple sources are selected */}
-      {showJoinKey && (
-        <div className="flex items-start gap-14">
-          <div className="w-40 shrink-0">
-            <div className="flex items-center gap-1.5">
-              <p className="text-sm font-semibold text-foreground m-0">Join Key</p>
-              <HelpPopover
-                title="How are sources joined?"
-                body="When exporting from multiple sources, records are matched using a shared key field. Choose the field that uniquely identifies a contact across all selected sources."
-              />
-            </div>
-            <p className="text-xs text-tertiary-foreground mt-1 m-0">Links records across selected sources</p>
-          </div>
-          <div className="w-[552px] flex flex-col gap-3">
-            <ChipInput
-              values={draft.enrichmentKeyField ? draft.enrichmentKeyField.split(',') : []}
-              onChange={handleKeyFieldChange}
-              options={JOIN_KEY_OPTIONS.map((opt) => opt.label)}
-              placeholder="Select key fields…"
-              aria-label="Join key fields"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Row 3: Filters */}
+      {/* Row 2: Filters */}
       {selectedSources.length > 0 && (
         <div className="flex items-start gap-14">
           <div className="w-40 shrink-0">

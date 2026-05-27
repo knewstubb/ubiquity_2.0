@@ -187,7 +187,8 @@ describe('Feature: component-controllers-expansion, Property 1: PropControl Sche
         fc.constantFrom(...allPropDefinitions),
         ({ componentName, prop }) => {
           // Colour controls can have options for preset colours — exempt them
-          if (prop.options && prop.options.length >= 3 && prop.controlType !== 'colour') {
+          // Counter controls can have options for preset values — exempt them
+          if (prop.options && prop.options.length >= 3 && prop.controlType !== 'colour' && prop.controlType !== 'counter') {
             expect(
               prop.controlType,
               `${componentName}.${prop.name}: options.length ≥ 3 must use "select" control`
@@ -204,7 +205,8 @@ describe('Feature: component-controllers-expansion, Property 1: PropControl Sche
       fc.property(
         fc.constantFrom(...allPropDefinitions),
         ({ componentName, prop }) => {
-          if (prop.controlType === 'counter') {
+          // Counter controls that use options as presets don't need min/max
+          if (prop.controlType === 'counter' && !prop.options) {
             expect(
               prop.min,
               `${componentName}.${prop.name}: counter must have min defined`
@@ -262,16 +264,16 @@ describe('Feature: component-controllers-expansion, Property 1: PropControl Sche
             ).toBe('toggle')
           }
 
-          // Rule 2: Options ≥ 3 → select (excluding colour controls which use options for presets)
-          if (prop.options && prop.options.length >= 3 && prop.controlType !== 'colour') {
+          // Rule 2: Options ≥ 3 → select (excluding colour and counter controls which use options for presets)
+          if (prop.options && prop.options.length >= 3 && prop.controlType !== 'colour' && prop.controlType !== 'counter') {
             expect(
               prop.controlType,
               `${componentName}.${prop.name}: options ≥ 3 must use "select"`
             ).toBe('select')
           }
 
-          // Rule 3: Counter → min/max defined, max−min ≤ 50 (unless visibleWhen)
-          if (prop.controlType === 'counter') {
+          // Rule 3: Counter → min/max defined, max−min ≤ 50 (unless visibleWhen or uses options)
+          if (prop.controlType === 'counter' && !prop.options) {
             expect(prop.min, `${componentName}.${prop.name}: counter needs min`).not.toBeUndefined()
             expect(prop.max, `${componentName}.${prop.name}: counter needs max`).not.toBeUndefined()
             if (!prop.visibleWhen) {

@@ -18,9 +18,12 @@ describe('Feature: token-management-ui, Property 6: Token Format Invariant', () 
 
   /**
    * Validates that a primitive reference matches the format `{palette}-{shade}`
-   * where palette ∈ PALETTE_NAMES and shade ∈ SHADE_STEPS.
+   * where palette ∈ PALETTE_NAMES and shade ∈ SHADE_STEPS,
+   * or is a standalone colour keyword like 'white' or 'black'.
    */
   function isValidPrimitiveRef(ref: string): boolean {
+    // Accept standalone colour keywords
+    if (ref === 'white' || ref === 'black') return true
     const dashIndex = ref.lastIndexOf('-')
     if (dashIndex === -1) return false
     const palette = ref.slice(0, dashIndex)

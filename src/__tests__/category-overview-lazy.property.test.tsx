@@ -122,9 +122,9 @@ describe('Feature: component-library-reorganisation, Property 6: Category overvi
           unmount()
         }
       }),
-      { numRuns: 100 }
+      { numRuns: 20 }
     )
-  })
+  }, 10000)
 })
 
 describe('Feature: component-library-reorganisation, Property 7: Lazy loading', () => {

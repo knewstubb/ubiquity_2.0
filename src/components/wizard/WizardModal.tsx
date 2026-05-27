@@ -15,63 +15,73 @@ import {
 } from '../ui/alert-dialog';
 import { Stepper } from '../composed/stepper';
 import { WizardNavButtons } from './WizardNavButtons';
-import { DataSourceStep } from './DataSourceStep';
+import { SourceSelectionStep } from './SourceSelectionStep';
 import { FieldMappingStep } from './FieldMappingStep';
 import { OutputConfigStep } from './OutputConfigStep';
-import { DeliveryStep } from './DeliveryStep';
+import { ScheduleStep } from './ScheduleStep';
+import { NotificationsStep } from '../shared/NotificationsStep';
 import { ReviewStep } from './ReviewStep';
-import type { WizardDraft } from '../../models/wizard';
-import {
-  DEFAULT_FORMAT_OPTIONS,
-  DEFAULT_FILTERS,
-  DEFAULT_FILE_NAMING_PATTERN,
-  DEFAULT_SCHEDULE_CONFIG,
-  DEFAULT_NOTIFICATIONS,
+import type {
+  ExporterWizardDraft,
+  ExporterType,
+  ExporterNotificationConfig,
 } from '../../models/wizard';
+import { DEFAULT_EXPORTER_DRAFT } from '../../models/wizard';
+import type { SourceConfig } from '../../models/source-selection';
+import { validateColumnName, validateColumnNames, validatePrefix } from '../../utils/exporter-utils';
+import { isSourceConfigComplete } from '../../utils/source-selection-validation';
+import { hydrateSourceConfig, detectStaleReferences } from '../../utils/source-config-utils';
 
 interface WizardModalProps {
   connectionId: string;
   connectorName: string;
   editConnectorId?: string;
-  onSave: (draft: WizardDraft) => void;
+  onSave: (draft: ExporterWizardDraft) => void;
   onClose: () => void;
 }
 
-const STEPS = [
-  { label: 'Data Source' },
-  { label: 'Field Mapping' },
-  { label: 'File Configuration' },
-  { label: 'Schedule' },
-  { label: 'Review' },
+interface StepDef {
+  label: string;
+  description: string;
+}
+
+const WIZARD_STEPS: StepDef[] = [
+  { label: 'Source', description: 'Choose your data source and configure filters.' },
+  { label: 'Field Mapping', description: 'Select and reorder the fields to include in your export.' },
+  { label: 'File Configuration', description: 'Configure CSV output format, naming, and delivery options.' },
+  { label: 'Schedule', description: 'Configure when and how often this export runs.' },
+  { label: 'Notifications', description: 'Configure email notifications for this export.' },
+  { label: 'Review', description: 'Review your exporter configuration before saving.' },
 ];
 
-const STEP_DESCRIPTIONS = [
-  'Choose what data to export and configure source options.',
-  'Select and reorder the fields to include in your export.',
-  'Configure CSV output format, naming, and delivery options.',
-  'Configure when and how often this export runs.',
-  'Review your exporter configuration before saving.',
-];
-
-function createDefaultDraft(
+function createDefaultExporterDraft(
   connectionId: string,
   connectorName: string,
-): WizardDraft {
+): ExporterWizardDraft {
   return {
+    ...DEFAULT_EXPORTER_DRAFT,
     connectionId,
     name: connectorName,
-    dataType: 'contact',
-    transactionalSource: null,
-    enrichmentKeyField: null,
-    selectedFields: [],
-    fileType: 'csv',
-    formatOptions: { ...DEFAULT_FORMAT_OPTIONS },
-    fileNamingPattern: DEFAULT_FILE_NAMING_PATTERN,
-    schedule: null,
-    filters: { ...DEFAULT_FILTERS },
-    scheduleConfig: { ...DEFAULT_SCHEDULE_CONFIG },
-    notifications: { ...DEFAULT_NOTIFICATIONS },
   };
+}
+
+/**
+ * Returns true when the primary source type or sub-source (tableId/channel) has changed,
+ * meaning the available field set has changed and field selections must be cleared.
+ */
+function didSourceOrSubSourceChange(
+  oldConfig: SourceConfig | null,
+  newConfig: SourceConfig | null,
+): boolean {
+  if (!oldConfig || !newConfig) return true;
+  if (oldConfig.primarySource !== newConfig.primarySource) return true;
+  if (oldConfig.primarySource === 'transactions' && newConfig.primarySource === 'transactions') {
+    return oldConfig.tableId !== newConfig.tableId;
+  }
+  if (oldConfig.primarySource === 'messages' && newConfig.primarySource === 'messages') {
+    return oldConfig.channel !== newConfig.channel;
+  }
+  return false;
 }
 
 export function WizardModal({
@@ -85,37 +95,88 @@ export function WizardModal({
   const { getConnectionById } = useConnections();
   const connection = getConnectionById(connectionId);
 
-  // Build initial draft — from existing connector in edit mode, or defaults
-  const initialDraft = useMemo<WizardDraft>(() => {
+  // Build initial draft — from existing automation in edit mode, or defaults
+  const initialDraft = useMemo<ExporterWizardDraft>(() => {
     if (editConnectorId) {
       const existing = automations.find((c) => c.id === editConnectorId);
       if (existing) {
+        // Attempt to hydrate sourceConfig from persisted data.
+        // In a real system, the automation would store sourceConfig as a JSON field.
+        // For the prototype, we check if the automation has a `sourceConfigJson` field
+        // (it won't yet — this is where hydration would happen once persistence is added).
+        const persistedJson = (existing as Record<string, unknown>).sourceConfigJson as string | null ?? null;
+        const hydratedConfig = hydrateSourceConfig(persistedJson);
+
+        // If hydration succeeded, detect stale references so the UI can warn the user
+        if (hydratedConfig) {
+          const staleRefs = detectStaleReferences(hydratedConfig);
+          if (staleRefs.length > 0) {
+            // Stale references detected — config is hydrated but user will need to fix invalid refs.
+            // The SourceSelectionStep can read staleRefs from the config to show validation indicators.
+            console.warn('[WizardModal] Stale references detected in hydrated sourceConfig:', staleRefs);
+          }
+        }
+
         return {
           connectionId: existing.connectionId,
           name: existing.name,
-          dataType: existing.dataType,
+          sourceConfig: hydratedConfig,
+          // Legacy fields (deprecated — kept for backward compat)
+          exporterType: 'contact_transactional' as ExporterType,
+          selectedSources: [existing.dataType],
           transactionalSource: existing.transactionalSource ?? null,
-          enrichmentKeyField: existing.enrichmentKeyField ?? null,
-          selectedFields: [...existing.selectedFields],
-          fileType: existing.fileType,
-          formatOptions: { ...existing.formatOptions },
-          fileNamingPattern: existing.fileNamingPattern,
-          schedule: existing.schedule,
           filters: { ...existing.filters },
-          scheduleConfig: existing.scheduleConfig ? { ...existing.scheduleConfig } : { ...DEFAULT_SCHEDULE_CONFIG },
-          notifications: existing.notifications ? { ...existing.notifications } : { ...DEFAULT_NOTIFICATIONS },
+          selectedEventSources: [],
+          selectedFields: [...existing.selectedFields],
+          columnRenames: [],
+          fileNamingPrefix: '',
+          formatOptions: {
+            delimiter: existing.formatOptions.delimiter,
+            includeHeader: existing.formatOptions.includeHeader,
+            dateFormat: existing.formatOptions.dateFormat,
+            timezone: 'Pacific/Auckland', // Override legacy timezone
+          },
+          schedule: {
+            frequency: (existing.scheduleConfig?.frequency ?? 'daily') as 'hourly' | 'daily' | 'weekly' | 'monthly',
+            weeklyDays: existing.scheduleConfig?.weeklyDays ?? [false, false, false, false, false, false, false],
+            monthlyDays: [],
+          },
+          notifications: existing.notifications
+            ? {
+                failureEmails: existing.notifications.failureEmails ?? [],
+                successEnabled: existing.notifications.successEnabled ?? false,
+                successEmails: existing.notifications.successEmails ?? [],
+                noFileAlertEnabled: existing.notifications.noFileAlertEnabled ?? false,
+                noFileAlertEmails: existing.notifications.noFileAlertEmails ?? [],
+                noFileSchedule: existing.notifications.noFileSchedule,
+              }
+            : { ...DEFAULT_EXPORTER_DRAFT.notifications },
         };
       }
     }
-    return createDefaultDraft(connectionId, connectorName);
+    return createDefaultExporterDraft(connectionId, connectorName);
   }, [editConnectorId, automations, connectionId, connectorName]);
 
-  const [draft, setDraft] = useState<WizardDraft>(initialDraft);
+  const [draft, setDraft] = useState<ExporterWizardDraft>(initialDraft);
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>(
-    editConnectorId ? [0, 1, 2, 3, 4] : [],
+    editConnectorId ? [0, 1, 2, 3, 4, 5] : [],
   );
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+  const [notificationsValid, setNotificationsValid] = useState(
+    draft.notifications.failureEmails.length > 0,
+  );
+
+  // Dynamic steps — derive stepper label for Step 0 based on source selection
+  const steps = useMemo(() => {
+    const sourceLabel = draft.sourceConfig
+      ? `${draft.sourceConfig.primarySource.charAt(0).toUpperCase() + draft.sourceConfig.primarySource.slice(1)} Source`
+      : 'Source';
+    return WIZARD_STEPS.map((step, i) =>
+      i === 0 ? { ...step, label: sourceLabel } : step
+    );
+  }, [draft.sourceConfig]);
+  const lastStepIndex = steps.length - 1;
 
   // Track whether draft has been modified from initial state
   const isDirty = useMemo(
@@ -125,24 +186,53 @@ export function WizardModal({
 
   // canProceed validation per step
   const canProceed = useMemo(() => {
-    switch (currentStep) {
-      case 0: {
-        if (!draft.name.trim()) return false;
-        if (!draft.dataType) return false;
+    // Step 0: Source Selection — uses isSourceConfigComplete
+    if (currentStep === 0) {
+      return isSourceConfigComplete(draft.sourceConfig);
+    }
+
+    // Steps: Source(0) → FieldMapping(1) → FileConfig(2) → Schedule(3) → Notifications(4) → Review(5)
+    const stepLabel = steps[currentStep]?.label;
+
+    switch (stepLabel) {
+      case 'Field Mapping': {
+        if (draft.selectedFields.length === 0) return false;
+        // Validate column renames
+        for (const field of draft.selectedFields) {
+          const rename = draft.columnRenames.find((r) => r.fieldKey === field.key);
+          if (rename) {
+            const result = validateColumnName(rename.outputName);
+            if (!result.valid) return false;
+          }
+        }
+        // Check for duplicate column names
+        const resolvedNames = draft.selectedFields.map((f) => {
+          const rename = draft.columnRenames.find((r) => r.fieldKey === f.key);
+          return rename ? rename.outputName : f.label;
+        });
+        const dupeResult = validateColumnNames(resolvedNames);
+        if (!dupeResult.valid) return false;
         return true;
       }
-      case 1:
-        return draft.selectedFields.length >= 1;
-      case 2:
+      case 'File Configuration': {
+        return validatePrefix(draft.fileNamingPrefix);
+      }
+      case 'Schedule': {
+        const { frequency, weeklyDays, monthlyDays } = draft.schedule;
+        if (frequency === 'weekly' && !weeklyDays.some(Boolean)) return false;
+        if (frequency === 'monthly' && monthlyDays.length === 0) return false;
         return true;
-      case 3:
-        return draft.schedule !== null;
-      case 4:
+      }
+      case 'Notifications': {
+        return notificationsValid;
+      }
+      case 'Review': {
         return true;
+      }
       default:
         return false;
     }
-  }, [currentStep, draft]);
+  }, [currentStep, draft, steps, notificationsValid]);
 
   // Escape key handler
   const handleKeyDown = useCallback(
@@ -173,7 +263,10 @@ export function WizardModal({
   };
 
   const handleStepClick = (stepIndex: number) => {
-    setCurrentStep(stepIndex);
+    // Only allow clicking completed steps or current step
+    if (completedSteps.includes(stepIndex) || stepIndex === currentStep) {
+      setCurrentStep(stepIndex);
+    }
   };
 
   const handleBack = () => {
@@ -183,7 +276,7 @@ export function WizardModal({
   };
 
   const handleNext = () => {
-    if (currentStep === 4) {
+    if (currentStep === lastStepIndex) {
       // Save at review step
       onSave(draft);
       onClose();
@@ -197,24 +290,86 @@ export function WizardModal({
   };
 
   const handleDraftUpdate = useCallback(
-    (patch: Partial<WizardDraft>) => {
-      setDraft((prev) => ({ ...prev, ...patch }));
+    (patch: Partial<ExporterWizardDraft>) => {
+      setDraft((prev) => {
+        // If sourceConfig is being updated, apply field clearing logic
+        if (patch.sourceConfig !== undefined) {
+          const oldConfig = prev.sourceConfig;
+          const newConfig = patch.sourceConfig;
+
+          if (didSourceOrSubSourceChange(oldConfig, newConfig)) {
+            // Primary source or sub-source changed — clear all field selections
+            return {
+              ...prev,
+              ...patch,
+              selectedFields: [],
+              columnRenames: [],
+            };
+          }
+
+          // Only filter or enrichment changed — preserve valid fields
+          const oldEnrichmentEntity = oldConfig?.enrichment?.entity ?? null;
+          const newEnrichmentEntity = newConfig?.enrichment?.entity ?? null;
+
+          if (oldEnrichmentEntity && oldEnrichmentEntity !== newEnrichmentEntity) {
+            // Enrichment was removed or changed — remove fields from old enrichment entity
+            const preservedFields = prev.selectedFields.filter(
+              (field) => field.source !== oldEnrichmentEntity,
+            );
+            const preservedFieldKeys = new Set(preservedFields.map((f) => f.key));
+            const preservedRenames = prev.columnRenames.filter(
+              (rename) => preservedFieldKeys.has(rename.fieldKey),
+            );
+
+            return {
+              ...prev,
+              ...patch,
+              selectedFields: preservedFields,
+              columnRenames: preservedRenames,
+            };
+          }
+
+          // Filter-only change or enrichment added (no removal) — preserve all fields
+          return { ...prev, ...patch };
+        }
+
+        return { ...prev, ...patch };
+      });
     },
     [],
   );
 
-  // Step content with real components
+  const handleNotificationsUpdate = useCallback(
+    (config: ExporterNotificationConfig) => {
+      setDraft((prev) => ({ ...prev, notifications: config }));
+    },
+    [],
+  );
+
+  const handleNotificationsValidChange = useCallback((valid: boolean) => {
+    setNotificationsValid(valid);
+  }, []);
+
+  // Step content based on current step index
   const stepContent = (() => {
     switch (currentStep) {
       case 0:
-        return <DataSourceStep draft={draft} onUpdate={handleDraftUpdate} />;
+        return <SourceSelectionStep draft={draft} onUpdate={handleDraftUpdate} />;
       case 1:
         return <FieldMappingStep draft={draft} onUpdate={handleDraftUpdate} />;
       case 2:
         return <OutputConfigStep draft={draft} onUpdate={handleDraftUpdate} />;
       case 3:
-        return <DeliveryStep draft={draft} onUpdate={handleDraftUpdate} />;
+        return <ScheduleStep draft={draft} onUpdate={handleDraftUpdate} />;
       case 4:
+        return (
+          <NotificationsStep
+            value={draft.notifications}
+            onUpdate={handleNotificationsUpdate}
+            onValidChange={handleNotificationsValidChange}
+          />
+        );
+      case 5:
         return <ReviewStep draft={draft} onEditStep={(step) => setCurrentStep(step)} />;
       default:
         return null;
@@ -244,7 +399,7 @@ export function WizardModal({
             </span>
           </div>
           <Stepper
-            steps={STEPS}
+            steps={steps.map((s) => ({ label: s.label }))}
             currentStep={currentStep}
             completedSteps={completedSteps}
             onStepClick={handleStepClick}
@@ -257,8 +412,8 @@ export function WizardModal({
           {/* Fixed header — title + close button */}
           <div className="shrink-0 flex items-start justify-between px-8 pt-8 pb-8">
             <div>
-              <h3 className="m-0 text-xl font-semibold text-primary">{STEPS[currentStep]?.label}</h3>
-              <p className="mt-1 mb-0 text-sm text-tertiary-foreground">{STEP_DESCRIPTIONS[currentStep]}</p>
+              <h3 className="m-0 text-xl font-semibold text-primary">{steps[currentStep]?.label}</h3>
+              <p className="mt-1 mb-0 text-sm text-tertiary-foreground">{steps[currentStep]?.description}</p>
             </div>
             <CloseButton
               onClick={handleCloseClick}
@@ -277,7 +432,7 @@ export function WizardModal({
               onNext={handleNext}
               onCancel={handleCloseClick}
               canProceed={canProceed}
-              isLast={currentStep === 4}
+              isLast={currentStep === lastStepIndex}
               showBack={currentStep > 0}
               submitLabel={editConnectorId ? (isDirty ? 'Save Changes' : 'Done') : 'Create Exporter'}
             />
@@ -308,5 +463,3 @@ export function WizardModal({
     </div>
   );
 }
-
-

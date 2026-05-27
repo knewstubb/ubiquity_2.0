@@ -24,37 +24,37 @@ describe('DeleteConfirmModal', () => {
   it('renders Cancel and Delete buttons', () => {
     render(<DeleteConfirmModal {...defaultProps} />);
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Delete Automation' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Delete automation' })).toBeInTheDocument();
   });
 
   it('delete button is disabled until DELETE is typed', () => {
     render(<DeleteConfirmModal {...defaultProps} />);
-    const deleteBtn = screen.getByRole('button', { name: 'Delete Automation' });
+    const deleteBtn = screen.getByRole('button', { name: 'Delete automation' });
     expect(deleteBtn).toBeDisabled();
   });
 
   it('delete button is enabled after typing DELETE', async () => {
     render(<DeleteConfirmModal {...defaultProps} />);
-    const input = screen.getByPlaceholderText('Type DELETE here');
+    const input = screen.getByRole('textbox');
     await userEvent.type(input, 'DELETE');
-    const deleteBtn = screen.getByRole('button', { name: 'Delete Automation' });
+    const deleteBtn = screen.getByRole('button', { name: 'Delete automation' });
     expect(deleteBtn).toBeEnabled();
   });
 
   it('calls onConfirm when DELETE is typed and Delete is clicked', async () => {
     const onConfirm = vi.fn();
     render(<DeleteConfirmModal {...defaultProps} onConfirm={onConfirm} />);
-    const input = screen.getByPlaceholderText('Type DELETE here');
+    const input = screen.getByRole('textbox');
     await userEvent.type(input, 'DELETE');
-    await userEvent.click(screen.getByRole('button', { name: 'Delete Automation' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Delete automation' }));
     expect(onConfirm).toHaveBeenCalledOnce();
   });
 
   it('rejects lowercase "delete"', async () => {
     render(<DeleteConfirmModal {...defaultProps} />);
-    const input = screen.getByPlaceholderText('Type DELETE here');
+    const input = screen.getByRole('textbox');
     await userEvent.type(input, 'delete');
-    const deleteBtn = screen.getByRole('button', { name: 'Delete Automation' });
+    const deleteBtn = screen.getByRole('button', { name: 'Delete automation' });
     expect(deleteBtn).toBeDisabled();
   });
 
@@ -77,7 +77,7 @@ describe('DeleteConfirmModal', () => {
     render(<DeleteConfirmModal {...defaultProps} objectType="Connection" objectName="Spa SFTP Server" />);
     expect(screen.getByText('Delete Connection?')).toBeInTheDocument();
     expect(screen.getByText('Spa SFTP Server')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Delete Connection' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Delete connection' })).toBeInTheDocument();
   });
 
   it('has correct aria attributes', () => {

@@ -62,6 +62,8 @@ export interface ComponentEntry {
     setValue: (name: string, value: ControlValue) => void
   ) => ReactNode
   designGuidance?: DesignGuidanceSection[]
+  /** When 'full-bleed', the demo fills the preview area with no padding/border/centering */
+  demoLayout?: 'default' | 'full-bleed'
 }
 
 export const componentRegistry: ComponentEntry[] = [
@@ -1452,6 +1454,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'page-header',
     category: 'sandboxes',
     description: 'Configurable page header with breadcrumbs, title, status badge, actions, tabs, filters, and bulk actions.',
+    demoLayout: 'full-bleed',
     usesComponents: ['Button', 'Badge', 'Tabs', 'Input', 'Breadcrumb'],
     component: lazy(() => import('../pages/component-demos/PageHeaderDemo')),
     propControls: [
@@ -1478,6 +1481,9 @@ export const componentRegistry: ComponentEntry[] = [
         { label: 'Card List', value: 'cards' },
         { label: 'Empty State', value: 'empty' },
       ]},
+      { name: 'gap-nav-breadcrumb', label: 'Nav → Breadcrumb', controlType: 'range', defaultValue: 16, min: 0, max: 32, step: 4, section: 'Spacing' },
+      { name: 'gap-breadcrumb-title', label: 'Breadcrumb → Title', controlType: 'range', defaultValue: 8, min: 0, max: 24, step: 4, section: 'Spacing' },
+      { name: 'gap-title-tabs', label: 'Title → Tabs', controlType: 'range', defaultValue: 16, min: 0, max: 32, step: 4, section: 'Spacing' },
     ],
   },
   {

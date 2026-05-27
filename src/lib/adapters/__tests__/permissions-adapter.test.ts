@@ -66,7 +66,7 @@ describe('permissions-adapter', () => {
       set([userRow]);
       const result = await adapter.getUsers();
       expect(from).toHaveBeenCalledWith('prototype_users');
-      expect(result[0]).toEqual({ id: 'usr-1', name: 'Jane', email: 'jane@test.com', initials: 'JD' });
+      expect(result[0]).toEqual({ id: 'usr-1', name: 'Jane', email: 'jane@test.com', initials: 'JD', isPlatformOwner: false, isSystemAdmin: false });
     });
 
     it('getUsers falls back to local data on error', async () => {

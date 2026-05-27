@@ -127,7 +127,7 @@ describe('AlertDialogComposed', () => {
         <p>Body</p>
       </AlertDialogComposed>
     )
-    const input = screen.getByPlaceholderText('Type DELETE here')
+    const input = screen.getByRole('textbox')
     await user.type(input, 'DELETE')
 
     const confirmBtn = screen.getByRole('button', { name: 'Confirm' })
@@ -217,7 +217,7 @@ describe('AlertDialogComposed', () => {
     )
 
     // Type into the input
-    const input = screen.getByPlaceholderText('Type DELETE here')
+    const input = screen.getByRole('textbox')
     await user.type(input, 'DEL')
     expect(input).toHaveValue('DEL')
 
@@ -248,7 +248,7 @@ describe('AlertDialogComposed', () => {
     )
 
     // Input should be empty
-    const newInput = screen.getByPlaceholderText('Type DELETE here')
+    const newInput = screen.getByRole('textbox')
     expect(newInput).toHaveValue('')
   })
 

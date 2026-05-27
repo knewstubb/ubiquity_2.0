@@ -32,7 +32,7 @@ export interface FormatOptions {
 export interface SelectedField {
   key: string;       // Field identifier (e.g., 'firstName', 'treatmentType')
   label: string;     // Display name (e.g., 'First Name', 'Treatment Type')
-  source: 'contact' | 'treatment' | 'product'; // Which dataset this field comes from
+  source: 'contact' | 'treatment' | 'product' | 'event'; // Which dataset this field comes from
 }
 
 export interface Automation {

@@ -67,7 +67,7 @@ describe('AutomationsContext', () => {
       expect(automation!.name).toBe('Test Automation');
       expect(automation!.direction).toBe('export');
       expect(automation!.dataType).toBe('contact');
-      expect(automation!.status).toBe('active');
+      expect(automation!.status).toBe('paused');
       expect(automation!.createdAt).toBeTruthy();
       expect(automation!.updatedAt).toBeTruthy();
       expect(automation!.selectedFields).toEqual(draft.selectedFields);
@@ -195,7 +195,7 @@ describe('AutomationsContext', () => {
   });
 
   describe('toggleAutomationStatus', () => {
-    it('toggles active to paused', () => {
+    it('toggles paused to active', () => {
       const { result } = renderHook(() => useAutomations(), { wrapper });
 
       let automation: ReturnType<typeof result.current.addAutomation>;
@@ -203,29 +203,29 @@ describe('AutomationsContext', () => {
         automation = result.current.addAutomation(makeDraft());
       });
 
-      act(() => {
-        result.current.toggleAutomationStatus(automation!.id);
-      });
-
-      expect(result.current.automations[0].status).toBe('paused');
-    });
-
-    it('toggles paused back to active', () => {
-      const { result } = renderHook(() => useAutomations(), { wrapper });
-
-      let automation: ReturnType<typeof result.current.addAutomation>;
-      act(() => {
-        automation = result.current.addAutomation(makeDraft());
-      });
-
-      act(() => {
-        result.current.toggleAutomationStatus(automation!.id);
-      });
       act(() => {
         result.current.toggleAutomationStatus(automation!.id);
       });
 
       expect(result.current.automations[0].status).toBe('active');
+    });
+
+    it('toggles active back to paused', () => {
+      const { result } = renderHook(() => useAutomations(), { wrapper });
+
+      let automation: ReturnType<typeof result.current.addAutomation>;
+      act(() => {
+        automation = result.current.addAutomation(makeDraft());
+      });
+
+      act(() => {
+        result.current.toggleAutomationStatus(automation!.id);
+      });
+      act(() => {
+        result.current.toggleAutomationStatus(automation!.id);
+      });
+
+      expect(result.current.automations[0].status).toBe('paused');
     });
   });
 

@@ -152,7 +152,7 @@ describe('Feature: component-library-reorganisation, Property 3: Sidebar item or
       }),
       { numRuns: 100 }
     )
-  })
+  }, 30_000)
 })
 
 describe('Feature: component-library-reorganisation, Property 4: Sidebar group toggle', () => {

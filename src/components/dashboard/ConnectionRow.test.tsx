@@ -83,15 +83,15 @@ describe('ConnectionRow', () => {
 
   it('renders active automation count', () => {
     renderRow();
-    // The count is split across span elements: "1 of 2 Automations Active"
+    // The count is split across span elements: "1 of 2 automations active"
     expect(screen.getByText('1')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
-    expect(screen.getByText(/Automations Active/)).toBeInTheDocument();
+    expect(screen.getByText(/automations active/)).toBeInTheDocument();
   });
 
-  it('shows "No Automations" when connectors array is empty', () => {
+  it('shows "Add automation" button when connectors array is empty', () => {
     renderRow([]);
-    expect(screen.getByText('No Automations')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Add automation/i })).toBeInTheDocument();
   });
 
   it('has a connection actions menu button', () => {

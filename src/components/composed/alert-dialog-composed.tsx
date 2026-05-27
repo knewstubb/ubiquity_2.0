@@ -9,8 +9,8 @@
  *   so we can disable buttons and prevent dismissal during async loading
  * - Top border accent is rendered as a separate div (h-1.5 / 6px, not a CSS border-top) so it clips
  *   cleanly to the container's rounded corners without overflow issues
- * - Neutral intent uses full border (border-border), warning/destructive use border-x + border-b
- *   since the coloured strip replaces the top border visually
+ * - No border on the dialog container — the shadow-xl provides sufficient elevation separation
+ *   from the overlay backdrop. Borders caused rendering artefacts with the coloured top strip
  * - Cancel button uses ghost variant to reduce visual weight — the confirm button should
  *   always be the dominant action
  * - Destructive dialogs swap button order (confirm left, cancel right) to prevent muscle-memory
@@ -248,11 +248,9 @@ export function AlertDialogComposed({
         <AlertDialogPrimitive.Overlay className="fixed inset-0 z-[200] bg-black/50 backdrop-blur-xs data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
         <AlertDialogPrimitive.Content
           className={cn(
-            'fixed left-[50%] top-[50%] z-[200] grid w-full max-w-[460px] translate-x-[-50%] translate-y-[-50%] bg-card shadow-lg duration-200 rounded-lg p-0 gap-0 overflow-hidden',
+            'fixed left-[50%] top-[50%] z-[200] grid w-full max-w-[460px] translate-x-[-50%] translate-y-[-50%] bg-card shadow-xl duration-200 rounded-lg p-0 gap-0 overflow-hidden',
             'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]',
-            intent === 'neutral'
-              ? 'border border-border'
-              : 'border-x border-b border-border'
+            'border-none'
           )}
           onEscapeKeyDown={(e) => {
             if (isLoading) e.preventDefault()

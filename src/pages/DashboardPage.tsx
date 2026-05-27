@@ -18,7 +18,7 @@ import { HistoryModal } from '../components/dashboard/HistoryModal';
 import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import type { Automation } from '../models/automation';
-import type { WizardDraft } from '../models/wizard';
+import type { WizardDraft, ExporterWizardDraft } from '../models/wizard';
 import type { ImporterConfig } from '../models/importer';
 
 interface WizardModalState {
@@ -120,7 +120,38 @@ export default function DashboardPage() {
   }
 
   // --- WizardModal save ---
-  function handleWizardSave(draft: WizardDraft) {
+  function handleWizardSave(exporterDraft: ExporterWizardDraft) {
+    // Adapt ExporterWizardDraft to WizardDraft for the existing context
+    const draft: WizardDraft = {
+      connectionId: exporterDraft.connectionId,
+      name: exporterDraft.name,
+      dataType: exporterDraft.selectedSources[0] ?? 'contact',
+      selectedSources: exporterDraft.selectedSources,
+      transactionalSource: exporterDraft.transactionalSource,
+      enrichmentKeyField: null,
+      selectedFields: exporterDraft.selectedFields,
+      fileType: 'csv',
+      formatOptions: exporterDraft.formatOptions,
+      fileNamingPattern: `${exporterDraft.fileNamingPrefix}{timestamp}.csv`,
+      schedule: exporterDraft.schedule.frequency as WizardDraft['schedule'],
+      filters: exporterDraft.filters,
+      scheduleConfig: {
+        frequency: exporterDraft.schedule.frequency,
+        starting: '',
+        every: '1',
+        at: '',
+        weeklyDays: exporterDraft.schedule.weeklyDays,
+        monthlyPattern: 'day',
+        monthlyOrdinal: '1st',
+        monthlyDayOfWeek: 'Monday',
+        monthlyDates: [],
+      },
+      notifications: {
+        emails: exporterDraft.notifications.failureEmails,
+        successEnabled: exporterDraft.notifications.successEnabled,
+        failureEnabled: true,
+      },
+    };
     if (wizardModalState?.editConnectorId) {
       updateAutomation(wizardModalState.editConnectorId, draft);
     } else {

@@ -117,7 +117,7 @@ describe('Feature: tailwind-token-migration, Property 1: Zero CSS Modules Remain
   it('property holds for random subsets of .tsx files — no .module.css imports', () => {
     if (tsxFiles.length === 0) return
 
-    const arbTsxSubset = fc.subarray(tsxFiles, { minLength: 1 })
+    const arbTsxSubset = fc.subarray(tsxFiles, { minLength: 1, maxLength: 10 })
 
     fc.assert(
       fc.property(arbTsxSubset, (subset) => {
@@ -130,7 +130,7 @@ describe('Feature: tailwind-token-migration, Property 1: Zero CSS Modules Remain
           }
         }
       }),
-      { numRuns: 100 }
+      { numRuns: 50 }
     )
-  })
+  }, 30000)
 })

@@ -31,3 +31,25 @@ export type { Asset } from './asset';
 export type { Notification } from './notification';
 export type { BillingCategory, BillingLineItem } from './billing';
 export { getCurrentBillingCycle } from './billing';
+export type {
+  PrimarySourceType,
+  Channel,
+  JoinStrategy,
+  MessageStatus,
+  ContactsFilterType,
+  ContactsFilterConfig,
+  TransactionsFilterType,
+  FieldFilterRow,
+  TransactionsFilterConfig,
+  MessagesFilterType,
+  MessagesFilterConfig,
+  EnrichmentEntity,
+  TransactionEnrichmentOptions,
+  MessageEnrichmentOptions,
+  ContactEnrichmentOptions,
+  EnrichmentConfig,
+  ContactsSourceConfig,
+  TransactionsSourceConfig,
+  MessagesSourceConfig,
+  SourceConfig,
+} from './source-selection';
