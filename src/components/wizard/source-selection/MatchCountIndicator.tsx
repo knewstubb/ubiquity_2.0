@@ -22,8 +22,8 @@ export function MatchCountIndicator({
 }: MatchCountIndicatorProps) {
   if (loading) {
     return (
-      <div className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2">
-        <SpinnerGap className="size-4 animate-spin text-muted-foreground" />
+      <div className="flex items-center gap-2 rounded-md border border-border bg-secondary px-4 py-2.5">
+        <SpinnerGap className="size-4 animate-spin text-primary" />
         <span className="text-sm text-muted-foreground">Calculating...</span>
       </div>
     )
@@ -31,7 +31,7 @@ export function MatchCountIndicator({
 
   if (error) {
     return (
-      <div className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2">
+      <div className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/5 px-4 py-2.5">
         <span className="text-sm text-destructive">Unable to calculate match count</span>
         <Button variant="secondaryOutline" size="sm" onClick={onRetry}>
           Retry
@@ -43,7 +43,7 @@ export function MatchCountIndicator({
   if (count === null) {
     if (pending) {
       return (
-        <div className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2">
+        <div className="flex items-center gap-2 rounded-md border border-border bg-secondary px-4 py-2.5">
           <DotsThree className="size-4 text-muted-foreground" weight="bold" />
           <span className="text-sm text-muted-foreground">Complete filter to see match count</span>
         </div>
@@ -54,17 +54,17 @@ export function MatchCountIndicator({
 
   if (count === 0) {
     return (
-      <div className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2">
-        <span className="text-sm text-muted-foreground">0 records match</span>
+      <div className="flex items-center gap-2 rounded-md border border-border bg-secondary px-4 py-2.5">
+        <span className="text-sm font-medium text-muted-foreground">0 records match</span>
       </div>
     )
   }
 
   return (
-    <div className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2">
+    <div className="flex items-center gap-2 rounded-md border-l-3 border-l-primary border border-primary/20 bg-primary/5 px-4 py-2.5">
       <span className="text-sm">
-        <span className="font-semibold">{formatMatchCount(count)}</span>{' '}
-        <span className="text-muted-foreground">{entityLabel} match</span>
+        <span className="font-bold text-primary">{formatMatchCount(count)}</span>{' '}
+        <span className="font-medium text-foreground">{entityLabel} match</span>
       </span>
     </div>
   )
