@@ -241,7 +241,7 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
       {beat3Complete && (
         <div className="flex items-start gap-14">
           <div className="w-40 shrink-0 pt-0">
-            <p className="text-sm font-semibold text-foreground m-0">Add Context</p>
+            <p className="text-sm font-semibold text-foreground m-0">Secondary Source</p>
             <p className="text-xs text-tertiary-foreground mt-1 mb-0">
               Enrich your export with columns from related entities.
             </p>
