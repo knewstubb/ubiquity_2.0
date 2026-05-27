@@ -47,7 +47,7 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
     sourceConfig !== null &&
     (sourceConfig.primarySource === 'contacts' ||
       (sourceConfig.primarySource === 'transactions' && sourceConfig.tableId.length > 0) ||
-      (sourceConfig.primarySource === 'messages' && sourceConfig.channel.length > 0))
+      (sourceConfig.primarySource === 'messages' && sourceConfig.channels.length > 0))
 
   const beat3Complete = sourceConfig !== null && isFilterComplete(sourceConfig)
 
@@ -102,8 +102,12 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
 
   function handleChannelChange(channel: Channel) {
     if (!sourceConfig || sourceConfig.primarySource !== 'messages') return
+    const current = (sourceConfig as MessagesSourceConfig).channels
+    const updated = current.includes(channel)
+      ? current.filter((c) => c !== channel)
+      : [...current, channel]
     onUpdate({
-      sourceConfig: { ...sourceConfig, channel },
+      sourceConfig: { ...sourceConfig, channels: updated },
     })
   }
 
@@ -161,12 +165,12 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
         <div className="flex items-start gap-14">
           <div className="w-40 shrink-0 pt-0">
             <p className="text-sm font-semibold text-foreground m-0">
-              {sourceConfig!.primarySource === 'transactions' ? 'Transaction Table' : 'Channel'}
+              {sourceConfig!.primarySource === 'transactions' ? 'Transaction Table' : 'Channels'}
             </p>
             <p className="text-xs text-tertiary-foreground mt-1 mb-0">
               {sourceConfig!.primarySource === 'transactions'
                 ? 'Choose which transaction table to export from.'
-                : 'Choose which messaging channel to export from.'}
+                : 'Select which messaging channels to include.'}
             </p>
           </div>
           <div className="flex-1 min-w-0">
@@ -177,9 +181,9 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
                   ? (sourceConfig as TransactionsSourceConfig).tableId
                   : undefined
               }
-              selectedChannel={
+              selectedChannels={
                 sourceConfig!.primarySource === 'messages'
-                  ? (sourceConfig as MessagesSourceConfig).channel
+                  ? (sourceConfig as MessagesSourceConfig).channels
                   : undefined
               }
               onTableChange={handleTableChange}
@@ -217,7 +221,7 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
               <MessagesFilterPanel
                 config={(sourceConfig as MessagesSourceConfig).filter}
                 onChange={handleMessagesFilterChange}
-                channel={(sourceConfig as MessagesSourceConfig).channel}
+                channel={(sourceConfig as MessagesSourceConfig).channels[0]}
               />
             )}
 

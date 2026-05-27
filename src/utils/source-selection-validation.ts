@@ -134,7 +134,7 @@ export function isSourceConfigComplete(config: SourceConfig | null): boolean {
     }
     case 'messages': {
       const m = config as MessagesSourceConfig;
-      return m.channel.length > 0 && isFilterComplete(m) && isEnrichmentComplete(m.enrichment);
+      return m.channels.length > 0 && isFilterComplete(m) && isEnrichmentComplete(m.enrichment);
     }
   }
 }

@@ -73,7 +73,9 @@ describe('SubSourceSelector', () => {
           availableChannels={['email', 'sms', 'push']}
         />
       )
-      expect(screen.getByRole('radiogroup', { name: 'Channel selection' })).toBeInTheDocument()
+      expect(screen.getByRole('checkbox', { name: 'Email' })).toBeInTheDocument()
+      expect(screen.getByRole('checkbox', { name: 'SMS' })).toBeInTheDocument()
+      expect(screen.getByRole('checkbox', { name: 'Push' })).toBeInTheDocument()
     })
 
     it('renders only available channels', () => {
@@ -99,21 +101,22 @@ describe('SubSourceSelector', () => {
           onChannelChange={onChannelChange}
         />
       )
-      fireEvent.click(screen.getByRole('radio', { name: /SMS/i }))
+      fireEvent.click(screen.getByRole('checkbox', { name: 'SMS' }))
       expect(onChannelChange).toHaveBeenCalledWith('sms')
     })
 
-    it('shows selected state for the chosen channel', () => {
+    it('shows selected state for the chosen channels', () => {
       render(
         <SubSourceSelector
           {...defaultProps}
           primarySource="messages"
           availableChannels={['email', 'sms', 'push']}
-          selectedChannel="email"
+          selectedChannels={['email', 'sms']}
         />
       )
-      const emailRadio = screen.getByRole('radio', { name: /Email/i })
-      expect(emailRadio).toHaveAttribute('aria-checked', 'true')
+      expect(screen.getByRole('checkbox', { name: 'Email' })).toHaveAttribute('aria-checked', 'true')
+      expect(screen.getByRole('checkbox', { name: 'SMS' })).toHaveAttribute('aria-checked', 'true')
+      expect(screen.getByRole('checkbox', { name: 'Push' })).toHaveAttribute('aria-checked', 'false')
     })
   })
 

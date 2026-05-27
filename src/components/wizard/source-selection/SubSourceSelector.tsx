@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
-import { Envelope, ChatText, Bell, Info } from '@phosphor-icons/react'
-import { cn } from '../../../lib/utils'
+import { Info } from '@phosphor-icons/react'
 import {
   Select,
   SelectTrigger,
@@ -8,12 +7,13 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select'
+import { CheckboxCard } from '@/components/composed/checkbox-card'
 import type { PrimarySourceType, Channel } from '../../../models/source-selection'
 
 interface SubSourceSelectorProps {
   primarySource: PrimarySourceType
   selectedTableId?: string
-  selectedChannel?: Channel
+  selectedChannels?: Channel[]
   onTableChange: (tableId: string) => void
   onChannelChange: (channel: Channel) => void
   availableChannels: Channel[]
@@ -26,20 +26,16 @@ const TRANSACTION_TABLES = [
   { id: 'returns', label: 'Returns' },
 ]
 
-const CHANNEL_OPTIONS: {
-  id: Channel
-  label: string
-  icon: React.ReactNode
-}[] = [
-  { id: 'email', label: 'Email', icon: <Envelope weight="duotone" /> },
-  { id: 'sms', label: 'SMS', icon: <ChatText weight="duotone" /> },
-  { id: 'push', label: 'Push', icon: <Bell weight="duotone" /> },
+const CHANNEL_OPTIONS: { id: Channel; label: string }[] = [
+  { id: 'email', label: 'Email' },
+  { id: 'sms', label: 'SMS' },
+  { id: 'push', label: 'Push' },
 ]
 
 export function SubSourceSelector({
   primarySource,
   selectedTableId,
-  selectedChannel,
+  selectedChannels = [],
   onTableChange,
   onChannelChange,
   availableChannels,
@@ -49,11 +45,11 @@ export function SubSourceSelector({
     if (
       primarySource === 'messages' &&
       availableChannels.length === 1 &&
-      selectedChannel !== availableChannels[0]
+      !selectedChannels.includes(availableChannels[0])
     ) {
       onChannelChange(availableChannels[0])
     }
-  }, [primarySource, availableChannels, selectedChannel, onChannelChange])
+  }, [primarySource, availableChannels, selectedChannels, onChannelChange])
 
   // Contacts have no sub-source
   if (primarySource === 'contacts') {
@@ -104,65 +100,40 @@ export function SubSourceSelector({
       )
     }
 
-    // Single channel: auto-selected (handled by useEffect above), show confirmation
+    // Single channel: auto-selected
     if (availableChannels.length === 1) {
-      const channel = CHANNEL_OPTIONS.find((c) => c.id === availableChannels[0])
+      const channelLabel = CHANNEL_OPTIONS.find((c) => c.id === availableChannels[0])?.label ?? availableChannels[0]
       return (
         <div className="flex flex-col gap-3">
           <p className="text-xs text-muted-foreground m-0">
             Only one channel is available — automatically selected.
           </p>
-          {channel && (
-            <div className="flex items-center gap-3 rounded border border-primary bg-accent px-4 py-3 shadow-sm">
-              <span className="text-primary">{channel.icon}</span>
-              <span className="text-sm font-semibold text-foreground">{channel.label}</span>
-            </div>
-          )}
+          <CheckboxCard
+            selected={true}
+            onToggle={() => {}}
+            label={channelLabel}
+            disabled
+          />
         </div>
       )
     }
 
-    // Multiple channels: radio-style cards
+    // Multiple channels: checkbox cards (multi-select)
     return (
-      <div className="flex flex-col gap-3">
-        <div
-          className="grid grid-cols-3 gap-3"
-          role="radiogroup"
-          aria-label="Channel selection"
-        >
-          {CHANNEL_OPTIONS.filter((opt) => availableChannels.includes(opt.id)).map(
-            (option) => (
-              <button
-                key={option.id}
-                type="button"
-                role="radio"
-                aria-checked={selectedChannel === option.id}
-                onClick={() => onChannelChange(option.id)}
-                className={cn(
-                  'flex flex-col items-center gap-2 rounded border px-4 py-4 text-center transition-colors duration-150 cursor-pointer',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  selectedChannel === option.id
-                    ? 'border-primary bg-accent shadow-sm'
-                    : 'border-border bg-background hover:border-primary hover:bg-accent/25'
-                )}
-              >
-                <span
-                  className={cn(
-                    'text-xl',
-                    selectedChannel === option.id
-                      ? 'text-primary'
-                      : 'text-muted-foreground'
-                  )}
-                >
-                  {option.icon}
-                </span>
-                <span className="text-sm font-semibold text-foreground">
-                  {option.label}
-                </span>
-              </button>
-            )
-          )}
-        </div>
+      <div className="flex flex-col gap-2">
+        {CHANNEL_OPTIONS.filter((opt) => availableChannels.includes(opt.id)).map((option) => (
+          <CheckboxCard
+            key={option.id}
+            selected={selectedChannels.includes(option.id)}
+            onToggle={() => onChannelChange(option.id)}
+            label={option.label}
+          />
+        ))}
+        {selectedChannels.length === 0 && (
+          <p className="text-xs text-muted-foreground m-0">
+            Select at least one channel to continue.
+          </p>
+        )}
       </div>
     )
   }

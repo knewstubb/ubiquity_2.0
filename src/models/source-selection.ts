@@ -101,7 +101,7 @@ export interface TransactionsSourceConfig {
 
 export interface MessagesSourceConfig {
   primarySource: 'messages';
-  channel: Channel;
+  channels: Channel[];
   filter: MessagesFilterConfig;
   enrichment: EnrichmentConfig | null;
 }

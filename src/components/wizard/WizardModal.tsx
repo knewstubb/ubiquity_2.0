@@ -79,7 +79,7 @@ function didSourceOrSubSourceChange(
     return oldConfig.tableId !== newConfig.tableId;
   }
   if (oldConfig.primarySource === 'messages' && newConfig.primarySource === 'messages') {
-    return oldConfig.channel !== newConfig.channel;
+    return JSON.stringify(oldConfig.channels) !== JSON.stringify(newConfig.channels);
   }
   return false;
 }

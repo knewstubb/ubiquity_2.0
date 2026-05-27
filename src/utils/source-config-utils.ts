@@ -127,8 +127,8 @@ export function formatSourceConfigSummary(config: SourceConfig): string {
   // Sub-source detail
   if (config.primarySource === 'transactions' && config.tableId) {
     parts[0] = `${sourceLabel} (${config.tableId})`;
-  } else if (config.primarySource === 'messages' && config.channel) {
-    parts[0] = `${sourceLabel} (${config.channel.toUpperCase()})`;
+  } else if (config.primarySource === 'messages' && config.channels.length > 0) {
+    parts[0] = `${sourceLabel} (${config.channels.map(c => c.toUpperCase()).join(', ')})`;
   }
 
   // Filter description
@@ -206,7 +206,7 @@ export function resetDownstreamOnSourceChange(
     case 'messages':
       return {
         primarySource: 'messages',
-        channel: '' as Channel,
+        channels: [],
         filter: { type: 'all' },
         enrichment: null,
       } satisfies MessagesSourceConfig;

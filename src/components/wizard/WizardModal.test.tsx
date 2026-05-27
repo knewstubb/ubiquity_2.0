@@ -59,7 +59,7 @@ vi.mock('./SourceSelectionStep', () => ({
           onClick={() => onUpdate({
             sourceConfig: {
               primarySource: 'messages',
-              channel: 'email',
+              channels: ['email'],
               filter: { type: 'all' },
               enrichment: null,
             } as SourceConfig,
