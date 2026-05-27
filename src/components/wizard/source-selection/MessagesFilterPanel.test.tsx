@@ -146,7 +146,7 @@ describe('MessagesFilterPanel', () => {
 
   // --- For specific campaign ---
 
-  it('shows campaign selector when "For specific campaign" is selected', () => {
+  it('shows campaign combobox when "For specific campaign" is selected', () => {
     render(
       <MessagesFilterPanel
         config={{ type: 'for_campaign' }}
@@ -155,8 +155,8 @@ describe('MessagesFilterPanel', () => {
       />,
     )
 
-    expect(screen.getByLabelText('Search campaigns')).toBeInTheDocument()
-    expect(screen.getByLabelText('Select campaign')).toBeInTheDocument()
+    expect(screen.getByRole('combobox')).toBeInTheDocument()
+    expect(screen.getByText('Select a campaign...')).toBeInTheDocument()
   })
 
   it('shows informational message when no campaigns exist for the channel', () => {
@@ -285,7 +285,7 @@ describe('MessagesFilterPanel', () => {
 
     expect(screen.queryByLabelText('Delivered')).not.toBeInTheDocument()
     expect(screen.queryByLabelText('Start date')).not.toBeInTheDocument()
-    expect(screen.queryByLabelText('Search campaigns')).not.toBeInTheDocument()
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
   })
 
   // --- Accessibility ---

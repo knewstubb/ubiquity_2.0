@@ -112,12 +112,10 @@ export function TransactionsFilterPanel({ config, onChange, tableFields }: Trans
   // ─── Render ──────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col gap-3" data-testid="transactions-filter-panel">
-      {/* Filter type radio-style buttons */}
-      <div className="flex flex-col gap-2">
-        {FILTER_OPTIONS.map((option) => (
+    <div className="flex flex-col gap-2" data-testid="transactions-filter-panel">
+      {FILTER_OPTIONS.map((option) => (
+        <div key={option.value} className="flex flex-col">
           <button
-            key={option.value}
             type="button"
             onClick={() => handleTypeChange(option.value)}
             className={cn(
@@ -135,144 +133,138 @@ export function TransactionsFilterPanel({ config, onChange, tableFields }: Trans
             </span>
             <span className="text-xs text-muted-foreground mt-0.5">{option.description}</span>
           </button>
-        ))}
-      </div>
 
-      {/* Secondary input: Days */}
-      {config.type === 'created_in_last_n_days' && (
-        <div className="bg-muted rounded-lg p-4 flex flex-col gap-2">
-          <label className="text-xs font-medium text-muted-foreground">
-            Number of days
-          </label>
-          <Input
-            type="number"
-            min={1}
-            max={365}
-            value={config.days ?? ''}
-            onChange={(e) => handleDaysChange(e.target.value)}
-            placeholder="e.g. 30"
-            aria-label="Number of days"
-            aria-invalid={daysInvalid || undefined}
-          />
-          {daysInvalid && (
-            <p className="text-xs text-destructive m-0">
-              Enter a whole number between 1 and 365
-            </p>
+          {/* Secondary input: Days — directly below selected card */}
+          {config.type === option.value && option.value === 'created_in_last_n_days' && (
+            <div className="mt-2 mb-1 bg-muted rounded-lg p-3 flex flex-col gap-2">
+              <label className="text-xs font-medium text-muted-foreground">
+                Number of days
+              </label>
+              <Input
+                type="number"
+                min={1}
+                max={365}
+                value={config.days ?? ''}
+                onChange={(e) => handleDaysChange(e.target.value)}
+                placeholder="e.g. 30"
+                aria-label="Number of days"
+                aria-invalid={daysInvalid || undefined}
+              />
+              {daysInvalid && (
+                <p className="text-xs text-destructive m-0">
+                  Enter a whole number between 1 and 365
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Secondary input: Field filter builder — directly below selected card */}
+          {config.type === option.value && option.value === 'field_filter' && (
+            <div className="mt-2 mb-1 bg-muted rounded-lg p-3 flex flex-col gap-3">
+              <p className="text-xs font-medium text-muted-foreground m-0">
+                Filter rows (AND logic)
+              </p>
+
+              {(config.fieldFilters ?? []).map((row, index) => {
+                const showAnd = index > 0;
+                const incomplete = isRowIncomplete(row);
+
+                return (
+                  <div key={index} className="flex flex-col gap-2">
+                    {showAnd && (
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        AND
+                      </span>
+                    )}
+                    <div className="flex items-start gap-2">
+                      <div className="flex-1 min-w-0">
+                        <Select
+                          value={row.field || undefined}
+                          onValueChange={(v) => handleFilterRowChange(index, { field: v })}
+                        >
+                          <SelectTrigger aria-label={`Filter row ${index + 1} field`}>
+                            <SelectValue placeholder="Field" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {fields.map((f) => (
+                              <SelectItem key={f.key} value={f.key}>
+                                {f.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <Select
+                          value={row.operator || undefined}
+                          onValueChange={(v) => handleFilterRowChange(index, { operator: v })}
+                        >
+                          <SelectTrigger aria-label={`Filter row ${index + 1} operator`}>
+                            <SelectValue placeholder="Operator" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {OPERATORS.map((op) => (
+                              <SelectItem key={op.value} value={op.value}>
+                                {op.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <Input
+                          value={row.value}
+                          onChange={(e) => handleFilterRowChange(index, { value: e.target.value })}
+                          placeholder="Value"
+                          aria-label={`Filter row ${index + 1} value`}
+                        />
+                      </div>
+
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleRemoveRow(index)}
+                        aria-label={`Remove filter row ${index + 1}`}
+                        className="shrink-0"
+                      >
+                        <X weight="bold" />
+                      </Button>
+                    </div>
+
+                    {incomplete && (row.field !== '' || row.operator !== '' || row.value !== '') && (
+                      <p className="text-xs text-destructive m-0">
+                        All fields are required — select a field, operator, and enter a value
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+
+              {(config.fieldFilters ?? []).length < MAX_FILTER_ROWS && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddRow}
+                  className="self-start"
+                >
+                  <Plus weight="bold" />
+                  Add filter
+                </Button>
+              )}
+
+              {(config.fieldFilters ?? []).length >= MAX_FILTER_ROWS && (
+                <p className="text-xs text-muted-foreground m-0">
+                  Maximum of {MAX_FILTER_ROWS} filter rows reached
+                </p>
+              )}
+            </div>
           )}
         </div>
-      )}
-
-      {/* Secondary input: Field filter builder */}
-      {config.type === 'field_filter' && (
-        <div className="bg-muted rounded-lg p-4 flex flex-col gap-3">
-          <p className="text-xs font-medium text-muted-foreground m-0">
-            Filter rows (AND logic)
-          </p>
-
-          {(config.fieldFilters ?? []).map((row, index) => {
-            const showAnd = index > 0;
-            const incomplete = isRowIncomplete(row);
-
-            return (
-              <div key={index} className="flex flex-col gap-2">
-                {showAnd && (
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    AND
-                  </span>
-                )}
-                <div className="flex items-start gap-2">
-                  {/* Field selector */}
-                  <div className="flex-1 min-w-0">
-                    <Select
-                      value={row.field || undefined}
-                      onValueChange={(v) => handleFilterRowChange(index, { field: v })}
-                    >
-                      <SelectTrigger aria-label={`Filter row ${index + 1} field`}>
-                        <SelectValue placeholder="Field" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {fields.map((f) => (
-                          <SelectItem key={f.key} value={f.key}>
-                            {f.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Operator selector */}
-                  <div className="flex-1 min-w-0">
-                    <Select
-                      value={row.operator || undefined}
-                      onValueChange={(v) => handleFilterRowChange(index, { operator: v })}
-                    >
-                      <SelectTrigger aria-label={`Filter row ${index + 1} operator`}>
-                        <SelectValue placeholder="Operator" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {OPERATORS.map((op) => (
-                          <SelectItem key={op.value} value={op.value}>
-                            {op.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Value input */}
-                  <div className="flex-1 min-w-0">
-                    <Input
-                      value={row.value}
-                      onChange={(e) => handleFilterRowChange(index, { value: e.target.value })}
-                      placeholder="Value"
-                      aria-label={`Filter row ${index + 1} value`}
-                    />
-                  </div>
-
-                  {/* Remove button */}
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleRemoveRow(index)}
-                    aria-label={`Remove filter row ${index + 1}`}
-                    className="shrink-0"
-                  >
-                    <X weight="bold" />
-                  </Button>
-                </div>
-
-                {/* Inline validation for incomplete rows */}
-                {incomplete && (row.field !== '' || row.operator !== '' || row.value !== '') && (
-                  <p className="text-xs text-destructive m-0">
-                    All fields are required — select a field, operator, and enter a value
-                  </p>
-                )}
-              </div>
-            );
-          })}
-
-          {/* Add filter row button */}
-          {(config.fieldFilters ?? []).length < MAX_FILTER_ROWS && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleAddRow}
-              className="self-start"
-            >
-              <Plus weight="bold" />
-              Add filter
-            </Button>
-          )}
-
-          {(config.fieldFilters ?? []).length >= MAX_FILTER_ROWS && (
-            <p className="text-xs text-muted-foreground m-0">
-              Maximum of {MAX_FILTER_ROWS} filter rows reached
-            </p>
-          )}
-        </div>
-      )}
+      ))}
     </div>
   );
 }

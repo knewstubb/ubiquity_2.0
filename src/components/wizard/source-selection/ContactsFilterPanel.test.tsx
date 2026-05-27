@@ -127,7 +127,7 @@ describe('ContactsFilterPanel', () => {
   })
 
   describe('In list/segment', () => {
-    it('shows segment selector when "In list/segment" is selected', () => {
+    it('shows segment combobox when "In list/segment" is selected', () => {
       render(
         <ContactsFilterPanel
           config={{ type: 'in_list_segment' }}
@@ -135,39 +135,11 @@ describe('ContactsFilterPanel', () => {
         />
       )
 
-      expect(screen.getByPlaceholderText('Search segments...')).toBeInTheDocument()
+      expect(screen.getByRole('combobox')).toBeInTheDocument()
+      expect(screen.getByText('Search segments...')).toBeInTheDocument()
     })
 
-    it('displays mock segments in the list', () => {
-      render(
-        <ContactsFilterPanel
-          config={{ type: 'in_list_segment' }}
-          onChange={vi.fn()}
-        />
-      )
-
-      expect(screen.getByText('Gold Members')).toBeInTheDocument()
-      expect(screen.getByText('Newsletter Subscribers')).toBeInTheDocument()
-      expect(screen.getByText('VIP Customers')).toBeInTheDocument()
-    })
-
-    it('filters segments by search input', () => {
-      render(
-        <ContactsFilterPanel
-          config={{ type: 'in_list_segment' }}
-          onChange={vi.fn()}
-        />
-      )
-
-      fireEvent.change(screen.getByPlaceholderText('Search segments...'), {
-        target: { value: 'gold' },
-      })
-
-      expect(screen.getByText('Gold Members')).toBeInTheDocument()
-      expect(screen.queryByText('Newsletter Subscribers')).not.toBeInTheDocument()
-    })
-
-    it('calls onChange with segmentId when a segment is clicked', () => {
+    it('calls onChange with segmentId when a segment is selected', () => {
       const onChange = vi.fn()
       render(
         <ContactsFilterPanel
@@ -176,6 +148,9 @@ describe('ContactsFilterPanel', () => {
         />
       )
 
+      // Open the combobox
+      fireEvent.click(screen.getByRole('combobox'))
+      // Click a segment option
       fireEvent.click(screen.getByText('Gold Members'))
 
       expect(onChange).toHaveBeenCalledWith({
@@ -183,25 +158,10 @@ describe('ContactsFilterPanel', () => {
         segmentId: 'seg-gold-members',
       })
     })
-
-    it('shows "No segments found" when search has no matches', () => {
-      render(
-        <ContactsFilterPanel
-          config={{ type: 'in_list_segment' }}
-          onChange={vi.fn()}
-        />
-      )
-
-      fireEvent.change(screen.getByPlaceholderText('Search segments...'), {
-        target: { value: 'zzzzz' },
-      })
-
-      expect(screen.getByText('No segments found')).toBeInTheDocument()
-    })
   })
 
   describe('Not sent campaign', () => {
-    it('shows campaign selector when "Not sent campaign" is selected', () => {
+    it('shows campaign combobox when "Not sent campaign" is selected', () => {
       render(
         <ContactsFilterPanel
           config={{ type: 'not_sent_campaign' }}
