@@ -112,43 +112,46 @@ export function TransactionsFilterPanel({ config, onChange, tableFields }: Trans
   // ─── Render ──────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col gap-2" data-testid="transactions-filter-panel">
+    <div className="flex flex-col gap-1.5" data-testid="transactions-filter-panel">
       {FILTER_OPTIONS.map((option) => (
         <div key={option.value} className="flex flex-col">
           <button
             type="button"
             onClick={() => handleTypeChange(option.value)}
             className={cn(
-              'flex flex-col items-start rounded-md border px-4 py-3 text-left transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-md border text-left text-sm transition-colors duration-150 cursor-pointer',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               config.type === option.value
-                ? 'border-primary bg-primary/5'
-                : 'border-border hover:border-border-strong hover:bg-secondary/50',
+                ? 'border-primary bg-accent'
+                : 'border-border bg-background hover:border-primary/50 hover:bg-accent/25',
             )}
           >
-            <span className={cn(
-              'text-sm font-medium',
-              config.type === option.value ? 'text-primary' : 'text-foreground',
-            )}>
-              {option.label}
-            </span>
-            <span className="text-xs text-muted-foreground mt-0.5">{option.description}</span>
+            <div
+              className={cn(
+                'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors duration-150',
+                config.type === option.value ? 'border-primary' : 'border-muted-foreground',
+              )}
+            >
+              {config.type === option.value && (
+                <div className="w-2 h-2 rounded-full bg-primary" />
+              )}
+            </div>
+            <span className="font-medium text-foreground">{option.label}</span>
           </button>
 
           {/* Secondary input: Days — directly below selected card */}
           {config.type === option.value && option.value === 'created_in_last_n_days' && (
             <div className="mt-2 mb-1 bg-muted rounded-lg p-3 flex flex-col gap-2">
-              <label className="text-xs font-medium text-muted-foreground">
-                Number of days
-              </label>
               <Input
                 type="number"
                 min={1}
                 max={365}
                 value={config.days ?? ''}
                 onChange={(e) => handleDaysChange(e.target.value)}
-                placeholder="e.g. 30"
+                placeholder="Number of days (1–365)"
                 aria-label="Number of days"
                 aria-invalid={daysInvalid || undefined}
+                className="max-w-[160px]"
               />
               {daysInvalid && (
                 <p className="text-xs text-destructive m-0">
@@ -161,9 +164,6 @@ export function TransactionsFilterPanel({ config, onChange, tableFields }: Trans
           {/* Secondary input: Field filter builder — directly below selected card */}
           {config.type === option.value && option.value === 'field_filter' && (
             <div className="mt-2 mb-1 bg-muted rounded-lg p-3 flex flex-col gap-3">
-              <p className="text-xs font-medium text-muted-foreground m-0">
-                Filter rows (AND logic)
-              </p>
 
               {(config.fieldFilters ?? []).map((row, index) => {
                 const showAnd = index > 0;

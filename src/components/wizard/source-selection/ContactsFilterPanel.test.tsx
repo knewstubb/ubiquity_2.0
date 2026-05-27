@@ -54,13 +54,13 @@ describe('ContactsFilterPanel', () => {
         />
       )
 
-      expect(screen.getByPlaceholderText('e.g. 30')).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('Number of days (1–365)')).toBeInTheDocument()
     })
 
     it('does not show days input when a different filter is selected', () => {
       render(<ContactsFilterPanel config={{ type: 'all' }} onChange={vi.fn()} />)
 
-      expect(screen.queryByPlaceholderText('e.g. 30')).not.toBeInTheDocument()
+      expect(screen.queryByPlaceholderText('Number of days (1–365)')).not.toBeInTheDocument()
     })
 
     it('calls onChange with days value when valid number is entered', () => {
@@ -72,7 +72,7 @@ describe('ContactsFilterPanel', () => {
         />
       )
 
-      fireEvent.change(screen.getByPlaceholderText('e.g. 30'), {
+      fireEvent.change(screen.getByPlaceholderText('Number of days (1–365)'), {
         target: { value: '30' },
       })
 
@@ -91,7 +91,7 @@ describe('ContactsFilterPanel', () => {
       )
 
       // Simulate typing 400
-      const input = screen.getByPlaceholderText('e.g. 30')
+      const input = screen.getByPlaceholderText('Number of days (1–365)')
       fireEvent.change(input, { target: { value: '400' } })
 
       expect(screen.getByText('Must be 365 days or fewer')).toBeInTheDocument()
@@ -105,7 +105,7 @@ describe('ContactsFilterPanel', () => {
         />
       )
 
-      const input = screen.getByPlaceholderText('e.g. 30')
+      const input = screen.getByPlaceholderText('Number of days (1–365)')
       fireEvent.change(input, { target: { value: '0' } })
 
       expect(screen.getByText('Must be at least 1 day')).toBeInTheDocument()
@@ -119,7 +119,7 @@ describe('ContactsFilterPanel', () => {
         />
       )
 
-      const input = screen.getByPlaceholderText('e.g. 30')
+      const input = screen.getByPlaceholderText('Number of days (1–365)')
       fireEvent.change(input, { target: { value: '3.5' } })
 
       expect(screen.getByText('Must be a whole number (no decimals)')).toBeInTheDocument()
@@ -205,7 +205,7 @@ describe('ContactsFilterPanel', () => {
     it('does not show secondary inputs for "All contacts"', () => {
       render(<ContactsFilterPanel config={{ type: 'all' }} onChange={vi.fn()} />)
 
-      expect(screen.queryByPlaceholderText('e.g. 30')).not.toBeInTheDocument()
+      expect(screen.queryByPlaceholderText('Number of days (1–365)')).not.toBeInTheDocument()
       expect(screen.queryByPlaceholderText('Search segments...')).not.toBeInTheDocument()
       expect(screen.queryByText('Choose a campaign...')).not.toBeInTheDocument()
     })
@@ -215,7 +215,7 @@ describe('ContactsFilterPanel', () => {
         <ContactsFilterPanel config={{ type: 'unsubscribed' }} onChange={vi.fn()} />
       )
 
-      expect(screen.queryByPlaceholderText('e.g. 30')).not.toBeInTheDocument()
+      expect(screen.queryByPlaceholderText('Number of days (1–365)')).not.toBeInTheDocument()
       expect(screen.queryByPlaceholderText('Search segments...')).not.toBeInTheDocument()
       expect(screen.queryByText('Choose a campaign...')).not.toBeInTheDocument()
     })

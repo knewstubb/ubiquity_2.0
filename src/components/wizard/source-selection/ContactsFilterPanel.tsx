@@ -137,9 +137,6 @@ export function ContactsFilterPanel({ config, onChange }: ContactsFilterPanelPro
           {/* Secondary input in grey box — rendered directly below the selected card */}
           {config.type === option.id && option.id === 'created_in_last_n_days' && (
             <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-2">
-              <label className="text-xs font-medium text-muted-foreground">
-                Number of days (1–365)
-              </label>
               <Input
                 type="number"
                 min={1}
@@ -147,10 +144,10 @@ export function ContactsFilterPanel({ config, onChange }: ContactsFilterPanelPro
                 step={1}
                 value={daysInputValue}
                 onChange={(e) => handleDaysChange(e.target.value)}
-                placeholder="e.g. 30"
+                placeholder="Number of days (1–365)"
                 aria-invalid={!!daysError}
                 aria-describedby={daysError ? 'days-error' : undefined}
-                className="max-w-[140px]"
+                className="max-w-[160px]"
               />
               {daysError && (
                 <p id="days-error" className="text-xs text-destructive flex items-center gap-1 m-0">
@@ -162,10 +159,7 @@ export function ContactsFilterPanel({ config, onChange }: ContactsFilterPanelPro
           )}
 
           {config.type === option.id && option.id === 'in_list_segment' && (
-            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-2">
-              <label className="text-xs font-medium text-muted-foreground">
-                Select a list or segment
-              </label>
+            <div className="mt-2 mb-1 rounded-lg bg-muted p-3">
               <Combobox
                 value={config.segmentId ?? ''}
                 onValueChange={handleSegmentChange}
@@ -178,9 +172,6 @@ export function ContactsFilterPanel({ config, onChange }: ContactsFilterPanelPro
 
           {config.type === option.id && option.id === 'not_sent_campaign' && (
             <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-2">
-              <label className="text-xs font-medium text-muted-foreground">
-                Select a campaign
-              </label>
               <Combobox
                 value={config.campaignId ?? ''}
                 onValueChange={handleCampaignChange}

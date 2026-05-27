@@ -99,7 +99,7 @@ export function MessagesFilterPanel({ config, onChange, channel }: MessagesFilte
   }
 
   return (
-    <div className="flex flex-col gap-2" data-testid="messages-filter-panel" role="radiogroup" aria-label="Message filter type">
+    <div className="flex flex-col gap-1.5" data-testid="messages-filter-panel" role="radiogroup" aria-label="Message filter type">
       {FILTER_OPTIONS.map((option) => (
         <div key={option.id} className="flex flex-col">
           <button
@@ -108,11 +108,11 @@ export function MessagesFilterPanel({ config, onChange, channel }: MessagesFilte
             aria-checked={config.type === option.id}
             onClick={() => handleFilterTypeChange(option.id)}
             className={cn(
-              'flex items-center gap-3 px-4 py-3 rounded border text-left transition-colors duration-150 cursor-pointer',
+              'flex items-center gap-3 px-3 py-2.5 rounded-md border text-left text-sm transition-colors duration-150 cursor-pointer',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               config.type === option.id
-                ? 'border-primary bg-accent shadow-sm'
-                : 'border-border bg-background hover:border-primary hover:bg-accent/25',
+                ? 'border-primary bg-accent'
+                : 'border-border bg-background hover:border-primary/50 hover:bg-accent/25',
             )}
           >
             <div
@@ -125,18 +125,12 @@ export function MessagesFilterPanel({ config, onChange, channel }: MessagesFilte
                 <div className="w-2 h-2 rounded-full bg-primary" />
               )}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-foreground m-0">{option.label}</p>
-              <p className="text-xs text-muted-foreground m-0">{option.description}</p>
-            </div>
+            <span className="font-medium text-foreground">{option.label}</span>
           </button>
 
           {/* Secondary inputs in grey box — directly below selected card */}
           {config.type === option.id && option.id === 'by_status' && (
-            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-3">
-              <p className="text-xs font-medium text-muted-foreground m-0">
-                Select one or more statuses
-              </p>
+            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-2">
               <div className="flex flex-col gap-2">
                 {STATUS_OPTIONS.map((status) => (
                   <label
@@ -162,8 +156,7 @@ export function MessagesFilterPanel({ config, onChange, channel }: MessagesFilte
           )}
 
           {config.type === option.id && option.id === 'for_campaign' && (
-            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-3">
-              <label className="text-xs font-medium text-muted-foreground">Campaign</label>
+            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-2">
               {campaignsForChannel.length === 0 ? (
                 <div className="flex items-center gap-1.5 text-muted-foreground" role="status">
                   <Info size={14} weight="fill" />
@@ -184,31 +177,24 @@ export function MessagesFilterPanel({ config, onChange, channel }: MessagesFilte
           )}
 
           {config.type === option.id && option.id === 'in_date_range' && (
-            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-3">
-              <div className="flex flex-col gap-2">
-                <label htmlFor="messages-start-date" className="text-xs font-medium text-muted-foreground">
-                  Start date
-                </label>
+            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-2">
+              <div className="flex items-center gap-2">
                 <Input
-                  id="messages-start-date"
                   type="date"
                   value={config.startDate ?? ''}
                   onChange={(e) => handleStartDateChange(e.target.value)}
                   aria-invalid={showDateError || undefined}
                   aria-label="Start date"
+                  placeholder="Start date"
                 />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label htmlFor="messages-end-date" className="text-xs font-medium text-muted-foreground">
-                  End date
-                </label>
+                <span className="text-xs text-muted-foreground shrink-0">to</span>
                 <Input
-                  id="messages-end-date"
                   type="date"
                   value={config.endDate ?? ''}
                   onChange={(e) => handleEndDateChange(e.target.value)}
                   aria-invalid={showDateError || undefined}
                   aria-label="End date"
+                  placeholder="End date"
                 />
               </div>
               {showDateError && (

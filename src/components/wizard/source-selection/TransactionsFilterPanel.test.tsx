@@ -123,7 +123,7 @@ describe('TransactionsFilterPanel', () => {
           tableFields={MOCK_FIELDS}
         />,
       );
-      expect(screen.getByText('Filter rows (AND logic)')).toBeInTheDocument();
+      expect(screen.getByLabelText('Filter row 1 field')).toBeInTheDocument();
     });
 
     it('renders one filter row by default', () => {
