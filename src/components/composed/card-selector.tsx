@@ -7,7 +7,8 @@
  * - Shadow-md on selected state reinforces elevation hierarchy (selected = raised)
  * - Selected hover deepens shadow (shadow-lg) rather than changing colour — already at full teal
  * - Unselected hover previews the selected palette (teal border + text + accent/25 bg)
- * - Checkmark badge positioned -top-2 -right-2 to overlap border without clipping content
+ * - Checkmark badge positioned -top-1.5 -right-1.5 to overlap border without clipping content
+ * - overflow-visible on the button ensures the badge renders outside the box without being clipped
  * - transition-colors (not transition-all) to avoid animating shadow/transform on hover
  * - Disabled state relies on native HTML disabled attribute (no explicit opacity class)
  *

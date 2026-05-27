@@ -143,7 +143,7 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Beat 1: Primary Source Type — always visible */}
+      {/* Beat 1: Primary Source Type + Sub-Source — always visible */}
       <div className="flex items-start gap-10 pb-8 border-b border-border">
         <div className="w-40 shrink-0 pt-0">
           <p className="text-sm font-semibold text-foreground m-0">Primary Source</p>
@@ -151,48 +151,36 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
             Choose the primary source that determines what each row represents.
           </p>
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
           <PrimarySourceSelector
             selected={sourceConfig?.primarySource ?? null}
             onChange={handlePrimarySourceChange}
             hasDownstreamConfig={hasDownstreamConfig}
           />
+
+          {/* Sub-source in grey box below the selected card */}
+          {beat1Complete && sourceConfig!.primarySource !== 'contacts' && (
+            <div className="rounded-lg bg-muted p-3">
+              <SubSourceSelector
+                primarySource={sourceConfig!.primarySource}
+                selectedTableId={
+                  sourceConfig!.primarySource === 'transactions'
+                    ? (sourceConfig as TransactionsSourceConfig).tableId
+                    : undefined
+                }
+                selectedChannels={
+                  sourceConfig!.primarySource === 'messages'
+                    ? (sourceConfig as MessagesSourceConfig).channels
+                    : undefined
+                }
+                onTableChange={handleTableChange}
+                onChannelChange={handleChannelChange}
+                availableChannels={AVAILABLE_CHANNELS}
+              />
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Beat 2: Sub-Source — visible when Beat 1 is complete */}
-      {beat1Complete && sourceConfig!.primarySource !== 'contacts' && (
-        <div className="flex items-start gap-10 pb-8 border-b border-border">
-          <div className="w-40 shrink-0 pt-0">
-            <p className="text-sm font-semibold text-foreground m-0">
-              {sourceConfig!.primarySource === 'transactions' ? 'Transaction Table' : 'Channels'}
-            </p>
-            <p className="text-xs text-tertiary-foreground mt-1 mb-0">
-              {sourceConfig!.primarySource === 'transactions'
-                ? 'Choose which transaction table to export from.'
-                : 'Select which messaging channels to include.'}
-            </p>
-          </div>
-          <div className="flex-1 min-w-0">
-            <SubSourceSelector
-              primarySource={sourceConfig!.primarySource}
-              selectedTableId={
-                sourceConfig!.primarySource === 'transactions'
-                  ? (sourceConfig as TransactionsSourceConfig).tableId
-                  : undefined
-              }
-              selectedChannels={
-                sourceConfig!.primarySource === 'messages'
-                  ? (sourceConfig as MessagesSourceConfig).channels
-                  : undefined
-              }
-              onTableChange={handleTableChange}
-              onChannelChange={handleChannelChange}
-              availableChannels={AVAILABLE_CHANNELS}
-            />
-          </div>
-        </div>
-      )}
 
       {/* Beat 3: Record Filter — visible when Beat 2 is complete */}
       {beat2Complete && (
