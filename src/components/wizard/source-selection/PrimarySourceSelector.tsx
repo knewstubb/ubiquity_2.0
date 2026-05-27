@@ -68,7 +68,7 @@ export function PrimarySourceSelector({
   return (
     <>
       <div
-        className="grid grid-cols-3 gap-3"
+        className="grid grid-cols-3 gap-3 pt-2 pr-2"
         role="group"
         aria-label="Primary source selection"
       >
