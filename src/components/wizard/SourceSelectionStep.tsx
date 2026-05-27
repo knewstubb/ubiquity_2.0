@@ -189,7 +189,7 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
             <p className="text-sm font-semibold text-foreground m-0">{filterLabel}</p>
             <p className="text-xs text-tertiary-foreground mt-1 mb-0">{filterDescription}</p>
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 flex flex-col gap-3">
             {sourceConfig!.primarySource === 'contacts' && (
               <ContactsFilterPanel
                 config={(sourceConfig as ContactsSourceConfig).filter}
@@ -212,15 +212,7 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
                 channel={(sourceConfig as MessagesSourceConfig).channels[0]}
               />
             )}
-          </div>
-        </div>
-      )}
 
-      {/* Match Count — always visible once filter section shows */}
-      {beat2Complete && (
-        <div className="flex items-start gap-10">
-          <div className="w-40 shrink-0" />
-          <div className="flex-1 min-w-0">
             <MatchCountIndicator
               count={count}
               loading={loading}
