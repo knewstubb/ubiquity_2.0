@@ -225,18 +225,17 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
               />
             )}
 
-            {/* Match Count Indicator — shown after filter is complete */}
-            {beat3Complete && (
-              <div className="mt-3">
-                <MatchCountIndicator
-                  count={count}
-                  loading={loading}
-                  error={error}
-                  onRetry={retry}
-                  entityLabel={entityLabel}
-                />
-              </div>
-            )}
+            {/* Match Count Indicator — always visible once filter section shows */}
+            <div className="mt-3">
+              <MatchCountIndicator
+                count={count}
+                loading={loading}
+                error={error}
+                onRetry={retry}
+                entityLabel={entityLabel}
+                pending={!beat3Complete}
+              />
+            </div>
           </div>
         </div>
       )}

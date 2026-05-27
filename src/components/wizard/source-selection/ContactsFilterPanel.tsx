@@ -118,12 +118,10 @@ export function ContactsFilterPanel({ config, onChange }: ContactsFilterPanelPro
   // Render
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* Radio-style filter options */}
-      <div className="flex flex-col gap-1.5" role="radiogroup" aria-label="Contact filter options">
-        {FILTER_OPTIONS.map((option) => (
+    <div className="flex flex-col gap-1.5" role="radiogroup" aria-label="Contact filter options">
+      {FILTER_OPTIONS.map((option) => (
+        <div key={option.id} className="flex flex-col">
           <button
-            key={option.id}
             type="button"
             role="radio"
             aria-checked={config.type === option.id}
@@ -151,104 +149,103 @@ export function ContactsFilterPanel({ config, onChange }: ContactsFilterPanelPro
             </div>
             <span className="font-medium text-foreground">{option.label}</span>
           </button>
-        ))}
-      </div>
 
-      {/* Secondary inputs */}
-      {config.type === 'created_in_last_n_days' && (
-        <div className="pl-7 flex flex-col gap-2">
-          <label className="text-xs font-medium text-muted-foreground">
-            Number of days (1–365)
-          </label>
-          <Input
-            type="number"
-            min={1}
-            max={365}
-            step={1}
-            value={daysInputValue}
-            onChange={(e) => handleDaysChange(e.target.value)}
-            placeholder="e.g. 30"
-            aria-invalid={!!daysError}
-            aria-describedby={daysError ? 'days-error' : undefined}
-            className="max-w-[140px]"
-          />
-          {daysError && (
-            <p id="days-error" className="text-xs text-destructive flex items-center gap-1 m-0">
-              <Warning size={12} weight="fill" />
-              {daysError}
-            </p>
+          {/* Secondary input — rendered directly below the selected card */}
+          {config.type === option.id && option.id === 'created_in_last_n_days' && (
+            <div className="ml-7 mt-2 mb-1 flex flex-col gap-2">
+              <label className="text-xs font-medium text-muted-foreground">
+                Number of days (1–365)
+              </label>
+              <Input
+                type="number"
+                min={1}
+                max={365}
+                step={1}
+                value={daysInputValue}
+                onChange={(e) => handleDaysChange(e.target.value)}
+                placeholder="e.g. 30"
+                aria-invalid={!!daysError}
+                aria-describedby={daysError ? 'days-error' : undefined}
+                className="max-w-[140px]"
+              />
+              {daysError && (
+                <p id="days-error" className="text-xs text-destructive flex items-center gap-1 m-0">
+                  <Warning size={12} weight="fill" />
+                  {daysError}
+                </p>
+              )}
+            </div>
+          )}
+
+          {config.type === option.id && option.id === 'in_list_segment' && (
+            <div className="ml-7 mt-2 mb-1 flex flex-col gap-2">
+              <label className="text-xs font-medium text-muted-foreground">
+                Select a list or segment
+              </label>
+              <div className="relative max-w-[280px]">
+                <MagnifyingGlass
+                  size={14}
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                />
+                <Input
+                  type="text"
+                  value={segmentSearch}
+                  onChange={(e) => setSegmentSearch(e.target.value)}
+                  placeholder="Search segments..."
+                  className="pl-8"
+                />
+              </div>
+              <div className="flex flex-col gap-1 max-h-[160px] overflow-y-auto rounded-md border border-border p-1">
+                {filteredSegments.length === 0 ? (
+                  <p className="text-xs text-muted-foreground px-2 py-1.5 m-0">No segments found</p>
+                ) : (
+                  filteredSegments.map((segment) => (
+                    <button
+                      key={segment.id}
+                      type="button"
+                      onClick={() => handleSegmentChange(segment.id)}
+                      className={cn(
+                        'text-left text-sm px-2 py-1.5 rounded cursor-pointer transition-colors duration-150',
+                        config.segmentId === segment.id
+                          ? 'bg-primary/10 text-primary font-medium'
+                          : 'text-foreground hover:bg-muted'
+                      )}
+                    >
+                      {segment.name}
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {config.type === option.id && option.id === 'not_sent_campaign' && (
+            <div className="ml-7 mt-2 mb-1 flex flex-col gap-2">
+              <label className="text-xs font-medium text-muted-foreground">
+                Select a campaign
+              </label>
+              <Select
+                value={config.campaignId ?? ''}
+                onValueChange={handleCampaignChange}
+              >
+                <SelectTrigger className="max-w-[280px]">
+                  <SelectValue placeholder="Choose a campaign..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {MOCK_CAMPAIGNS.map((campaign) => (
+                    <SelectItem key={campaign.id} value={campaign.id}>
+                      {campaign.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground bg-muted/50 border border-border rounded px-2 py-1.5 m-0 max-w-[280px]">
+                <span className="font-medium">Cross-entity filter:</span> This filters contacts based on campaign send history from the Messages entity.
+              </p>
+            </div>
           )}
         </div>
-      )}
-
-      {config.type === 'in_list_segment' && (
-        <div className="pl-7 flex flex-col gap-2">
-          <label className="text-xs font-medium text-muted-foreground">
-            Select a list or segment
-          </label>
-          {/* Searchable segment selector */}
-          <div className="relative max-w-[280px]">
-            <MagnifyingGlass
-              size={14}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-            />
-            <Input
-              type="text"
-              value={segmentSearch}
-              onChange={(e) => setSegmentSearch(e.target.value)}
-              placeholder="Search segments..."
-              className="pl-8"
-            />
-          </div>
-          <div className="flex flex-col gap-1 max-h-[160px] overflow-y-auto rounded-md border border-border p-1">
-            {filteredSegments.length === 0 ? (
-              <p className="text-xs text-muted-foreground px-2 py-1.5 m-0">No segments found</p>
-            ) : (
-              filteredSegments.map((segment) => (
-                <button
-                  key={segment.id}
-                  type="button"
-                  onClick={() => handleSegmentChange(segment.id)}
-                  className={cn(
-                    'text-left text-sm px-2 py-1.5 rounded cursor-pointer transition-colors duration-150',
-                    config.segmentId === segment.id
-                      ? 'bg-primary/10 text-primary font-medium'
-                      : 'text-foreground hover:bg-muted'
-                  )}
-                >
-                  {segment.name}
-                </button>
-              ))
-            )}
-          </div>
-        </div>
-      )}
-
-      {config.type === 'not_sent_campaign' && (
-        <div className="pl-7 flex flex-col gap-2">
-          <label className="text-xs font-medium text-muted-foreground">
-            Select a campaign
-          </label>
-          <Select
-            value={config.campaignId ?? ''}
-            onValueChange={handleCampaignChange}
-          >
-            <SelectTrigger className="max-w-[280px]">
-              <SelectValue placeholder="Choose a campaign..." />
-            </SelectTrigger>
-            <SelectContent>
-              {MOCK_CAMPAIGNS.map((campaign) => (
-                <SelectItem key={campaign.id} value={campaign.id}>
-                  {campaign.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <p className="text-xs text-muted-foreground bg-muted/50 border border-border rounded px-2 py-1.5 m-0 max-w-[280px]">
-            <span className="font-medium">Cross-entity filter:</span> This filters contacts based on campaign send history from the Messages entity.
-          </p>
-        </div>
-      )}
+      ))}
     </div>
   )
 }

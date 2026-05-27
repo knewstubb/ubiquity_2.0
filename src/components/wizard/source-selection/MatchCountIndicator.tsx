@@ -1,4 +1,4 @@
-import { SpinnerGap } from '@phosphor-icons/react'
+import { SpinnerGap, DotsThree } from '@phosphor-icons/react'
 import { formatMatchCount } from '../../../utils/source-config-utils'
 import { Button } from '../../ui/button'
 
@@ -8,6 +8,8 @@ interface MatchCountIndicatorProps {
   error: boolean
   onRetry: () => void
   entityLabel: string
+  /** When true, shows a "waiting for input" state instead of hiding */
+  pending?: boolean
 }
 
 export function MatchCountIndicator({
@@ -16,6 +18,7 @@ export function MatchCountIndicator({
   error,
   onRetry,
   entityLabel,
+  pending = false,
 }: MatchCountIndicatorProps) {
   if (loading) {
     return (
@@ -38,6 +41,14 @@ export function MatchCountIndicator({
   }
 
   if (count === null) {
+    if (pending) {
+      return (
+        <div className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2">
+          <DotsThree className="size-4 text-muted-foreground" weight="bold" />
+          <span className="text-sm text-muted-foreground">Complete filter to see match count</span>
+        </div>
+      )
+    }
     return null
   }
 
