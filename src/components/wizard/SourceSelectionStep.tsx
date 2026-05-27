@@ -144,7 +144,7 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
   return (
     <div className="flex flex-col gap-8">
       {/* Beat 1: Primary Source Type — always visible */}
-      <div className="flex items-start gap-14">
+      <div className="flex items-start gap-10 pb-8 border-b border-border">
         <div className="w-40 shrink-0 pt-0">
           <p className="text-sm font-semibold text-foreground m-0">Primary Source</p>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">
@@ -162,7 +162,7 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
 
       {/* Beat 2: Sub-Source — visible when Beat 1 is complete */}
       {beat1Complete && sourceConfig!.primarySource !== 'contacts' && (
-        <div className="flex items-start gap-14">
+        <div className="flex items-start gap-10 pb-8 border-b border-border">
           <div className="w-40 shrink-0 pt-0">
             <p className="text-sm font-semibold text-foreground m-0">
               {sourceConfig!.primarySource === 'transactions' ? 'Transaction Table' : 'Channels'}
@@ -196,7 +196,7 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
 
       {/* Beat 3: Record Filter — visible when Beat 2 is complete */}
       {beat2Complete && (
-        <div className="flex items-start gap-14">
+        <div className="flex items-start gap-10 pb-8 border-b border-border">
           <div className="w-40 shrink-0 pt-0">
             <p className="text-sm font-semibold text-foreground m-0">{filterLabel}</p>
             <p className="text-xs text-tertiary-foreground mt-1 mb-0">{filterDescription}</p>
@@ -224,27 +224,32 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
                 channel={(sourceConfig as MessagesSourceConfig).channels[0]}
               />
             )}
+          </div>
+        </div>
+      )}
 
-            {/* Match Count Indicator — always visible once filter section shows */}
-            <div className="mt-3">
-              <MatchCountIndicator
-                count={count}
-                loading={loading}
-                error={error}
-                onRetry={retry}
-                entityLabel={entityLabel}
-                pending={!beat3Complete}
-              />
-            </div>
+      {/* Match Count — always visible once filter section shows */}
+      {beat2Complete && (
+        <div className="flex items-start gap-10">
+          <div className="w-40 shrink-0" />
+          <div className="flex-1 min-w-0">
+            <MatchCountIndicator
+              count={count}
+              loading={loading}
+              error={error}
+              onRetry={retry}
+              entityLabel={entityLabel}
+              pending={!beat3Complete}
+            />
           </div>
         </div>
       )}
 
       {/* Beat 4: Enrichment — visible when Beat 3 is complete */}
       {beat3Complete && (
-        <div className="flex items-start gap-14">
+        <div className="flex items-start gap-10">
           <div className="w-40 shrink-0 pt-0">
-            <p className="text-sm font-semibold text-foreground m-0">Secondary Source</p>
+            <p className="text-sm font-semibold text-foreground m-0">Add Context</p>
             <p className="text-xs text-tertiary-foreground mt-1 mb-0">
               Enrich your export with columns from related entities.
             </p>

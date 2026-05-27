@@ -181,10 +181,10 @@ describe('PrimarySourceSelector', () => {
     })
   })
 
-  it('renders a radiogroup container for accessibility', () => {
+  it('renders a group container for accessibility', () => {
     render(<PrimarySourceSelector selected={null} onChange={vi.fn()} hasDownstreamConfig={false} />)
 
-    const radiogroup = screen.getByRole('radiogroup', { name: 'Primary source selection' })
-    expect(radiogroup).toBeInTheDocument()
+    const group = screen.getByRole('group', { name: 'Primary source selection' })
+    expect(group).toBeInTheDocument()
   })
 })

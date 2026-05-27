@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { Warning } from '@phosphor-icons/react'
-import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import { Combobox } from '@/components/ui/combobox'
+import { RadioCard } from '@/components/composed/radio-card'
 import type { ContactsFilterConfig, ContactsFilterType } from '@/models/source-selection'
-import { validateDays } from '@/utils/source-selection-validation'
 
 // Types
 
@@ -105,38 +104,14 @@ export function ContactsFilterPanel({ config, onChange }: ContactsFilterPanelPro
   return (
     <div className="flex flex-col gap-1.5" role="radiogroup" aria-label="Contact filter options">
       {FILTER_OPTIONS.map((option) => (
-        <div key={option.id} className="flex flex-col">
-          <button
-            type="button"
-            role="radio"
-            aria-checked={config.type === option.id}
-            onClick={() => handleFilterTypeChange(option.id)}
-            className={cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-md border text-left text-sm transition-colors duration-150 cursor-pointer',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-              config.type === option.id
-                ? 'border-primary bg-accent'
-                : 'border-border bg-background hover:border-primary/50 hover:bg-accent/25'
-            )}
-          >
-            <div
-              className={cn(
-                'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors duration-150',
-                config.type === option.id
-                  ? 'border-primary'
-                  : 'border-muted-foreground'
-              )}
-            >
-              {config.type === option.id && (
-                <div className="w-2 h-2 rounded-full bg-primary" />
-              )}
-            </div>
-            <span className="font-medium text-foreground">{option.label}</span>
-          </button>
-
-          {/* Secondary input in grey box — rendered directly below the selected card */}
-          {config.type === option.id && option.id === 'created_in_last_n_days' && (
-            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-2">
+        <RadioCard
+          key={option.id}
+          selected={config.type === option.id}
+          onSelect={() => handleFilterTypeChange(option.id)}
+          label={option.label}
+        >
+          {option.id === 'created_in_last_n_days' && (
+            <div className="flex flex-col gap-2">
               <Input
                 type="number"
                 min={1}
@@ -158,20 +133,18 @@ export function ContactsFilterPanel({ config, onChange }: ContactsFilterPanelPro
             </div>
           )}
 
-          {config.type === option.id && option.id === 'in_list_segment' && (
-            <div className="mt-2 mb-1 rounded-lg bg-muted p-3">
-              <Combobox
-                value={config.segmentId ?? ''}
-                onValueChange={handleSegmentChange}
-                options={SEGMENT_OPTIONS}
-                placeholder="Search segments..."
-                searchPlaceholder="Search segments..."
-              />
-            </div>
+          {option.id === 'in_list_segment' && (
+            <Combobox
+              value={config.segmentId ?? ''}
+              onValueChange={handleSegmentChange}
+              options={SEGMENT_OPTIONS}
+              placeholder="Search segments..."
+              searchPlaceholder="Search segments..."
+            />
           )}
 
-          {config.type === option.id && option.id === 'not_sent_campaign' && (
-            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-2">
+          {option.id === 'not_sent_campaign' && (
+            <div className="flex flex-col gap-2">
               <Combobox
                 value={config.campaignId ?? ''}
                 onValueChange={handleCampaignChange}
@@ -184,7 +157,7 @@ export function ContactsFilterPanel({ config, onChange }: ContactsFilterPanelPro
               </p>
             </div>
           )}
-        </div>
+        </RadioCard>
       ))}
     </div>
   )

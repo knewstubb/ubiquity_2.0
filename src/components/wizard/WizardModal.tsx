@@ -169,13 +169,8 @@ export function WizardModal({
 
   // Dynamic steps — derive stepper label for Step 0 based on source selection
   const steps = useMemo(() => {
-    const sourceLabel = draft.sourceConfig
-      ? `${draft.sourceConfig.primarySource.charAt(0).toUpperCase() + draft.sourceConfig.primarySource.slice(1)} Source`
-      : 'Source';
-    return WIZARD_STEPS.map((step, i) =>
-      i === 0 ? { ...step, label: sourceLabel } : step
-    );
-  }, [draft.sourceConfig]);
+    return WIZARD_STEPS;
+  }, []);
   const lastStepIndex = steps.length - 1;
 
   // Track whether draft has been modified from initial state

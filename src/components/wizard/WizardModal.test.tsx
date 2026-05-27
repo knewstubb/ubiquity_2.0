@@ -192,32 +192,14 @@ describe('WizardModal', () => {
       expect(within(nav).getByText('Review')).toBeInTheDocument()
     })
 
-    it('updates source step label when a primary source is selected', () => {
+    it('keeps source step label as "Source" regardless of selection', () => {
       render(<WizardModal {...defaultProps} />)
 
       // Select contacts source
       fireEvent.click(screen.getByTestId('select-contacts'))
 
       const nav = screen.getByRole('navigation', { name: 'Progress' })
-      expect(within(nav).getByText('Contacts Source')).toBeInTheDocument()
-    })
-
-    it('updates source step label for transactions', () => {
-      render(<WizardModal {...defaultProps} />)
-
-      fireEvent.click(screen.getByTestId('select-transactions'))
-
-      const nav = screen.getByRole('navigation', { name: 'Progress' })
-      expect(within(nav).getByText('Transactions Source')).toBeInTheDocument()
-    })
-
-    it('updates source step label for messages', () => {
-      render(<WizardModal {...defaultProps} />)
-
-      fireEvent.click(screen.getByTestId('select-messages'))
-
-      const nav = screen.getByRole('navigation', { name: 'Progress' })
-      expect(within(nav).getByText('Messages Source')).toBeInTheDocument()
+      expect(within(nav).getByText('Source')).toBeInTheDocument()
     })
   })
 

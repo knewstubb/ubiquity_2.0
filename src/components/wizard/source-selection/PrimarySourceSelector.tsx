@@ -69,7 +69,7 @@ export function PrimarySourceSelector({
     <>
       <div
         className="grid grid-cols-3 gap-3"
-        role="radiogroup"
+        role="group"
         aria-label="Primary source selection"
       >
         {SOURCE_OPTIONS.map((option) => (

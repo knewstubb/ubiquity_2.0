@@ -45,7 +45,7 @@ export function CardSelector({
     <button
       type="button"
       className={cn(
-        'relative flex flex-col items-center justify-center gap-2 rounded-md border px-4 py-3 transition-colors duration-150',
+        'relative overflow-visible flex flex-col items-center justify-center gap-2 rounded-md border px-4 py-3 transition-colors duration-150',
         'active:translate-y-px',
         'disabled:opacity-50 disabled:pointer-events-none',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
@@ -59,7 +59,7 @@ export function CardSelector({
       aria-pressed={selected}
     >
       {selected && (
-        <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
+        <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
           <Check size={12} weight="bold" className="text-white" />
         </span>
       )}
