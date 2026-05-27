@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { PrimarySourceSelector } from './PrimarySourceSelector'
 
@@ -109,18 +109,7 @@ describe('PrimarySourceSelector', () => {
   })
 
   describe('confirmation dialog when hasDownstreamConfig is true', () => {
-    let confirmSpy: ReturnType<typeof vi.spyOn>
-
-    beforeEach(() => {
-      confirmSpy = vi.spyOn(window, 'confirm')
-    })
-
-    afterEach(() => {
-      confirmSpy.mockRestore()
-    })
-
-    it('shows confirmation when changing selection with downstream config', () => {
-      confirmSpy.mockReturnValue(true)
+    it('shows confirmation dialog when changing selection with downstream config', () => {
       const onChange = vi.fn()
 
       render(
@@ -129,13 +118,13 @@ describe('PrimarySourceSelector', () => {
 
       fireEvent.click(screen.getByText('Transactions'))
 
-      expect(confirmSpy).toHaveBeenCalledWith(
-        'Changing the primary source will reset your filter and enrichment settings. Continue?'
-      )
+      expect(screen.getByText('Change primary source?')).toBeInTheDocument()
+      expect(
+        screen.getByText('Changing the primary source will reset your filter and enrichment settings.')
+      ).toBeInTheDocument()
     })
 
     it('calls onChange when user confirms the dialog', () => {
-      confirmSpy.mockReturnValue(true)
       const onChange = vi.fn()
 
       render(
@@ -143,12 +132,12 @@ describe('PrimarySourceSelector', () => {
       )
 
       fireEvent.click(screen.getByText('Transactions'))
+      fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
 
       expect(onChange).toHaveBeenCalledWith('transactions')
     })
 
     it('does not call onChange when user cancels the dialog', () => {
-      confirmSpy.mockReturnValue(false)
       const onChange = vi.fn()
 
       render(
@@ -156,6 +145,7 @@ describe('PrimarySourceSelector', () => {
       )
 
       fireEvent.click(screen.getByText('Transactions'))
+      fireEvent.click(screen.getByRole('button', { name: 'Keep current' }))
 
       expect(onChange).not.toHaveBeenCalled()
     })
@@ -173,7 +163,7 @@ describe('PrimarySourceSelector', () => {
 
       fireEvent.click(screen.getByText('Transactions'))
 
-      expect(confirmSpy).not.toHaveBeenCalled()
+      expect(screen.queryByText('Change primary source?')).not.toBeInTheDocument()
       expect(onChange).toHaveBeenCalledWith('transactions')
     })
 
@@ -186,7 +176,7 @@ describe('PrimarySourceSelector', () => {
 
       fireEvent.click(screen.getByText('Contacts'))
 
-      expect(confirmSpy).not.toHaveBeenCalled()
+      expect(screen.queryByText('Change primary source?')).not.toBeInTheDocument()
       expect(onChange).toHaveBeenCalledWith('contacts')
     })
   })

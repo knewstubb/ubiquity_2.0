@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { Users, Receipt, ChatCircle } from '@phosphor-icons/react'
 import { CardSelector } from '@/components/composed/card-selector'
+import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed'
 import type { PrimarySourceType } from '../../../models/source-selection'
 
 interface PrimarySourceSelectorProps {
@@ -39,34 +41,60 @@ export function PrimarySourceSelector({
   onChange,
   hasDownstreamConfig,
 }: PrimarySourceSelectorProps) {
+  const [pendingType, setPendingType] = useState<PrimarySourceType | null>(null)
+
   function handleSelect(type: PrimarySourceType) {
     if (type === selected) return
 
     if (hasDownstreamConfig && selected !== null) {
-      const confirmed = window.confirm(
-        'Changing the primary source will reset your filter and enrichment settings. Continue?'
-      )
-      if (!confirmed) return
+      setPendingType(type)
+      return
     }
 
     onChange(type)
   }
 
+  function handleConfirmChange() {
+    if (pendingType) {
+      onChange(pendingType)
+      setPendingType(null)
+    }
+  }
+
+  function handleCancelChange() {
+    setPendingType(null)
+  }
+
   return (
-    <div
-      className="grid grid-cols-3 gap-3"
-      role="radiogroup"
-      aria-label="Primary source selection"
-    >
-      {SOURCE_OPTIONS.map((option) => (
-        <CardSelector
-          key={option.id}
-          icon={option.icon}
-          label={option.label}
-          selected={selected === option.id}
-          onClick={() => handleSelect(option.id)}
-        />
-      ))}
-    </div>
+    <>
+      <div
+        className="grid grid-cols-3 gap-3"
+        role="radiogroup"
+        aria-label="Primary source selection"
+      >
+        {SOURCE_OPTIONS.map((option) => (
+          <CardSelector
+            key={option.id}
+            icon={option.icon}
+            label={option.label}
+            selected={selected === option.id}
+            onClick={() => handleSelect(option.id)}
+          />
+        ))}
+      </div>
+
+      <AlertDialogComposed
+        open={pendingType !== null}
+        onOpenChange={(open) => { if (!open) handleCancelChange() }}
+        intent="warning"
+        title="Change primary source?"
+        confirmLabel="Continue"
+        cancelLabel="Keep current"
+        onConfirm={handleConfirmChange}
+        onCancel={handleCancelChange}
+      >
+        Changing the primary source will reset your filter and enrichment settings.
+      </AlertDialogComposed>
+    </>
   )
 }
