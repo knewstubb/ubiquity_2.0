@@ -10,6 +10,7 @@ import type {
   EnrichmentConfig,
   Channel,
 } from '../../models/source-selection'
+import { Funnel } from '@phosphor-icons/react'
 import { isFilterComplete } from '../../utils/source-selection-validation'
 import { resetDownstreamOnSourceChange } from '../../utils/source-config-utils'
 import { useMatchCount } from '../../hooks/useMatchCount'
@@ -181,6 +182,18 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
           )}
         </div>
       </div>
+
+      {/* Pending area — shown when no primary source is selected */}
+      {!beat1Complete && (
+        <div className="flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 px-6 py-12">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <Funnel className="size-8 text-muted-foreground/50" />
+            <p className="text-sm text-muted-foreground m-0">
+              Select a source above to configure filters and preview available fields
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Beat 3: Record Filter — visible when Beat 2 is complete */}
       {beat2Complete && (
