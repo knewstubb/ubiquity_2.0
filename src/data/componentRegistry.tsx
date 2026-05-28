@@ -1202,8 +1202,8 @@ export const componentRegistry: ComponentEntry[] = [
         'Binary yes/no — use Switch or a single checkbox',
       ]},
       { heading: 'States', content: [
-        'Unselected: neutral border, bg-background, muted text',
-        'Selected: teal border, bg-accent, shadow-md, checkmark badge',
+        'Unselected: neutral border, bg-background, muted text, description in muted-foreground',
+        'Selected: teal border, bg-accent, shadow-md, checkmark badge, description in teal (text-primary)',
         'Hover (unselected): teal border, teal text, bg-accent/25',
         'Hover (selected): shadow deepens to shadow-lg',
         'Disabled: native HTML disabled attribute (no pointer events)',

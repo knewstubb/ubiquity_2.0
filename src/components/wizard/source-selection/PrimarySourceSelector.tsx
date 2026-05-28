@@ -20,19 +20,19 @@ const SOURCE_OPTIONS: {
     id: 'contacts',
     label: 'Contacts',
     description: 'Export contact records from your database',
-    icon: <Users weight="duotone" />,
+    icon: <Users />,
   },
   {
     id: 'transactions',
     label: 'Transactions',
     description: 'Export transactional data records',
-    icon: <Receipt weight="duotone" />,
+    icon: <Receipt />,
   },
   {
     id: 'messages',
     label: 'Messages',
     description: 'Export message delivery data',
-    icon: <ChatCircle weight="duotone" />,
+    icon: <ChatCircle />,
   },
 ]
 
@@ -77,6 +77,7 @@ export function PrimarySourceSelector({
             key={option.id}
             icon={option.icon}
             label={option.label}
+            description={option.description}
             selected={selected === option.id}
             onClick={() => handleSelect(option.id)}
           />
