@@ -72,7 +72,10 @@ export function CardSelector({
         {label}
       </span>
       {description && (
-        <span className="text-xs text-center leading-snug text-muted-foreground">
+        <span className={cn(
+          "text-xs text-center leading-snug",
+          selected ? "text-primary" : "text-muted-foreground"
+        )}>
           {description}
         </span>
       )}
