@@ -143,7 +143,7 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
   // ─── Render ──────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 flex-1">
       {/* Beat 1: Primary Source Type + Sub-Source — always visible */}
       <div className="flex items-start gap-10 pb-8 border-b border-border">
         <div className="w-40 shrink-0 pt-0">
@@ -185,7 +185,7 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
 
       {/* Pending area — shown when no primary source is selected */}
       {!beat1Complete && (
-        <div className="flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 px-6 py-12">
+        <div className="flex-1 flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 px-6">
           <div className="flex flex-col items-center gap-3 text-center">
             <Funnel className="size-8 text-muted-foreground/50" />
             <p className="text-sm text-muted-foreground m-0">
