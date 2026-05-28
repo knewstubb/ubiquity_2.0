@@ -28,6 +28,8 @@ import { cn } from '@/lib/utils'
 interface CardSelectorProps {
   icon: React.ReactNode
   label: string
+  /** Optional description text below the label */
+  description?: string
   selected?: boolean
   disabled?: boolean
   onClick?: () => void
@@ -37,6 +39,7 @@ interface CardSelectorProps {
 export function CardSelector({
   icon,
   label,
+  description,
   selected = false,
   disabled = false,
   onClick,
@@ -68,6 +71,11 @@ export function CardSelector({
       <span className="text-base font-semibold text-center leading-tight">
         {label}
       </span>
+      {description && (
+        <span className="text-xs text-center leading-snug text-muted-foreground">
+          {description}
+        </span>
+      )}
     </button>
   )
 }

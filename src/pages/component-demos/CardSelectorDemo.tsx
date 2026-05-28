@@ -24,14 +24,23 @@ const ICON_MAP: Record<string, Icon> = {
 }
 
 const DEFAULT_LABELS = ['Importer', 'Exporter', 'Sync', 'Custom', 'Advanced', 'Archive']
+const DEFAULT_DESCRIPTIONS = [
+  'Bring data into UbiQuity',
+  'Send data to external systems',
+  'Two-way data synchronisation',
+  'Custom automation logic',
+  'Advanced configuration options',
+  'Archive and retention rules',
+]
 const DEFAULT_ICONS = ['DownloadSimple', 'UploadSimple', 'CloudArrowUp', 'Folder', 'Database', 'Globe']
 
 interface CardSelectorDemoProps {
   'card-count'?: number
   rows?: number
   'max-width'?: number
+  'show-description'?: boolean
   disabled?: boolean
-  [key: string]: unknown // dynamic card-N-label, card-N-icon props from renderControls
+  [key: string]: unknown
 }
 
 export default function CardSelectorDemo(props: CardSelectorDemoProps) {
@@ -44,6 +53,7 @@ export default function CardSelectorDemo(props: CardSelectorDemoProps) {
     const count = cardCount
     const rows = (props.rows as number) ?? 1
     const maxWidth = (props['max-width'] as number) ?? 100
+    const showDescription = (props['show-description'] as boolean) ?? false
     const disabled = (props.disabled as boolean) ?? false
     const columns = Math.ceil(count / rows)
 
@@ -54,11 +64,13 @@ export default function CardSelectorDemo(props: CardSelectorDemoProps) {
             const label = (props[`card-${i}-label`] as string) ?? DEFAULT_LABELS[i] ?? `Card ${i + 1}`
             const iconName = (props[`card-${i}-icon`] as string) ?? DEFAULT_ICONS[i] ?? 'DownloadSimple'
             const IconComp = ICON_MAP[iconName] ?? DownloadSimple
+            const description = showDescription ? (DEFAULT_DESCRIPTIONS[i] ?? undefined) : undefined
             return (
               <CardSelector
                 key={i}
                 icon={<IconComp size={24} />}
                 label={label}
+                description={description}
                 selected={selected === i}
                 disabled={disabled}
                 onClick={() => setSelected(i)}

@@ -1214,6 +1214,7 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'card-count', label: 'Cards', controlType: 'counter', defaultValue: 3, min: 2, max: 6 },
       { name: 'rows', label: 'Rows', controlType: 'counter', defaultValue: 1, min: 1, max: 3 },
       { name: 'max-width', label: 'Max Width', controlType: 'range', defaultValue: 100, min: 30, max: 100, step: 5 },
+      { name: 'show-description', label: 'Show Description', controlType: 'toggle', defaultValue: false },
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
     ],
     renderControls: (values, setValue) => {
