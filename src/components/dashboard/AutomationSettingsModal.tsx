@@ -221,7 +221,7 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
         </div>
 
         <ModalFooter
-          primaryAction={{ label: 'Close', variant: 'ghost', onClick: onClose }}
+          primaryAction={{ label: 'Close', onClick: onClose }}
           secondaryAction={{ label: 'Edit Automation', variant: 'outline', onClick: () => { onClose(); onEdit(); } }}
         />
       </DialogContent>
