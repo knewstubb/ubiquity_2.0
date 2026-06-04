@@ -74,12 +74,11 @@ Before writing tickets, gather context from all relevant places:
 - **Design Reference:** Link to prototype and/or UX doc. "The prototype is the design spec."
 - **Expected Behaviours:** Bullet list of what the user observes. Plain language.
 - **Acceptance Criteria:** Maximum 8 broad criteria. User-observable and verifiable.
-- **Scope:** What's IN and what's OUT.
 
 ### PBI (when explicitly requested)
 - **User Story:** When X, I want Y, So that Z.
 - **Context:** Why this matters and how it fits.
-- **Acceptance Criteria:** Checkboxes, outcome-focused.
+- **Acceptance Criteria:** Checkboxes, outcome-focused, limited to a max of 8 broad criteria.
 
 ## What You Never Include
 

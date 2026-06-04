@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Route ADO to Mike",
+  "description": "When any ADO work item tool is about to be used (create, update, add child), remind the agent to delegate to the Mike subagent instead of calling the tool directly.",
+  "version": "1",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": [
+      ".*azure_devops_wit_create.*",
+      ".*azure_devops_wit_update.*",
+      ".*azure_devops_wit_add_child.*"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "STOP. Do not call this ADO tool directly. Instead, delegate the entire ADO work item operation to the \"Mike\" subagent via invoke_sub_agent. Mike handles all PBI authoring — creating, updating, and formatting work items. Pass him the full context of what needs to be written or updated, including any relevant prototype details, field format requirements, and area path."
+  }
+}

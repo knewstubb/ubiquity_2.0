@@ -32,7 +32,7 @@ function generateHistoryEntries(connector: Automation): TimelineEntry[] {
       iconBorder: 'rgba(239, 68, 68, 0.25)',
       content: (
         <span>
-          <span className="font-semibold">Alan Campbell</span> changed the status from <span className="font-semibold">Active</span> to <span className="font-semibold">Inactive</span>
+          <span className="font-semibold">Alan Campbell</span> changed status to <span className="font-semibold">Inactive</span>
         </span>
       ),
       date: formatDate(updatedDate),
@@ -59,7 +59,7 @@ function generateHistoryEntries(connector: Automation): TimelineEntry[] {
     iconBorder: 'rgba(20, 184, 138, 0.25)',
     content: (
       <span>
-        <span className="font-semibold">Jane Smith</span> changed the status from <span className="font-semibold">Inactive</span> to <span className="font-semibold">Active</span>
+        <span className="font-semibold">Jane Smith</span> changed status to <span className="font-semibold">Active</span>
       </span>
     ),
     date: formatDate(new Date(updatedDate.getTime() - 86400000 * 18)),
