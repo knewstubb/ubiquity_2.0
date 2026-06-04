@@ -4,6 +4,7 @@ import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 import { Combobox } from '../ui/combobox';
 import { Badge } from '../ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { HelpPopover } from '@/components/composed/help-popover';
 import type { FieldMapping, LookupMapping, ImportDefaultRow } from '../../models/importer';
 import { CONTACT_LOOKUP_FIELDS } from '../../models/importer';
@@ -268,6 +269,7 @@ export function ImportMappingStep({
   // Import default modal state
   const [defaultModalOpen, setDefaultModalOpen] = useState(false);
   const [importDefaults, setImportDefaults] = useState<ImportDefaultMappingRow[]>([]);
+  const [allIgnored, setAllIgnored] = useState(false);
 
   // Build initial mappings from the value prop using CSV headers as source fields
   const [rows, setRows] = useState<MappingRow[]>(() => {
@@ -338,11 +340,13 @@ export function ImportMappingStep({
 
   function handleIgnoreAll() {
     setRows((prev) => recalcStatuses(prev.map((row) => ({ ...row, targetField: '[[Ignore Column]]' }))));
+    setAllIgnored(true);
   }
 
   function handleResetMappings() {
     if (!hasHeaders) return;
     setRows(recalcStatuses(buildRows(csvHeaders!, csvExampleValues ?? {}, [], targetFields)));
+    setAllIgnored(false);
   }
 
   // Lookup field mapping state (transactional only)
@@ -545,24 +549,40 @@ export function ImportMappingStep({
           <div className="flex items-center justify-between">
             <span className="text-sm font-semibold text-muted-foreground m-0">Columns in Ubiquity</span>
             <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6"
-                aria-label="Reset all mappings to auto-matched state"
-                onClick={handleResetMappings}
-              >
-                <ArrowCounterClockwise size={14} />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6"
-                aria-label="Ignore all column mappings"
-                onClick={handleIgnoreAll}
-              >
-                <ProhibitInset size={14} />
-              </Button>
+              {allIgnored && (
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 hover:bg-primary/10 hover:text-primary"
+                        aria-label="Reset all mappings to auto-matched state"
+                        onClick={handleResetMappings}
+                      >
+                        <ArrowCounterClockwise size={14} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">Reset mappings</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 hover:bg-destructive/10 hover:text-destructive"
+                      aria-label="Ignore all column mappings"
+                      onClick={handleIgnoreAll}
+                    >
+                      <ProhibitInset size={14} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Ignore all</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
           <span />
