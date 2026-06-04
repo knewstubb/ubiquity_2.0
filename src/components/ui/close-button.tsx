@@ -18,10 +18,10 @@
  * - Position with className (e.g. "absolute right-4 top-4") — the component has no built-in positioning
  *
  * @sizes
- * - xs (20×20px, 12px icon): Compact contexts like inline banners or dense UI
- * - sm (24×24px, 14px icon): Modal headers via ModalHeader component
- * - default (28×28px, 16px icon): Standard panels, sheets, validation summaries
- * - lg (32×32px, 20px icon): Large modals, slide-out panels, feature flags modal
+ * - xs (20×20px, 14px icon): Compact contexts like inline banners or dense UI
+ * - sm (24×24px, 16px icon): Modal headers via ModalHeader component
+ * - default (28×28px, 18px icon): Standard panels, sheets, validation summaries
+ * - lg (32×32px, 22px icon): Large modals, slide-out panels, feature flags modal
  *
  * @examples
  * - Standalone: <CloseButton size="sm" onClick={onClose} />

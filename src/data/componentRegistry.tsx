@@ -198,10 +198,28 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
       { name: 'ariaLabel', label: 'Aria Label', controlType: 'text', defaultValue: 'Close' },
     ],
+    usesComponents: [],
     usedIn: [
       { label: 'Sheet', route: '/admin/components/feedback/sheet' },
       { label: 'AlertDialog', route: '/admin/components/feedback/alert-dialog' },
       { label: 'Modal', route: '/admin/components/feedback/modal' },
+    ],
+    designGuidance: [
+      { heading: 'What', content: 'Icon-only close/dismiss button using Phosphor X icon with CVA size variants. Supports Radix Slot via asChild for composing with primitives like SheetPrimitive.Close.' },
+      { heading: 'When to use', content: [
+        'Dismissing containers: modals, sheets, panels, banners, toasts',
+        'Position with className (e.g. "absolute right-4 top-4") — no built-in positioning',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Chip remove buttons or field clear buttons (different semantics)',
+        '"Cancel" actions that need a visible label — use Button variant="ghost" instead',
+      ]},
+      { heading: 'Size guidance', content: [
+        'xs (20×20px, 14px icon): Compact inline banners, dense UI',
+        'sm (24×24px, 16px icon): Modal headers via ModalHeader component',
+        'default (28×28px, 18px icon): Standard panels, sheets, validation summaries',
+        'lg (32×32px, 22px icon): Large modals, slide-out panels, feature flags modal',
+      ]},
     ],
   },
   {
