@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { isVisible } from '@/lib/useControlValues'
 import { Button } from '@/components/ui/button'
@@ -14,7 +13,7 @@ import { PrefixInputControl } from './controls/PrefixInputControl'
 import { ChipArrayControl } from './controls/ChipArrayControl'
 import { ButtonPairControl } from './controls/ButtonPairControl'
 import { CounterControl } from './controls/CounterControl'
-import type { PropDefinition, ControlValue, UsedInLink } from '@/data/componentRegistry'
+import type { PropDefinition, ControlValue } from '@/data/componentRegistry'
 
 export interface SectionGroup {
   section: string | null
@@ -77,8 +76,6 @@ interface ControlsPanelProps {
   sectionSpacing?: string
   /** Whether to show horizontal dividers between sections */
   showDividers?: boolean
-  /** Links to pages where this component is used */
-  usedIn?: UsedInLink[]
 }
 
 export function ControlsPanel({
@@ -90,7 +87,6 @@ export function ControlsPanel({
   renderControls,
   sectionSpacing = 'space-y-4',
   showDividers = true,
-  usedIn,
 }: ControlsPanelProps) {
   function renderControl(prop: PropDefinition) {
     const value = values[prop.name]
@@ -271,24 +267,6 @@ export function ControlsPanel({
       {customSlot != null && (
         <div className="space-y-4 pt-3 border-t border-border mt-3">
           {customSlot}
-        </div>
-      )}
-
-      {/* Used in links */}
-      {usedIn && usedIn.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-border space-y-1.5">
-          <span className="text-xs text-muted-foreground font-medium">Used in</span>
-          <div className="flex flex-wrap gap-1.5">
-            {usedIn.map((link) => (
-              <Link
-                key={link.route}
-                to={link.route}
-                className="text-xs text-primary hover:underline"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
         </div>
       )}
 

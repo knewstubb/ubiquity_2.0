@@ -159,7 +159,6 @@ export const componentRegistry: ComponentEntry[] = [
       { label: 'Campaigns', route: '/automations/campaigns' },
     ],
     designGuidance: [
-      { heading: 'What', content: 'Primary interactive element for triggering actions. Uses CVA for variant/size composition and Radix Slot for polymorphic rendering via asChild.' },
       { heading: 'When to use', content: [
         'Any clickable action that is not a navigation link',
         'Form submissions, modal triggers, toolbar actions, inline actions',
@@ -168,26 +167,22 @@ export const componentRegistry: ComponentEntry[] = [
         'Navigation between pages — use a Link or anchor instead (or Button with asChild wrapping a Link)',
         'Toggle states — use a Toggle or SegmentedControl',
       ]},
-      { heading: 'Variant guidance', content: [
+      { heading: 'States', content: [
         'default (teal solid): Primary CTA — one per section max',
         'destructive (red solid): Irreversible or dangerous actions (delete, remove)',
-        'destructiveOutline (red border, transparent bg): Destructive action needing less visual weight — "Fix connection", inline remove buttons, secondary destructive alongside a solid primary',
-        'outline (teal border, transparent bg): Prominent secondary — "Add new", "Export"',
-        'secondary (dark solid): Strong secondary alongside a primary — use sparingly',
-        'secondaryOutline (border-strong, transparent bg): Low-emphasis — cancel, filter toggles, toolbar actions. Uses border-strong token for a mid-weight outline that reads clearly against light surfaces without competing with primary teal.',
-        'ghost (no bg until hover): Minimal — icon-only buttons, inline actions where a border adds noise',
+        'destructiveOutline (red border): Secondary destructive — inline remove buttons',
+        'outline (teal border): Prominent secondary — "Add new", "Export"',
+        'secondary (dark solid): Strong secondary alongside a primary',
+        'secondaryOutline (border-strong): Low-emphasis — cancel, filter toggles, toolbar actions',
+        'ghost (no bg until hover): Minimal — icon-only buttons, inline actions',
         'link (underline on hover): Inline text links styled as buttons',
+        'Disabled: stripped colour with uniform opacity across all variants',
+        'Active: solid variants use scale-95 press, outline uses translate-y-px',
       ]},
-      { heading: 'Size guidance', content: [
-        'sm (h-8 / 32px): Compact contexts — table rows, filter bars, inline actions',
-        'default (h-9 / 36px): Standard usage — forms, modals, page actions',
-        'lg (h-10 / 40px): Hero CTAs, modal primary actions, onboarding',
-        'icon (h-9 / 36px square): Icon-only buttons — close, settings, overflow menus',
-      ]},
-      { heading: 'Interaction patterns', content: [
-        'Solid variants use active:scale-95 for tactile click feedback',
-        'Outline variant uses active:translate-y-px for a subtle press effect',
-        'Disabled state strips colour and adds opacity uniformly across all variants',
+      { heading: 'Accessibility', content: [
+        'Uses Radix Slot for polymorphic rendering via asChild',
+        'Supports aria-label for icon-only buttons',
+        'Focus-visible ring for keyboard navigation',
       ]},
     ],
   },
@@ -215,20 +210,21 @@ export const componentRegistry: ComponentEntry[] = [
       { label: 'Modal', route: '/admin/components/feedback/modal' },
     ],
     designGuidance: [
-      { heading: 'What', content: 'Icon-only close/dismiss button using Phosphor X icon with CVA size variants. Supports Radix Slot via asChild for composing with primitives like SheetPrimitive.Close.' },
       { heading: 'When to use', content: [
         'Dismissing containers: modals, sheets, panels, banners, toasts',
         'Position with className (e.g. "absolute right-4 top-4") — no built-in positioning',
       ]},
       { heading: 'When NOT to use', content: [
-        'Chip remove buttons or field clear buttons (different semantics)',
+        'Chip remove buttons or field clear buttons — different semantics',
         '"Cancel" actions that need a visible label — use Button variant="ghost" instead',
       ]},
-      { heading: 'Size guidance', content: [
+      { heading: 'States', content: [
         'xs (20×20px, 14px icon): Compact inline banners, dense UI',
         'sm (24×24px, 16px icon): Modal headers via ModalHeader component',
         'default (28×28px, 18px icon): Standard panels, sheets, validation summaries',
-        'lg (32×32px, 22px icon): Large modals, slide-out panels, feature flags modal',
+        'lg (32×32px, 22px icon): Large modals, slide-out panels',
+        'Disabled: muted, no interaction',
+        'Hover: background accent for affordance',
       ]},
     ],
   },
@@ -240,6 +236,25 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['date picker', 'date selector', 'month view', 'day selection', 'schedule'],
     usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/CalendarDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Date selection in forms — single date or date range',
+        'Scheduling interfaces where users pick specific days',
+        'Filtering by date in reports or data views',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Selecting a relative time period (e.g. "Last 7 days") — use DateRangePicker with presets instead',
+        'Time-only selection — use a time input',
+        'Day-of-week recurring selection — use DayPicker instead',
+      ]},
+      { heading: 'States', content: [
+        'Default: neutral grid with hover highlights',
+        'Selected (single): filled primary circle on chosen date',
+        'Selected (range): filled endpoints with accent background span',
+        'Today: subtle ring indicator',
+        'Disabled dates: muted text, no pointer events',
+      ]},
+    ],
     propControls: [
       { name: 'mode', label: 'Mode', controlType: 'select', defaultValue: 'single', options: [
         { label: 'Single', value: 'single' },
@@ -270,7 +285,6 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'indeterminate', label: 'Indeterminate', controlType: 'toggle', defaultValue: false },
     ],
     designGuidance: [
-      { heading: 'What it is', content: 'A controlled checkbox built on Radix UI primitives supporting checked, unchecked, and indeterminate states.' },
       { heading: 'When to use', content: [
         'Binary choices in forms (agree/disagree, opt-in/out)',
         'Multi-select lists where items can be toggled independently',
@@ -281,12 +295,19 @@ export const componentRegistry: ComponentEntry[] = [
         'Toggling a live setting on/off — use Switch instead',
         'Single binary action with immediate effect — use Switch instead',
       ]},
-      { heading: 'Variants', content: [
-        'primary (default) — teal border and fill. Use for standard form checkboxes, filters, and preference lists.',
-        'secondary — dark neutral border and fill (matches secondary button). Use inside warning/destructive dialogs where teal clashes with the intent colour, or for high-contrast contexts like table header select-all controls.',
+      { heading: 'States', content: [
+        'Checked: filled primary background with checkmark icon',
+        'Unchecked: empty border, clickable',
+        'Indeterminate: bold minus icon — used for partial "select all" states',
+        'Disabled: reduced opacity, no pointer events',
+        'primary variant: teal border and fill — standard form checkboxes, filters',
+        'secondary variant: dark neutral border and fill — destructive dialogs, table header select-all',
       ]},
-      { heading: 'Indeterminate state', content: 'Pass checked="indeterminate" for partial-selection indicators. Renders a bold minus icon. Commonly used for "select all" when only some children are checked.' },
-      { heading: 'Pairing with Label', content: 'Always pair with a Label component for accessibility. The label should be clickable and linked via htmlFor.' },
+      { heading: 'Accessibility', content: [
+        'Built on Radix UI Checkbox primitive with full keyboard support',
+        'Always pair with a Label component linked via htmlFor',
+        'Supports aria-checked including "mixed" for indeterminate state',
+      ]},
     ],
   },
   {
@@ -296,6 +317,26 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Text input field with consistent styling and focus ring.',
     searchTerms: ['text field', 'type', 'form field', 'entry', 'text box', 'field'],
     component: lazy(() => import('../pages/component-demos/InputDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Single-line text entry in forms (names, emails, URLs)',
+        'Fields with prefix/suffix adornments or leading/trailing icons',
+        'Inline editing and search fields',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Multi-line text — use Textarea instead',
+        'Selection from a list — use Select or Combobox',
+        'Numeric-only with small ranges — use NumberStepper or Slider',
+      ]},
+      { heading: 'States', content: [
+        'Default: border-input background with placeholder text',
+        'Focused: ring + border-ring styling',
+        'Error: red border and focus ring with validation message below',
+        'Success: green border and focus ring with validation message below',
+        'Disabled: reduced opacity, no interaction',
+        'Read-only: visually similar to disabled but selectable text',
+      ]},
+    ],
     propControls: [
       { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Enter text...' },
       { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'default', options: [
@@ -325,6 +366,28 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'One-time password input with individual character slots.',
     searchTerms: ['verification code', 'pin', 'otp', 'two factor', 'mfa', 'code entry'],
     component: lazy(() => import('../pages/component-demos/InputOTPDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Two-factor authentication code entry',
+        'Email/SMS verification flows',
+        'PIN entry for secure operations',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'General text input — use Input instead',
+        'Long alphanumeric codes — use a standard Input with paste support',
+      ]},
+      { heading: 'States', content: [
+        'Empty: individual bordered slots awaiting input',
+        'Active: focused slot highlighted with caret',
+        'Filled: character displayed in slot',
+        'Disabled: muted appearance, no interaction',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Auto-advances focus to next slot on input',
+        'Supports paste of full code across all slots',
+        'Backspace navigates to previous slot',
+      ]},
+    ],
     propControls: [
       { name: 'length', label: 'Length', controlType: 'counter', defaultValue: 6, min: 4, max: 8 },
       { name: 'show-separator', label: 'Show Separator', controlType: 'toggle', defaultValue: true },
@@ -338,6 +401,21 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Accessible form label with required indicator support.',
     searchTerms: ['form label', 'field label', 'caption', 'required marker'],
     component: lazy(() => import('../pages/component-demos/LabelDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Labelling form inputs (Input, Select, Textarea, Checkbox)',
+        'Any interactive control that needs a visible accessible name',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Decorative text near inputs — use a plain span or paragraph',
+        'Section headings above groups of fields — use heading elements or SectionDivider',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Renders as <label> element with htmlFor binding',
+        'Clicking the label focuses/activates the linked control',
+        'Required indicator (*) is aria-hidden to avoid screen reader noise',
+      ]},
+    ],
     propControls: [
       { name: 'text', label: 'Text', controlType: 'text', defaultValue: 'Email address' },
       { name: 'required', label: 'Required', controlType: 'toggle', defaultValue: false },
@@ -352,6 +430,29 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['radio', 'single select', 'one of many', 'exclusive choice', 'option group'],
     usesComponents: ['Label'],
     component: lazy(() => import('../pages/component-demos/RadioGroupDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Mutually exclusive choices where all options should be visible',
+        '2–5 options that benefit from being scannable without opening a dropdown',
+        'Settings or configuration where seeing all choices helps comparison',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'More than 5–6 options — use Select or Combobox instead',
+        'Multi-select scenarios — use Checkbox group',
+        'Binary on/off — use Switch instead',
+        'Visual/icon-based choices — use CardSelector',
+      ]},
+      { heading: 'States', content: [
+        'Unselected: empty circle border',
+        'Selected: filled primary inner circle',
+        'Disabled: muted, no pointer events',
+        'Focus: ring on the focused radio item',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Built on Radix RadioGroup — full arrow-key navigation between items',
+        'Always pair each item with a Label for click-to-select',
+      ]},
+    ],
     propControls: [
       { name: 'option-count', label: 'Options', controlType: 'counter', defaultValue: 3, min: 2, max: 5 },
       { name: 'orientation', label: 'Orientation', controlType: 'select', defaultValue: 'vertical', options: [
@@ -368,6 +469,29 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Accessible select dropdown with search and keyboard navigation.',
     searchTerms: ['dropdown', 'picker', 'options', 'choice', 'menu', 'field with options'],
     component: lazy(() => import('../pages/component-demos/SelectDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Single-value selection from a bounded list of 3–7 options',
+        'Form fields where space is constrained and a dropdown is appropriate',
+        'Grouped options with visual separators',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'More than 7 options that benefit from search filtering — use Combobox instead',
+        'Multi-select — use ChipInput or a checkbox list',
+        'Only 2 mutually exclusive options — use SegmentedControl or RadioGroup',
+      ]},
+      { heading: 'States', content: [
+        'Default: closed trigger with placeholder text',
+        'Open: floating dropdown with scrollable option list',
+        'Selected: chosen value displayed in trigger',
+        'Disabled: muted trigger, no interaction',
+        'Focused: ring styling on trigger',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Built on Radix Select — full keyboard navigation (arrow keys, type-ahead)',
+        'Escape closes, Enter/Space selects',
+      ]},
+    ],
     propControls: [
       { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Select a segment' },
       { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'default', options: [
@@ -397,7 +521,6 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
     ],
     designGuidance: [
-      { heading: 'What', content: 'Searchable single-select dropdown built on Radix Popover. Provides type-ahead filtering for long option lists while matching the standard input height (h-9).' },
       { heading: 'When to use', content: [
         'Option list exceeds ~7 items and benefits from search filtering',
         'Field mapping dropdowns where users pick from 20+ database columns',
@@ -408,16 +531,17 @@ export const componentRegistry: ComponentEntry[] = [
         'Multi-select scenarios — use a multi-select or tag input',
         'Free-text input with suggestions — use an autocomplete/typeahead',
       ]},
-      { heading: 'Status variants', content: [
-        'normal: Default border with standard focus ring',
-        'warning: Amber border and focus ring — validation hint (e.g. "recommended but not required")',
-        'error: Red border and focus ring — validation failure',
+      { heading: 'States', content: [
+        'Normal: default border with standard focus ring',
+        'Warning: amber border and focus ring — validation hint',
+        'Error: red border and focus ring — validation failure',
+        'Open: popover with filtered list, check icon on selected item',
+        'Empty results: "No results found" placeholder',
       ]},
-      { heading: 'Interaction patterns', content: [
-        'Search resets on close to avoid stale filter state on reopen',
-        'Popover width matches trigger via --radix-popover-trigger-width',
-        'Check icon + font-medium on selected item for clear active indication',
+      { heading: 'Accessibility', content: [
+        'Built on Radix Popover with search input — keyboard navigable',
         'Controlled only (value + onValueChange) — no uncontrolled mode',
+        'Search resets on close to avoid stale filter state',
       ]},
     ],
   },
@@ -428,6 +552,25 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Range input for selecting numeric values.',
     searchTerms: ['range', 'scrubber', 'value slider', 'numeric range', 'drag to select'],
     component: lazy(() => import('../pages/component-demos/SliderDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Approximate numeric selection where relative position matters more than exact value',
+        'Bounded ranges with continuous values (volume, opacity, percentage)',
+        'Range selection with two thumbs (min/max filtering)',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Exact numeric entry — use Input type="number" or NumberStepper',
+        'Small discrete ranges (1–5) — use NumberStepper',
+        'Unbounded values — use Input instead',
+      ]},
+      { heading: 'States', content: [
+        'Default: track with filled section and draggable thumb',
+        'Hover: thumb scales slightly for affordance',
+        'Dragging: thumb active with tooltip showing current value',
+        'Disabled: muted track and thumb, no interaction',
+        'Range mode: two thumbs defining a min/max span',
+      ]},
+    ],
     propControls: [
       { name: 'range-mode', label: 'Range Mode', controlType: 'toggle', defaultValue: false, section: 'General' },
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false, section: 'General' },
@@ -453,15 +596,23 @@ export const componentRegistry: ComponentEntry[] = [
     usesComponents: ['Label'],
     component: lazy(() => import('../pages/component-demos/SwitchDemo')),
     designGuidance: [
-      { heading: 'Sizes', content: [
-        'Default (h-6 w-11) — standard forms and settings pages',
-        'Small (h-5 w-9) — controller panels, compact settings, table rows',
-        'XS (h-4 w-7) — inline toggles in very tight spaces',
-      ]},
       { heading: 'When to use', content: [
         'Binary on/off states where the result is immediate (no submit button needed)',
         'Prefer over Checkbox when the toggle takes effect immediately',
-        'Prefer Checkbox when the change requires a form submission',
+        'Settings pages, feature toggles, and inline enable/disable controls',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Form fields requiring explicit submission — use Checkbox instead',
+        'Multi-select scenarios — use Checkbox group',
+        'More than 2 options — use SegmentedControl or RadioGroup',
+      ]},
+      { heading: 'States', content: [
+        'Off: muted track with thumb at left',
+        'On: primary-filled track with thumb at right',
+        'Disabled: reduced opacity, no interaction',
+        'Default (h-6 w-11): standard forms and settings pages',
+        'Small (h-5 w-9): controller panels, compact settings, table rows',
+        'XS (h-4 w-7): inline toggles in very tight spaces',
       ]},
     ],
     propControls: [
@@ -484,6 +635,23 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Multi-line text input with auto-resize support.',
     searchTerms: ['multiline', 'text area', 'paragraph input', 'long text', 'description field'],
     component: lazy(() => import('../pages/component-demos/TextareaDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Multi-line text entry (descriptions, notes, comments)',
+        'Form fields expecting more than one sentence of input',
+        'Content editing where line breaks are meaningful',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Single-line values (names, emails) — use Input instead',
+        'Rich text editing with formatting — use a rich text editor',
+      ]},
+      { heading: 'States', content: [
+        'Default: bordered area with placeholder text',
+        'Focused: ring + border-ring styling',
+        'Disabled: muted, no interaction',
+        'Read-only: visually similar to disabled but text is selectable',
+      ]},
+    ],
     propControls: [
       { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Enter text...' },
       { name: 'rows', label: 'Rows', controlType: 'counter', defaultValue: 4, min: 2, max: 10 },
@@ -498,6 +666,22 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Pressable toggle button with on/off states.',
     searchTerms: ['press button', 'toggle button', 'active state', 'on off button'],
     component: lazy(() => import('../pages/component-demos/ToggleDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Toolbar-style buttons that toggle a state (bold, italic, alignment)',
+        'Single on/off controls that look like buttons rather than checkboxes',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Live on/off settings — use Switch instead',
+        'Selecting from multiple options — use ToggleGroup or SegmentedControl',
+        'Navigation actions — use Button or Link',
+      ]},
+      { heading: 'States', content: [
+        'Unpressed: ghost-like appearance (default variant) or outlined (outline variant)',
+        'Pressed: accent background fill indicating active state',
+        'Disabled: muted, no interaction',
+      ]},
+    ],
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
         { label: 'Default', value: 'default' },
@@ -520,6 +704,23 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['button group', 'multi toggle', 'option buttons', 'segmented toggle'],
     usesComponents: ['Toggle'],
     component: lazy(() => import('../pages/component-demos/ToggleGroupDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Multi-select button groups where multiple options can be active simultaneously',
+        'Toolbar-style formatting controls (bold + italic + underline)',
+        'Single-select where the Radix Toggle primitives are needed directly',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Single-select with a segmented control feel — use SegmentedControl instead',
+        'More than 5–6 options — use a Select or Checkbox group',
+        'Options that need descriptive labels — use RadioGroup or CardSelector',
+      ]},
+      { heading: 'States', content: [
+        'Inactive items: ghost-like appearance',
+        'Active items: accent background fill',
+        'Disabled: entire group or individual items muted',
+      ]},
+    ],
     propControls: [
       { name: 'type', label: 'Type', controlType: 'select', defaultValue: 'single', options: [
         { label: 'Single', value: 'single' },
@@ -540,6 +741,22 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['form layout', 'validation', 'field group', 'submit', 'form builder'],
     component: lazy(() => import('../pages/component-demos/FormDemo')),
     usesComponents: ['Input', 'Label', 'Button', 'Checkbox', 'Select', 'Textarea'],
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Any data entry flow requiring validation feedback',
+        'Multi-field forms with section grouping',
+        'Wizard steps with per-field error states',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Single inline inputs (search bars, inline edits) — use Input directly',
+        'Display-only data — use a description list or table',
+      ]},
+      { heading: 'Layout', content: [
+        'Follow the three-tier form rhythm: intra-field (8px), inter-field (12px), inter-section (20–24px)',
+        'Section headings own their fields — tight gap below, larger gap above',
+        'Use SectionDivider between logical groups in single-step modals',
+      ]},
+    ],
     propControls: [
       { name: 'section-count', label: 'Sections', controlType: 'counter', defaultValue: 1, min: 1, max: 3, section: 'Structure' },
       { name: 'field-count', label: 'Fields Per Section', controlType: 'counter', defaultValue: 2, min: 1, max: 4, section: 'Structure' },
@@ -566,6 +783,22 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'User profile image with fallback initials.',
     searchTerms: ['profile picture', 'user image', 'initials', 'photo circle', 'user icon'],
     component: lazy(() => import('../pages/component-demos/AvatarDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Representing users in lists, cards, or headers',
+        'Showing assignees, authors, or team members',
+        'Anywhere a person needs a visual identity marker',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Generic icons or logos — use an icon or image directly',
+        'Status indicators — use Badge instead',
+      ]},
+      { heading: 'States', content: [
+        'Image: displays user photo in circular frame',
+        'Neutral (Mint): initials on mint background — default when no image',
+        'Coloured: initials on hashed-colour background — distinguishes multiple users',
+      ]},
+    ],
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'neutral', options: [
         { label: 'Neutral (Mint)', value: 'neutral' },
@@ -587,6 +820,24 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Small label for status, counts, or categories.',
     searchTerms: ['tag', 'label', 'pill', 'chip', 'status indicator', 'count'],
     component: lazy(() => import('../pages/component-demos/BadgeDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Status indicators (Active, Draft, Error) in tables and cards',
+        'Count labels on tabs or nav items',
+        'Category or type labels for content items',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Interactive removable tags — use Chip instead',
+        'Action buttons — use Button regardless of size',
+        'Large blocks of text — use Alert or a callout',
+      ]},
+      { heading: 'States', content: [
+        'Semantic mode: colour derived from semantic tokens (primary, destructive, warning, info, success, neutral)',
+        'Non-semantic mode: arbitrary hex colour for branding or categorisation',
+        'Outline variant: transparent fill with coloured border — lighter weight',
+        'Clickable: hover brightness change when onClick is provided',
+      ]},
+    ],
     propControls: [
       { name: 'text', label: 'Text', controlType: 'text', defaultValue: 'Badge' },
       { name: 'mode', label: 'Mode', controlType: 'select', defaultValue: 'semantic', options: [
@@ -638,6 +889,23 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Container with header, content, and footer sections.',
     searchTerms: ['panel', 'container', 'box', 'content card', 'surface'],
     component: lazy(() => import('../pages/component-demos/CardDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Grouping related content with a clear boundary (settings panels, metric tiles)',
+        'Content that benefits from elevation or separation from its surroundings',
+        'Structured layouts with optional header and footer sections',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Full-width page sections — use border-b separators or plain containers',
+        'Simple lists — use Table or a flat list without card wrappers',
+        'Modal content — use Dialog or Sheet which provides its own surface',
+      ]},
+      { heading: 'States', content: [
+        'Default: subtle border with rounded corners',
+        'Outline variant: stronger border for standalone cards',
+        'With/without header, description, and footer — all sections optional',
+      ]},
+    ],
     propControls: [
       { name: 'showHeader', label: 'Show Header', controlType: 'toggle', defaultValue: true },
       { name: 'showFooter', label: 'Show Footer', controlType: 'toggle', defaultValue: true },
@@ -655,6 +923,17 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Visual divider between content sections, horizontal or vertical.',
     searchTerms: ['divider', 'line', 'hr', 'horizontal rule', 'section break'],
     component: lazy(() => import('../pages/component-demos/SeparatorDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Visually separating content sections without a label',
+        'Vertical dividers between inline elements (e.g. toolbar sections)',
+        'Replacing <hr> with proper semantics and styling',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Labelled section breaks — use SectionDivider instead',
+        'Spacing-only separation — use margin/padding utilities',
+      ]},
+    ],
     propControls: [
       { name: 'orientation', label: 'Orientation', controlType: 'select', defaultValue: 'horizontal', options: [
         { label: 'Horizontal', value: 'horizontal' },
@@ -670,6 +949,23 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Loading placeholder with pulse animation.',
     searchTerms: ['loading', 'placeholder', 'shimmer', 'ghost element', 'content loader'],
     component: lazy(() => import('../pages/component-demos/SkeletonDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Content loading states to prevent layout shift (cards, lists, profiles)',
+        'Indicating that data is being fetched without blocking the UI',
+        'Placeholder for async-loaded images, text blocks, or data fields',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Button or action loading — use a spinner inside the button instead',
+        'Full-page initial load — use Suspense with a page-level fallback',
+        'Progress indication with known completion — use Progress bar',
+      ]},
+      { heading: 'States', content: [
+        'Line: rectangular pulse for text content',
+        'Circle: circular pulse for avatars or icons',
+        'Card: rectangular pulse for card-shaped content',
+      ]},
+    ],
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'line', options: [
         { label: 'Line', value: 'line' },
@@ -688,14 +984,20 @@ export const componentRegistry: ComponentEntry[] = [
     component: lazy(() => import('../pages/component-demos/TableDemo')),
     usesComponents: [],
     designGuidance: [
-      { heading: 'What', content: 'Low-level table primitives — thin wrappers around native HTML table elements with consistent spacing, border, and typography tokens.' },
       { heading: 'When to use', content: [
         'Custom or hierarchical tables where DataTable column-driven API does not fit',
         'Tree/expandable rows, key-value layouts, or nested sub-tables',
-        'For standard data-driven tables with sorting and selection, prefer DataTable instead',
       ]},
-      { heading: 'Overflow', content: 'The Table wrapper provides overflow-x-auto for horizontal scroll. For sticky headers, wrap in a height-restricted container with overflow-y-auto.' },
-      { heading: 'Selection', content: 'Apply data-state="selected" to TableRow for selected styling (bg-accent/30). Selection logic lives in the consumer.' },
+      { heading: 'When NOT to use', content: [
+        'Standard data-driven tables with sorting and selection — use DataTable instead',
+        'Simple key-value display — use a description list',
+        'Card-based layouts — use Card or a grid',
+      ]},
+      { heading: 'States', content: [
+        'Selected rows: data-state="selected" applies bg-accent/30 fill',
+        'Overflow: wrapper provides overflow-x-auto for horizontal scroll',
+        'Sticky headers: wrap in height-restricted container with overflow-y-auto',
+      ]},
     ],
   },
   {
@@ -707,14 +1009,13 @@ export const componentRegistry: ComponentEntry[] = [
     component: lazy(() => import('../pages/component-demos/TableSandboxDemo')),
     usesComponents: ['Table', 'Badge', 'Checkbox'],
     designGuidance: [
-      { heading: 'Purpose', content: 'Use this sandbox to explore and standardise table styling across the product. Toggle options to find the right combination for each use case.' },
-      { heading: 'Variants to consider', content: [
-        'Basic data table — simple list pages (Forms, Campaigns)',
-        'Sortable data table — column sorting with indicators',
-        'Selectable table — checkbox column + bulk action bar',
-        'Tree/expandable table — hierarchical data (Billing, Accounts)',
-        'Checkbox list — field selection, permission toggles',
-        'Key-value table — settings display, review summaries',
+      { heading: 'When to use', content: [
+        'Exploring and standardising table styling across the product',
+        'Comparing different table configurations (density, borders, selection)',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Production pages — use DataTable or Table components directly',
+        'This is a design exploration sandbox, not a reusable component',
       ]},
     ],
     propControls: [],
@@ -728,18 +1029,13 @@ export const componentRegistry: ComponentEntry[] = [
     component: lazy(() => import('../pages/component-demos/ReorderableListSandboxDemo')),
     usesComponents: ['Checkbox', 'Badge'],
     designGuidance: [
-      { heading: 'Purpose', content: 'Use this sandbox to explore reorderable list patterns — field selection with drag-to-reorder for the selected subset.' },
-      { heading: 'Pattern', content: [
-        'Selected items at the top — draggable, with drag handle + index number + teal left border',
-        'Unselected items below — not draggable, just checkboxes',
-        'Drag to reorder within the selected section only',
-        'Select All row at the top for bulk selection',
+      { heading: 'When to use', content: [
+        'Field selection with drag-to-reorder for the selected subset',
+        'Exporter field mapping, column visibility, form builder field ordering',
       ]},
-      { heading: 'Use cases', content: [
-        'Exporter field mapping — select and order export columns',
-        'Permission assignment — select and prioritise roles',
-        'Column visibility — choose and order table columns',
-        'Form builder — select and order form fields',
+      { heading: 'When NOT to use', content: [
+        'Simple checkbox lists without reordering — use a Checkbox group',
+        'Production pages — use the pattern directly, this is for exploration',
       ]},
     ],
     propControls: [],
@@ -753,18 +1049,14 @@ export const componentRegistry: ComponentEntry[] = [
     component: lazy(() => import('../pages/component-demos/CardListSandboxDemo')),
     usesComponents: ['Badge', 'Switch'],
     designGuidance: [
-      { heading: 'Purpose', content: 'Use this sandbox to explore card list patterns — rich list items that are more than a table row but less than a full card grid.' },
-      { heading: 'Pattern', content: [
-        'Parent rows with icon + protocol + name + status + actions',
-        'Expandable to reveal nested child items',
-        'Error state with red left border accent',
-        'Nested items with toggle switches and metadata',
+      { heading: 'When to use', content: [
+        'Rich list items that are more than a table row but less than a full card grid',
+        'Expandable parent/child patterns (connectors with nested automations)',
       ]},
-      { heading: 'Use cases', content: [
-        'Connectors page — connections with nested automations',
-        'Integration list — services with nested configurations',
-        'Account hierarchy — parent accounts with children',
-        'Journey list — journeys with nested steps/branches',
+      { heading: 'When NOT to use', content: [
+        'Simple tabular data — use DataTable instead',
+        'Full card grids with uniform items — use Card in a CSS grid',
+        'Production pages — use the pattern directly, this is for exploration',
       ]},
     ],
     propControls: [],
@@ -776,6 +1068,22 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Progress bar showing completion percentage.',
     searchTerms: ['loading bar', 'percentage', 'completion', 'progress indicator', 'bar fill'],
     component: lazy(() => import('../pages/component-demos/ProgressDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Determinate progress with a known completion percentage (file uploads, import jobs)',
+        'Visual indication of how far along a process is',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Indeterminate loading — use Skeleton or a spinner',
+        'Multi-step workflows — use Stepper instead',
+        'Content loading placeholders — use Skeleton',
+      ]},
+      { heading: 'States', content: [
+        'In progress: filled portion of track (0–100%)',
+        'Complete: fully filled track',
+        'With label: percentage text shown alongside',
+      ]},
+    ],
     propControls: [
       { name: 'value', label: 'Value', controlType: 'range', defaultValue: 50, min: 0, max: 100, step: 5 },
       { name: 'showLabel', label: 'Show Label', controlType: 'toggle', defaultValue: true },
@@ -790,6 +1098,25 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Callout for important messages with icon, title, and description.',
     searchTerms: ['banner', 'notification', 'message', 'info box', 'warning', 'callout'],
     component: lazy(() => import('../pages/component-demos/AlertDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Persistent inline messages that remain visible (not dismissible toasts)',
+        'Page-level or section-level warnings, errors, or information banners',
+        'Validation summaries above forms',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Transient feedback after an action — use Sonner toast instead',
+        'Blocking confirmations — use AlertDialog instead',
+        'Inline field-level validation — use input error states',
+      ]},
+      { heading: 'States', content: [
+        'Default: neutral styling for general information',
+        'Destructive: red accent for errors or critical issues',
+        'Warning: amber accent for caution messages',
+        'Info: blue accent for informational callouts',
+        'Success: green accent for positive confirmations',
+      ]},
+    ],
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
         { label: 'Default', value: 'default' },
@@ -824,10 +1151,6 @@ export const componentRegistry: ComponentEntry[] = [
     ],
     designGuidance: [
       {
-        heading: 'What is AlertDialog?',
-        content: 'A modal confirmation dialog that interrupts the user before a significant action. It communicates severity through three intent variants (neutral, warning, destructive) and supports tiered confirmation guards based on the impact of the action.',
-      },
-      {
         heading: 'When to use',
         content: [
           'Any action that cannot be undone (delete, purge, remove permanently)',
@@ -847,49 +1170,22 @@ export const componentRegistry: ComponentEntry[] = [
         ],
       },
       {
-        heading: 'Intent variants',
+        heading: 'States',
         content: [
-          'Neutral — no top accent, teal confirm button. Routine confirmations like "Discard changes?" or "Close without saving?".',
-          'Warning — amber top accent with Warning icon in title, secondary confirm button. Actions with side effects that the user should think twice about.',
-          'Destructive — red top accent, red confirm button, swapped button order (confirm left, cancel right). Irreversible actions.',
+          'Neutral intent: no top accent, teal confirm button — routine confirmations',
+          'Warning intent: amber top accent + Warning icon — actions with side effects',
+          'Destructive intent: red top accent, red confirm button, swapped button order — irreversible actions',
+          'Loading: spinner on confirm button, both buttons disabled, dismissal blocked',
+          'Single-action: showCancel={false} for acknowledgement-only dialogs',
         ],
       },
       {
-        heading: 'Confirmation guards',
+        heading: 'Accessibility',
         content: [
-          'requiresCheckbox — "I understand" checkbox. Destructive-only. Use for significant-impact actions (e.g. delete a campaign, remove a segment).',
-          'requiresInput — type-to-confirm input. Works with ALL intents. Use for any action needing explicit typed confirmation (e.g. "DELETE" for account removal, "RESET" for config reset on a warning dialog). The input focus ring colour matches the dialog intent (amber for warning, red for destructive, default for neutral) to reinforce severity context.',
-          'inputLabel — custom instruction text for the type-to-confirm input. Overrides the default "Type {x} to confirm" label. Use when the default phrasing doesn\'t fit the context (e.g. "Type RESET to confirm factory reset").',
-          'Neither — no guard. Use for low-impact confirmations where the dialog itself is sufficient friction.',
-          'When both are provided, requiresInput takes precedence (checkbox is hidden).',
+          'Built on Radix AlertDialog — traps focus, Escape to dismiss',
+          'Title is linked to aria-labelledby for screen readers',
+          'Confirmation guards (checkbox, type-to-confirm) prevent accidental activation',
         ],
-      },
-      {
-        heading: 'Object names in titles',
-        content: 'When an action relates to a specific object, include its name in the title. E.g. "Delete \'Summer Sale\'?" not just "Delete campaign?". This gives users confidence they are acting on the right thing. Titles asking the user to perform an action always end with a question mark.',
-      },
-      {
-        heading: 'Microcopy (Yifrah framework)',
-        content: [
-          'Tell users what happens next, not what they did — "This will permanently remove all data" not "You are about to delete"',
-          'Never use "are you sure" — state the consequence directly instead',
-          'Titles that ask the user to perform an action must end with a question mark — "Delete \'Summer Sale\'?" not "Delete \'Summer Sale\'"',
-          'Button labels are actions — "Delete campaign" not "OK" or "Yes"',
-          'Be specific about consequences — "3 automations will stop running" not "This may affect other items"',
-          'Loading labels describe the action in progress — "Deleting..." or "Saving..." not "Please wait"',
-        ],
-      },
-      {
-        heading: 'Loading state',
-        content: 'When onConfirm returns a Promise, the confirm button shows a spinner alongside text like "Deleting..." or "Saving...". Both buttons disable and all dismissal paths are blocked until the Promise resolves or rejects.',
-      },
-      {
-        heading: 'Custom icons',
-        content: 'Pass an icon prop (ReactNode) to render a custom icon inline with the title. For warning intent this overrides the default Warning icon; for neutral/destructive it adds an icon where none exists by default. Use for domain-specific context — e.g. a CurrencyDollar icon for billing confirmations or a Trash icon for clear-history dialogs.',
-      },
-      {
-        heading: 'Single-action dialogs',
-        content: 'Set showCancel={false} for informational alerts that only need an acknowledgement button (e.g. "Mapping incomplete" with an "OK" button). The X close button remains available.',
       },
     ],
   },
@@ -913,10 +1209,6 @@ export const componentRegistry: ComponentEntry[] = [
     ],
     designGuidance: [
       {
-        heading: 'What is Dialog?',
-        content: 'A modal overlay built on Radix UI Dialog that uses a three-section layout: DialogHeader (title row), DialogBody (main content), and DialogFooter (action buttons). The content wrapper has zero padding — each section manages its own spacing independently.',
-      },
-      {
         heading: 'When to use',
         content: [
           'Confirmations and short decision prompts',
@@ -935,21 +1227,14 @@ export const componentRegistry: ComponentEntry[] = [
         ],
       },
       {
-        heading: 'Structure',
+        heading: 'Layout',
         content: [
-          'DialogHeader — horizontal flex (items-center, justify-between), px-6 pt-6. Place title on the left, optional close button on the right.',
-          'DialogBody — padded content area (px-6 py-4). Use for form fields, messages, or any main content.',
-          'DialogFooter — right-aligned button row (px-6 py-4, gap-3). Place Cancel on the left, primary action on the right.',
-          'Sections are optional — omit any section and no leftover whitespace appears.',
+          'DialogHeader — horizontal flex (items-center, justify-between), px-6 pt-6. Title left, close button right.',
+          'DialogBody — padded content area (px-6 py-4). Forms, messages, or main content.',
+          'DialogFooter — right-aligned button row (px-6 py-4, gap-3). Cancel left, primary right.',
+          'Sections are optional — omit any without leftover whitespace.',
+          'Default max-width 460px. Override via className for wider dialogs.',
         ],
-      },
-      {
-        heading: 'Sizing',
-        content: 'Default max-width is 460px. Override via className on DialogContent for wider dialogs (e.g. max-w-lg, max-w-2xl). Keep dialogs as narrow as the content requires.',
-      },
-      {
-        heading: 'Overlay behaviour',
-        content: 'Uses backdrop-blur-xs with 50% black opacity at z-[150] — high enough to stack above nav bars, dropdowns, and tooltips without conflicting with Tailwind\'s default z-50 scale. Clicking the overlay closes the dialog by default (Radix behaviour). Escape key also dismisses.',
       },
     ],
   },
@@ -961,6 +1246,23 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['drawer', 'slide panel', 'side panel', 'flyout', 'slide out'],
     usesComponents: ['Button', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/SheetDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Secondary content that doesn\'t warrant a full page (detail panels, filters)',
+        'Long forms or configuration panels that slide in from the side',
+        'Context panels that overlay without losing page context',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Short confirmations — use Dialog or AlertDialog instead',
+        'Quick notifications — use Sonner toast',
+        'Primary page content — use a dedicated route/page',
+      ]},
+      { heading: 'States', content: [
+        'Closed: hidden off-screen',
+        'Open: slides in from configured edge (top, right, bottom, left) with overlay',
+        'With/without footer: optional action buttons at bottom',
+      ]},
+    ],
     propControls: [
       { name: 'side', label: 'Side', controlType: 'select', defaultValue: 'right', options: [
         { label: 'Top', value: 'top' },
@@ -980,6 +1282,25 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Toast notification system with stacking and auto-dismiss.',
     searchTerms: ['toast', 'snackbar', 'notification', 'flash message', 'pop up message'],
     component: lazy(() => import('../pages/component-demos/SonnerDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Transient success/error feedback after user actions (save, delete, send)',
+        'Non-blocking informational messages that auto-dismiss',
+        'Any feedback that doesn\'t require user acknowledgement',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Persistent messages the user must read — use Alert instead',
+        'Confirmations before actions — use AlertDialog',
+        'Inline validation — use field-level error states',
+      ]},
+      { heading: 'States', content: [
+        'Default: neutral styling',
+        'Success: green accent for positive outcomes',
+        'Error: red accent for failures',
+        'Info: blue accent for informational messages',
+        'Warning: amber accent for caution',
+      ]},
+    ],
     propControls: [
       { name: 'type', label: 'Type', controlType: 'select', defaultValue: 'default', options: [
         { label: 'Default', value: 'default' },
@@ -1001,16 +1322,19 @@ export const componentRegistry: ComponentEntry[] = [
     usesComponents: [],
     designGuidance: [
       {
-        heading: 'Visual style',
-        content: 'Dedicated tooltip tokens (bg-tooltip / text-tooltip-foreground) for independent theming. Built-in arrow always rendered using fill-tooltip. 4px radius, text-sm (14px). Padding (px-1.5 py-1.5) applied to an inner span so it doesn\'t affect arrow positioning.',
-      },
-      {
         heading: 'When to use',
-        content: 'Short, non-interactive labels for icon buttons, truncated text, or abbreviated values. For richer content or interactive elements, use Popover or HoverCard instead.',
+        content: [
+          'Short, non-interactive labels for icon buttons or truncated text',
+          'Explaining abbreviated values or adding context to unlabelled controls',
+        ],
       },
       {
-        heading: 'Placement',
-        content: 'Supports top, right, bottom, left via the side prop. 4px sideOffset by default. Arrow auto-points toward the trigger.',
+        heading: 'When NOT to use',
+        content: [
+          'Rich or interactive content — use Popover or HoverCard instead',
+          'Essential information users must see — use inline text or Alert',
+          'Touch-only interfaces — tooltips require hover',
+        ],
       },
     ],
     component: lazy(() => import('../pages/component-demos/TooltipDemo')),
@@ -1033,6 +1357,18 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['preview card', 'hover preview', 'link preview', 'user card', 'profile popup'],
     usesComponents: ['Avatar', 'Button'],
     component: lazy(() => import('../pages/component-demos/HoverCardDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Preview cards for user profiles, links, or entities on hover',
+        'Rich hover content that goes beyond a single-line tooltip',
+        'Non-interactive previews that appear on mouse enter',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Single-line labels — use Tooltip instead',
+        'Interactive content (buttons, forms) — use Popover instead',
+        'Click-triggered content — use Popover or Dialog',
+      ]},
+    ],
     propControls: [
       { name: 'open-delay', label: 'Open Delay (ms)', controlType: 'number', defaultValue: 200, min: 0, max: 2000 },
       { name: 'close-delay', label: 'Close Delay (ms)', controlType: 'number', defaultValue: 100, min: 0, max: 1000 },
@@ -1052,6 +1388,22 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['popup', 'things that popup', 'floating', 'dropdown panel', 'floating content'],
     usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/PopoverDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Contextual forms or settings that appear alongside their trigger',
+        'Help content or explanations that need more space than a tooltip',
+        'Non-modal floating panels with interactive content (buttons, links)',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Simple text labels on hover — use Tooltip instead',
+        'Blocking confirmation flows — use Dialog or AlertDialog',
+        'Full forms or lengthy content — use a Sheet or dedicated page',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Built on Radix Popover — focus managed, Escape to dismiss',
+        'Click outside to close, maintains trigger focus on close',
+      ]},
+    ],
     propControls: [
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'How does UbiQuity link transactions to contacts?', section: 'Content' },
       { name: 'body', label: 'Body', controlType: 'textarea', defaultValue: 'Every transactional record needs to be linked to a contact in UbiQuity. Lookup Mapping tells the system which column in your file identifies the contact that each transaction belongs to.', section: 'Content' },
@@ -1086,6 +1438,28 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Collapsible content sections with single or multiple open panels.',
     searchTerms: ['expandable', 'collapsible', 'expand collapse', 'faq', 'disclosure'],
     component: lazy(() => import('../pages/component-demos/AccordionDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'FAQ sections or help pages with many expandable answers',
+        'Settings or configuration groups that benefit from progressive disclosure',
+        'Long content that can be chunked into collapsible sections',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Navigation menus — use Collapsible sidebar groups or nav menus',
+        'Tabbed content where all sections are equally important — use Tabs',
+        'Simple show/hide toggle — use Collapsible for single items',
+      ]},
+      { heading: 'States', content: [
+        'Collapsed: only trigger/header visible',
+        'Expanded: content revealed with animation',
+        'Single mode: only one panel open at a time',
+        'Multiple mode: any combination of panels can be open',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Built on Radix Accordion — proper aria-expanded and keyboard navigation',
+        'Enter/Space toggles, arrow keys navigate between items',
+      ]},
+    ],
     propControls: [
       { name: 'item-count', label: 'Items', controlType: 'counter', defaultValue: 3, min: 1, max: 6 },
       { name: 'type', label: 'Type', controlType: 'select', defaultValue: 'single', options: [
@@ -1102,6 +1476,18 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Navigation trail showing page hierarchy.',
     searchTerms: ['path', 'trail', 'hierarchy', 'navigation path', 'location'],
     component: lazy(() => import('../pages/component-demos/BreadcrumbDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Pages nested more than one level deep to show location context',
+        'Drill-down interfaces where users navigate into detail views',
+        'Replacing browser back button with explicit return paths',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Top-level pages with no parent hierarchy — unnecessary noise',
+        'Single-level navigation — the nav bar is sufficient',
+        'Within modals or sheets — they have their own close/back patterns',
+      ]},
+    ],
     propControls: [
       { name: 'item-count', label: 'Items', controlType: 'counter', defaultValue: 3, min: 2, max: 5 },
       { name: 'show-ellipsis', label: 'Show Ellipsis', controlType: 'toggle', defaultValue: false },
@@ -1114,6 +1500,21 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Expandable/collapsible content section with trigger.',
     searchTerms: ['expand', 'collapse', 'toggle section', 'show hide', 'disclosure'],
     component: lazy(() => import('../pages/component-demos/CollapsibleDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Single collapsible section with custom trigger content',
+        'Sidebar navigation groups that expand/collapse',
+        'Progressive disclosure of secondary information',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Multiple related collapsible sections — use Accordion instead',
+        'Tab-like content switching — use Tabs',
+      ]},
+      { heading: 'States', content: [
+        'Open: content visible, trigger in expanded state',
+        'Closed: content hidden, trigger in collapsed state',
+      ]},
+    ],
     propControls: [
       { name: 'open', label: 'Open', controlType: 'toggle', defaultValue: false },
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: '@peduarte starred 3 repositories' },
@@ -1126,6 +1527,23 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Combobox/command palette with search filtering and keyboard selection.',
     searchTerms: ['command palette', 'spotlight', 'quick action', 'cmd k', 'keyboard shortcut'],
     component: lazy(() => import('../pages/component-demos/CommandDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Global search / command palette (Cmd+K) for quick navigation',
+        'Searchable action lists within dialogs or popovers',
+        'Keyboard-driven interfaces with type-to-filter',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Simple dropdown selection — use Select or Combobox',
+        'Form field with autocomplete — use Combobox',
+        'Static navigation menus — use DropdownMenu or NavigationMenu',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Full keyboard navigation — arrow keys, Enter to select, Escape to dismiss',
+        'Type-ahead filtering with live result announcements',
+        'Groups and separators for organized command categories',
+      ]},
+    ],
     propControls: [
       { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Type a command or search...' },
       { name: 'show-groups', label: 'Show Groups', controlType: 'toggle', defaultValue: true },
@@ -1139,6 +1557,21 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Right-click menu with items, sub-menus, and separators.',
     searchTerms: ['right click', 'context actions', 'secondary menu', 'action menu'],
     component: lazy(() => import('../pages/component-demos/ContextMenuDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Right-click secondary actions on content items (rows, cards, canvas elements)',
+        'Power-user shortcuts that supplement primary UI actions',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Primary actions that users need to discover — use visible buttons or DropdownMenu',
+        'Touch-only interfaces — context menus require right-click',
+        'The only way to access an action — always provide a visible alternative',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Built on Radix ContextMenu — keyboard navigation within menu items',
+        'Ensure all context menu actions are also available through visible UI',
+      ]},
+    ],
     propControls: [
       { name: 'item-count', label: 'Item Count', controlType: 'counter', defaultValue: 4, min: 2, max: 8 },
       { name: 'show-separators', label: 'Show Separators', controlType: 'toggle', defaultValue: true },
@@ -1151,6 +1584,23 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Click-triggered menu with items, separators, and keyboard navigation.',
     searchTerms: ['menu', 'action menu', 'options menu', 'kebab menu', 'more actions'],
     component: lazy(() => import('../pages/component-demos/DropdownMenuDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Overflow or "more actions" menus behind a kebab/dots button',
+        'Action lists triggered by clicking a button',
+        'Compact UI where multiple actions share one trigger',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Form selection — use Select or Combobox instead',
+        'Navigation with page links — use NavigationMenu',
+        'Right-click actions — use ContextMenu',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Built on Radix DropdownMenu — full keyboard navigation',
+        'Arrow keys navigate, Enter/Space select, Escape closes',
+        'Supports sub-menus, checkable items, and radio groups',
+      ]},
+    ],
     propControls: [
       { name: 'item-count', label: 'Item Count', controlType: 'counter', defaultValue: 5, min: 2, max: 8 },
       { name: 'show-icons', label: 'Show Icons', controlType: 'toggle', defaultValue: true },
@@ -1164,6 +1614,21 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Horizontal menu bar with dropdown sub-menus.',
     searchTerms: ['menu strip', 'file menu', 'toolbar menu', 'app menu'],
     component: lazy(() => import('../pages/component-demos/MenubarDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Application-style menu bars with File/Edit/View pattern',
+        'Rich desktop-like interfaces with many categorised actions',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Simple site navigation — use NavigationMenu instead',
+        'Single action menus — use DropdownMenu',
+        'Mobile-first interfaces — menu bars don\'t translate well to small screens',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Full keyboard navigation — arrow keys between top-level items and within dropdowns',
+        'Supports keyboard shortcuts displayed alongside menu items',
+      ]},
+    ],
     propControls: [
       { name: 'menu-count', label: 'Menus', controlType: 'counter', defaultValue: 3, min: 2, max: 5 },
       { name: 'show-shortcuts', label: 'Show Shortcuts', controlType: 'toggle', defaultValue: true },
@@ -1177,6 +1642,21 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['nav bar', 'site navigation', 'top nav', 'mega menu', 'header nav'],
     usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/NavigationMenuDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Primary site navigation with link items and dropdown sub-menus',
+        'Header navigation bars with descriptive dropdown panels',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Action menus (delete, edit, etc.) — use DropdownMenu',
+        'Form selection — use Select or Combobox',
+        'In-page section navigation — use Tabs',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Built on Radix NavigationMenu — proper aria roles for navigation',
+        'Keyboard navigation between items and into dropdown panels',
+      ]},
+    ],
     propControls: [
       { name: 'item-count', label: 'Items', controlType: 'counter', defaultValue: 4, min: 2, max: 6 },
       { name: 'dropdown-items', label: 'Dropdown Items', controlType: 'counter', defaultValue: 3, min: 1, max: 5 },
@@ -1194,6 +1674,23 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Page navigation with previous/next and numbered page links.',
     searchTerms: ['pages', 'page numbers', 'next previous', 'paging', 'page controls'],
     component: lazy(() => import('../pages/component-demos/PaginationDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Paginated data tables or list views with server-side pagination',
+        'Search results that span multiple pages',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Infinite scroll / load-more patterns — use a "Load more" button',
+        'Small data sets that fit on one page — pagination adds noise',
+        'Within modals — keep content short or use ScrollArea',
+      ]},
+      { heading: 'States', content: [
+        'Active page: highlighted with primary styling',
+        'Inactive pages: clickable links',
+        'Ellipsis: shown when page range exceeds visible slots',
+        'Disabled prev/next: when at first/last page',
+      ]},
+    ],
     propControls: [
       { name: 'total-pages', label: 'Total Pages', controlType: 'counter', defaultValue: 10, min: 3, max: 20 },
       { name: 'current-page', label: 'Current Page', controlType: 'counter', defaultValue: 1, min: 1, max: 20 },
@@ -1207,6 +1704,17 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Custom scrollbar container with consistent cross-browser styling.',
     searchTerms: ['scrollbar', 'overflow', 'scroll container', 'scrollable', 'scroll pane'],
     component: lazy(() => import('../pages/component-demos/ScrollAreaDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Constrained-height containers that need scrolling (modal bodies, sidebars)',
+        'Consistent scrollbar styling across browsers',
+        'Horizontal or bidirectional scrolling layouts',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Full-page scrolling — native scroll is fine',
+        'Very short content that won\'t overflow — unnecessary wrapper',
+      ]},
+    ],
     propControls: [
       { name: 'height', label: 'Height', controlType: 'range', defaultValue: 200, min: 100, max: 400 },
       { name: 'orientation', label: 'Orientation', controlType: 'select', defaultValue: 'vertical', options: [
@@ -1226,12 +1734,22 @@ export const componentRegistry: ComponentEntry[] = [
     component: lazy(() => import('../pages/component-demos/TabsDemo')),
     usesComponents: [],
     designGuidance: [
-      { heading: 'Variants', content: [
-        'Pill (default) — grey background container, active tab gets white fill + shadow. Use inside cards/panels for content switching.',
-        'Underline — transparent background, bottom border indicator. Use for page-level navigation or data filtering.',
+      { heading: 'When to use', content: [
+        'Switching between views of related content within the same context',
+        'Page-level navigation between sub-sections (underline variant)',
+        'Content panels within cards or settings pages (pill variant)',
       ]},
-      { heading: 'Badge', content: 'TabsTrigger accepts an optional badge prop for count indicators (e.g. filter counts, item totals). Badge styling reacts to active state via the group-data-[state=active] pattern — no extra props needed.' },
-      { heading: 'Variant inheritance', content: 'Set variant on TabsList — TabsTrigger reads it via context. No need to pass variant to each trigger.' },
+      { heading: 'When NOT to use', content: [
+        'Sequential steps — use Stepper instead',
+        'Expanding/collapsing content — use Accordion',
+        'Filtering data — use SegmentedControl or filter buttons',
+      ]},
+      { heading: 'States', content: [
+        'Pill variant: active tab gets white fill + shadow, inactive is transparent',
+        'Underline variant: active tab gets bottom border indicator, inactive is transparent',
+        'Badge on trigger: count styling reacts to active state via group-data pattern',
+        'Vertical orientation: tabs stack vertically with content beside',
+      ]},
     ],
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'pill', options: [
@@ -1356,6 +1874,24 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['stat', 'kpi', 'number card', 'dashboard stat', 'metric tile', 'data point'],
     usesComponents: ['Card'],
     component: lazy(() => import('../pages/component-demos/MetricCardDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Dashboard KPI displays (total contacts, revenue, conversion rate)',
+        'Summary statistics at the top of report pages',
+        'Any numeric value that benefits from a trend indicator',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Detailed data requiring tables — use DataTable',
+        'Multiple data points in one view — use a chart or graph',
+        'Non-numeric content — use Card directly',
+      ]},
+      { heading: 'States', content: [
+        'With trend: shows up/down arrow with percentage change',
+        'Without trend: value and label only',
+        'Trend up: green indicator for positive change',
+        'Trend down: red indicator for negative change',
+      ]},
+    ],
     propControls: [
       { name: 'showTrend', label: 'Show Trend', controlType: 'toggle', defaultValue: true },
       { name: 'trendDirection', label: 'Trend Direction', controlType: 'select', defaultValue: 'up', options: [
@@ -1372,27 +1908,23 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['sortable table', 'data grid', 'list view', 'records', 'database table'],
     usesComponents: ['Table', 'Checkbox'],
     designGuidance: [
-      { heading: 'What', content: 'Data-driven table built on shadcn Table primitives. Accepts typed columns and renders headers, sorting, selection, and density automatically.' },
       { heading: 'When to use', content: [
         'Structured tabular data with optional column sorting (billing reports, user lists, audit logs)',
-        'Prefer over manual Table composition when columns are data-driven',
-        'For tree/hierarchical data, use Table primitives directly',
-        'For simple key-value display, use a description list instead',
+        'Data-driven tables where columns are defined programmatically',
+        'Tables needing built-in selection, density, and sorting support',
       ]},
-      { heading: 'Density', content: [
-        'compact: Tight padding (py-1.5 px-3, text-xs) — dense data like logs or audit trails',
-        'default: Standard padding (py-3 px-4, text-sm) — most tables',
-        'relaxed: Generous padding (py-4 px-4, text-sm) — sparse data or dashboard cards',
+      { heading: 'When NOT to use', content: [
+        'Tree/hierarchical data — use Table primitives directly',
+        'Simple key-value display — use a description list',
+        'Card-based layouts — use Card grid',
       ]},
-      { heading: 'Container', content: [
-        'borderless: No wrapper styling — table sits flush in its parent',
-        'bordered: 1px border + rounded-md — standalone table with clear boundary',
-        'card: Border + rounded-lg + shadow-sm — elevated card-style presentation',
+      { heading: 'States', content: [
+        'Density: compact (tight), default (standard), relaxed (generous spacing)',
+        'Container: borderless (flush), bordered (visible boundary), card (elevated)',
+        'Selectable: checkbox column with select-all/indeterminate, bulk action bar appears',
+        'Sortable columns: asc → desc → unsorted cycle with direction arrow',
+        'Empty: placeholder message when no data matches filters',
       ]},
-      { heading: 'Selection', content: 'Enable selectable prop to add checkbox column with select-all/indeterminate support. Selected rows get bg-accent/30 fill. A bulk action bar appears below the table showing count and clear button.' },
-      { heading: 'Sorting', content: 'Columns opt-in via sortable flag. Sort cycles asc → desc → unsorted (three-state). Only the active column shows a direction arrow. Sortable headers get hover:text-primary for affordance.' },
-      { heading: 'Alignment', content: 'Use align: "right" for numeric columns (applies tabular-nums automatically). Use align: "center" sparingly for status badges.' },
-      { heading: 'Custom cells', content: 'Use the render function on a column to display badges, icons, or formatted values instead of raw text.' },
     ],
     component: lazy(() => import('../pages/component-demos/DataTableDemo')),
   },
@@ -1403,6 +1935,24 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Notification helper using Sonner with UDS styling and variants.',
     searchTerms: ['notification', 'snackbar', 'flash', 'alert toast', 'success message'],
     component: lazy(() => import('../pages/component-demos/ToastDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Transient notifications after user actions (create, update, delete)',
+        'Auto-dismissing feedback that doesn\'t require interaction',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Critical errors that need acknowledgement — use Alert or AlertDialog',
+        'Persistent information banners — use Alert',
+        'Inline validation — use field-level error states',
+      ]},
+      { heading: 'States', content: [
+        'Default: neutral toast notification',
+        'Success: green accent — positive outcomes',
+        'Error: red accent — failures',
+        'Warning: amber accent — caution messages',
+        'Info: blue accent — informational',
+      ]},
+    ],
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
         { label: 'Default', value: 'default' },
@@ -1424,15 +1974,20 @@ export const componentRegistry: ComponentEntry[] = [
     usesComponents: ['Dialog', 'Button', 'Input', 'Label', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/ModalDemo')),
     designGuidance: [
-      { heading: 'ModalFooter', content: [
-        'Up to 3 action slots: primary (right-aligned CTA), secondary (cancel/back beside primary), tertiary (left-aligned, pushed with mr-auto).',
-        'No explicit background — inherits from parent Dialog surface for light/dark compatibility.',
-        'Returns null when no actions are provided — safe to include unconditionally.',
-        'Pass variant prop on each action to control Button styling (default, destructive, ghost, etc.).',
-      ]},
       { heading: 'When to use', content: [
-        'Always pair with ModalHeader inside a Dialog for consistent modal structure.',
-        'Use primaryAction for the main CTA, secondaryAction for cancel/dismiss, tertiaryAction for destructive or reset actions.',
+        'Standard modals needing consistent header (title + close) and footer (action buttons) layout',
+        'Always pair ModalHeader and ModalFooter inside a Dialog for consistent structure',
+        'Forms, confirmation flows, or focused tasks that block the page',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Destructive confirmations with guards — use AlertDialog',
+        'Simple non-blocking feedback — use Sonner toast',
+        'Side panels or slide-out content — use Sheet',
+      ]},
+      { heading: 'Layout', content: [
+        'ModalFooter supports up to 3 action slots: primary (right CTA), secondary (cancel beside primary), tertiary (left-aligned, pushed with mr-auto)',
+        'Returns null when no actions provided — safe to include unconditionally',
+        'Dialog content wrapper has zero padding — each section manages its own spacing',
       ]},
     ],
     propControls: [
@@ -1456,6 +2011,25 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Sequential step indicator with vertical and horizontal orientations.',
     searchTerms: ['progress', 'steps', 'wizard progress', 'multi-step', 'step indicator'],
     component: lazy(() => import('../pages/component-demos/StepperDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Multi-step wizard flows showing progress through sequential stages',
+        'Checkout or onboarding processes with distinct phases',
+        'Any flow where users need to know where they are and what comes next',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Simple progress with a percentage — use Progress bar',
+        'Non-linear navigation — use Tabs instead',
+        'Chronological event history — use Timeline',
+      ]},
+      { heading: 'States', content: [
+        'Completed steps: checkmark icon with success styling',
+        'Current step: highlighted as active',
+        'Upcoming steps: muted/inactive styling',
+        'Horizontal: steps flow left to right',
+        'Vertical: steps flow top to bottom with optional descriptions',
+      ]},
+    ],
     propControls: [
       { name: 'orientation', label: 'Orientation', controlType: 'select', defaultValue: 'horizontal', options: [
         { label: 'Horizontal', value: 'horizontal' },
@@ -1526,6 +2100,22 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['dropdown button', 'button menu', 'action dropdown', 'multi action button'],
     usesComponents: ['Button', 'DropdownMenu'],
     component: lazy(() => import('../pages/component-demos/SplitButtonDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'A clear primary action with related alternatives (e.g. "Save" with "Save as draft", "Save and close")',
+        'Reducing button clutter when one action dominates but variants exist',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Unrelated actions grouped together — use separate buttons',
+        'Only one action — use a standard Button',
+        'Many equal-priority actions — use a DropdownMenu with a single trigger',
+      ]},
+      { heading: 'States', content: [
+        'Default: primary action button + caret dropdown trigger',
+        'Dropdown open: menu appears below with secondary actions',
+        'Disabled: both sections disabled',
+      ]},
+    ],
     propControls: [
       { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Save' },
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
@@ -1549,6 +2139,21 @@ export const componentRegistry: ComponentEntry[] = [
     demoLayout: 'full-bleed',
     usesComponents: ['Button', 'Badge', 'Tabs', 'Input', 'Breadcrumb'],
     component: lazy(() => import('../pages/component-demos/PageHeaderDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Exploring and standardising page header layouts across the product',
+        'Configuring combinations of breadcrumbs, titles, actions, tabs, and filters',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Production pages — compose the header directly using individual components',
+        'This is a design exploration sandbox, not a reusable component',
+      ]},
+      { heading: 'Layout', content: [
+        'Breadcrumbs → Title row (title + status + actions) → Tabs → Filters → Bulk actions',
+        'Spacing between sections is configurable to establish consistent rhythm',
+        'Body layout options: dashboard metrics, data table, card list, empty state',
+      ]},
+    ],
     propControls: [
       { name: 'breadcrumb-count', label: 'Breadcrumbs', controlType: 'counter', defaultValue: 3, min: 0, max: 3, section: 'Structure' },
       { name: 'show-subtitle', label: 'Subtitle', controlType: 'toggle', defaultValue: true, section: 'Structure' },
@@ -1585,6 +2190,24 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Single-select toggle with border-separated segments. Active state uses teal text with bottom border accent.',
     searchTerms: ['toggle group', 'button group', 'option toggle', 'switcher', 'segmented buttons'],
     component: lazy(() => import('../pages/component-demos/SegmentedControlDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        '2–5 mutually exclusive text-based options (view modes, filter toggles)',
+        'Compact inline selectors where a dropdown is too heavy',
+        'Switching between modes or views within a panel',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'More than 5 options — use Select or Tabs instead',
+        'Options that need icons or descriptions — use CardSelector',
+        'Multi-select — use ToggleGroup or Checkbox group',
+      ]},
+      { heading: 'States', content: [
+        'Active segment: teal text with bottom border accent',
+        'Inactive segments: neutral text, clickable',
+        'Fit-to-text mode: segments size to content width',
+        'Equal-width mode: all segments share available space equally',
+      ]},
+    ],
     propControls: [
       { name: 'option-count', label: 'Options', controlType: 'range', defaultValue: 3, min: 2, max: 5, step: 1 },
       { name: 'fit-to-text', label: 'Fit to Text', controlType: 'toggle', defaultValue: false },
@@ -1624,19 +2247,22 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['counter', 'increment', 'decrement', 'numeric input', 'plus minus', 'quantity'],
     usesComponents: [],
     designGuidance: [
-      { heading: 'Variants', content: [
-        'Plain (default) — neutral foreground text, no state change. Use when value is always meaningful (column count, row count).',
-        'Toggle — value text turns teal (text-primary) when value > min, muted when at min. Use when 0 = off and 1+ = on (nesting depth, border radius).',
-      ]},
-      { heading: 'Sizes', content: [
-        'Default (h-9) — standard forms and panels',
-        'Small (h-7) — controller panels and compact UI',
-        'XS (h-5) — inline or very tight spaces',
-      ]},
       { heading: 'When to use', content: [
-        'Small integer ranges with tight bounds (1-10)',
+        'Small integer ranges with tight bounds (1–10)',
         'Prefer over a text input when the range is small and predictable',
         'Prefer over a slider when exact values matter more than relative position',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Large numeric ranges — use Slider instead',
+        'Free-form numeric input — use Input type="number"',
+        'Continuous values where precision isn\'t needed — use Slider',
+      ]},
+      { heading: 'States', content: [
+        'Plain variant: neutral foreground text — value is always meaningful (column count)',
+        'Toggle variant: teal text when value > min, muted at min — 0 = off, 1+ = on',
+        'Default (h-9), Small (h-7), XS (h-5) sizes for different contexts',
+        'Disabled: muted, no interaction',
+        'At bounds: respective button disabled',
       ]},
     ],
     component: lazy(() => import('../pages/component-demos/NumberStepperDemo')),
@@ -1715,16 +2341,12 @@ export const componentRegistry: ComponentEntry[] = [
     ],
     designGuidance: [
       {
-        heading: 'What is a Chip?',
-        content: 'A pill-shaped interactive label used to represent discrete values — tags, filter selections, multi-select entries, or insertion tokens. Renders as a <span> by default, switching to a <button> when onClick is provided for proper keyboard accessibility.',
-      },
-      {
         heading: 'When to use',
         content: [
           'Removable tags in multi-select inputs (e.g. selected fields in an importer mapping)',
-          'Email address entries in recipient fields (e.g. "brad@example.com" with dismiss to remove)',
+          'Email address entries in recipient fields with dismiss to remove',
           'Filter pills in filter bars where users toggle criteria on/off',
-          'Insertion tokens / merge tags in template builders (use variant="insertable" with onClick and used)',
+          'Insertion tokens / merge tags in template builders (variant="insertable")',
           'Status labels where colour semantics communicate meaning (mint = success, red = error)',
         ],
       },
@@ -1737,33 +2359,25 @@ export const componentRegistry: ComponentEntry[] = [
         ],
       },
       {
-        heading: 'Variants',
+        heading: 'States',
         content: [
-          'Default — neutral grey background. General-purpose tags and filters with no semantic meaning.',
-          'Outline — transparent with border. Lighter visual weight, good for dense lists or inside inputs where background contrast matters.',
-          'Mint — green-tinted. Communicates success or positive status (e.g. "Active", "Verified", "Matched").',
-          'Red — red-tinted. Communicates error or destructive status (e.g. "Failed", "Blocked", "Unmatched").',
-          'Insertable — token insertion chip. Light mint background when available, grey when used. Teal fill on hover with scale feedback on click. Uses monospace font to signal variable/token content.',
+          'Default variant: neutral grey background — general-purpose tags and filters',
+          'Outline variant: transparent with border — lighter weight in dense lists',
+          'Mint variant: green-tinted — success/positive status',
+          'Red variant: red-tinted — error/destructive status',
+          'Insertable variant: light mint when available, grey when used, teal fill on hover',
+          'Selected: solid fill with white text',
+          'Disabled: muted, no pointer events',
+          'Default size (h-7): standard usage; Small size (h-6): compact contexts',
         ],
       },
       {
-        heading: 'Sizes',
+        heading: 'Accessibility',
         content: [
-          'Default (28px / h-7) — standard usage in filter bars, tag lists, and form fields.',
-          'Small (24px / h-6) — compact contexts like inside input fields or dense filter bars where vertical space is constrained.',
+          'Renders as <button> when onClick is provided (keyboard focusable with Enter/Space activation)',
+          'Renders as <span> without onClick — selection managed by parent container',
+          'Dismiss button has its own aria-label ("Remove {label}") for screen reader clarity',
         ],
-      },
-      {
-        heading: 'Click behaviour',
-        content: 'When onClick is provided, the chip renders as a <button> element with focus-visible ring for keyboard accessibility. Without onClick, it renders as a <span> and selection is managed by the parent container. When selected, the chip fills with a solid colour and switches to white text.',
-      },
-      {
-        heading: 'Insertable behaviour',
-        content: 'The insertable variant tracks a "used" state. Available tokens show a light mint background with teal text; used tokens switch to grey background with muted text. Both remain clickable (for re-insertion). Hover fills with solid teal for clear affordance.',
-      },
-      {
-        heading: 'Dismiss behaviour',
-        content: 'When onDismiss is provided, a small X button renders inside the chip. It uses stopPropagation to prevent triggering the parent\'s click handler. The dismiss button has its own aria-label ("Remove {label}") for screen reader clarity.',
       },
     ],
   },
@@ -1775,6 +2389,18 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['selection modal', 'chooser', 'type picker', 'option selector modal'],
     usesComponents: ['Dialog', 'CardSelector', 'Button'],
     component: lazy(() => import('../pages/component-demos/ChooserModalDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'First step of a wizard where the user picks a type/category before proceeding',
+        '2–4 options that benefit from icon + description cards for clarity',
+        'Branching flows where the choice determines the next step',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'More than 4 options — use a list or CardSelector on a page instead',
+        'Inline selection without blocking — use CardSelector directly',
+        'Simple binary choice — use AlertDialog or a radio group',
+      ]},
+    ],
     propControls: [
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Select Connection Type' },
       { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Select the protocol your data source uses to connect with UbiQuity.' },
@@ -1792,12 +2418,18 @@ export const componentRegistry: ComponentEntry[] = [
     component: lazy(() => import('../pages/component-demos/TimelineDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
-        'Use for chronological event history — audit logs, activity feeds, lifecycle displays.',
-        'Each entry represents a discrete event with an icon, description, and timestamp.',
-        'Do NOT use for step-by-step progress — use Stepper for that.',
+        'Chronological event history — audit logs, activity feeds, lifecycle displays',
+        'Each entry represents a discrete event with an icon, description, and timestamp',
       ]},
-      { heading: 'Icon colours', content: 'Pass any CSS colour string as iconBg. Use semantic colours (primary for positive actions, warning for pauses, error for destructive actions, info for neutral changes). Optionally pass iconBorder for a 1.5px solid border — useful for outline-style entries where the circle needs chromatic distinction without a filled background.' },
-      { heading: 'Content', content: 'The content prop accepts ReactNode — use inline <strong> for emphasis on key terms (entity names, status changes). Content renders at text-base (16px) with leading-snug for comfortable readability in scan-oriented feeds.' },
+      { heading: 'When NOT to use', content: [
+        'Step-by-step progress or wizard flows — use Stepper instead',
+        'Non-chronological lists — use a standard list or table',
+      ]},
+      { heading: 'States', content: [
+        'Each entry has a coloured icon circle and connector line to the next entry',
+        'Icon colours use semantic meaning: primary for positive, warning for pauses, error for destructive, info for neutral',
+        'Optional iconBorder for outline-style entries needing distinction without filled background',
+      ]},
     ],
     propControls: [
       { name: 'entryCount', label: 'Entries', controlType: 'counter', defaultValue: 6, min: 1, max: 6 },
@@ -1838,13 +2470,15 @@ export const componentRegistry: ComponentEntry[] = [
     component: lazy(() => import('../pages/component-demos/SectionDividerDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
-        'Use to separate logical field groups in single-step modals and dialogs.',
-        'Use "line" variant when sections are visually equal (e.g. Connection Settings, Authentication).',
-        'Use "heading" variant for longer forms where sections need stronger left-aligned hierarchy.',
-        'Do NOT use inside wizard steps — those follow the three-tier form rhythm pattern.',
-        'For a plain line without a label, use the Separator component instead.',
+        'Separating logical field groups in single-step modals and dialogs',
+        '"Line" variant when sections are visually equal (Connection Settings, Authentication)',
+        '"Heading" variant for longer forms where sections need stronger left-aligned hierarchy',
       ]},
-      { heading: 'Spacing', content: 'The component applies a negative bottom margin so the label visually "owns" the section below it. Let the parent container handle the gap above.' },
+      { heading: 'When NOT to use', content: [
+        'Inside wizard steps — those follow the three-tier form rhythm pattern',
+        'Plain line without a label — use the Separator component instead',
+        'Page-level section breaks — use heading elements',
+      ]},
     ],
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'line', options: [
@@ -1870,14 +2504,12 @@ export const componentRegistry: ComponentEntry[] = [
     usesComponents: ['Input'],
     designGuidance: [
       { heading: 'When to use', content: [
-        'Use when a value always starts with a known, non-editable prefix (URL base path, file path root, domain).',
-        'Prefer over a disabled input + label when the prefix is structural context, not user-entered data.',
-        'For editable prefixes or suffixes, use a standard Input with adornments instead.',
+        'Values with a known, non-editable prefix (URL base path, file path root, domain)',
+        'Prefer over disabled input + label when the prefix is structural context',
       ]},
-      { heading: 'Anatomy', content: [
-        'Outer container: flex row, h-9, border, rounded-md, overflow-hidden.',
-        'Prefix span: bg-secondary, border-r, non-interactive, select-none.',
-        'Inner Input: flex-1, border-0, rounded-none — inherits height from container.',
+      { heading: 'When NOT to use', content: [
+        'Editable prefixes or suffixes — use Input with adornments instead',
+        'No fixed prefix — use standard Input',
       ]},
     ],
     component: lazy(() => import('../pages/component-demos/PrefixInputDemo')),
@@ -1896,30 +2528,26 @@ export const componentRegistry: ComponentEntry[] = [
     usesComponents: [],
     designGuidance: [
       { heading: 'When to use', content: [
-        'Use for multi-value free-text entry (emails, tags, keywords).',
-        'Use with options prop for constrained multi-select from a predefined list.',
-        'Prefer over multi-select dropdown when all selected values should remain visible.',
-        'For single-value selection, use a standard Select or Combobox instead.',
+        'Multi-value free-text entry (emails, tags, keywords)',
+        'Constrained multi-select from a predefined list (with options prop)',
+        'Prefer over multi-select dropdown when all selected values should remain visible',
       ]},
-      { heading: 'Anatomy', content: [
-        'Container: bordered box with chips + inline text input.',
-        'Chips: pill-shaped (rounded-full) with primary border and X remove button.',
-        'Validation pill: appears below input showing validity of current typed value.',
-        'Dropdown (optional): absolute-positioned list of remaining selectable options.',
-        'Clear-all button: X icon at trailing edge, visible when chips exist.',
-        'Copy-from-above link: optional action in the label row for duplicating values from a sibling field.',
+      { heading: 'When NOT to use', content: [
+        'Single-value selection — use Select or Combobox instead',
+        'Long option lists where search is important — use Combobox',
+        'Static display of tags — use Badge or Chip without input',
       ]},
-      { heading: 'Interaction', content: [
-        'Enter, Tab, or comma commits the current input as a chip.',
-        'Backspace on empty input removes the last chip.',
-        'Dropdown stays open after selection to allow rapid multi-pick.',
-        'Clicking the validation pill (when valid) commits the value.',
-        'Blur commits any pending valid input.',
+      { heading: 'States', content: [
+        'Empty: bordered container with placeholder text',
+        'With chips: pills inside container with inline text input',
+        'Validation pill: green when valid, red when invalid — appears below input',
+        'Dropdown (optional): absolute list of remaining selectable options',
+        'sm (min-h-8), default (min-h-10), lg (min-h-12) sizes',
       ]},
-      { heading: 'Sizes', content: [
-        'sm: min-h-8, compact chip padding — use in table filters or dense forms.',
-        'default: min-h-10, standard form field sizing.',
-        'lg: min-h-12, larger touch targets and text.',
+      { heading: 'Accessibility', content: [
+        'Enter, Tab, or comma commits current input as a chip',
+        'Backspace on empty input removes the last chip',
+        'Clear-all button visible when chips exist',
       ]},
     ],
     component: lazy(() => import('../pages/component-demos/ChipInputDemo')),
@@ -1949,27 +2577,20 @@ export const componentRegistry: ComponentEntry[] = [
     component: lazy(() => import('../pages/component-demos/DateRangePickerDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
-        'Use for any date range filter where presets speed up common selections.',
-        'Pass domain-specific presets (billing cycles, quarters, months).',
-        'For single date selection, use the Calendar component directly.',
+        'Date range filters where presets speed up common selections',
+        'Pass domain-specific presets (billing cycles, quarters, months)',
+        'Reporting and analytics date filtering',
       ]},
-      { heading: 'Anatomy', content: [
-        'Trigger: outline Button with calendar icon + formatted date range (tabular-nums)',
-        'Floating panel: Popover containing Calendar (left) + presets list (right)',
-        'Calendar: range mode via react-day-picker, handles selection and navigation',
-        'Presets: scrollable list, active preset highlighted in teal',
+      { heading: 'When NOT to use', content: [
+        'Single date selection — use Calendar component directly',
+        'Relative period selection without calendar (e.g. "Last 7 days" toggle) — use SegmentedControl or Select',
       ]},
-      { heading: 'Interaction', content: [
-        'Range selection handled by Calendar component (click start, click end).',
-        'Panel closes automatically when a complete range is selected.',
-        'Clicking a preset applies it immediately and closes the panel.',
-        'Popover handles outside click, Escape, and focus management.',
-      ]},
-      { heading: 'Visual states', content: [
-        'Range edges: filled teal circles (rounded-full) — standard date picker pattern.',
-        'Range body: accent background fill (Calendar built-in).',
-        'Today: highlighted by Calendar defaults.',
-        'Active preset: teal text + semibold weight.',
+      { heading: 'States', content: [
+        'Closed: outline Button trigger showing formatted date range',
+        'Open: Popover with Calendar (left) + presets list (right)',
+        'Range selected: filled teal circles on start/end with accent span between',
+        'Active preset: teal text + semibold weight in presets list',
+        'Panel auto-closes when a complete range is selected',
       ]},
     ],
     propControls: [
@@ -1989,6 +2610,18 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['info popup', 'help icon', 'question mark', 'contextual help', 'tooltip help'],
     usesComponents: ['Popover'],
     component: lazy(() => import('../pages/component-demos/HelpPopoverDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Contextual help next to field labels or section headings',
+        'Explaining concepts that need more than a single-line tooltip',
+        'Inline "?" triggers for documentation-style help content',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Simple one-line hints — use Tooltip instead',
+        'Lengthy documentation — link to a help page or documentation',
+        'Form validation messages — use inline error/success states',
+      ]},
+    ],
     propControls: [
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'How does this work?' },
       { name: 'body', label: 'Body', controlType: 'textarea', defaultValue: 'This is a help popover that provides contextual information to the user.' },
@@ -2012,6 +2645,23 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Seven circular day-of-week toggle buttons (Mon–Sun). Selected days are filled primary, unselected have a 1px primary outline.',
     searchTerms: ['weekday picker', 'day selector', 'schedule days', 'recurring days'],
     component: lazy(() => import('../pages/component-demos/DayPickerDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Selecting recurring days of the week (e.g. schedule automation on Mon/Wed/Fri)',
+        'Configuration of weekly schedules or frequency settings',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Picking a specific calendar date — use Calendar instead',
+        'Date range selection — use DateRangePicker',
+        'Single day selection from a list — use Select or RadioGroup',
+      ]},
+      { heading: 'States', content: [
+        'Selected: filled primary circle',
+        'Unselected: 1px primary outline circle',
+        'Disabled: muted, no interaction',
+        'Presets: weekdays, weekend, all, none for quick selection',
+      ]},
+    ],
     propControls: [
       { name: 'preset', label: 'Preset', controlType: 'select', defaultValue: 'custom', options: [
         { label: 'Custom', value: 'custom' },
