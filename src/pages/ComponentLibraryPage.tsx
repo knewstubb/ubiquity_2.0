@@ -1,8 +1,8 @@
 import { Suspense, useState } from 'react'
 import { NavLink, Outlet, useParams, useLocation, Link } from 'react-router-dom'
-import { CaretRight, CaretDown } from '@phosphor-icons/react'
+import { CaretRight, CaretDown, MagnifyingGlass } from '@phosphor-icons/react'
 import { componentRegistry } from '../data/componentRegistry'
-import type { ComponentCategory, PropDefinition } from '../data/componentRegistry'
+import type { ComponentCategory, ComponentEntry, PropDefinition } from '../data/componentRegistry'
 import { cn } from '../lib/utils'
 import { Badge } from '../components/ui/badge'
 import { useControlValues } from '../lib/useControlValues'
@@ -96,70 +96,141 @@ function ComponentBreadcrumbs() {
   )
 }
 
+function matchesSearch(entry: ComponentEntry, query: string): boolean {
+  const q = query.toLowerCase()
+  if (entry.name.toLowerCase().includes(q)) return true
+  if (entry.description.toLowerCase().includes(q)) return true
+  if (entry.searchTerms?.some(term => term.toLowerCase().includes(q))) return true
+  return false
+}
+
 function SidebarNav() {
   const [expanded, setExpanded] = useState<Record<string, boolean>>(
     () => Object.fromEntries(CATEGORIES.map((cat) => [cat.id, true]))
   )
+  const [search, setSearch] = useState('')
 
   function toggleGroup(id: string) {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }))
   }
 
+  const filteredComponents = search
+    ? componentRegistry
+        .filter((entry) => matchesSearch(entry, search))
+        .sort((a, b) => a.name.localeCompare(b.name))
+    : []
+
   return (
-    <SidebarContent>
-      {CATEGORIES.map((cat) => {
-        const items = componentRegistry.filter((c) => c.category === cat.id).sort((a, b) => a.name.localeCompare(b.name))
-        if (items.length === 0) return null
-        const isExpanded = expanded[cat.id] ?? true
-
-        return (
-          <SidebarGroup key={cat.id} className="p-1">
-            <SidebarGroupLabel
-              className="cursor-pointer select-none gap-1 uppercase tracking-wide text-[11px] h-6"
-              onClick={() => toggleGroup(cat.id)}
-            >
-              {isExpanded ? (
-                <CaretDown size={12} weight="bold" />
-              ) : (
-                <CaretRight size={12} weight="bold" />
-              )}
-              {cat.label}
+    <>
+      <div className="px-2 pb-2 pt-2">
+        <div className="relative">
+          <MagnifyingGlass size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search components..."
+            className="w-full h-8 rounded-md border border-input bg-background pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:shadow-ring"
+          />
+        </div>
+      </div>
+      {search ? (
+        <SidebarContent>
+          <SidebarGroup className="p-1">
+            <SidebarGroupLabel className="uppercase tracking-wide text-[11px] h-6">
+              Results
             </SidebarGroupLabel>
-            {isExpanded && (
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {items.map((item) => {
-                    const to =
-                      cat.id === 'tokens'
-                        ? `/admin/components/tokens/${item.slug}`
-                        : `/admin/components/${cat.id}/${item.slug}`
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {filteredComponents.map((item) => {
+                  const to =
+                    item.category === 'tokens'
+                      ? `/admin/components/tokens/${item.slug}`
+                      : `/admin/components/${item.category}/${item.slug}`
 
-                    return (
-                      <SidebarMenuItem key={item.slug}>
-                        <SidebarMenuButton asChild className="h-auto p-0 hover:bg-transparent data-[active=true]:bg-transparent">
-                          <NavLink
-                            to={to}
-                            className={({ isActive }) =>
-                              cn(
-                                "block py-1 px-4 pl-6 text-xs text-muted-foreground transition-all duration-150",
-                                "hover:text-primary",
-                                isActive && "text-primary font-medium"
-                              )
-                            }
-                          >
-                            {item.name}
-                          </NavLink>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    )
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            )}
+                  return (
+                    <SidebarMenuItem key={item.slug}>
+                      <SidebarMenuButton asChild className="h-auto p-0 hover:bg-transparent data-[active=true]:bg-transparent">
+                        <NavLink
+                          to={to}
+                          className={({ isActive }) =>
+                            cn(
+                              "block py-1 px-4 pl-6 text-xs text-muted-foreground transition-all duration-150",
+                              "hover:text-primary",
+                              isActive && "text-primary font-medium"
+                            )
+                          }
+                        >
+                          {item.name}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )
+                })}
+                {filteredComponents.length === 0 && (
+                  <p className="px-4 py-2 text-xs text-muted-foreground">No results</p>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
           </SidebarGroup>
-        )
-      })}
-    </SidebarContent>
+        </SidebarContent>
+      ) : (
+        <SidebarContent>
+          {CATEGORIES.map((cat) => {
+            const items = componentRegistry.filter((c) => c.category === cat.id).sort((a, b) => a.name.localeCompare(b.name))
+            if (items.length === 0) return null
+            const isExpanded = expanded[cat.id] ?? true
+
+            return (
+              <SidebarGroup key={cat.id} className="p-1">
+                <SidebarGroupLabel
+                  className="cursor-pointer select-none gap-1 uppercase tracking-wide text-[11px] h-6"
+                  onClick={() => toggleGroup(cat.id)}
+                >
+                  {isExpanded ? (
+                    <CaretDown size={12} weight="bold" />
+                  ) : (
+                    <CaretRight size={12} weight="bold" />
+                  )}
+                  {cat.label}
+                </SidebarGroupLabel>
+                {isExpanded && (
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {items.map((item) => {
+                        const to =
+                          cat.id === 'tokens'
+                            ? `/admin/components/tokens/${item.slug}`
+                            : `/admin/components/${cat.id}/${item.slug}`
+
+                        return (
+                          <SidebarMenuItem key={item.slug}>
+                            <SidebarMenuButton asChild className="h-auto p-0 hover:bg-transparent data-[active=true]:bg-transparent">
+                              <NavLink
+                                to={to}
+                                className={({ isActive }) =>
+                                  cn(
+                                    "block py-1 px-4 pl-6 text-xs text-muted-foreground transition-all duration-150",
+                                    "hover:text-primary",
+                                    isActive && "text-primary font-medium"
+                                  )
+                                }
+                              >
+                                {item.name}
+                              </NavLink>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        )
+                      })}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                )}
+              </SidebarGroup>
+            )
+          })}
+        </SidebarContent>
+      )}
+    </>
   )
 }
 

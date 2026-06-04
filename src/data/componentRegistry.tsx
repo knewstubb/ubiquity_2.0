@@ -53,6 +53,7 @@ export interface ComponentEntry {
   slug: string
   category: ComponentCategory
   description: string
+  searchTerms?: string[]
   component: LazyExoticComponent<ComponentType>
   propControls?: PropDefinition[]
   usesComponents?: string[]
@@ -73,6 +74,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'colours',
     category: 'tokens',
     description: 'Semantic colour tokens, palettes, and status colours with dark mode support.',
+    searchTerms: ['palette', 'theme', 'color system', 'brand colours', 'tokens', 'swatches', 'hues'],
     component: lazy(() => import('../pages/component-demos/TokenSubPage')),
   },
   {
@@ -80,6 +82,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'typography',
     category: 'tokens',
     description: 'Font families, sizes, weights, and text styles used across the system.',
+    searchTerms: ['fonts', 'text styles', 'headings', 'type scale', 'font size', 'line height', 'weight'],
     component: lazy(() => import('../pages/component-demos/TokenSubPage')),
   },
   {
@@ -87,6 +90,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'shadows',
     category: 'tokens',
     description: 'Elevation levels using Tailwind shadow utilities.',
+    searchTerms: ['elevation', 'depth', 'drop shadow', 'box shadow', 'layers'],
     component: lazy(() => import('../pages/component-demos/TokenSubPage')),
   },
   {
@@ -94,6 +98,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'spacing',
     category: 'tokens',
     description: 'Spacing scale mapped to Tailwind gap/space-y classes with usage context.',
+    searchTerms: ['gap', 'padding', 'margin', 'whitespace', 'layout spacing', 'grid gap'],
     component: lazy(() => import('../pages/component-demos/TokenSubPage')),
   },
   {
@@ -101,6 +106,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'radius',
     category: 'tokens',
     description: 'Border radius tokens for corners and rounded elements.',
+    searchTerms: ['rounded', 'border radius', 'corner radius', 'curves'],
     component: lazy(() => import('../pages/component-demos/TokenSubPage')),
   },
   {
@@ -108,6 +114,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'sizing',
     category: 'tokens',
     description: 'Component heights, container widths, and semantic border colours.',
+    searchTerms: ['height', 'width', 'border colour', 'container size', 'dimensions'],
     component: lazy(() => import('../pages/component-demos/TokenSubPage')),
   },
   {
@@ -115,6 +122,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'icons',
     category: 'tokens',
     description: 'Phosphor icon library browser with search and category filtering.',
+    searchTerms: ['phosphor', 'icon set', 'glyphs', 'symbols', 'icon search'],
     component: lazy(() => import('../pages/component-demos/TokenSubPage')),
   },
 
@@ -124,6 +132,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'shadcn-button',
     category: 'inputs',
     description: 'Accessible button with variants: default, destructive, destructiveOutline, outline, secondary, secondaryOutline, ghost, link.',
+    searchTerms: ['action', 'click', 'submit', 'cta', 'primary action', 'trigger'],
     component: lazy(() => import('../pages/component-demos/ButtonDemo')),
     propControls: [
       { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Click me' },
@@ -187,6 +196,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'close-button',
     category: 'atoms',
     description: 'Accessible close/dismiss button with size variants, used for modals, panels, banners, and dialogs.',
+    searchTerms: ['dismiss', 'x button', 'close icon', 'exit', 'remove'],
     component: lazy(() => import('../pages/component-demos/CloseButtonDemo')),
     propControls: [
       { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'default', options: [
@@ -227,6 +237,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'calendar',
     category: 'inputs',
     description: 'Date picker calendar grid with month navigation.',
+    searchTerms: ['date picker', 'date selector', 'month view', 'day selection', 'schedule'],
     usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/CalendarDemo')),
     propControls: [
@@ -246,6 +257,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'shadcn-checkbox',
     category: 'inputs',
     description: 'Accessible checkbox with indeterminate state support.',
+    searchTerms: ['tick', 'check', 'boolean', 'multi select', 'checkmark', 'agree'],
     usesComponents: ['Label'],
     component: lazy(() => import('../pages/component-demos/CheckboxDemo')),
     propControls: [
@@ -282,6 +294,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'input',
     category: 'inputs',
     description: 'Text input field with consistent styling and focus ring.',
+    searchTerms: ['text field', 'type', 'form field', 'entry', 'text box', 'field'],
     component: lazy(() => import('../pages/component-demos/InputDemo')),
     propControls: [
       { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Enter text...' },
@@ -310,6 +323,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'input-otp',
     category: 'inputs',
     description: 'One-time password input with individual character slots.',
+    searchTerms: ['verification code', 'pin', 'otp', 'two factor', 'mfa', 'code entry'],
     component: lazy(() => import('../pages/component-demos/InputOTPDemo')),
     propControls: [
       { name: 'length', label: 'Length', controlType: 'counter', defaultValue: 6, min: 4, max: 8 },
@@ -322,6 +336,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'label',
     category: 'atoms',
     description: 'Accessible form label with required indicator support.',
+    searchTerms: ['form label', 'field label', 'caption', 'required marker'],
     component: lazy(() => import('../pages/component-demos/LabelDemo')),
     propControls: [
       { name: 'text', label: 'Text', controlType: 'text', defaultValue: 'Email address' },
@@ -334,6 +349,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'radio-group',
     category: 'inputs',
     description: 'Radio button group for single-choice selection.',
+    searchTerms: ['radio', 'single select', 'one of many', 'exclusive choice', 'option group'],
     usesComponents: ['Label'],
     component: lazy(() => import('../pages/component-demos/RadioGroupDemo')),
     propControls: [
@@ -350,6 +366,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'select',
     category: 'inputs',
     description: 'Accessible select dropdown with search and keyboard navigation.',
+    searchTerms: ['dropdown', 'picker', 'options', 'choice', 'menu', 'field with options'],
     component: lazy(() => import('../pages/component-demos/SelectDemo')),
     propControls: [
       { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Select a segment' },
@@ -368,6 +385,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'combobox',
     category: 'inputs',
     description: 'Searchable select with type-to-filter dropdown.',
+    searchTerms: ['searchable dropdown', 'autocomplete', 'typeahead', 'field with dropdown options', 'filterable select'],
     component: lazy(() => import('../pages/component-demos/ComboboxDemo')),
     propControls: [
       { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Select a field…' },
@@ -408,6 +426,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'slider',
     category: 'inputs',
     description: 'Range input for selecting numeric values.',
+    searchTerms: ['range', 'scrubber', 'value slider', 'numeric range', 'drag to select'],
     component: lazy(() => import('../pages/component-demos/SliderDemo')),
     propControls: [
       { name: 'range-mode', label: 'Range Mode', controlType: 'toggle', defaultValue: false, section: 'General' },
@@ -430,6 +449,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'switch',
     category: 'inputs',
     description: 'Toggle switch for boolean on/off states. Three sizes: default, small, and extra-small.',
+    searchTerms: ['toggle', 'on off', 'boolean', 'enable disable', 'flip'],
     usesComponents: ['Label'],
     component: lazy(() => import('../pages/component-demos/SwitchDemo')),
     designGuidance: [
@@ -462,6 +482,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'textarea',
     category: 'inputs',
     description: 'Multi-line text input with auto-resize support.',
+    searchTerms: ['multiline', 'text area', 'paragraph input', 'long text', 'description field'],
     component: lazy(() => import('../pages/component-demos/TextareaDemo')),
     propControls: [
       { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Enter text...' },
@@ -475,6 +496,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'shadcn-toggle',
     category: 'atoms',
     description: 'Pressable toggle button with on/off states.',
+    searchTerms: ['press button', 'toggle button', 'active state', 'on off button'],
     component: lazy(() => import('../pages/component-demos/ToggleDemo')),
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
@@ -495,6 +517,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'toggle-group',
     category: 'inputs',
     description: 'Group of toggle buttons for single or multi-select.',
+    searchTerms: ['button group', 'multi toggle', 'option buttons', 'segmented toggle'],
     usesComponents: ['Toggle'],
     component: lazy(() => import('../pages/component-demos/ToggleGroupDemo')),
     propControls: [
@@ -514,6 +537,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'form',
     category: 'inputs',
     description: 'Form wrapper with validation, error messages, and field state management.',
+    searchTerms: ['form layout', 'validation', 'field group', 'submit', 'form builder'],
     component: lazy(() => import('../pages/component-demos/FormDemo')),
     usesComponents: ['Input', 'Label', 'Button', 'Checkbox', 'Select', 'Textarea'],
     propControls: [
@@ -540,6 +564,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'avatar',
     category: 'atoms',
     description: 'User profile image with fallback initials.',
+    searchTerms: ['profile picture', 'user image', 'initials', 'photo circle', 'user icon'],
     component: lazy(() => import('../pages/component-demos/AvatarDemo')),
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'neutral', options: [
@@ -560,6 +585,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'badge',
     category: 'atoms',
     description: 'Small label for status, counts, or categories.',
+    searchTerms: ['tag', 'label', 'pill', 'chip', 'status indicator', 'count'],
     component: lazy(() => import('../pages/component-demos/BadgeDemo')),
     propControls: [
       { name: 'text', label: 'Text', controlType: 'text', defaultValue: 'Badge' },
@@ -610,6 +636,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'card',
     category: 'display',
     description: 'Container with header, content, and footer sections.',
+    searchTerms: ['panel', 'container', 'box', 'content card', 'surface'],
     component: lazy(() => import('../pages/component-demos/CardDemo')),
     propControls: [
       { name: 'showHeader', label: 'Show Header', controlType: 'toggle', defaultValue: true },
@@ -626,6 +653,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'separator',
     category: 'atoms',
     description: 'Visual divider between content sections, horizontal or vertical.',
+    searchTerms: ['divider', 'line', 'hr', 'horizontal rule', 'section break'],
     component: lazy(() => import('../pages/component-demos/SeparatorDemo')),
     propControls: [
       { name: 'orientation', label: 'Orientation', controlType: 'select', defaultValue: 'horizontal', options: [
@@ -640,6 +668,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'skeleton',
     category: 'atoms',
     description: 'Loading placeholder with pulse animation.',
+    searchTerms: ['loading', 'placeholder', 'shimmer', 'ghost element', 'content loader'],
     component: lazy(() => import('../pages/component-demos/SkeletonDemo')),
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'line', options: [
@@ -655,6 +684,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'table',
     category: 'display',
     description: 'Structured data table with header, body, and footer sections.',
+    searchTerms: ['grid', 'data grid', 'rows', 'columns', 'tabular', 'spreadsheet'],
     component: lazy(() => import('../pages/component-demos/TableDemo')),
     usesComponents: [],
     designGuidance: [
@@ -673,6 +703,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'table-sandbox',
     category: 'sandboxes',
     description: 'Interactive sandbox for exploring table design language — density, borders, containers, selection, striping, and hover states.',
+    searchTerms: ['table playground', 'table explorer', 'data table options', 'table styling'],
     component: lazy(() => import('../pages/component-demos/TableSandboxDemo')),
     usesComponents: ['Table', 'Badge', 'Checkbox'],
     designGuidance: [
@@ -693,6 +724,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'reorderable-list',
     category: 'sandboxes',
     description: 'Interactive sandbox for reorderable checkbox lists — drag to reorder selected items, toggle selection, with configurable drag indicators and styling.',
+    searchTerms: ['drag and drop', 'sortable list', 'reorder', 'drag list', 'field ordering'],
     component: lazy(() => import('../pages/component-demos/ReorderableListSandboxDemo')),
     usesComponents: ['Checkbox', 'Badge'],
     designGuidance: [
@@ -717,6 +749,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'card-list',
     category: 'sandboxes',
     description: 'Interactive sandbox for expandable card list patterns — rich list items with icons, metadata, actions, and nested content.',
+    searchTerms: ['expandable list', 'nested list', 'parent child list', 'rich list'],
     component: lazy(() => import('../pages/component-demos/CardListSandboxDemo')),
     usesComponents: ['Badge', 'Switch'],
     designGuidance: [
@@ -741,6 +774,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'progress',
     category: 'atoms',
     description: 'Progress bar showing completion percentage.',
+    searchTerms: ['loading bar', 'percentage', 'completion', 'progress indicator', 'bar fill'],
     component: lazy(() => import('../pages/component-demos/ProgressDemo')),
     propControls: [
       { name: 'value', label: 'Value', controlType: 'range', defaultValue: 50, min: 0, max: 100, step: 5 },
@@ -754,6 +788,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'alert',
     category: 'feedback',
     description: 'Callout for important messages with icon, title, and description.',
+    searchTerms: ['banner', 'notification', 'message', 'info box', 'warning', 'callout'],
     component: lazy(() => import('../pages/component-demos/AlertDemo')),
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
@@ -773,6 +808,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'alert-dialog',
     category: 'feedback',
     description: 'Confirmation dialog with neutral, warning, and destructive intent variants and tiered confirmation guards.',
+    searchTerms: ['confirm', 'confirmation', 'destructive modal', 'are you sure', 'delete confirm'],
     usesComponents: ['Button', 'Input', 'Checkbox', 'Label', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/AlertDialogDemo')),
     propControls: [
@@ -862,6 +898,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'dialog',
     category: 'feedback',
     description: 'Accessible modal dialog built on Radix UI with structured Header → Body → Footer layout and blurred overlay.',
+    searchTerms: ['modal', 'popup', 'overlay', 'confirmation', 'alert', 'lightbox'],
     usesComponents: ['Button', 'Input', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/DialogDemo')),
     propControls: [
@@ -921,6 +958,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'sheet',
     category: 'feedback',
     description: 'Slide-out panel from screen edge for secondary content or forms.',
+    searchTerms: ['drawer', 'slide panel', 'side panel', 'flyout', 'slide out'],
     usesComponents: ['Button', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/SheetDemo')),
     propControls: [
@@ -940,6 +978,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'sonner',
     category: 'feedback',
     description: 'Toast notification system with stacking and auto-dismiss.',
+    searchTerms: ['toast', 'snackbar', 'notification', 'flash message', 'pop up message'],
     component: lazy(() => import('../pages/component-demos/SonnerDemo')),
     propControls: [
       { name: 'type', label: 'Type', controlType: 'select', defaultValue: 'default', options: [
@@ -958,6 +997,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'tooltip',
     category: 'feedback',
     description: 'Hover-triggered informational popup with configurable placement.',
+    searchTerms: ['hint', 'hover text', 'help text', 'info bubble', 'title attribute'],
     usesComponents: [],
     designGuidance: [
       {
@@ -990,6 +1030,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'hover-card',
     category: 'feedback',
     description: 'Hover-triggered card preview for links or user profiles.',
+    searchTerms: ['preview card', 'hover preview', 'link preview', 'user card', 'profile popup'],
     usesComponents: ['Avatar', 'Button'],
     component: lazy(() => import('../pages/component-demos/HoverCardDemo')),
     propControls: [
@@ -1008,6 +1049,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'popover',
     category: 'feedback',
     description: 'Click-triggered floating panel for forms or additional content.',
+    searchTerms: ['popup', 'things that popup', 'floating', 'dropdown panel', 'floating content'],
     usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/PopoverDemo')),
     propControls: [
@@ -1042,6 +1084,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'accordion',
     category: 'navigation',
     description: 'Collapsible content sections with single or multiple open panels.',
+    searchTerms: ['expandable', 'collapsible', 'expand collapse', 'faq', 'disclosure'],
     component: lazy(() => import('../pages/component-demos/AccordionDemo')),
     propControls: [
       { name: 'item-count', label: 'Items', controlType: 'counter', defaultValue: 3, min: 1, max: 6 },
@@ -1057,6 +1100,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'breadcrumb',
     category: 'navigation',
     description: 'Navigation trail showing page hierarchy.',
+    searchTerms: ['path', 'trail', 'hierarchy', 'navigation path', 'location'],
     component: lazy(() => import('../pages/component-demos/BreadcrumbDemo')),
     propControls: [
       { name: 'item-count', label: 'Items', controlType: 'counter', defaultValue: 3, min: 2, max: 5 },
@@ -1068,6 +1112,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'collapsible',
     category: 'navigation',
     description: 'Expandable/collapsible content section with trigger.',
+    searchTerms: ['expand', 'collapse', 'toggle section', 'show hide', 'disclosure'],
     component: lazy(() => import('../pages/component-demos/CollapsibleDemo')),
     propControls: [
       { name: 'open', label: 'Open', controlType: 'toggle', defaultValue: false },
@@ -1079,6 +1124,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'command',
     category: 'navigation',
     description: 'Combobox/command palette with search filtering and keyboard selection.',
+    searchTerms: ['command palette', 'spotlight', 'quick action', 'cmd k', 'keyboard shortcut'],
     component: lazy(() => import('../pages/component-demos/CommandDemo')),
     propControls: [
       { name: 'placeholder', label: 'Placeholder', controlType: 'text', defaultValue: 'Type a command or search...' },
@@ -1091,6 +1137,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'context-menu',
     category: 'navigation',
     description: 'Right-click menu with items, sub-menus, and separators.',
+    searchTerms: ['right click', 'context actions', 'secondary menu', 'action menu'],
     component: lazy(() => import('../pages/component-demos/ContextMenuDemo')),
     propControls: [
       { name: 'item-count', label: 'Item Count', controlType: 'counter', defaultValue: 4, min: 2, max: 8 },
@@ -1102,6 +1149,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'dropdown-menu',
     category: 'navigation',
     description: 'Click-triggered menu with items, separators, and keyboard navigation.',
+    searchTerms: ['menu', 'action menu', 'options menu', 'kebab menu', 'more actions'],
     component: lazy(() => import('../pages/component-demos/DropdownMenuDemo')),
     propControls: [
       { name: 'item-count', label: 'Item Count', controlType: 'counter', defaultValue: 5, min: 2, max: 8 },
@@ -1114,6 +1162,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'menubar',
     category: 'navigation',
     description: 'Horizontal menu bar with dropdown sub-menus.',
+    searchTerms: ['menu strip', 'file menu', 'toolbar menu', 'app menu'],
     component: lazy(() => import('../pages/component-demos/MenubarDemo')),
     propControls: [
       { name: 'menu-count', label: 'Menus', controlType: 'counter', defaultValue: 3, min: 2, max: 5 },
@@ -1125,6 +1174,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'navigation-menu',
     category: 'navigation',
     description: 'Site navigation with links, dropdowns, and viewport animations.',
+    searchTerms: ['nav bar', 'site navigation', 'top nav', 'mega menu', 'header nav'],
     usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/NavigationMenuDemo')),
     propControls: [
@@ -1142,6 +1192,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'pagination',
     category: 'navigation',
     description: 'Page navigation with previous/next and numbered page links.',
+    searchTerms: ['pages', 'page numbers', 'next previous', 'paging', 'page controls'],
     component: lazy(() => import('../pages/component-demos/PaginationDemo')),
     propControls: [
       { name: 'total-pages', label: 'Total Pages', controlType: 'counter', defaultValue: 10, min: 3, max: 20 },
@@ -1154,6 +1205,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'scroll-area',
     category: 'navigation',
     description: 'Custom scrollbar container with consistent cross-browser styling.',
+    searchTerms: ['scrollbar', 'overflow', 'scroll container', 'scrollable', 'scroll pane'],
     component: lazy(() => import('../pages/component-demos/ScrollAreaDemo')),
     propControls: [
       { name: 'height', label: 'Height', controlType: 'range', defaultValue: 200, min: 100, max: 400 },
@@ -1170,6 +1222,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'tabs',
     category: 'navigation',
     description: 'Tabbed interface with pill and underline variants. Pill for content switching, underline for page-level navigation.',
+    searchTerms: ['tab bar', 'sections', 'views', 'navigation tabs', 'page tabs'],
     component: lazy(() => import('../pages/component-demos/TabsDemo')),
     usesComponents: [],
     designGuidance: [
@@ -1207,6 +1260,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'card-selector',
     category: 'inputs',
     description: 'Selectable card with icon, label, and checkmark badge for single/multi-choice selections.',
+    searchTerms: ['card picker', 'option cards', 'visual selector', 'icon cards', 'choice cards'],
     usesComponents: [],
     designGuidance: [
       { heading: 'When to use', content: [
@@ -1299,6 +1353,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'metric-card',
     category: 'display',
     description: 'Dashboard metric card with value, label, and trend indicator.',
+    searchTerms: ['stat', 'kpi', 'number card', 'dashboard stat', 'metric tile', 'data point'],
     usesComponents: ['Card'],
     component: lazy(() => import('../pages/component-demos/MetricCardDemo')),
     propControls: [
@@ -1314,6 +1369,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'data-table',
     category: 'display',
     description: 'Generic sortable data table with density control, container styles, selection, striping, and empty state handling.',
+    searchTerms: ['sortable table', 'data grid', 'list view', 'records', 'database table'],
     usesComponents: ['Table', 'Checkbox'],
     designGuidance: [
       { heading: 'What', content: 'Data-driven table built on shadcn Table primitives. Accepts typed columns and renders headers, sorting, selection, and density automatically.' },
@@ -1345,6 +1401,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'toast',
     category: 'feedback',
     description: 'Notification helper using Sonner with UDS styling and variants.',
+    searchTerms: ['notification', 'snackbar', 'flash', 'alert toast', 'success message'],
     component: lazy(() => import('../pages/component-demos/ToastDemo')),
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
@@ -1363,6 +1420,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'modal',
     category: 'feedback',
     description: 'Modal dialog pattern with ModalHeader (title + close) and ModalFooter (button slots) composed on shadcn Dialog.',
+    searchTerms: ['dialog header', 'modal title', 'overlay header', 'modal footer', 'modal buttons', 'action bar'],
     usesComponents: ['Dialog', 'Button', 'Input', 'Label', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/ModalDemo')),
     designGuidance: [
@@ -1396,6 +1454,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'stepper',
     category: 'compositions',
     description: 'Sequential step indicator with vertical and horizontal orientations.',
+    searchTerms: ['progress', 'steps', 'wizard progress', 'multi-step', 'step indicator'],
     component: lazy(() => import('../pages/component-demos/StepperDemo')),
     propControls: [
       { name: 'orientation', label: 'Orientation', controlType: 'select', defaultValue: 'horizontal', options: [
@@ -1464,6 +1523,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'split-button',
     category: 'inputs',
     description: 'Button with primary action and dropdown menu for secondary actions.',
+    searchTerms: ['dropdown button', 'button menu', 'action dropdown', 'multi action button'],
     usesComponents: ['Button', 'DropdownMenu'],
     component: lazy(() => import('../pages/component-demos/SplitButtonDemo')),
     propControls: [
@@ -1485,6 +1545,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'page-header',
     category: 'sandboxes',
     description: 'Configurable page header with breadcrumbs, title, status badge, actions, tabs, filters, and bulk actions.',
+    searchTerms: ['page title', 'header bar', 'page top', 'title bar', 'filter bar', 'bulk actions'],
     demoLayout: 'full-bleed',
     usesComponents: ['Button', 'Badge', 'Tabs', 'Input', 'Breadcrumb'],
     component: lazy(() => import('../pages/component-demos/PageHeaderDemo')),
@@ -1522,6 +1583,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'segmented-control',
     category: 'inputs',
     description: 'Single-select toggle with border-separated segments. Active state uses teal text with bottom border accent.',
+    searchTerms: ['toggle group', 'button group', 'option toggle', 'switcher', 'segmented buttons'],
     component: lazy(() => import('../pages/component-demos/SegmentedControlDemo')),
     propControls: [
       { name: 'option-count', label: 'Options', controlType: 'range', defaultValue: 3, min: 2, max: 5, step: 1 },
@@ -1559,6 +1621,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'number-stepper',
     category: 'inputs',
     description: 'Compact numeric input with decrement/value/increment buttons. Toggle variant colours the value teal when active. Plain variant shows neutral numbers.',
+    searchTerms: ['counter', 'increment', 'decrement', 'numeric input', 'plus minus', 'quantity'],
     usesComponents: [],
     designGuidance: [
       { heading: 'Variants', content: [
@@ -1630,6 +1693,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'chip',
     category: 'inputs',
     description: 'Interactive label with optional dismiss button, icon, selectable state, and insertable token variant. Used for tags, filters, multi-select values, and variable insertion.',
+    searchTerms: ['tag', 'pill', 'removable tag', 'filter chip', 'token', 'insert variable'],
     usedIn: [{ label: 'ChipInput', route: '/admin/components/inputs/chip-input' }, { label: 'Exporter File Naming', route: '/' }],
     component: lazy(() => import('../pages/component-demos/ChipDemo')),
     propControls: [
@@ -1708,6 +1772,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'chooser-modal',
     category: 'compositions',
     description: 'Centred selection modal for picking from 2–4 options before proceeding. Uses CardSelector grid with icon header, title, and description.',
+    searchTerms: ['selection modal', 'chooser', 'type picker', 'option selector modal'],
     usesComponents: ['Dialog', 'CardSelector', 'Button'],
     component: lazy(() => import('../pages/component-demos/ChooserModalDemo')),
     propControls: [
@@ -1722,6 +1787,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'timeline',
     category: 'compositions',
     description: 'Vertical timeline with connected entries. Each entry has a coloured icon circle, a connector line to the next entry, and content with a date.',
+    searchTerms: ['history', 'audit log', 'events', 'chronological', 'activity feed'],
     usesComponents: [],
     component: lazy(() => import('../pages/component-demos/TimelineDemo')),
     designGuidance: [
@@ -1742,6 +1808,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'controls-panel',
     category: 'compositions',
     description: 'Declarative controls panel that renders interactive controls from a PropDefinition array. Supports 11 control types, section grouping, conditional visibility, and custom render slots.',
+    searchTerms: ['prop panel', 'settings panel', 'control panel', 'configuration', 'property editor'],
     usesComponents: ['Select', 'Switch', 'Slider', 'Input'],
     component: lazy(() => import('../pages/component-demos/ControlsPanelDemo')),
     usedIn: [{ label: 'All Component Demos', route: '/component-library' }],
@@ -1767,6 +1834,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'section-divider',
     category: 'atoms',
     description: 'Labelled horizontal divider for separating logical sections in modals and forms. Supports a centred line variant and a left-aligned heading variant.',
+    searchTerms: ['section header', 'form divider', 'group separator', 'labelled line'],
     component: lazy(() => import('../pages/component-demos/SectionDividerDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -1798,6 +1866,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'prefix-input',
     category: 'inputs',
     description: 'Input field with a non-editable prefix. Used for paths, URLs, or any value with a fixed base.',
+    searchTerms: ['url input', 'path input', 'domain input', 'prefixed field', 'base path'],
     usesComponents: ['Input'],
     designGuidance: [
       { heading: 'When to use', content: [
@@ -1823,6 +1892,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'chip-input',
     category: 'inputs',
     description: 'Multi-value text input. Type and press Enter, Tab, or comma to add chips. Shows a validation pill below the input (green when valid, red when invalid). Supports dropdown selection, clear-all, copy-from-above, and three sizes.',
+    searchTerms: ['tag input', 'multi value', 'email input', 'token input', 'multi entry'],
     usesComponents: [],
     designGuidance: [
       { heading: 'When to use', content: [
@@ -1874,6 +1944,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'date-range-picker',
     category: 'inputs',
     description: 'Date range selector combining Calendar (range mode) with preset shortcuts. Uses Popover for the floating panel and Button for the trigger.',
+    searchTerms: ['date range', 'period selector', 'from to date', 'date filter', 'range picker'],
     usesComponents: ['Button', 'Calendar', 'Popover'],
     component: lazy(() => import('../pages/component-demos/DateRangePickerDemo')),
     designGuidance: [
@@ -1915,6 +1986,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'help-popover',
     category: 'feedback',
     description: 'Teal circle with ? that opens a Popover with a title and body. Used inline next to field labels for contextual help.',
+    searchTerms: ['info popup', 'help icon', 'question mark', 'contextual help', 'tooltip help'],
     usesComponents: ['Popover'],
     component: lazy(() => import('../pages/component-demos/HelpPopoverDemo')),
     propControls: [
@@ -1938,6 +2010,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'day-picker',
     category: 'inputs',
     description: 'Seven circular day-of-week toggle buttons (Mon–Sun). Selected days are filled primary, unselected have a 1px primary outline.',
+    searchTerms: ['weekday picker', 'day selector', 'schedule days', 'recurring days'],
     component: lazy(() => import('../pages/component-demos/DayPickerDemo')),
     propControls: [
       { name: 'preset', label: 'Preset', controlType: 'select', defaultValue: 'custom', options: [
@@ -1955,6 +2028,7 @@ export const componentRegistry: ComponentEntry[] = [
     slug: 'checkbox-card',
     category: 'inputs',
     description: 'Selectable card with a checkbox indicator for multi-select patterns. Renders as a button with role="checkbox" for accessibility.',
+    searchTerms: ['multi select card', 'selectable card', 'toggle card', 'check card'],
     component: lazy(() => import('../pages/component-demos/CheckboxCardDemo')),
     usesComponents: [],
     usedIn: [{ label: 'Exporter Wizard — Data Source', route: '/' }],
