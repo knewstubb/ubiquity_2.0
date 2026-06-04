@@ -61,7 +61,7 @@ export function Timeline({ entries, className }: TimelineProps) {
 
           {/* Right column: content + date */}
           <div className="flex-1 min-w-0 pb-5 pt-1">
-            <div className="text-base leading-relaxed text-foreground">
+            <div className="text-base leading-snug text-foreground">
               {entry.content}
             </div>
             <span className="text-xs text-muted-foreground mt-1 block">
