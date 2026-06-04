@@ -10,6 +10,8 @@
  *   chromatic distinction without a filled background (e.g. outline-style icons).
  * - Connector line is border-coloured and only rendered between entries (not after last).
  * - Content area uses pb-5 to create consistent vertical rhythm between entries.
+ * - Content text uses text-base (16px) for comfortable readability at scan distance,
+ *   paired with leading-snug for tighter line height that suits short event descriptions.
  * - 36px (w-9 h-9) icon circle aligns with standard avatar sizing.
  *
  * @usage

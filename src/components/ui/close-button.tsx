@@ -59,10 +59,10 @@ export interface CloseButtonProps
 }
 
 const iconSizeMap: Record<NonNullable<CloseButtonProps["size"]>, number> = {
-  xs: 12,
-  sm: 14,
-  default: 16,
-  lg: 20,
+  xs: 14,
+  sm: 16,
+  default: 18,
+  lg: 22,
 }
 
 const CloseButton = React.forwardRef<HTMLButtonElement, CloseButtonProps>(
