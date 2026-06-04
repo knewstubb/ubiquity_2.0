@@ -23,6 +23,8 @@ export interface TimelineEntry {
   icon: React.ReactNode
   /** Background colour for the icon circle */
   iconBg: string
+  /** Border colour for the icon circle (optional) */
+  iconBorder?: string
   content: React.ReactNode
   date: string
 }
@@ -42,8 +44,11 @@ export function Timeline({ entries, className }: TimelineProps) {
           {/* Left column: icon circle + connector */}
           <div className="flex flex-col items-center shrink-0">
             <div
-              className="flex items-center justify-center w-9 h-9 rounded-full shrink-0"
-              style={{ backgroundColor: entry.iconBg }}
+              className="flex items-center justify-center w-9 h-9 rounded-full shrink-0 shadow-sm"
+              style={{
+                backgroundColor: entry.iconBg,
+                border: entry.iconBorder ? `1.5px solid ${entry.iconBorder}` : undefined,
+              }}
             >
               {entry.icon}
             </div>

@@ -1347,6 +1347,18 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Modal dialog pattern with ModalHeader (title + close) and ModalFooter (button slots) composed on shadcn Dialog.',
     usesComponents: ['Dialog', 'Button', 'Input', 'Label', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/ModalDemo')),
+    designGuidance: [
+      { heading: 'ModalFooter', content: [
+        'Up to 3 action slots: primary (right-aligned CTA), secondary (cancel/back beside primary), tertiary (left-aligned, pushed with mr-auto).',
+        'No explicit background — inherits from parent Dialog surface for light/dark compatibility.',
+        'Returns null when no actions are provided — safe to include unconditionally.',
+        'Pass variant prop on each action to control Button styling (default, destructive, ghost, etc.).',
+      ]},
+      { heading: 'When to use', content: [
+        'Always pair with ModalHeader inside a Dialog for consistent modal structure.',
+        'Use primaryAction for the main CTA, secondaryAction for cancel/dismiss, tertiaryAction for destructive or reset actions.',
+      ]},
+    ],
     propControls: [
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'New Segment', section: 'Header' },
       { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Create a new audience segment.', section: 'Header' },

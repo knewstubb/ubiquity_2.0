@@ -1,4 +1,4 @@
-import { Plus, Play, Pause, PencilSimple } from '@phosphor-icons/react'
+import { FilePlus, ToggleRight, ToggleLeft, PencilSimple } from '@phosphor-icons/react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../ui/dialog'
 import { ModalHeader } from '../composed/modal-header'
 import { ModalFooter } from '../composed/modal-footer'
@@ -27,8 +27,9 @@ function generateHistoryEntries(connector: Automation): TimelineEntry[] {
   if (connector.status === 'paused') {
     entries.push({
       id: 'deactivated',
-      icon: <Pause size={16} weight="bold" className="text-destructive" />,
-      iconBg: 'rgba(239, 68, 68, 0.1)',
+      icon: <ToggleLeft size={16} weight="bold" className="text-destructive" />,
+      iconBg: 'rgba(239, 68, 68, 0.08)',
+      iconBorder: 'rgba(239, 68, 68, 0.25)',
       content: (
         <span>
           <span className="font-semibold">Alan Campbell</span> changed the status from <span className="font-semibold">Active</span> to <span className="font-semibold">Inactive</span>
@@ -41,7 +42,8 @@ function generateHistoryEntries(connector: Automation): TimelineEntry[] {
   entries.push({
     id: 'edited',
     icon: <PencilSimple size={16} weight="bold" className="text-info" />,
-    iconBg: 'rgba(56, 189, 248, 0.1)',
+    iconBg: 'rgba(56, 189, 248, 0.08)',
+    iconBorder: 'rgba(56, 189, 248, 0.25)',
     content: (
       <span>
         <span className="font-semibold">Alex Lee</span> edited <span className="font-semibold">{connector.name}</span>
@@ -52,8 +54,9 @@ function generateHistoryEntries(connector: Automation): TimelineEntry[] {
 
   entries.push({
     id: 'activated',
-    icon: <Play size={16} weight="bold" className="text-primary" />,
-    iconBg: 'rgba(20, 184, 138, 0.1)',
+    icon: <ToggleRight size={16} weight="bold" className="text-primary" />,
+    iconBg: 'rgba(20, 184, 138, 0.08)',
+    iconBorder: 'rgba(20, 184, 138, 0.25)',
     content: (
       <span>
         <span className="font-semibold">Jane Smith</span> changed the status from <span className="font-semibold">Inactive</span> to <span className="font-semibold">Active</span>
@@ -64,8 +67,9 @@ function generateHistoryEntries(connector: Automation): TimelineEntry[] {
 
   entries.push({
     id: 'created',
-    icon: <Plus size={16} weight="bold" className="text-muted-foreground" />,
-    iconBg: 'rgba(113, 113, 122, 0.1)',
+    icon: <FilePlus size={16} weight="bold" className="text-muted-foreground" />,
+    iconBg: 'rgba(113, 113, 122, 0.08)',
+    iconBorder: 'rgba(113, 113, 122, 0.2)',
     content: (
       <span>
         <span className="font-semibold">Sam Thomas</span> created <span className="font-semibold">{connector.name}</span>

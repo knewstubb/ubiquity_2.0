@@ -1,3 +1,21 @@
+/**
+ * @component ModalFooter
+ * @description Standardised footer bar for modal dialogs. Provides up to three
+ * action slots (primary, secondary, tertiary) with consistent spacing and alignment.
+ *
+ * @designDecisions
+ * - No explicit background colour — inherits from the parent Dialog overlay so it
+ *   blends with whatever surface it sits on (light or dark mode).
+ * - Tertiary action pushed left with `mr-auto` to create visual separation from
+ *   primary/secondary group (common "Delete" or "Reset" pattern).
+ * - 4px bottom radius matches Dialog panel radius per docs/ui/borders-radius.md.
+ *
+ * @usage
+ * - Use inside a Dialog/modal as the bottom-pinned action bar.
+ * - Pass `primaryAction` for the main CTA, `secondaryAction` for cancel/back,
+ *   `tertiaryAction` for destructive or less-common actions.
+ * - Returns null when no actions are provided.
+ */
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
