@@ -337,7 +337,7 @@ export function ImportMappingStep({
   }
 
   function handleIgnoreAll() {
-    setRows((prev) => prev.map((row) => ({ ...row, targetField: '[[Ignore Column]]' })));
+    setRows((prev) => recalcStatuses(prev.map((row) => ({ ...row, targetField: '[[Ignore Column]]' }))));
   }
 
   function handleResetMappings() {
