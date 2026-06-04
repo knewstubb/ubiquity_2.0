@@ -83,6 +83,15 @@ export function FileSettingsStep({
     setPatternError('');
   }
 
+  function handlePatternBlur(value: string) {
+    // Strip .csv from the end if the user typed it (since it's auto-appended)
+    const stripped = value.replace(/\.csv$/i, '');
+    if (stripped !== value) {
+      updatePath({ fileNamePattern: stripped });
+    }
+    validateFilePattern(stripped);
+  }
+
   function handleFileSelect(file: File) {
     setFileError(null);
 
@@ -413,7 +422,7 @@ export function FileSettingsStep({
               )}
               value={fileNamePattern}
               onChange={(e) => { updatePath({ fileNamePattern: e.target.value }); validateFilePattern(e.target.value); }}
-              onBlur={(e) => validateFilePattern(e.target.value)}
+              onBlur={(e) => handlePatternBlur(e.target.value)}
               placeholder="filename*"
               title="Which filenames to look for. Use * to match any characters."
               aria-invalid={!!patternError}
