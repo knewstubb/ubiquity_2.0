@@ -27,7 +27,7 @@ function generateHistoryEntries(connector: Automation): TimelineEntry[] {
   if (connector.status === 'paused') {
     entries.push({
       id: 'deactivated',
-      icon: <ToggleLeft size={16} weight="bold" className="text-destructive" />,
+      icon: <ToggleLeft size={20} weight="bold" className="text-destructive" />,
       iconBg: 'rgba(239, 68, 68, 0.08)',
       iconBorder: 'rgba(239, 68, 68, 0.25)',
       content: (
@@ -41,7 +41,7 @@ function generateHistoryEntries(connector: Automation): TimelineEntry[] {
 
   entries.push({
     id: 'edited',
-    icon: <PencilSimple size={16} weight="bold" className="text-info" />,
+    icon: <PencilSimple size={20} weight="bold" className="text-info" />,
     iconBg: 'rgba(56, 189, 248, 0.08)',
     iconBorder: 'rgba(56, 189, 248, 0.25)',
     content: (
@@ -54,7 +54,7 @@ function generateHistoryEntries(connector: Automation): TimelineEntry[] {
 
   entries.push({
     id: 'activated',
-    icon: <ToggleRight size={16} weight="bold" className="text-primary" />,
+    icon: <ToggleRight size={20} weight="bold" className="text-primary" />,
     iconBg: 'rgba(20, 184, 138, 0.08)',
     iconBorder: 'rgba(20, 184, 138, 0.25)',
     content: (
@@ -67,7 +67,7 @@ function generateHistoryEntries(connector: Automation): TimelineEntry[] {
 
   entries.push({
     id: 'created',
-    icon: <FilePlus size={16} weight="bold" className="text-muted-foreground" />,
+    icon: <FilePlus size={20} weight="bold" className="text-muted-foreground" />,
     iconBg: 'rgba(113, 113, 122, 0.08)',
     iconBorder: 'rgba(113, 113, 122, 0.2)',
     content: (

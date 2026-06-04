@@ -1712,7 +1712,7 @@ export const componentRegistry: ComponentEntry[] = [
         'Each entry represents a discrete event with an icon, description, and timestamp.',
         'Do NOT use for step-by-step progress — use Stepper for that.',
       ]},
-      { heading: 'Icon colours', content: 'Pass any CSS colour string as iconBg. Use semantic colours (primary for positive actions, warning for pauses, error for destructive actions, info for neutral changes).' },
+      { heading: 'Icon colours', content: 'Pass any CSS colour string as iconBg. Use semantic colours (primary for positive actions, warning for pauses, error for destructive actions, info for neutral changes). Optionally pass iconBorder for a 1.5px solid border — useful for outline-style entries where the circle needs chromatic distinction without a filled background.' },
       { heading: 'Content', content: 'The content prop accepts ReactNode — use inline <strong> for emphasis on key terms (entity names, status changes).' },
     ],
     propControls: [

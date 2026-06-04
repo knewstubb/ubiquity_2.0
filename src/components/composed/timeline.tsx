@@ -6,6 +6,8 @@
  * @designDecisions
  * - Icon circle uses inline style for background colour so callers can pass any
  *   semantic colour without needing a Tailwind class per status.
+ * - Optional iconBorder uses inline 1.5px solid border for entries that need
+ *   chromatic distinction without a filled background (e.g. outline-style icons).
  * - Connector line is border-coloured and only rendered between entries (not after last).
  * - Content area uses pb-5 to create consistent vertical rhythm between entries.
  * - 36px (w-9 h-9) icon circle aligns with standard avatar sizing.
@@ -59,7 +61,7 @@ export function Timeline({ entries, className }: TimelineProps) {
 
           {/* Right column: content + date */}
           <div className="flex-1 min-w-0 pb-5 pt-1">
-            <div className="text-sm leading-relaxed text-foreground">
+            <div className="text-base leading-relaxed text-foreground">
               {entry.content}
             </div>
             <span className="text-xs text-muted-foreground mt-1 block">
