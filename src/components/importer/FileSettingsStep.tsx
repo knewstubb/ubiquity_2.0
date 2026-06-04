@@ -171,7 +171,10 @@ export function FileSettingsStep({
 
   function handleDragLeave(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
-    setIsDragging(false);
+    // Only set false if leaving the container entirely (not entering a child)
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsDragging(false);
+    }
   }
 
   function handleRemoveFile() {
@@ -369,10 +372,10 @@ export function FileSettingsStep({
                 onDragLeave={handleDragLeave}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDropzoneClick(); }}
               >
-                <div className="text-tertiary-foreground flex items-center">
+                <div className="text-tertiary-foreground flex items-center pointer-events-none">
                   <UploadSimple size={20} />
                 </div>
-                <p className="text-sm text-tertiary-foreground m-0 whitespace-nowrap">
+                <p className="text-sm text-tertiary-foreground m-0 whitespace-nowrap pointer-events-none">
                   Drag & drop a file here, or{' '}
                   <span className="text-primary font-medium underline cursor-pointer">browse</span>
                 </p>
