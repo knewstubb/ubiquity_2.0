@@ -76,12 +76,9 @@ export function FileSettingsStep({
       setPatternError('Only one wildcard (*) is allowed per pattern');
       return;
     }
-    if (wildcardCount === 1) {
-      const beforeWildcard = value.split('*')[0];
-      if (beforeWildcard.length === 0) {
-        setPatternError('A filename must be included when using a wildcard');
-        return;
-      }
+    if (value.trim() === '*') {
+      setPatternError('A wildcard alone would match every file — add a filename prefix or suffix');
+      return;
     }
     setPatternError('');
   }
