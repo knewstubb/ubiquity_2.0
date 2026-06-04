@@ -180,7 +180,7 @@ export function AutomationCard({ connector, connectionError, onToggleStatus, onV
               onSelect={() => onHistory?.()}
             >
               <ClockCounterClockwise size={16} weight="regular" />
-              History
+              Automation History
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
