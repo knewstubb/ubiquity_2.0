@@ -26,7 +26,7 @@ export function ModalFooter({
   return (
     <div
       className={cn(
-        'flex items-center justify-end gap-3 rounded-b-lg border-t border-border bg-background px-6 py-4',
+        'flex items-center justify-end gap-3 rounded-b-lg border-t border-border px-6 py-4',
         className
       )}
     >

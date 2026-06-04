@@ -1688,6 +1688,26 @@ export const componentRegistry: ComponentEntry[] = [
     ],
   },
   {
+    name: 'Timeline',
+    slug: 'timeline',
+    category: 'compositions',
+    description: 'Vertical timeline with connected entries. Each entry has a coloured icon circle, a connector line to the next entry, and content with a date.',
+    usesComponents: [],
+    component: lazy(() => import('../pages/component-demos/TimelineDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Use for chronological event history — audit logs, activity feeds, lifecycle displays.',
+        'Each entry represents a discrete event with an icon, description, and timestamp.',
+        'Do NOT use for step-by-step progress — use Stepper for that.',
+      ]},
+      { heading: 'Icon colours', content: 'Pass any CSS colour string as iconBg. Use semantic colours (primary for positive actions, warning for pauses, error for destructive actions, info for neutral changes).' },
+      { heading: 'Content', content: 'The content prop accepts ReactNode — use inline <strong> for emphasis on key terms (entity names, status changes).' },
+    ],
+    propControls: [
+      { name: 'entryCount', label: 'Entries', controlType: 'counter', defaultValue: 6, min: 1, max: 6 },
+    ],
+  },
+  {
     name: 'Controls Panel',
     slug: 'controls-panel',
     category: 'compositions',

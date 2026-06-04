@@ -3,10 +3,18 @@
  * @description Vertical timeline with connected entries. Each entry has a coloured
  * icon circle, a connector line to the next entry, and content (text + date).
  *
+ * @designDecisions
+ * - Icon circle uses inline style for background colour so callers can pass any
+ *   semantic colour without needing a Tailwind class per status.
+ * - Connector line is border-coloured and only rendered between entries (not after last).
+ * - Content area uses pb-5 to create consistent vertical rhythm between entries.
+ * - 36px (w-9 h-9) icon circle aligns with standard avatar sizing.
+ *
  * @usage
  * - Change history / audit logs
  * - Activity feeds with chronological events
  * - Lifecycle event displays (created → edited → paused → etc.)
+ * - Not for step-by-step progress — use Stepper for that
  */
 import { cn } from '@/lib/utils'
 
