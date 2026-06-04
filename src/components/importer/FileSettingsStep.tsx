@@ -392,13 +392,13 @@ export function FileSettingsStep({
               width="wide"
               body={
                 <>
-                  <p className="m-0 mb-2">UbiQuity looks for files whose name matches the pattern you set here. Use the * character to mean "anything." For example:</p>
+                  <p className="m-0 mb-2">UbiQuity looks for files whose name matches the pattern you set here. The .csv extension is added automatically. Use the * character to mean "anything." For example:</p>
                   <ul className="m-0 pl-4 mb-2 list-disc flex flex-col gap-1">
-                    <li><strong>sales-*.csv</strong> matches sales-jan.csv, sales-feb.csv, sales-2026.csv</li>
-                    <li><strong>*.csv</strong> matches any CSV file in the folder</li>
-                    <li><strong>daily-export-*.csv</strong> matches daily-export-01.csv, daily-export-02.csv</li>
+                    <li><strong>sales-*</strong> matches sales-jan.csv, sales-feb.csv, sales-2026.csv</li>
+                    <li><strong>daily-export-*</strong> matches daily-export-01.csv, daily-export-02.csv</li>
+                    <li><strong>contacts</strong> matches only contacts.csv (exact match)</li>
                   </ul>
-                  <p className="m-0">The pattern only checks the filename — not the folder path. If you're only ever placing one type of file in the folder, *.csv is the simplest option.</p>
+                  <p className="m-0">The pattern only checks the filename — not the folder path.</p>
                 </>
               }
               details="If multiple connectors share the same Base Path, each one must have a different Filename Filter. Otherwise both connectors will try to import the same files. Use specific prefixes (e.g. sales-*.csv, orders-*.csv) to keep connectors separate within the same directory."
@@ -408,17 +408,23 @@ export function FileSettingsStep({
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <Input
-            className={cn(
-              patternError && "border-destructive focus-visible:border-destructive focus-visible:shadow-ring-destructive"
-            )}
-            value={fileNamePattern}
-            onChange={(e) => { updatePath({ fileNamePattern: e.target.value }); validateFilePattern(e.target.value); }}
-            onBlur={(e) => validateFilePattern(e.target.value)}
-            placeholder="filename*.csv"
-            title="Which filenames to look for. Use * to match any characters."
-            aria-invalid={!!patternError}
-          />
+          <div className="flex">
+            <Input
+              className={cn(
+                "rounded-r-none border-r-0",
+                patternError && "border-destructive focus-visible:border-destructive focus-visible:shadow-ring-destructive"
+              )}
+              value={fileNamePattern}
+              onChange={(e) => { updatePath({ fileNamePattern: e.target.value }); validateFilePattern(e.target.value); }}
+              onBlur={(e) => validateFilePattern(e.target.value)}
+              placeholder="filename*"
+              title="Which filenames to look for. Use * to match any characters."
+              aria-invalid={!!patternError}
+            />
+            <span className="inline-flex items-center rounded-r-md border border-l-0 border-input bg-muted px-3 text-sm text-muted-foreground select-none">
+              .csv
+            </span>
+          </div>
           {patternError && (
             <p className="text-xs text-destructive -mt-1 mb-0">{patternError}</p>
           )}
