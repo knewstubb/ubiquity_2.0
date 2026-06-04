@@ -336,6 +336,10 @@ export function ImportMappingStep({
     setImportDefaults((prev) => prev.filter((d) => d.targetField !== targetField));
   }
 
+  function handleIgnoreAll() {
+    setRows((prev) => prev.map((row) => ({ ...row, targetField: '[[Ignore Column]]' })));
+  }
+
   // Lookup field mapping state (transactional only)
   const [lookupRows, setLookupRows] = useState<LookupMapping[]>(() => {
     if (type !== 'transactional') return [];
@@ -533,7 +537,16 @@ export function ImportMappingStep({
         <div className="grid grid-cols-[1fr_32px_1.2fr_32px_1fr] items-center py-3 px-4 bg-secondary border-b border-border">
           <span className="text-sm font-semibold text-muted-foreground m-0">Columns from File</span>
           <span />
-          <span className="text-sm font-semibold text-muted-foreground m-0">Columns in Ubiquity</span>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-muted-foreground m-0">Columns in Ubiquity</span>
+            <button
+              type="button"
+              onClick={handleIgnoreAll}
+              className="text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer bg-transparent border-none p-0"
+            >
+              Ignore all
+            </button>
+          </div>
           <span />
           <span className="text-sm font-semibold text-muted-foreground m-0">Example Values</span>
         </div>
