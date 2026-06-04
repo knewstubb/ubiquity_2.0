@@ -48,6 +48,7 @@ export function FileSettingsStep({
   const [fileError, setFileError] = useState<string | null>(null);
   const [transactionalTable, setTransactionalTable] = useState(config.transactionalTable ?? '');
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { filePathConfig, dataType } = config;
   const { pathMode, folderName, readPath, errorFolderPath, archiveFolderPath, fileNamePattern } =
@@ -154,12 +155,23 @@ export function FileSettingsStep({
 
   function handleDrop(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
+    setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (file) handleFileSelect(file);
   }
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
+  }
+
+  function handleDragEnter(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDragging(true);
+  }
+
+  function handleDragLeave(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDragging(false);
   }
 
   function handleRemoveFile() {
@@ -344,7 +356,8 @@ export function FileSettingsStep({
               <div
                 className={cn(
                   "border-2 border-dashed rounded-md flex items-center justify-center gap-2 cursor-pointer h-14 transition-colors duration-150 hover:border-primary hover:bg-accent",
-                  fileError ? "border-destructive" : "border-border"
+                  fileError ? "border-destructive" : "border-border",
+                  isDragging && "border-primary bg-accent/50 scale-[1.01]"
                 )}
                 role="button"
                 tabIndex={0}
@@ -352,6 +365,8 @@ export function FileSettingsStep({
                 onClick={handleDropzoneClick}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDropzoneClick(); }}
               >
                 <div className="text-tertiary-foreground flex items-center">
