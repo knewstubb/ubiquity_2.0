@@ -414,12 +414,13 @@ export function FileSettingsStep({
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
-          <div className="flex">
+          <div className={cn(
+            "flex rounded-md border border-input overflow-hidden transition-colors",
+            "focus-within:border-ring focus-within:shadow-ring",
+            patternError && "border-destructive focus-within:border-destructive focus-within:shadow-ring-destructive"
+          )}>
             <Input
-              className={cn(
-                "rounded-r-none border-r-0",
-                patternError && "border-destructive focus-visible:border-destructive focus-visible:shadow-ring-destructive"
-              )}
+              className="rounded-none border-0 shadow-none focus-visible:ring-0 focus-visible:shadow-none"
               value={fileNamePattern}
               onChange={(e) => { updatePath({ fileNamePattern: e.target.value }); validateFilePattern(e.target.value); }}
               onBlur={(e) => handlePatternBlur(e.target.value)}
@@ -427,7 +428,7 @@ export function FileSettingsStep({
               title="Which filenames to look for. Use * to match any characters."
               aria-invalid={!!patternError}
             />
-            <span className="inline-flex items-center rounded-r-md border border-l-0 border-input bg-muted px-3 text-sm text-muted-foreground select-none">
+            <span className="inline-flex items-center border-l border-input bg-muted px-3 text-sm text-muted-foreground select-none shrink-0">
               .csv
             </span>
           </div>
