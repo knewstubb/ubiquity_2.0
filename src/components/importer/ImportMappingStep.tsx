@@ -340,6 +340,11 @@ export function ImportMappingStep({
     setRows((prev) => prev.map((row) => ({ ...row, targetField: '[[Ignore Column]]' })));
   }
 
+  function handleResetMappings() {
+    if (!hasHeaders) return;
+    setRows(recalcStatuses(buildRows(csvHeaders!, csvExampleValues ?? {}, [], targetFields)));
+  }
+
   // Lookup field mapping state (transactional only)
   const [lookupRows, setLookupRows] = useState<LookupMapping[]>(() => {
     if (type !== 'transactional') return [];
@@ -539,13 +544,27 @@ export function ImportMappingStep({
           <span />
           <div className="flex items-center justify-between">
             <span className="text-sm font-semibold text-muted-foreground m-0">Columns in Ubiquity</span>
-            <button
-              type="button"
-              onClick={handleIgnoreAll}
-              className="text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer bg-transparent border-none p-0"
-            >
-              Ignore all
-            </button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="link"
+                size="sm"
+                className="text-[11px] h-auto p-0 text-muted-foreground hover:text-primary"
+                aria-label="Reset all mappings to auto-matched state"
+                onClick={handleResetMappings}
+              >
+                Reset
+              </Button>
+              <span className="text-border">·</span>
+              <Button
+                variant="link"
+                size="sm"
+                className="text-[11px] h-auto p-0 text-muted-foreground hover:text-destructive"
+                aria-label="Ignore all column mappings"
+                onClick={handleIgnoreAll}
+              >
+                Ignore all
+              </Button>
+            </div>
           </div>
           <span />
           <span className="text-sm font-semibold text-muted-foreground m-0">Example Values</span>
