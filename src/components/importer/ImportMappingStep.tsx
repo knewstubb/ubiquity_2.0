@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { Plus, X, UploadSimple, ArrowLeft, WarningCircle, CalendarBlank } from '@phosphor-icons/react';
+import { Plus, X, UploadSimple, ArrowLeft, WarningCircle, CalendarBlank, ArrowCounterClockwise, ProhibitInset } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 import { Combobox } from '../ui/combobox';
@@ -544,25 +544,24 @@ export function ImportMappingStep({
           <span />
           <div className="flex items-center justify-between">
             <span className="text-sm font-semibold text-muted-foreground m-0">Columns in Ubiquity</span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <Button
-                variant="link"
-                size="sm"
-                className="text-[11px] h-auto p-0 text-muted-foreground hover:text-primary"
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
                 aria-label="Reset all mappings to auto-matched state"
                 onClick={handleResetMappings}
               >
-                Reset
+                <ArrowCounterClockwise size={14} />
               </Button>
-              <span className="text-border">·</span>
               <Button
-                variant="link"
-                size="sm"
-                className="text-[11px] h-auto p-0 text-muted-foreground hover:text-destructive"
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
                 aria-label="Ignore all column mappings"
                 onClick={handleIgnoreAll}
               >
-                Ignore all
+                <ProhibitInset size={14} />
               </Button>
             </div>
           </div>
