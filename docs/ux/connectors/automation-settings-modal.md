@@ -82,4 +82,4 @@ Each section uses:
 ## Related
 
 - [Connectors Page](./connectors-page.md) — parent page
-- [Importer Wizard](./importer-wizard/overview.md) — opened via "Edit Automation"
+- [Importer Wizard](./importer-wizard.md) — opened via "Edit Automation"

@@ -192,11 +192,16 @@ Shared layout for both Contact Configuration and Transactional Configuration. Th
 ### Import Defaults (below mapping table)
 
 - "+ Set import default" link adds rows with a Badge ("Import Default") in the source column
-- Opens SetImportDefaultModal to configure:
-  - Target field (from unmapped fields)
-  - Mode: fixed value or send-date
-  - Fixed value: text input
+- Opens SetImportDefaultModal (see sub-modal section below)
 - Import default rows are displayed below the regular mapping rows with a delete button
+
+### Auto-Mapping Behaviour
+
+- Auto-mapping runs once on initial CSV load — subsequent changes are manual
+- Normalises both sides (lowercase, strip separators)
+- Uses an alias map for common variations (e.g. "email" → "email_address", "custid" → "customer_id")
+- Each target field used at most once
+- Unmatched headers show "no match found" warning
 
 ### Lookup Mapping (Transactional mapping only)
 
@@ -263,6 +268,78 @@ Shared component used by both Import and Export wizards.
 
 ---
 
+## Sub-Modal: Set Import Default
+
+> Opened from "+ Set import default" on any Mapping step
+
+### Purpose
+
+Define a value to inject into a database column for every imported record — either a fixed value or a calculated next-send-date based on a schedule.
+
+### Layout
+
+Standard Dialog (max-width 560px) with progressive disclosure:
+- Header: "Set import default" + close button
+- Body: field selection → mode selection → mode-specific inputs
+- Footer: Cancel (ghost) + Create (primary, disabled until valid)
+
+### Flow
+
+1. **Select target column** — Combobox showing unmapped database fields (excludes already-mapped, already-defaulted, and boolean fields)
+2. **Choose mode** — Two card options appear after field selection:
+   - **Fixed value** (Tag icon) — apply the same value to every record
+   - **Next send date/time** (CalendarBlank icon) — stamp each record with the next scheduled send date (only enabled for Date/DateTime fields)
+3. **Configure** — mode-specific inputs appear below the cards
+
+### Fields
+
+**Target Column**
+- Combobox with available (unmapped, un-defaulted) fields
+- Shows field type badge after selection (Text, Number, Date, DateTime)
+- Boolean fields excluded from the list
+
+**Fixed Value Mode**
+- Single text input
+- Placeholder: "e.g. campaign-2024-q1"
+
+**Next Send Date Mode** (Date/DateTime fields only)
+- **Send days** — DayPicker (Mon–Sun toggles)
+- **Include time** — Switch toggle
+- **Select hours** (when Include time on) — ChipInput with hour options (05:00–22:00)
+- **Apply to active period** — Switch toggle
+- **Avoid public holidays** — Switch toggle
+
+### States
+
+- **Default:** No field selected, mode cards hidden, Create disabled
+- **Field selected (non-date):** Both cards shown, "Next send date" disabled with "Requires a Date or DateTime column" text
+- **Field selected (date/datetime):** Both cards enabled
+- **Fixed value selected:** Text input shown, Create enabled when value non-empty
+- **Send date selected:** Schedule form shown, Create enabled when at least one day selected
+
+### Validation
+
+- Target field required
+- Mode required
+- Fixed value: non-empty string
+- Send date: at least one day selected
+
+### Sub-Modal Edge Cases
+
+- Available fields list excludes fields already mapped in the main table AND fields already set as defaults
+- Changing the target field resets mode if switching from date to non-date field type
+- Modal form resets completely on close (Cancel, X, or successful Create)
+- Boolean fields never shown in the field list (can't receive a meaningful default)
+
+### Components Used
+
+- Dialog, DialogContent, DialogHeader, DialogBody, DialogFooter
+- Combobox, Button, Input, Switch, Label, Badge, CloseButton
+- ChipInput (hour selection)
+- DayPicker (send days)
+
+---
+
 ## Interactions
 
 | Action | Result |
@@ -275,6 +352,9 @@ Shared component used by both Import and Export wizards.
 | Upload CSV | Parse headers, populate mapping step, enable Next |
 | Remove uploaded file | Clear headers, clear all mappings |
 | Change data type | Step list recompiles, currentStep clamped if needed, completed steps pruned |
+| Create Importer (final step) | Saves config, closes modal, returns to Connectors page with connection expanded showing new automation card + success toast |
+| Save Changes (final step, edit mode) | Saves config, closes modal, success toast |
+| Done (final step, edit, clean) | Closes modal (no-op) |
 
 ## States
 
@@ -324,6 +404,13 @@ Shared component used by both Import and Export wizards.
 - **Custom path auto-fill:** Error and archive paths auto-populate from the read path, but only when they're empty or match the previous auto-generated pattern
 - **File Pattern `.csv` stripping:** If user types ".csv" at the end, it's automatically removed on blur (since the suffix is shown separately)
 - **Dedupe scope:** Only deduplicates within the uploaded file — not against existing database records
+- **Matching Columns can be empty:** No minimum enforced in the UI — validation is server-side
+- **Blank Values preserved when hidden:** Changing Update Type to "Append" hides Blank Values but preserves the selection (shown again if type changes back)
+- **Auto-mapping runs once:** Only on initial CSV load. Subsequent target changes are manual.
+- **Copy from above (notifications):** Replaces existing emails, does not append
+- **No-file schedule state preserved:** Toggling no-file alert off and back on restores previous schedule configuration
+- **Review step formatting:** Mapping arrows use the `→` character with teal colour for target field names. Empty optional fields are hidden rather than showing "—".
+- **[[Ignore Column]] not counted as duplicate:** Multiple columns can be ignored without triggering duplicate warnings
 
 ## Related
 

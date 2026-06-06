@@ -116,7 +116,7 @@ Each automation card is a 4-column grid row:
 
 - [CreateConnectionModal](./create-connection-modal.md)
 - [InitialModal](./initial-modal.md)
-- [ImporterWizard](./importer-wizard/)
+- [ImporterWizard](./importer-wizard.md)
 - [ExporterWizard](./exporter-wizard/)
 - [AutomationSettingsModal](./automation-settings-modal.md)
 - [ActivityLogModal](./activity-log-modal.md)

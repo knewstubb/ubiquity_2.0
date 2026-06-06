@@ -56,5 +56,5 @@ Uses the ChooserModal pattern — a card selector with two options:
 ## Related
 
 - [Connectors Page](./connectors-page.md) — parent page
-- [Importer Wizard](./importer-wizard/overview.md) — opened when Import selected
+- [Importer Wizard](./importer-wizard.md) — opened when Import selected
 - [ChooserModal](../_shared/chooser-modal.md) — reusable card selector pattern
