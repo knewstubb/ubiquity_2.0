@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Register New Component",
+  "description": "When a new component file is created in src/components/composed/ or src/components/ui/, remind the agent to register it in the component library (componentRegistry.tsx).",
+  "version": "1",
+  "when": {
+    "type": "fileCreated",
+    "patterns": [
+      "src/components/composed/*.tsx",
+      "src/components/ui/*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A new component file was created. You MUST also register it in src/data/componentRegistry.tsx with: name, slug, category, description, searchTerms, designGuidance (at minimum 'When to use' and 'When NOT to use' sections), and a demo page in src/pages/component-demos/. Do not consider this component complete until it appears in the component library."
+  }
+}

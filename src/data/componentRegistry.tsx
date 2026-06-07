@@ -463,11 +463,32 @@ export const componentRegistry: ComponentEntry[] = [
     ],
   },
   {
-    name: 'Select',
-    slug: 'select',
+    name: 'RadioCard',
+    slug: 'radio-card',
     category: 'inputs',
-    description: 'Accessible select dropdown with search and keyboard navigation.',
-    searchTerms: ['dropdown', 'picker', 'options', 'choice', 'menu', 'field with options'],
+    description: 'Selectable radio-style card with label, radio indicator, and optional child content revealed on selection.',
+    searchTerms: ['radio', 'single select card', 'option card', 'filter option', 'radio button card'],
+    component: lazy(() => import('../pages/component-demos/RadioCardDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Single-select options with progressive disclosure (filter types, configuration modes)',
+        'Vertical lists of 2–7 mutually exclusive choices',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Grid-based icon selections — use CardSelector',
+        'Multi-select — use CheckboxCard',
+        'More than 7 options — use Select or Combobox',
+      ]},
+      { heading: 'States', content: [
+        'Unselected: border-border, bg-background',
+        'Selected: border-primary, bg-accent',
+        'Disabled: opacity-50, cursor-not-allowed',
+        'Focus: ring-2 ring-ring',
+      ]},
+    ],
+  },
+  {
+    name: 'Select',
     component: lazy(() => import('../pages/component-demos/SelectDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -1187,6 +1208,32 @@ export const componentRegistry: ComponentEntry[] = [
           'Confirmation guards (checkbox, type-to-confirm) prevent accidental activation',
         ],
       },
+    ],
+  },
+  {
+    name: 'AlertDialogComposed',
+    slug: 'alert-dialog-composed',
+    category: 'feedback',
+    description: 'Pre-composed alert dialog with intent variants (neutral, warning, destructive), optional type-to-confirm guard, and async loading state.',
+    searchTerms: ['confirmation', 'confirm dialog', 'destructive dialog', 'delete confirm', 'warning dialog', 'type to confirm'],
+    component: lazy(() => import('../pages/component-demos/AlertDialogComposedDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Destructive confirmations (delete, discard)',
+        'Billing confirmations (activate)',
+        'Any action that needs explicit user consent',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Simple informational messages — use Alert or Toast',
+        'Non-destructive confirmations — use Dialog directly',
+      ]},
+      { heading: 'States', content: [
+        'Neutral (default button): routine confirmations',
+        'Warning (secondary button): amber top accent, side-effect actions',
+        'Destructive (destructive button): red top accent, irreversible actions',
+        'Loading (spinner on confirm): async operations in progress',
+        'Type-to-confirm (input guard): catastrophic actions requiring typed confirmation',
+      ]},
     ],
   },
   {
@@ -2003,6 +2050,48 @@ export const componentRegistry: ComponentEntry[] = [
       ]},
     ],
   },
+  {
+    name: 'ModalFooter',
+    slug: 'modal-footer',
+    category: 'feedback',
+    description: 'Standardised modal footer with primary, secondary, and optional tertiary action buttons in consistent right-aligned layout.',
+    searchTerms: ['dialog footer', 'modal buttons', 'action bar', 'modal actions', 'footer buttons'],
+    component: lazy(() => import('../pages/component-demos/ModalFooterDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'All modals/dialogs that need action buttons (confirm, cancel, etc.)',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Full-page forms — use inline buttons',
+        'Wizard footers — use WizardNavButtons',
+      ]},
+      { heading: 'States', content: [
+        'Primary can be any Button variant',
+        'Secondary defaults to ghost',
+        'Tertiary aligns left (mr-auto)',
+      ]},
+    ],
+  },
+  {
+    name: 'ModalHeader',
+    slug: 'modal-header',
+    category: 'feedback',
+    description: 'Standardised modal header with title, optional description, and close button.',
+    searchTerms: ['dialog header', 'modal title', 'overlay header', 'modal heading'],
+    component: lazy(() => import('../pages/component-demos/ModalHeaderDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'All modals/dialogs as the first child of DialogContent',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Inline sections or page headers — use PageShell or section headings',
+      ]},
+      { heading: 'States', content: [
+        'Default with close button',
+        'Without close button (onClose omitted)',
+      ]},
+    ],
+  },
   // Compositions (multi-component patterns that orchestrate flows)
   {
     name: 'Stepper',
@@ -2493,6 +2582,39 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'label1', label: 'Label 1', controlType: 'text', defaultValue: 'Connection Settings' },
       { name: 'label2', label: 'Label 2', controlType: 'text', defaultValue: 'Authentication' },
       { name: 'label3', label: 'Label 3', controlType: 'text', defaultValue: 'Notifications', visibleWhen: { prop: 'sections', equals: 3 } },
+    ],
+  },
+  {
+    name: 'StatusBadge',
+    slug: 'status-badge',
+    category: 'atoms',
+    description: 'Semantic status indicator badge with predefined colour mappings for common states (active, paused, error, etc.).',
+    searchTerms: ['status', 'state indicator', 'active badge', 'error badge', 'status pill', 'automation status'],
+    component: lazy(() => import('../pages/component-demos/StatusBadgeDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Indicating entity state (active/paused/error)',
+        'Automation run status, connection health',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Categorisation or tagging — use Badge instead',
+        'Counts — use number badge',
+      ]},
+      { heading: 'States', content: [
+        'Active (green): entity is live and operational',
+        'Invited (blue): pending acceptance or activation',
+        'Inactive (neutral): paused or disabled',
+        'Error (red): failed or disconnected',
+      ]},
+    ],
+    propControls: [
+      { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'active', options: [
+        { label: 'Active', value: 'active' },
+        { label: 'Invited', value: 'invited' },
+        { label: 'Inactive', value: 'inactive' },
+        { label: 'Error', value: 'error' },
+      ]},
+      { name: 'text', label: 'Text', controlType: 'text', defaultValue: 'Active' },
     ],
   },
   {
