@@ -556,7 +556,7 @@ export function ImportMappingStep({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-6 w-6 hover:bg-primary/10 hover:text-primary"
+                        className="h-6 w-6 text-muted-foreground/60 border border-border rounded hover:bg-primary/10 hover:text-primary hover:border-primary/30"
                         aria-label="Reset all mappings to auto-matched state"
                         onClick={handleResetMappings}
                       >
@@ -573,7 +573,7 @@ export function ImportMappingStep({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-6 w-6 hover:bg-destructive/10 hover:text-destructive"
+                      className="h-6 w-6 text-muted-foreground/60 border border-border rounded hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
                       aria-label="Ignore all column mappings"
                       onClick={handleIgnoreAll}
                     >
