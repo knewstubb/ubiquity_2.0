@@ -8,8 +8,10 @@ import {
   DialogBody,
   DialogFooter,
   DialogTitle,
+  DialogDescription,
   DialogClose,
 } from '../ui/dialog';
+import { Separator } from '../ui/separator';
 import { Combobox } from '../ui/combobox';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -42,6 +44,16 @@ const HOUR_OPTIONS = Array.from({ length: 18 }, (_, i) => {
   const hour = i + 5; // 05:00 to 22:00
   return `${hour.toString().padStart(2, '0')}:00`;
 });
+
+/* ── Helpers ── */
+
+function TypeBadge({ type }: { type: string }) {
+  return (
+    <Badge variant="neutral-subtle" className="ml-auto">
+      {type.charAt(0).toUpperCase() + type.slice(1)}
+    </Badge>
+  );
+}
 
 /* ── Component ── */
 
@@ -125,15 +137,6 @@ export function SetImportDefaultModal({
     onOpenChange(nextOpen);
   }
 
-  // Type badge helper
-  function TypeBadge({ type }: { type: string }) {
-    return (
-      <Badge variant="neutral-subtle" className="ml-auto text-[10px] px-1.5 py-0">
-        {type.charAt(0).toUpperCase() + type.slice(1)}
-      </Badge>
-    );
-  }
-
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-[560px]">
@@ -144,11 +147,11 @@ export function SetImportDefaultModal({
           </DialogClose>
         </DialogHeader>
 
-        <DialogBody className="space-y-5">
+        <DialogBody className="space-y-4">
           {/* Subtitle */}
-          <p className="text-sm text-muted-foreground m-0">
+          <DialogDescription className="text-sm m-0">
             Choose a database column and define what value to inject when this import runs.
-          </p>
+          </DialogDescription>
 
           {/* Step 1: Target Field */}
           <div className="space-y-2">
@@ -182,16 +185,19 @@ export function SetImportDefaultModal({
 
           {/* Step 2: Mode selection — revealed after field selection */}
           {targetField && (
-            <div className="space-y-3">
+            <div className="space-y-3 animate-in fade-in duration-200">
               <Label>What should fill this column?</Label>
 
-              <div className="grid grid-cols-1 gap-3">
+              <div className="grid grid-cols-1 gap-3" role="radiogroup" aria-label="Default value mode">
                 {/* Card A: Fixed Value */}
                 <button
                   type="button"
+                  role="radio"
+                  aria-checked={mode === 'fixed'}
                   onClick={() => setMode('fixed')}
                   className={cn(
                     'flex items-start gap-3 p-4 rounded-lg border text-left transition-colors cursor-pointer',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     mode === 'fixed'
                       ? 'border-primary bg-primary/5'
                       : 'border-border hover:border-primary/40',
@@ -211,10 +217,13 @@ export function SetImportDefaultModal({
                 {/* Card B: Next Send Date/Time */}
                 <button
                   type="button"
+                  role="radio"
+                  aria-checked={mode === 'send-date'}
                   onClick={() => isDateField && setMode('send-date')}
                   disabled={!isDateField}
                   className={cn(
                     'flex items-start gap-3 p-4 rounded-lg border text-left transition-colors',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     !isDateField && 'opacity-50 cursor-not-allowed',
                     isDateField && 'cursor-pointer',
                     mode === 'send-date'
@@ -242,7 +251,7 @@ export function SetImportDefaultModal({
 
               {/* Fixed value input */}
               {mode === 'fixed' && (
-                <div className="space-y-2 pt-2">
+                <div className="space-y-2 pt-2 animate-in slide-in-from-top-1 duration-200">
                   <Label>Value</Label>
                   <Input
                     value={fixedValue}
@@ -254,7 +263,7 @@ export function SetImportDefaultModal({
 
               {/* Send date schedule sub-form */}
               {mode === 'send-date' && (
-                <div className="space-y-4 pt-2">
+                <div className="space-y-4 pt-2 animate-in slide-in-from-top-1 duration-200">
                   {/* Schedule section */}
                   <div className="space-y-3">
                     {/* Send Days */}
@@ -291,7 +300,7 @@ export function SetImportDefaultModal({
                   </div>
 
                   {/* Divider */}
-                  <div className="border-t border-border" />
+                  <Separator />
 
                   {/* Constraints section */}
                   <div className="space-y-3">
