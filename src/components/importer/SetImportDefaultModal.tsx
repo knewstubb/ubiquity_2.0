@@ -127,14 +127,8 @@ export function SetImportDefaultModal({
 
   // Type badge helper
   function TypeBadge({ type }: { type: string }) {
-    const variantMap: Record<string, string> = {
-      text: 'neutral-subtle',
-      number: 'info-subtle',
-      date: 'success-subtle',
-      datetime: 'success-subtle',
-    };
     return (
-      <Badge variant={variantMap[type] as any} className="ml-auto text-[10px] px-1.5 py-0">
+      <Badge variant="neutral-subtle" className="ml-auto text-[10px] px-1.5 py-0">
         {type.charAt(0).toUpperCase() + type.slice(1)}
       </Badge>
     );
