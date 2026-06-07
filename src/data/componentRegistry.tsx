@@ -469,6 +469,12 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Selectable radio-style card with label, radio indicator, and optional child content revealed on selection.',
     searchTerms: ['radio', 'single select card', 'option card', 'filter option', 'radio button card'],
     component: lazy(() => import('../pages/component-demos/RadioCardDemo')),
+    propControls: [
+      { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Option one' },
+      { name: 'selected', label: 'Selected', controlType: 'toggle', defaultValue: true },
+      { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
+      { name: 'show-children', label: 'Show Children', controlType: 'toggle', defaultValue: true },
+    ],
     designGuidance: [
       { heading: 'When to use', content: [
         'Single-select options with progressive disclosure (filter types, configuration modes)',
@@ -1217,6 +1223,17 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Pre-composed alert dialog with intent variants (neutral, warning, destructive), optional type-to-confirm guard, and async loading state.',
     searchTerms: ['confirmation', 'confirm dialog', 'destructive dialog', 'delete confirm', 'warning dialog', 'type to confirm'],
     component: lazy(() => import('../pages/component-demos/AlertDialogComposedDemo')),
+    propControls: [
+      { name: 'intent', label: 'Intent', controlType: 'select', defaultValue: 'destructive', options: [
+        { label: 'Neutral', value: 'neutral' },
+        { label: 'Warning', value: 'warning' },
+        { label: 'Destructive', value: 'destructive' },
+      ]},
+      { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Delete this item?' },
+      { name: 'confirm-label', label: 'Confirm Label', controlType: 'text', defaultValue: 'Delete' },
+      { name: 'requires-checkbox', label: 'Requires Checkbox', controlType: 'toggle', defaultValue: false },
+      { name: 'requires-input', label: 'Type to Confirm', controlType: 'text', defaultValue: '' },
+    ],
     designGuidance: [
       { heading: 'When to use', content: [
         'Destructive confirmations (delete, discard)',
@@ -2057,6 +2074,11 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Standardised modal footer with primary, secondary, and optional tertiary action buttons in consistent right-aligned layout.',
     searchTerms: ['dialog footer', 'modal buttons', 'action bar', 'modal actions', 'footer buttons'],
     component: lazy(() => import('../pages/component-demos/ModalFooterDemo')),
+    propControls: [
+      { name: 'primary-label', label: 'Primary', controlType: 'text', defaultValue: 'Save' },
+      { name: 'secondary-label', label: 'Secondary', controlType: 'text', defaultValue: 'Cancel' },
+      { name: 'show-tertiary', label: 'Show Tertiary', controlType: 'toggle', defaultValue: false },
+    ],
     designGuidance: [
       { heading: 'When to use', content: [
         'All modals/dialogs that need action buttons (confirm, cancel, etc.)',
@@ -2079,6 +2101,11 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Standardised modal header with title, optional description, and close button.',
     searchTerms: ['dialog header', 'modal title', 'overlay header', 'modal heading'],
     component: lazy(() => import('../pages/component-demos/ModalHeaderDemo')),
+    propControls: [
+      { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Modal Title' },
+      { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Optional description text' },
+      { name: 'show-close', label: 'Show Close', controlType: 'toggle', defaultValue: true },
+    ],
     designGuidance: [
       { heading: 'When to use', content: [
         'All modals/dialogs as the first child of DialogContent',

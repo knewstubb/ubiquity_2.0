@@ -12,6 +12,6 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "A new component file was created. You MUST also register it in src/data/componentRegistry.tsx with: name, slug, category, description, searchTerms, designGuidance (at minimum 'When to use' and 'When NOT to use' sections), and a demo page in src/pages/component-demos/. Do not consider this component complete until it appears in the component library."
+    "prompt": "A new component file was created. You MUST also register it in src/data/componentRegistry.tsx with ALL of the following:\n\n1. name, slug, category, description, searchTerms\n2. propControls — at minimum one toggle or select so the component appears with a controller panel in the library\n3. designGuidance — at minimum 'When to use' and 'When NOT to use' sections\n4. A demo page at src/pages/component-demos/{ComponentName}Demo.tsx that accepts the propControl values as props and renders the component with those values\n\nThe demo MUST work with the controller panel (accept props from the control system). Do not consider this component complete until it appears in the component library with a working demo + controller panel."
   }
 }
