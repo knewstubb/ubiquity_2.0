@@ -494,6 +494,53 @@ export const componentRegistry: ComponentEntry[] = [
     ],
   },
   {
+    name: 'SelectorCard',
+    slug: 'selector-card',
+    category: 'inputs',
+    description: 'Unified selectable card with four variants: icon (centred with badge), checkbox (multi-select), radio (single-select with disclosure), and option (horizontal with badge).',
+    searchTerms: ['card', 'selector', 'picker', 'option card', 'radio card', 'checkbox card', 'icon card', 'choice card'],
+    component: lazy(() => import('../pages/component-demos/SelectorCardDemo')),
+    propControls: [
+      { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'icon', options: [
+        { label: 'Icon', value: 'icon' },
+        { label: 'Checkbox', value: 'checkbox' },
+        { label: 'Radio', value: 'radio' },
+        { label: 'Option', value: 'option' },
+      ]},
+      { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Option label' },
+      { name: 'description', label: 'Description', controlType: 'text', defaultValue: '' },
+      { name: 'selected', label: 'Selected', controlType: 'toggle', defaultValue: true },
+      { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
+      { name: 'show-icon', label: 'Show Icon', controlType: 'toggle', defaultValue: true },
+      { name: 'show-children', label: 'Show Children (radio)', controlType: 'toggle', defaultValue: true, visibleWhen: { controlName: 'variant', values: ['radio'] } },
+    ],
+    designGuidance: [
+      { heading: 'Variants', content: [
+        'icon — Centred vertical layout: icon → label → description. Checkmark badge top-right when selected. Used for source selection grids, connection type choosers.',
+        'checkbox — Horizontal layout: filled checkbox indicator → label → description. Used for multi-select patterns (channels, enrichment options).',
+        'radio — Horizontal layout: radio dot → label. Children slot rendered below in grey bg-muted box with animation when selected. Used for filter type selection, single-select with progressive disclosure.',
+        'option — Horizontal layout: icon left → title + description right. Checkmark badge top-right when selected. Used for mode selection (SetImportDefault), automation type selection.',
+      ]},
+      { heading: 'When to use', content: [
+        'icon: 2–6 visual/categorical options in a grid',
+        'checkbox: multi-select lists where any combination is valid',
+        'radio: mutually exclusive choices needing inline sub-forms',
+        'option: 2–4 mode choices with descriptions needing clear selection state',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'More than 7 options — use Select or Combobox',
+        'Simple boolean toggle — use Switch',
+        'Plain radio list without cards — use RadioGroup',
+      ]},
+      { heading: 'States', content: [
+        'Selected: border-primary, bg-accent, shadow-sm (shadow-md for icon variant)',
+        'Unselected: border-border, bg-background, hover previews teal palette',
+        'Disabled: opacity-50, cursor-not-allowed',
+        'Focus: ring-2 ring-ring ring-offset-2',
+      ]},
+    ],
+  },
+  {
     name: 'Select',
     component: lazy(() => import('../pages/component-demos/SelectDemo')),
     designGuidance: [

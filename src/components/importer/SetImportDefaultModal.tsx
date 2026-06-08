@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Tag, CalendarBlank } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
+import { SelectorCard } from '../composed/selector-card';
 import {
   Dialog,
   DialogContent,
@@ -190,63 +191,27 @@ export function SetImportDefaultModal({
 
               <div className="grid grid-cols-1 gap-3" role="radiogroup" aria-label="Default value mode">
                 {/* Card A: Fixed Value */}
-                <button
-                  type="button"
-                  role="radio"
-                  aria-checked={mode === 'fixed'}
-                  onClick={() => setMode('fixed')}
-                  className={cn(
-                    'flex items-start gap-3 p-4 rounded-lg border text-left transition-colors cursor-pointer',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                    mode === 'fixed'
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border hover:border-primary/40',
-                  )}
-                >
-                  <div className="shrink-0 mt-0.5">
-                    <Tag size={20} weight="duotone" className="text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-foreground m-0">Fixed value</p>
-                    <p className="text-xs text-muted-foreground m-0 mt-1">
-                      Apply the same value to every record on import — useful for campaign codes, source tags, or category labels.
-                    </p>
-                  </div>
-                </button>
+                <SelectorCard
+                  variant="option"
+                  icon={<Tag size={20} weight="duotone" className="text-primary" />}
+                  label="Fixed value"
+                  description="Apply the same value to every record on import — useful for campaign codes, source tags, or category labels."
+                  selected={mode === 'fixed'}
+                  onSelect={() => setMode('fixed')}
+                />
 
                 {/* Card B: Next Send Date/Time */}
-                <button
-                  type="button"
-                  role="radio"
-                  aria-checked={mode === 'send-date'}
-                  onClick={() => isDateField && setMode('send-date')}
+                <SelectorCard
+                  variant="option"
+                  icon={<CalendarBlank size={20} weight="duotone" className={cn(isDateField ? 'text-primary' : 'text-muted-foreground')} />}
+                  label="Next send date/time"
+                  description={isDateField
+                    ? 'Stamp each imported record with the next scheduled send date, based on your sending schedule.'
+                    : 'Requires a Date or DateTime column'}
+                  selected={mode === 'send-date'}
                   disabled={!isDateField}
-                  className={cn(
-                    'flex items-start gap-3 p-4 rounded-lg border text-left transition-colors',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                    !isDateField && 'opacity-50 cursor-not-allowed',
-                    isDateField && 'cursor-pointer',
-                    mode === 'send-date'
-                      ? 'border-primary bg-primary/5'
-                      : isDateField
-                        ? 'border-border hover:border-primary/40'
-                        : 'border-border',
-                  )}
-                >
-                  <div className="shrink-0 mt-0.5">
-                    <CalendarBlank size={20} weight="duotone" className={cn(isDateField ? 'text-primary' : 'text-muted-foreground')} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className={cn('text-sm font-semibold m-0', isDateField ? 'text-foreground' : 'text-muted-foreground')}>
-                      Next send date/time
-                    </p>
-                    <p className="text-xs text-muted-foreground m-0 mt-1">
-                      {isDateField
-                        ? 'Stamp each imported record with the next scheduled send date, based on your sending schedule.'
-                        : 'Requires a Date or DateTime column'}
-                    </p>
-                  </div>
-                </button>
+                  onSelect={() => isDateField && setMode('send-date')}
+                />
               </div>
 
               {/* Fixed value input */}
