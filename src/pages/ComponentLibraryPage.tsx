@@ -135,45 +135,40 @@ function SidebarNav() {
         </div>
       </div>
       {search ? (
-        <SidebarContent>
-          <SidebarGroup className="p-1">
-            <SidebarGroupLabel className="uppercase tracking-wide text-[11px] h-6">
-              Results ({filteredComponents.length})
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {filteredComponents.map((item) => {
-                  const to =
-                    item.category === 'tokens'
-                      ? `/admin/components/tokens/${item.slug}`
-                      : `/admin/components/${item.category}/${item.slug}`
+        <div className="flex-1 overflow-y-auto px-1 py-2">
+          <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-1">
+            Results ({filteredComponents.length})
+          </p>
+          {filteredComponents.length === 0 ? (
+            <p className="px-4 py-2 text-xs text-muted-foreground">No results</p>
+          ) : (
+            <ul className="list-none p-0 m-0">
+              {filteredComponents.map((item) => {
+                const to =
+                  item.category === 'tokens'
+                    ? `/admin/components/tokens/${item.slug}`
+                    : `/admin/components/${item.category}/${item.slug}`
 
-                  return (
-                    <SidebarMenuItem key={`${item.category}-${item.slug}`}>
-                      <SidebarMenuButton asChild className="h-auto p-0 hover:bg-transparent data-[active=true]:bg-transparent">
-                        <NavLink
-                          to={to}
-                          className={({ isActive }) =>
-                            cn(
-                              "block py-1 px-4 pl-6 text-xs text-muted-foreground transition-all duration-150",
-                              "hover:text-primary",
-                              isActive && "text-primary font-medium"
-                            )
-                          }
-                        >
-                          {item.name}
-                        </NavLink>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  )
-                })}
-                {filteredComponents.length === 0 && (
-                  <p className="px-4 py-2 text-xs text-muted-foreground">No results</p>
-                )}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
+                return (
+                  <li key={`${item.category}-${item.slug}`}>
+                    <NavLink
+                      to={to}
+                      className={({ isActive }) =>
+                        cn(
+                          "block py-1 px-4 pl-6 text-xs text-muted-foreground transition-all duration-150 no-underline",
+                          "hover:text-primary",
+                          isActive && "text-primary font-medium"
+                        )
+                      }
+                    >
+                      {item.name}
+                    </NavLink>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </div>
       ) : (
         <SidebarContent>
           {CATEGORIES.map((cat) => {
