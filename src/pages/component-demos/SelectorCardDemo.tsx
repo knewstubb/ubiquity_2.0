@@ -119,5 +119,5 @@ export default function SelectorCardDemo(props: Record<string, unknown>) {
       })}
     </div>
     </div>
-  )  )
+  )
 }
