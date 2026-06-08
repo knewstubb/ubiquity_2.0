@@ -138,7 +138,7 @@ function SidebarNav() {
         <SidebarContent>
           <SidebarGroup className="p-1">
             <SidebarGroupLabel className="uppercase tracking-wide text-[11px] h-6">
-              Results
+              Results ({filteredComponents.length})
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -149,7 +149,7 @@ function SidebarNav() {
                       : `/admin/components/${item.category}/${item.slug}`
 
                   return (
-                    <SidebarMenuItem key={item.slug}>
+                    <SidebarMenuItem key={`${item.category}-${item.slug}`}>
                       <SidebarMenuButton asChild className="h-auto p-0 hover:bg-transparent data-[active=true]:bg-transparent">
                         <NavLink
                           to={to}
