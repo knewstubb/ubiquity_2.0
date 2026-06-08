@@ -21,8 +21,8 @@ export default function ModalFooterDemo(props: Record<string, unknown>) {
     )
   }
 
-  // Warning mode: grey/secondary confirm button
-  const primaryVariant: ModalAction['variant'] = intent === 'warning' ? 'secondaryOutline' : 'default'
+  // Warning mode: dark solid confirm button (secondary variant)
+  const primaryVariant: ModalAction['variant'] = intent === 'warning' ? 'secondary' : 'default'
 
   const primary: ModalAction = {
     label: primaryLabel,
