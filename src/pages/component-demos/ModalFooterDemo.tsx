@@ -2,16 +2,31 @@ import { ModalFooter } from '@/components/composed/modal-footer'
 import type { ModalAction } from '@/components/composed/modal-footer'
 
 export default function ModalFooterDemo(props: Record<string, unknown>) {
+  const intent = (props.intent as string) ?? 'default'
   const primaryLabel = (props['primary-label'] as string) ?? 'Save'
-  const primaryVariant = (props['primary-variant'] as string) ?? 'default'
   const showSecondary = (props['show-secondary'] as boolean) ?? true
   const secondaryLabel = (props['secondary-label'] as string) ?? 'Cancel'
   const showTertiary = (props['show-tertiary'] as boolean) ?? false
-  const tertiaryLabel = (props['tertiary-label'] as string) ?? 'Delete'
+
+  // In destructive mode, the red button takes the secondary position (left)
+  // and cancel moves to the primary position (right) — prevents muscle-memory clicks
+  if (intent === 'destructive') {
+    return (
+      <div className="w-[460px] border border-border rounded-lg overflow-hidden">
+        <ModalFooter
+          primaryAction={{ label: secondaryLabel, variant: 'ghost', onClick: () => {} }}
+          secondaryAction={{ label: primaryLabel, variant: 'destructive', onClick: () => {} }}
+        />
+      </div>
+    )
+  }
+
+  // Warning mode: grey/secondary confirm button
+  const primaryVariant: ModalAction['variant'] = intent === 'warning' ? 'secondaryOutline' : 'default'
 
   const primary: ModalAction = {
     label: primaryLabel,
-    variant: primaryVariant as ModalAction['variant'],
+    variant: primaryVariant,
     onClick: () => {},
   }
 
@@ -20,7 +35,7 @@ export default function ModalFooterDemo(props: Record<string, unknown>) {
     : undefined
 
   const tertiary: ModalAction | undefined = showTertiary
-    ? { label: tertiaryLabel, variant: 'destructiveOutline', onClick: () => {} }
+    ? { label: 'Delete', variant: 'destructiveOutline', onClick: () => {} }
     : undefined
 
   return (

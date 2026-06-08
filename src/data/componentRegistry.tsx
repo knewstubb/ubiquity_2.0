@@ -2073,19 +2073,18 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'feedback',
     description: 'Standardised modal footer with primary, secondary, and optional tertiary action buttons in consistent right-aligned layout.',
     searchTerms: ['dialog footer', 'modal buttons', 'action bar', 'modal actions', 'footer buttons'],
+    usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/ModalFooterDemo')),
     propControls: [
-      { name: 'primary-label', label: 'Primary Label', controlType: 'text', defaultValue: 'Save' },
-      { name: 'primary-variant', label: 'Primary Style', controlType: 'select', defaultValue: 'default', options: [
-        { label: 'Default (Green)', value: 'default' },
-        { label: 'Destructive (Red)', value: 'destructive' },
-        { label: 'Secondary (Grey)', value: 'secondaryOutline' },
-        { label: 'Outline (Teal border)', value: 'outline' },
+      { name: 'intent', label: 'Intent', controlType: 'select', defaultValue: 'default', options: [
+        { label: 'Default (Green CTA)', value: 'default' },
+        { label: 'Warning (Grey CTA)', value: 'warning' },
+        { label: 'Destructive (Flipped — Red left)', value: 'destructive' },
       ]},
-      { name: 'show-secondary', label: 'Show Secondary', controlType: 'toggle', defaultValue: true },
-      { name: 'secondary-label', label: 'Secondary Label', controlType: 'text', defaultValue: 'Cancel' },
-      { name: 'show-tertiary', label: 'Show Tertiary', controlType: 'toggle', defaultValue: false },
-      { name: 'tertiary-label', label: 'Tertiary Label', controlType: 'text', defaultValue: 'Delete' },
+      { name: 'primary-label', label: 'Primary Label', controlType: 'text', defaultValue: 'Save' },
+      { name: 'show-secondary', label: 'Show Cancel', controlType: 'toggle', defaultValue: true },
+      { name: 'secondary-label', label: 'Cancel Label', controlType: 'text', defaultValue: 'Cancel' },
+      { name: 'show-tertiary', label: 'Show Tertiary (left)', controlType: 'toggle', defaultValue: false },
     ],
     designGuidance: [
       { heading: 'When to use', content: [
