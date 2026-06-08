@@ -19,7 +19,7 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-interface ModalAction {
+export interface ModalAction {
   label: string
   onClick: () => void
   disabled?: boolean

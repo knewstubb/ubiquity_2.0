@@ -2075,9 +2075,17 @@ export const componentRegistry: ComponentEntry[] = [
     searchTerms: ['dialog footer', 'modal buttons', 'action bar', 'modal actions', 'footer buttons'],
     component: lazy(() => import('../pages/component-demos/ModalFooterDemo')),
     propControls: [
-      { name: 'primary-label', label: 'Primary', controlType: 'text', defaultValue: 'Save' },
-      { name: 'secondary-label', label: 'Secondary', controlType: 'text', defaultValue: 'Cancel' },
+      { name: 'primary-label', label: 'Primary Label', controlType: 'text', defaultValue: 'Save' },
+      { name: 'primary-variant', label: 'Primary Style', controlType: 'select', defaultValue: 'default', options: [
+        { label: 'Default (Green)', value: 'default' },
+        { label: 'Destructive (Red)', value: 'destructive' },
+        { label: 'Secondary (Grey)', value: 'secondaryOutline' },
+        { label: 'Outline (Teal border)', value: 'outline' },
+      ]},
+      { name: 'show-secondary', label: 'Show Secondary', controlType: 'toggle', defaultValue: true },
+      { name: 'secondary-label', label: 'Secondary Label', controlType: 'text', defaultValue: 'Cancel' },
       { name: 'show-tertiary', label: 'Show Tertiary', controlType: 'toggle', defaultValue: false },
+      { name: 'tertiary-label', label: 'Tertiary Label', controlType: 'text', defaultValue: 'Delete' },
     ],
     designGuidance: [
       { heading: 'When to use', content: [

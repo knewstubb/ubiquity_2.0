@@ -6,7 +6,7 @@ export default function ModalHeaderDemo(props: Record<string, unknown>) {
   const showClose = (props['show-close'] as boolean) ?? true
 
   return (
-    <div className="border border-border rounded-lg overflow-hidden">
+    <div className="w-[460px] border border-border rounded-lg overflow-hidden">
       <ModalHeader
         title={title}
         description={description || undefined}
