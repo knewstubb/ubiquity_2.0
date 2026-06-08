@@ -1,123 +1,123 @@
 import { useState } from 'react'
 import { SelectorCard } from '@/components/composed/selector-card'
-import { CloudArrowUp, Database, Tag, CalendarBlank } from '@phosphor-icons/react'
+import { CloudArrowUp, Database, Tag, CalendarBlank, Folder, Globe } from '@phosphor-icons/react'
 import { Input } from '@/components/ui/input'
+
+const ICONS = [CloudArrowUp, Database, Tag, CalendarBlank, Folder, Globe]
+const LABELS = ['Cloud Upload', 'Database', 'Tagged', 'Scheduled', 'File Storage', 'Web API']
+const DESCRIPTIONS = ['Push to cloud', 'Direct connection', 'With metadata', 'Time-based', 'Local files', 'REST endpoint']
 
 export default function SelectorCardDemo(props: Record<string, unknown>) {
   const variant = (props.variant as string) ?? 'icon'
-  const label = (props.label as string) ?? 'Option label'
+  const cardCount = (props.cards as number) ?? 3
+  const columns = (props.columns as number) ?? 3
+  const label = (props.label as string) ?? ''
   const description = (props.description as string) ?? ''
-  const selected = (props.selected as boolean) ?? true
   const disabled = (props.disabled as boolean) ?? false
   const showIcon = (props['show-icon'] as boolean) ?? true
   const showChildren = (props['show-children'] as boolean) ?? true
+  const maxWidth = (props['max-width'] as number) ?? 100
 
-  // Local state for interactive demo
-  const [isSelected, setIsSelected] = useState(selected)
+  const [selected, setSelected] = useState(0)
+  const [multiSelected, setMultiSelected] = useState<Set<number>>(new Set([0]))
 
-  const icon = showIcon ? <CloudArrowUp size={20} weight="duotone" className="text-primary" /> : undefined
+  function toggleMulti(index: number) {
+    setMultiSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(index)) next.delete(index)
+      else next.add(index)
+      return next
+    })
+  }
+
+  const gridStyle = { gridTemplateColumns: `repeat(${columns}, 1fr)` }
+  const wrapperStyle = { maxWidth: `${maxWidth}%` }
 
   if (variant === 'icon') {
     return (
-      <div className="grid grid-cols-3 gap-4 pt-2 pr-2">
-        <SelectorCard
-          variant="icon"
-          icon={<CloudArrowUp size={28} weight="duotone" />}
-          label={label || 'Cloud Upload'}
-          description={description || 'Push to cloud'}
-          selected={isSelected}
-          disabled={disabled}
-          onSelect={() => setIsSelected(!isSelected)}
-        />
-        <SelectorCard
-          variant="icon"
-          icon={<Database size={28} weight="duotone" />}
-          label="Database"
-          description="Direct connection"
-          selected={false}
-          disabled={disabled}
-          onSelect={() => {}}
-        />
-        <SelectorCard
-          variant="icon"
-          icon={<Tag size={28} weight="duotone" />}
-          label="Tagged"
-          description="With metadata"
-          selected={false}
-          disabled={disabled}
-          onSelect={() => {}}
-        />
+      <div style={wrapperStyle}>
+        <div className="grid gap-3 pt-2 pr-2" style={gridStyle}>
+        {Array.from({ length: cardCount }).map((_, i) => {
+          const Icon = ICONS[i % ICONS.length]
+          return (
+            <SelectorCard
+              key={i}
+              variant="icon"
+              icon={showIcon ? <Icon size={28} /> : undefined}
+              label={label || LABELS[i % LABELS.length]}
+              description={description || DESCRIPTIONS[i % DESCRIPTIONS.length]}
+              selected={selected === i}
+              disabled={disabled}
+              onSelect={() => setSelected(i)}
+            />
+          )
+        })}
+      </div>
       </div>
     )
   }
 
   if (variant === 'checkbox') {
     return (
-      <div className="flex flex-col gap-3 max-w-sm">
-        <SelectorCard
-          variant="checkbox"
-          label={label || 'Contacts'}
-          description={description || 'Contact database records'}
-          selected={isSelected}
-          disabled={disabled}
-          onToggle={() => setIsSelected(!isSelected)}
-        />
-        <SelectorCard
-          variant="checkbox"
-          label="Transactions"
-          description="Purchase history"
-          selected={false}
-          disabled={disabled}
-          onToggle={() => {}}
-        />
+      <div style={wrapperStyle}>
+        <div className="grid gap-3" style={gridStyle}>
+        {Array.from({ length: cardCount }).map((_, i) => (
+          <SelectorCard
+            key={i}
+            variant="checkbox"
+            label={label || LABELS[i % LABELS.length]}
+            description={description || DESCRIPTIONS[i % DESCRIPTIONS.length]}
+            selected={multiSelected.has(i)}
+            disabled={disabled}
+            onToggle={() => toggleMulti(i)}
+          />
+        ))}
+      </div>
       </div>
     )
   }
 
   if (variant === 'radio') {
     return (
-      <div className="flex flex-col gap-3 max-w-sm">
-        <SelectorCard
-          variant="radio"
-          label={label || 'Contains'}
-          selected={isSelected}
-          disabled={disabled}
-          onSelect={() => setIsSelected(!isSelected)}
-        >
-          {showChildren && <Input placeholder="Filter value..." />}
-        </SelectorCard>
-        <SelectorCard
-          variant="radio"
-          label="Starts with"
-          selected={false}
-          disabled={disabled}
-          onSelect={() => {}}
-        />
+      <div style={wrapperStyle}>
+        <div className="grid gap-2" style={gridStyle}>
+        {Array.from({ length: cardCount }).map((_, i) => (
+          <SelectorCard
+            key={i}
+            variant="radio"
+            label={label || LABELS[i % LABELS.length]}
+            selected={selected === i}
+            disabled={disabled}
+            onSelect={() => setSelected(i)}
+          >
+            {showChildren && selected === i && <Input placeholder="Filter value..." />}
+          </SelectorCard>
+        ))}
+      </div>
       </div>
     )
   }
 
   // option variant
   return (
-    <div className="flex flex-col gap-3 max-w-md">
-      <SelectorCard
-        variant="option"
-        icon={icon}
-        label={label || 'Fixed value'}
-        description={description || 'Apply the same value to every record on import.'}
-        selected={isSelected}
-        disabled={disabled}
-        onSelect={() => setIsSelected(!isSelected)}
-      />
-      <SelectorCard
-        variant="option"
-        icon={showIcon ? <CalendarBlank size={20} weight="duotone" className="text-primary" /> : undefined}
-        label="Next send date"
-        description="Stamp each record with the next scheduled send date."
-        selected={false}
-        disabled={disabled}
-        onSelect={() => {}}
-      />
+    <div style={wrapperStyle}>
+      <div className="grid gap-3" style={gridStyle}>
+      {Array.from({ length: cardCount }).map((_, i) => {
+        const Icon = ICONS[i % ICONS.length]
+        return (
+          <SelectorCard
+            key={i}
+            variant="option"
+            icon={showIcon ? <Icon size={20} weight="duotone" className="text-primary" /> : undefined}
+            label={label || LABELS[i % LABELS.length]}
+            description={description || DESCRIPTIONS[i % DESCRIPTIONS.length]}
+            selected={selected === i}
+            disabled={disabled}
+            onSelect={() => setSelected(i)}
+          />
+        )
+      })}
     </div>
-  )
+    </div>
+  )  )
 }
