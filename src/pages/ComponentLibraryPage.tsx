@@ -97,10 +97,11 @@ function ComponentBreadcrumbs() {
 }
 
 function matchesSearch(entry: ComponentEntry, query: string): boolean {
+  if (!query) return false
   const q = query.toLowerCase()
-  if (entry.name.toLowerCase().includes(q)) return true
-  if (entry.description.toLowerCase().includes(q)) return true
-  if (entry.searchTerms?.some(term => term.toLowerCase().includes(q))) return true
+  if (entry.name?.toLowerCase().includes(q)) return true
+  if (entry.description?.toLowerCase().includes(q)) return true
+  if (entry.searchTerms?.some(term => term?.toLowerCase().includes(q))) return true
   return false
 }
 
@@ -121,7 +122,7 @@ function SidebarNav() {
     : []
 
   return (
-    <>
+    <div className="flex flex-col h-full overflow-hidden">
       <div className="px-2 pb-2 pt-2">
         <div className="relative">
           <MagnifyingGlass size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
@@ -225,7 +226,7 @@ function SidebarNav() {
           })}
         </SidebarContent>
       )}
-    </>
+    </div>
   )
 }
 
