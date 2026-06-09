@@ -1,3 +1,30 @@
+/**
+ * @component Calendar
+ * @description Date picker calendar grid built on react-day-picker with single and range selection modes.
+ *
+ * @designDecisions
+ * - Today indicator uses text-primary + font-semibold (no background fill) — keeps
+ *   today visually distinct via colour and weight without competing with selection
+ *   states that use filled backgrounds. The teal text is enough to say "today" while
+ *   the filled primary bg is reserved exclusively for user-selected dates.
+ * - Outside days use text-tertiary-foreground (zinc-400/600) at 50% opacity — pushes them
+ *   firmly back in the visual hierarchy so in-month dates dominate. The !important
+ *   override is needed because react-day-picker's default classNames inject competing
+ *   colour values; opacity-50 further dims them without hiding them entirely.
+ * - Range middle uses bg-success-subtle to differentiate from endpoint styling
+ * - Navigation arrows use Phosphor Caret icons for consistency with the icon system
+ * - Cell size controlled via CSS variable (--cell-size) for easy density adjustments
+ * - Caption layout supports both static label and dropdown month/year selectors
+ *
+ * @usage
+ * - Single date selection in forms
+ * - Date range selection for filters and reports
+ * - Embedded in DatePicker/DateRangePicker popovers
+ *
+ * @variants
+ * - buttonVariant: controls nav arrow button style (default: ghost)
+ * - captionLayout: "label" for static month/year, "dropdown" for selectable
+ */
 import * as React from "react"
 import {
   CaretDown,
@@ -108,13 +135,10 @@ function Calendar({
         range_middle: cn("bg-success-subtle rounded-none", defaultClassNames.range_middle),
         range_end: cn("bg-accent rounded-r-md", defaultClassNames.range_end),
         today: cn(
-          "bg-accent text-accent-foreground rounded-md data-[selected=true]:rounded-none",
+          "text-primary font-semibold rounded-md",
           defaultClassNames.today
         ),
-        outside: cn(
-          "text-muted-foreground",
-          defaultClassNames.outside
-        ),
+        outside: "!text-tertiary-foreground opacity-50",
         disabled: cn(
           "text-muted-foreground opacity-50",
           defaultClassNames.disabled

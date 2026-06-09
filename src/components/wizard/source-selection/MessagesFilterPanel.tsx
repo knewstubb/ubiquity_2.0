@@ -1,212 +1,259 @@
-import { cn } from '../../../lib/utils'
-import { Checkbox } from '../../ui/checkbox'
-import { Input } from '../../ui/input'
-import { Combobox } from '../../ui/combobox'
-import { Info, Warning } from '@phosphor-icons/react'
-import { validateDateRange } from '../../../utils/source-selection-validation'
-import type { MessagesFilterConfig, MessagesFilterType, MessageStatus, Channel } from '../../../models/source-selection'
+import { useCallback } from 'react'
+import { Plus, X, Info } from '@phosphor-icons/react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import type { MessagesFilterConfig, FieldFilterRow, Channel } from '@/models/source-selection'
+import { MESSAGE_SYSTEM_FIELDS } from '@/models/source-selection'
 
-// Types
+// ─── Types ───────────────────────────────────────────────────────────────────
+
 interface MessagesFilterPanelProps {
   config: MessagesFilterConfig
   onChange: (config: MessagesFilterConfig) => void
   channel: Channel
 }
 
-interface FilterOption {
-  id: MessagesFilterType
-  label: string
-  description: string
-}
+// ─── Constants ───────────────────────────────────────────────────────────────
 
-interface CampaignOption {
-  id: string
-  name: string
-  channel: Channel
-}
-
-// Constants
-const FILTER_OPTIONS: FilterOption[] = [
-  { id: 'all', label: 'All sends', description: 'Include all message sends' },
-  { id: 'by_status', label: 'By status', description: 'Filter by delivery status' },
-  { id: 'for_campaign', label: 'For specific campaign', description: 'Filter by campaign' },
-  { id: 'in_date_range', label: 'In date range', description: 'Filter by send date' },
+const OPERATORS = [
+  { value: 'equals', label: 'Equals' },
+  { value: 'not_equals', label: 'Not equals' },
+  { value: 'is_true', label: 'Is true' },
+  { value: 'is_false', label: 'Is false' },
+  { value: 'contains', label: 'Contains' },
+  { value: 'greater_than', label: 'Greater than' },
+  { value: 'less_than', label: 'Less than' },
 ]
 
-const STATUS_OPTIONS: { id: MessageStatus; label: string }[] = [
-  { id: 'delivered', label: 'Delivered' },
-  { id: 'bounced', label: 'Bounced' },
-  { id: 'failed', label: 'Failed' },
-  { id: 'opened', label: 'Opened' },
+const MAX_FILTER_ROWS = 10
+
+/** Mock emails/messages available for selection */
+const MOCK_EMAILS = [
+  { id: 'email-welcome-series', name: 'Welcome Series' },
+  { id: 'email-monthly-newsletter', name: 'Monthly Newsletter' },
+  { id: 'email-promo-summer-2026', name: 'Summer Promo 2026' },
+  { id: 'email-re-engagement', name: 'Re-engagement Campaign' },
+  { id: 'email-product-update', name: 'Product Update Q2' },
+  { id: 'email-black-friday', name: 'Black Friday Sale' },
 ]
 
-const MOCK_CAMPAIGNS: CampaignOption[] = [
-  { id: 'camp-welcome-email', name: 'Welcome Email', channel: 'email' },
-  { id: 'camp-monthly-newsletter', name: 'Monthly Newsletter', channel: 'email' },
-  { id: 'camp-promo-sms', name: 'Promo SMS', channel: 'sms' },
-  { id: 'camp-flash-sale-sms', name: 'Flash Sale SMS', channel: 'sms' },
-  { id: 'camp-app-update-push', name: 'App Update Push', channel: 'push' },
-  { id: 'camp-weekly-digest-push', name: 'Weekly Digest Push', channel: 'push' },
+const MOCK_SMS = [
+  { id: 'sms-appointment-reminder', name: 'Appointment Reminder' },
+  { id: 'sms-delivery-update', name: 'Delivery Update' },
+  { id: 'sms-flash-sale', name: 'Flash Sale Alert' },
 ]
 
-// Component
-export function MessagesFilterPanel({ config, onChange, channel }: MessagesFilterPanelProps) {
-  // Derived
-  const selectedStatuses = config.statuses ?? []
-  const showStatusError = config.type === 'by_status' && selectedStatuses.length === 0
-  const showDateError =
-    config.type === 'in_date_range' &&
-    config.startDate !== undefined &&
-    config.endDate !== undefined &&
-    config.startDate.length > 0 &&
-    config.endDate.length > 0 &&
-    !validateDateRange(config.startDate, config.endDate)
+const MOCK_PUSH = [
+  { id: 'push-app-update', name: 'App Update Notification' },
+  { id: 'push-weekly-digest', name: 'Weekly Digest' },
+]
 
-  const campaignsForChannel = MOCK_CAMPAIGNS.filter((c) => c.channel === channel)
-  const campaignComboboxOptions = campaignsForChannel.map((c) => ({ value: c.id, label: c.name }))
-
-  // Handlers
-  function handleFilterTypeChange(type: MessagesFilterType) {
-    if (type === config.type) return
-    const newConfig: MessagesFilterConfig = { type }
-    if (type === 'by_status') {
-      newConfig.statuses = []
-    }
-    onChange(newConfig)
+function getMessagesForChannel(channel: Channel) {
+  switch (channel) {
+    case 'email': return MOCK_EMAILS
+    case 'sms': return MOCK_SMS
+    case 'push': return MOCK_PUSH
   }
+}
 
-  function handleStatusToggle(status: MessageStatus) {
-    const current = [...selectedStatuses]
-    const index = current.indexOf(status)
+// ─── Component ───────────────────────────────────────────────────────────────
+
+export function MessagesFilterPanel({ config, onChange, channel }: MessagesFilterPanelProps) {
+  const rows = config.fieldFilters && config.fieldFilters.length > 0
+    ? config.fieldFilters
+    : [{ field: '', operator: '', value: '' }]
+
+  const availableMessages = getMessagesForChannel(channel)
+  const selectedIds = config.selectedMessageIds ?? []
+
+  // ─── Handlers ────────────────────────────────────────────────────────────────
+
+  const handleFilterRowChange = useCallback(
+    (index: number, patch: Partial<FieldFilterRow>) => {
+      const updated = [...rows]
+      updated[index] = { ...updated[index], ...patch }
+      onChange({ ...config, fieldFilters: updated })
+    },
+    [config, rows, onChange],
+  )
+
+  const handleAddRow = useCallback(() => {
+    if (rows.length >= MAX_FILTER_ROWS) return
+    onChange({ ...config, fieldFilters: [...rows, { field: '', operator: '', value: '' }] })
+  }, [config, rows, onChange])
+
+  const handleRemoveRow = useCallback(
+    (index: number) => {
+      const updated = [...rows]
+      updated.splice(index, 1)
+      if (updated.length === 0) {
+        updated.push({ field: '', operator: '', value: '' })
+      }
+      onChange({ ...config, fieldFilters: updated })
+    },
+    [config, rows, onChange],
+  )
+
+  function handleMessageToggle(messageId: string) {
+    const current = [...selectedIds]
+    const index = current.indexOf(messageId)
     if (index >= 0) {
       current.splice(index, 1)
     } else {
-      current.push(status)
+      current.push(messageId)
     }
-    onChange({ ...config, statuses: current })
+    onChange({ ...config, selectedMessageIds: current })
   }
 
-  function handleCampaignSelect(campaignId: string) {
-    onChange({ ...config, campaignId })
+  // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+  function isRowIncomplete(row: FieldFilterRow): boolean {
+    if (row.operator === 'is_true' || row.operator === 'is_false') {
+      return row.field === '' || row.operator === ''
+    }
+    return row.field === '' || row.operator === '' || row.value === ''
   }
 
-  function handleStartDateChange(startDate: string) {
-    onChange({ ...config, startDate })
-  }
-
-  function handleEndDateChange(endDate: string) {
-    onChange({ ...config, endDate })
-  }
+  // ─── Render ──────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col gap-1.5" data-testid="messages-filter-panel" role="radiogroup" aria-label="Message filter type">
-      {FILTER_OPTIONS.map((option) => (
-        <div key={option.id} className="flex flex-col">
-          <button
-            type="button"
-            role="radio"
-            aria-checked={config.type === option.id}
-            onClick={() => handleFilterTypeChange(option.id)}
-            className={cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-md border text-left text-sm transition-colors duration-150 cursor-pointer',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-              config.type === option.id
-                ? 'border-primary bg-accent'
-                : 'border-border bg-background hover:border-primary/50 hover:bg-accent/25',
-            )}
-          >
-            <div
-              className={cn(
-                'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors duration-150',
-                config.type === option.id ? 'border-primary' : 'border-muted-foreground',
-              )}
-            >
-              {config.type === option.id && (
-                <div className="w-2 h-2 rounded-full bg-primary" />
-              )}
-            </div>
-            <span className="font-medium text-foreground">{option.label}</span>
-          </button>
+    <div className="flex flex-col gap-4" data-testid="messages-filter-panel">
+      {/* Delta export info */}
+      <div className="flex items-start gap-2 rounded bg-accent/50 border border-primary/20 px-3 py-2.5">
+        <Info size={16} className="text-primary shrink-0 mt-0.5" />
+        <p className="text-xs text-foreground m-0">
+          The first export includes data from the previous 24 hours. Subsequent exports deliver only the delta — records changed or added since the last run.
+        </p>
+      </div>
 
-          {/* Secondary inputs in grey box — directly below selected card */}
-          {config.type === option.id && option.id === 'by_status' && (
-            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-2">
-              <div className="flex flex-col gap-2">
-                {STATUS_OPTIONS.map((status) => (
-                  <label
-                    key={status.id}
-                    className="flex items-center gap-2 cursor-pointer"
+      {/* Email/message selection */}
+      <div className="flex flex-col gap-2">
+        <Label className="text-sm font-semibold">
+          Select {channel === 'email' ? 'emails' : channel === 'sms' ? 'SMS messages' : 'push notifications'}
+        </Label>
+        <p className="text-xs text-muted-foreground m-0 -mt-1">
+          Choose which specific {channel === 'email' ? 'emails' : 'messages'} to include in this export.
+        </p>
+        <div className="flex flex-col gap-1.5 rounded-lg border border-border p-3 max-h-[180px] overflow-y-auto">
+          {availableMessages.map((msg) => (
+            <label key={msg.id} className="flex items-center gap-2 cursor-pointer py-1">
+              <Checkbox
+                checked={selectedIds.includes(msg.id)}
+                onCheckedChange={() => handleMessageToggle(msg.id)}
+                aria-label={msg.name}
+              />
+              <span className="text-sm text-foreground">{msg.name}</span>
+            </label>
+          ))}
+        </div>
+        {selectedIds.length > 0 && (
+          <p className="text-xs text-muted-foreground m-0">
+            {selectedIds.length} selected
+          </p>
+        )}
+      </div>
+
+      {/* Field filter builder */}
+      <div className="flex flex-col gap-2">
+        <Label className="text-sm font-semibold">Filter by mailout fields</Label>
+        <div className="flex flex-col gap-3">
+          {rows.map((row, index) => {
+            const showAnd = index > 0
+            const incomplete = isRowIncomplete(row)
+
+            return (
+              <div key={index} className="flex flex-col gap-2">
+                {showAnd && (
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    AND
+                  </span>
+                )}
+                <div className="flex items-start gap-2">
+                  <div className="flex-1 min-w-0">
+                    <Select
+                      value={row.field || undefined}
+                      onValueChange={(v) => handleFilterRowChange(index, { field: v })}
+                    >
+                      <SelectTrigger aria-label={`Filter row ${index + 1} field`}>
+                        <SelectValue placeholder="Field" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MESSAGE_SYSTEM_FIELDS.map((f) => (
+                          <SelectItem key={f.key} value={f.key}>
+                            {f.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <Select
+                      value={row.operator || undefined}
+                      onValueChange={(v) => handleFilterRowChange(index, { operator: v })}
+                    >
+                      <SelectTrigger aria-label={`Filter row ${index + 1} operator`}>
+                        <SelectValue placeholder="Operator" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {OPERATORS.map((op) => (
+                          <SelectItem key={op.value} value={op.value}>
+                            {op.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {row.operator !== 'is_true' && row.operator !== 'is_false' && (
+                    <div className="flex-1 min-w-0">
+                      <Input
+                        value={row.value}
+                        onChange={(e) => handleFilterRowChange(index, { value: e.target.value })}
+                        placeholder="Value"
+                        aria-label={`Filter row ${index + 1} value`}
+                      />
+                    </div>
+                  )}
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleRemoveRow(index)}
+                    aria-label={`Remove filter row ${index + 1}`}
+                    className="shrink-0"
                   >
-                    <Checkbox
-                      checked={selectedStatuses.includes(status.id)}
-                      onCheckedChange={() => handleStatusToggle(status.id)}
-                      aria-label={status.label}
-                    />
-                    <span className="text-sm text-foreground">{status.label}</span>
-                  </label>
-                ))}
-              </div>
-              {showStatusError && (
-                <div className="flex items-center gap-1.5 text-destructive" role="alert">
-                  <Warning size={14} weight="fill" />
-                  <p className="text-xs m-0">At least one status must be selected</p>
+                    <X weight="bold" />
+                  </Button>
                 </div>
-              )}
-            </div>
-          )}
 
-          {config.type === option.id && option.id === 'for_campaign' && (
-            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-2">
-              {campaignsForChannel.length === 0 ? (
-                <div className="flex items-center gap-1.5 text-muted-foreground" role="status">
-                  <Info size={14} weight="fill" />
-                  <p className="text-xs m-0">
-                    No campaigns available for {channel} channel
+                {incomplete && (row.field !== '' || row.operator !== '' || row.value !== '') && (
+                  <p className="text-xs text-destructive m-0">
+                    All fields are required — select a field, operator, and enter a value
                   </p>
-                </div>
-              ) : (
-                <Combobox
-                  value={config.campaignId ?? ''}
-                  onValueChange={handleCampaignSelect}
-                  options={campaignComboboxOptions}
-                  placeholder="Select a campaign..."
-                  searchPlaceholder="Search campaigns..."
-                />
-              )}
-            </div>
-          )}
-
-          {config.type === option.id && option.id === 'in_date_range' && (
-            <div className="mt-2 mb-1 rounded-lg bg-muted p-3 flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <Input
-                  type="date"
-                  value={config.startDate ?? ''}
-                  onChange={(e) => handleStartDateChange(e.target.value)}
-                  aria-invalid={showDateError || undefined}
-                  aria-label="Start date"
-                  placeholder="Start date"
-                />
-                <span className="text-xs text-muted-foreground shrink-0">to</span>
-                <Input
-                  type="date"
-                  value={config.endDate ?? ''}
-                  onChange={(e) => handleEndDateChange(e.target.value)}
-                  aria-invalid={showDateError || undefined}
-                  aria-label="End date"
-                  placeholder="End date"
-                />
+                )}
               </div>
-              {showDateError && (
-                <div className="flex items-center gap-1.5 text-destructive" role="alert">
-                  <Warning size={14} weight="fill" />
-                  <p className="text-xs m-0">Start date must be on or before end date</p>
-                </div>
-              )}
-            </div>
+            )
+          })}
+
+          {rows.length < MAX_FILTER_ROWS && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleAddRow}
+              className="self-start"
+            >
+              <Plus weight="bold" />
+              Add filter
+            </Button>
           )}
         </div>
-      ))}
+      </div>
     </div>
   )
 }

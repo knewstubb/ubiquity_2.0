@@ -152,20 +152,8 @@ function formatFilterDescription(config: SourceConfig): string {
       return `All ${config.primarySource}`;
     case 'created_in_last_n_days':
       return `Created in last ${filter.days ?? '?'} days`;
-    case 'in_list_segment':
-      return 'In list/segment';
-    case 'unsubscribed':
-      return 'Unsubscribed';
-    case 'not_sent_campaign':
-      return 'Not sent campaign';
     case 'field_filter':
       return 'Custom field filter';
-    case 'by_status':
-      return 'By status';
-    case 'for_campaign':
-      return 'For specific campaign';
-    case 'in_date_range':
-      return 'In date range';
     default:
       return 'Filtered';
   }
@@ -191,7 +179,7 @@ export function resetDownstreamOnSourceChange(
     case 'contacts':
       return {
         primarySource: 'contacts',
-        filter: { type: 'all' },
+        filter: { type: 'field_filter', fieldFilters: [{ field: '', operator: '', value: '' }] },
         enrichment: null,
       } satisfies ContactsSourceConfig;
 
@@ -207,7 +195,7 @@ export function resetDownstreamOnSourceChange(
       return {
         primarySource: 'messages',
         channels: [],
-        filter: { type: 'all' },
+        filter: { type: 'field_filter', fieldFilters: [{ field: '', operator: '', value: '' }] },
         enrichment: null,
       } satisfies MessagesSourceConfig;
   }
@@ -261,33 +249,10 @@ export function detectStaleReferences(config: SourceConfig): StaleReference[] {
   const validTableIds = new Set(transactionalDatabases.map((t) => t.id));
 
   // Check filter references
-  if (config.primarySource === 'contacts') {
-    const filter = config.filter;
-    if (filter.type === 'in_list_segment' && filter.segmentId) {
-      if (!validSegmentIds.has(filter.segmentId)) {
-        stale.push({ field: 'filter.segmentId', type: 'segment', id: filter.segmentId });
-      }
-    }
-    if (filter.type === 'not_sent_campaign' && filter.campaignId) {
-      if (!validCampaignIds.has(filter.campaignId)) {
-        stale.push({ field: 'filter.campaignId', type: 'campaign', id: filter.campaignId });
-      }
-    }
-  }
-
   if (config.primarySource === 'transactions') {
     // Check tableId
     if (config.tableId && !validTableIds.has(config.tableId)) {
       stale.push({ field: 'tableId', type: 'table', id: config.tableId });
-    }
-  }
-
-  if (config.primarySource === 'messages') {
-    const filter = config.filter;
-    if (filter.type === 'for_campaign' && filter.campaignId) {
-      if (!validCampaignIds.has(filter.campaignId)) {
-        stale.push({ field: 'filter.campaignId', type: 'campaign', id: filter.campaignId });
-      }
     }
   }
 

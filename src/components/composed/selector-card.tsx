@@ -4,10 +4,11 @@
  * Replaces CardSelector, CheckboxCard, and RadioCard with a single cohesive API.
  *
  * @designDecisions
- * - All variants share rounded-md border, transition-colors, and cursor-pointer base styling
- * - Selected state: border-primary bg-accent shadow-sm (shadow-md for icon variant)
+ * - All variants share rounded (4px) border, transition-colors, and cursor-pointer base styling
+ * - Selected state: border-primary bg-accent shadow-sm
  * - Unselected state: border-border bg-background with hover preview of selected palette
  * - Icon and option variants use checkmark badge positioned -top-1.5 -right-1.5
+ * - Badge and checkbox icons use text-primary-foreground (not text-white) for dark mode resilience
  * - Checkbox variant uses filled primary bg indicator when selected
  * - Radio variant uses a dot indicator and reveals children in a bg-muted box when selected
  * - Option variant is horizontal with icon left, text right, and badge top-right
@@ -19,6 +20,12 @@
  * - checkbox: multi-select patterns (channels, enrichment options)
  * - radio: filter type selection, single-select with progressive disclosure
  * - option: mode selection cards with icon + title + description
+ *
+ * @accessibility
+ * - radio and option variants use role="radio" — wrap them in an element with
+ *   role="radiogroup" and an aria-label describing the group purpose.
+ * - icon variant uses aria-pressed for toggle semantics.
+ * - checkbox variant uses role="checkbox" with aria-checked.
  */
 
 import { Check } from '@phosphor-icons/react'
@@ -55,7 +62,7 @@ export type SelectorCardProps = SelectorCardSingleProps | SelectorCardMultiProps
 function CheckBadge() {
   return (
     <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
-      <Check size={12} weight="bold" className="text-white" />
+      <Check size={12} weight="bold" className="text-primary-foreground" />
     </span>
   )
 }
@@ -63,7 +70,7 @@ function CheckBadge() {
 /* ── Shared styles ── */
 
 const baseClasses =
-  'rounded-md border transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+  'rounded border transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
 
 const disabledClasses = 'opacity-50 cursor-not-allowed'
 
@@ -74,6 +81,7 @@ function IconVariant({ selected, label, description, icon, disabled, className, 
     <button
       type="button"
       aria-pressed={selected}
+      aria-label={label}
       disabled={disabled}
       onClick={onSelect}
       className={cn(
@@ -81,7 +89,7 @@ function IconVariant({ selected, label, description, icon, disabled, className, 
         'relative overflow-visible flex flex-col items-center justify-center gap-2 px-4 py-3',
         'active:translate-y-px',
         selected
-          ? 'border-primary text-primary bg-accent shadow-md hover:shadow-lg'
+          ? 'border-primary text-primary bg-accent shadow-sm hover:shadow-md'
           : 'border-border text-muted-foreground bg-background hover:border-primary hover:text-primary hover:bg-accent/25',
         disabled && disabledClasses,
         className,
@@ -173,7 +181,7 @@ function RadioVariant({ selected, label, disabled, className, children, onSelect
         <span className="font-medium text-foreground">{label}</span>
       </button>
       {selected && children && (
-        <div className="mt-2 mb-1 rounded-lg bg-muted p-3 animate-in slide-in-from-top-1 duration-200">
+        <div className="mt-2 mb-1 rounded bg-muted p-3 animate-in slide-in-from-top-1 duration-200">
           {children}
         </div>
       )}
@@ -193,7 +201,7 @@ function OptionVariant({ selected, label, description, icon, disabled, className
       onClick={onSelect}
       className={cn(
         baseClasses,
-        'relative overflow-visible flex items-start gap-3 p-4 rounded-lg text-left',
+        'relative overflow-visible flex items-start gap-3 p-4 rounded text-left',
         'active:translate-y-px',
         selected
           ? 'border-primary bg-accent shadow-sm'

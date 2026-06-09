@@ -1,179 +1,179 @@
-import { useState } from 'react'
-import { Warning } from '@phosphor-icons/react'
+import { useCallback } from 'react'
+import { Plus, X, Info } from '@phosphor-icons/react'
 import { Input } from '@/components/ui/input'
-import { Combobox } from '@/components/ui/combobox'
-import { RadioCard } from '@/components/composed/radio-card'
-import type { ContactsFilterConfig, ContactsFilterType } from '@/models/source-selection'
+import { Button } from '@/components/ui/button'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import type { ContactsFilterConfig, FieldFilterRow } from '@/models/source-selection'
+import { CONTACT_SYSTEM_FIELDS } from '@/models/source-selection'
 
-// Types
+// ─── Types ───────────────────────────────────────────────────────────────────
 
 interface ContactsFilterPanelProps {
   config: ContactsFilterConfig
   onChange: (config: ContactsFilterConfig) => void
 }
 
-interface FilterOption {
-  id: ContactsFilterType
-  label: string
-}
+// ─── Constants ───────────────────────────────────────────────────────────────
 
-// Mock data
-
-const SEGMENT_OPTIONS = [
-  { value: 'seg-gold-members', label: 'Gold Members' },
-  { value: 'seg-newsletter', label: 'Newsletter Subscribers' },
-  { value: 'seg-vip', label: 'VIP Customers' },
-  { value: 'seg-inactive', label: 'Inactive 90 Days' },
-  { value: 'seg-high-value', label: 'High Value Purchasers' },
+const OPERATORS = [
+  { value: 'equals', label: 'Equals' },
+  { value: 'not_equals', label: 'Not equals' },
+  { value: 'contains', label: 'Contains' },
+  { value: 'greater_than', label: 'Greater than' },
+  { value: 'less_than', label: 'Less than' },
+  { value: 'is_empty', label: 'Is empty' },
+  { value: 'is_not_empty', label: 'Is not empty' },
 ]
 
-const CAMPAIGN_OPTIONS = [
-  { value: 'camp-summer-2024', label: 'Summer Sale 2024' },
-  { value: 'camp-welcome', label: 'Welcome Series' },
-  { value: 'camp-reengagement', label: 'Re-engagement Q1' },
-  { value: 'camp-black-friday', label: 'Black Friday 2024' },
-]
+const MAX_FILTER_ROWS = 10
 
-const FILTER_OPTIONS: FilterOption[] = [
-  { id: 'all', label: 'All contacts' },
-  { id: 'created_in_last_n_days', label: 'Created in last N days' },
-  { id: 'in_list_segment', label: 'In list/segment' },
-  { id: 'unsubscribed', label: 'Unsubscribed' },
-  { id: 'not_sent_campaign', label: 'Not sent campaign' },
-]
-
-// Component
+// ─── Component ───────────────────────────────────────────────────────────────
 
 export function ContactsFilterPanel({ config, onChange }: ContactsFilterPanelProps) {
-  // State
-  const [daysInputValue, setDaysInputValue] = useState(
-    config.days !== undefined ? String(config.days) : ''
+  // Ensure we always have at least one row
+  const rows = config.fieldFilters && config.fieldFilters.length > 0
+    ? config.fieldFilters
+    : [{ field: '', operator: '', value: '' }]
+
+  // ─── Handlers ────────────────────────────────────────────────────────────────
+
+  const handleFilterRowChange = useCallback(
+    (index: number, patch: Partial<FieldFilterRow>) => {
+      const updated = [...rows]
+      updated[index] = { ...updated[index], ...patch }
+      onChange({ ...config, fieldFilters: updated })
+    },
+    [config, rows, onChange],
   )
 
-  // Derived
-  const daysError = getDaysError(daysInputValue, config.type)
+  const handleAddRow = useCallback(() => {
+    if (rows.length >= MAX_FILTER_ROWS) return
+    onChange({ ...config, fieldFilters: [...rows, { field: '', operator: '', value: '' }] })
+  }, [config, rows, onChange])
 
-  // Handlers
+  const handleRemoveRow = useCallback(
+    (index: number) => {
+      const updated = [...rows]
+      updated.splice(index, 1)
+      if (updated.length === 0) {
+        updated.push({ field: '', operator: '', value: '' })
+      }
+      onChange({ ...config, fieldFilters: updated })
+    },
+    [config, rows, onChange],
+  )
 
-  function handleFilterTypeChange(type: ContactsFilterType) {
-    const newConfig: ContactsFilterConfig = { type }
+  // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-    if (type === 'created_in_last_n_days' && config.days !== undefined) {
-      newConfig.days = config.days
-    }
-    if (type === 'in_list_segment' && config.segmentId !== undefined) {
-      newConfig.segmentId = config.segmentId
-    }
-    if (type === 'not_sent_campaign' && config.campaignId !== undefined) {
-      newConfig.campaignId = config.campaignId
-    }
-
-    if (type === 'created_in_last_n_days') {
-      setDaysInputValue(config.days !== undefined ? String(config.days) : '')
-    }
-
-    onChange(newConfig)
+  function isRowIncomplete(row: FieldFilterRow): boolean {
+    return row.field === '' || row.operator === '' || row.value === ''
   }
 
-  function handleDaysChange(rawValue: string) {
-    setDaysInputValue(rawValue)
-
-    const parsed = Number(rawValue)
-    if (rawValue === '' || isNaN(parsed)) {
-      onChange({ ...config, days: undefined })
-      return
-    }
-
-    if (Number.isInteger(parsed) && parsed >= 1 && parsed <= 365) {
-      onChange({ ...config, days: parsed })
-    } else {
-      onChange({ ...config, days: parsed })
-    }
-  }
-
-  function handleSegmentChange(segmentId: string) {
-    onChange({ ...config, segmentId })
-  }
-
-  function handleCampaignChange(campaignId: string) {
-    onChange({ ...config, campaignId })
-  }
-
-  // Render
+  // ─── Render ──────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col gap-1.5" role="radiogroup" aria-label="Contact filter options">
-      {FILTER_OPTIONS.map((option) => (
-        <RadioCard
-          key={option.id}
-          selected={config.type === option.id}
-          onSelect={() => handleFilterTypeChange(option.id)}
-          label={option.label}
-        >
-          {option.id === 'created_in_last_n_days' && (
-            <div className="flex flex-col gap-2">
-              <Input
-                type="number"
-                min={1}
-                max={365}
-                step={1}
-                value={daysInputValue}
-                onChange={(e) => handleDaysChange(e.target.value)}
-                placeholder="Number of days (1–365)"
-                aria-invalid={!!daysError}
-                aria-describedby={daysError ? 'days-error' : undefined}
-                className="max-w-[160px]"
-              />
-              {daysError && (
-                <p id="days-error" className="text-xs text-destructive flex items-center gap-1 m-0">
-                  <Warning size={12} weight="fill" />
-                  {daysError}
+    <div className="flex flex-col gap-3" data-testid="contacts-filter-panel">
+      {/* Delta export info */}
+      <div className="flex items-start gap-2 rounded bg-accent/50 border border-primary/20 px-3 py-2.5">
+        <Info size={16} className="text-primary shrink-0 mt-0.5" />
+        <p className="text-xs text-foreground m-0">
+          The first export includes data from the previous 24 hours. Subsequent exports deliver only the delta — records changed or added since the last run.
+        </p>
+      </div>
+
+      {/* Field filter builder — shown directly */}
+      <div className="flex flex-col gap-3">
+        {rows.map((row, index) => {
+          const showAnd = index > 0
+          const incomplete = isRowIncomplete(row)
+
+          return (
+            <div key={index} className="flex flex-col gap-2">
+              {showAnd && (
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  AND
+                </span>
+              )}
+              <div className="flex items-start gap-2">
+                <div className="flex-1 min-w-0">
+                  <Select
+                    value={row.field || undefined}
+                    onValueChange={(v) => handleFilterRowChange(index, { field: v })}
+                  >
+                    <SelectTrigger aria-label={`Filter row ${index + 1} field`}>
+                      <SelectValue placeholder="Field" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CONTACT_SYSTEM_FIELDS.map((f) => (
+                        <SelectItem key={f.key} value={f.key}>
+                          {f.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <Select
+                    value={row.operator || undefined}
+                    onValueChange={(v) => handleFilterRowChange(index, { operator: v })}
+                  >
+                    <SelectTrigger aria-label={`Filter row ${index + 1} operator`}>
+                      <SelectValue placeholder="Operator" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {OPERATORS.map((op) => (
+                        <SelectItem key={op.value} value={op.value}>
+                          {op.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <Input
+                    value={row.value}
+                    onChange={(e) => handleFilterRowChange(index, { value: e.target.value })}
+                    placeholder="Value"
+                    aria-label={`Filter row ${index + 1} value`}
+                  />
+                </div>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleRemoveRow(index)}
+                  aria-label={`Remove filter row ${index + 1}`}
+                  className="shrink-0"
+                >
+                  <X weight="bold" />
+                </Button>
+              </div>
+
+              {incomplete && (row.field !== '' || row.operator !== '' || row.value !== '') && (
+                <p className="text-xs text-destructive m-0">
+                  All fields are required — select a field, operator, and enter a value
                 </p>
               )}
             </div>
-          )}
+          )
+        })}
 
-          {option.id === 'in_list_segment' && (
-            <Combobox
-              value={config.segmentId ?? ''}
-              onValueChange={handleSegmentChange}
-              options={SEGMENT_OPTIONS}
-              placeholder="Search segments..."
-              searchPlaceholder="Search segments..."
-            />
-          )}
-
-          {option.id === 'not_sent_campaign' && (
-            <div className="flex flex-col gap-2">
-              <Combobox
-                value={config.campaignId ?? ''}
-                onValueChange={handleCampaignChange}
-                options={CAMPAIGN_OPTIONS}
-                placeholder="Choose a campaign..."
-                searchPlaceholder="Search campaigns..."
-              />
-              <p className="text-xs text-muted-foreground m-0">
-                <span className="font-medium">Cross-entity filter:</span> This filters contacts based on campaign send history.
-              </p>
-            </div>
-          )}
-        </RadioCard>
-      ))}
+        {rows.length < MAX_FILTER_ROWS && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleAddRow}
+            className="self-start"
+          >
+            <Plus weight="bold" />
+            Add filter
+          </Button>
+        )}
+      </div>
     </div>
   )
-}
-
-// Helpers
-
-function getDaysError(inputValue: string, filterType: ContactsFilterType): string | null {
-  if (filterType !== 'created_in_last_n_days') return null
-  if (inputValue === '') return null
-
-  const parsed = Number(inputValue)
-  if (isNaN(parsed)) return 'Please enter a valid number'
-  if (!Number.isInteger(parsed)) return 'Must be a whole number (no decimals)'
-  if (parsed < 1) return 'Must be at least 1 day'
-  if (parsed > 365) return 'Must be 365 days or fewer'
-
-  return null
 }

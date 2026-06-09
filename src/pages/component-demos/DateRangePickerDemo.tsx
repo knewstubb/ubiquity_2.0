@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { DateRangePicker, type DateRangePreset } from '@/components/composed/date-range-picker'
-import { useControlValues } from '@/lib/useControlValues'
 
 const SAMPLE_PRESETS: DateRangePreset[] = [
   { label: 'Today', start: '2026-05-22', end: '2026-05-22' },
@@ -15,15 +14,30 @@ const SAMPLE_PRESETS: DateRangePreset[] = [
   { label: 'August 2025', start: '2025-07-26', end: '2025-08-25' },
 ]
 
-export default function DateRangePickerDemo({ controls }: { controls?: Record<string, unknown> }) {
-  const values = useControlValues(controls)
-  const showPresets = (values['showPresets'] as boolean) ?? true
-  const presetCount = (values['presetCount'] as number) ?? 5
+export default function DateRangePickerDemo(props: Record<string, unknown>) {
+  const mode = (props['mode'] as string) ?? 'range-presets'
+  const sideBySide = (props['side-by-side'] as boolean) ?? false
 
-  const [startDate, setStartDate] = useState('2026-04-26')
-  const [endDate, setEndDate] = useState('2026-05-25')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [singleDate, setSingleDate] = useState('')
 
-  const presets = showPresets ? SAMPLE_PRESETS.slice(0, presetCount) : []
+  const presets = mode === 'range-presets' ? SAMPLE_PRESETS.slice(0, 5) : []
+
+  if (mode === 'single') {
+    return (
+      <div className="flex items-start justify-center p-8">
+        <DateRangePicker
+          mode="single"
+          startDate={singleDate}
+          endDate={singleDate}
+          onStartDateChange={(d) => { setSingleDate(d); }}
+          onEndDateChange={(d) => { setSingleDate(d); }}
+          placeholder="Select date"
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="flex items-start justify-center p-8">
@@ -33,6 +47,8 @@ export default function DateRangePickerDemo({ controls }: { controls?: Record<st
         onStartDateChange={setStartDate}
         onEndDateChange={setEndDate}
         presets={presets}
+        sideBySide={mode === 'range' || sideBySide}
+        placeholder="Select range"
       />
     </div>
   )

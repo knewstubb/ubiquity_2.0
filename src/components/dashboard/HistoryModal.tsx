@@ -87,13 +87,13 @@ export function HistoryModal({ connector, onClose }: HistoryModalProps) {
   return (
     <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
       <DialogContent className="max-w-[480px] p-0 gap-0">
-        <DialogTitle className="sr-only">Automation History</DialogTitle>
+        <DialogTitle className="sr-only">Change Log</DialogTitle>
         <DialogDescription className="sr-only">
           Change history for {connector.name}
         </DialogDescription>
 
         <ModalHeader
-          title="Automation History"
+          title="Change Log"
           onClose={onClose}
         />
 

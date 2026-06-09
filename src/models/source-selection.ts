@@ -10,19 +10,23 @@ export type MessageStatus = 'delivered' | 'bounced' | 'failed' | 'opened';
 
 // --- Contacts filter ---
 
-export type ContactsFilterType =
-  | 'all'
-  | 'created_in_last_n_days'
-  | 'in_list_segment'
-  | 'unsubscribed'
-  | 'not_sent_campaign';
+export type ContactsFilterType = 'field_filter';
 
 export interface ContactsFilterConfig {
   type: ContactsFilterType;
-  days?: number;
-  segmentId?: string;
-  campaignId?: string;
+  fieldFilters?: FieldFilterRow[];
 }
+
+/** System fields available for contact filtering */
+export const CONTACT_SYSTEM_FIELDS = [
+  { key: 'id', label: 'ID' },
+  { key: 'reference_id', label: 'Reference ID' },
+  { key: 'person_id', label: 'Person ID' },
+  { key: 'create_date', label: 'Create Date' },
+  { key: 'last_modified', label: 'Last Modified' },
+  { key: 'source', label: 'Source' },
+  { key: 'version', label: 'Version' },
+] as const;
 
 // --- Transactions filter ---
 
@@ -45,19 +49,27 @@ export interface TransactionsFilterConfig {
 
 // --- Messages filter ---
 
-export type MessagesFilterType =
-  | 'all'
-  | 'by_status'
-  | 'for_campaign'
-  | 'in_date_range';
+export type MessagesFilterType = 'field_filter';
 
 export interface MessagesFilterConfig {
   type: MessagesFilterType;
-  statuses?: MessageStatus[];
-  campaignId?: string;
-  startDate?: string;
-  endDate?: string;
+  fieldFilters?: FieldFilterRow[];
+  /** Specific email/message IDs selected for the export */
+  selectedMessageIds?: string[];
 }
+
+/** System fields available for mailout/message filtering */
+export const MESSAGE_SYSTEM_FIELDS = [
+  { key: 'was_included', label: 'Was included' },
+  { key: 'is_read', label: 'Is read' },
+  { key: 'has_clicked', label: 'Has clicked' },
+  { key: 'is_opted_out', label: 'Is opted out' },
+  { key: 'message_status', label: 'Message status' },
+  { key: 'marked_as_spam', label: 'Marked as spam' },
+  { key: 'is_read_more_than_once', label: 'Is read more than once' },
+  { key: 'read_on', label: 'Read on' },
+  { key: 'read_first_on', label: 'Read first on' },
+] as const;
 
 // --- Enrichment ---
 

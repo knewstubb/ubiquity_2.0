@@ -12,10 +12,12 @@ interface PaginationDemoProps {
   'total-pages'?: number
   'current-page'?: number
   'show-ellipsis'?: boolean
+  size?: string
 }
 
 export default function PaginationDemo(props: PaginationDemoProps) {
   const hasControls = props['total-pages'] !== undefined
+  const size = (props.size as 'default' | 'sm') ?? 'default'
 
   if (hasControls) {
     const totalPages = (props['total-pages'] as number) ?? 10
@@ -43,23 +45,23 @@ export default function PaginationDemo(props: PaginationDemoProps) {
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious href="#" />
+            <PaginationPrevious href="#" size={size} />
           </PaginationItem>
           {pages.map((page, i) =>
             page === 'ellipsis' ? (
               <PaginationItem key={`ellipsis-${i}`}>
-                <PaginationEllipsis />
+                <PaginationEllipsis className={size === 'sm' ? 'h-7 w-7' : undefined} />
               </PaginationItem>
             ) : (
               <PaginationItem key={page}>
-                <PaginationLink href="#" isActive={page === currentPage}>
+                <PaginationLink href="#" isActive={page === currentPage} size={size}>
                   {page}
                 </PaginationLink>
               </PaginationItem>
             )
           )}
           <PaginationItem>
-            <PaginationNext href="#" />
+            <PaginationNext href="#" size={size} />
           </PaginationItem>
         </PaginationContent>
       </Pagination>

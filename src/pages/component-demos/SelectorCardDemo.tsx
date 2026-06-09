@@ -31,7 +31,7 @@ export default function SelectorCardDemo(props: Record<string, unknown>) {
   }
 
   const gridStyle = { gridTemplateColumns: `repeat(${columns}, 1fr)` }
-  const wrapperStyle = { maxWidth: `${maxWidth}%` }
+  const wrapperStyle = { width: '100%', maxWidth: `${maxWidth}%` }
 
   if (variant === 'icon') {
     return (

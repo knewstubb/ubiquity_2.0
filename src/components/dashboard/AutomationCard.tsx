@@ -173,14 +173,14 @@ export function AutomationCard({ connector, connectionError, onToggleStatus, onV
               onSelect={() => onActivityLog?.()}
             >
               <ListBullets size={16} weight="regular" />
-              Activity Log
+              Automation History
             </DropdownMenuItem>
             <DropdownMenuItem
               className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md"
               onSelect={() => onHistory?.()}
             >
               <ClockCounterClockwise size={16} weight="regular" />
-              Automation History
+              Change Log
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

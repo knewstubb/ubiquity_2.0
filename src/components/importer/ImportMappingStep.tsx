@@ -522,16 +522,16 @@ export function ImportMappingStep({
               </div>
             ))}
 
-            {/* Add Lookup Field button — inside table */}
-            <div className="py-2 px-4 border-t border-border">
+            {/* Add Lookup Field button — inside table, no separator */}
+            <div className="py-3 px-4">
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary leading-none hover:underline underline-offset-4"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary leading-none hover:underline underline-offset-4"
                 onClick={handleAddLookupRow}
                 data-testid="add-lookup-field-btn"
               >
-                <Plus size={12} weight="bold" className="shrink-0" />
-                <span>Add Lookup Field</span>
+                <Plus size={14} weight="bold" className="shrink-0" />
+                <span>Add lookup field</span>
               </button>
             </div>
           </div>
@@ -656,9 +656,8 @@ export function ImportMappingStep({
             className="grid grid-cols-[1fr_40px_1.2fr_40px_1fr] items-center py-2 px-4"
             key={`default-${defaultRow.targetField}`}
           >
-            {/* Source field — badge */}
             <div>
-              <Badge variant="default-subtle">Import Default</Badge>
+              <Badge variant="default-subtle">Added Value</Badge>
             </div>
 
             {/* Arrow */}
@@ -696,15 +695,15 @@ export function ImportMappingStep({
           </div>
         ))}
 
-        {/* Set import default button — inside table */}
-        <div className="py-2 px-4 border-t border-border">
+        {/* Add field value button — inside table, no separator */}
+        <div className="py-3 px-4">
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary leading-none hover:underline underline-offset-4"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary leading-none hover:underline underline-offset-4"
             onClick={() => setDefaultModalOpen(true)}
           >
-            <Plus size={12} weight="bold" className="shrink-0" />
-            <span>Set import default</span>
+            <Plus size={14} weight="bold" className="shrink-0" />
+            <span>Add field value</span>
           </button>
         </div>
       </div>

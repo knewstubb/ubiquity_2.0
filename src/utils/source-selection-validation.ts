@@ -41,17 +41,11 @@ export function isFilterComplete(config: SourceConfig): boolean {
 }
 
 function isContactsFilterComplete(filter: ContactsFilterConfig): boolean {
-  switch (filter.type) {
-    case 'all':
-    case 'unsubscribed':
-      return true;
-    case 'created_in_last_n_days':
-      return filter.days !== undefined && validateDays(filter.days);
-    case 'in_list_segment':
-      return filter.segmentId !== undefined && filter.segmentId.length > 0;
-    case 'not_sent_campaign':
-      return filter.campaignId !== undefined && filter.campaignId.length > 0;
-  }
+  const rows = filter.fieldFilters;
+  if (!rows || rows.length === 0) return true; // No filters = export all (delta)
+  return rows.every(
+    (row) => row.field.length > 0 && row.operator.length > 0 && row.value.length > 0
+  );
 }
 
 function isTransactionsFilterComplete(filter: TransactionsFilterConfig): boolean {
@@ -71,22 +65,16 @@ function isTransactionsFilterComplete(filter: TransactionsFilterConfig): boolean
 }
 
 function isMessagesFilterComplete(filter: MessagesFilterConfig): boolean {
-  switch (filter.type) {
-    case 'all':
-      return true;
-    case 'by_status':
-      return filter.statuses !== undefined && filter.statuses.length > 0;
-    case 'for_campaign':
-      return filter.campaignId !== undefined && filter.campaignId.length > 0;
-    case 'in_date_range':
-      return (
-        filter.startDate !== undefined &&
-        filter.endDate !== undefined &&
-        filter.startDate.length > 0 &&
-        filter.endDate.length > 0 &&
-        validateDateRange(filter.startDate, filter.endDate)
-      );
-  }
+  const rows = filter.fieldFilters;
+  if (!rows || rows.length === 0) return true; // No filters = export all (delta)
+  return rows.every(
+    (row) => {
+      if (row.operator === 'is_true' || row.operator === 'is_false') {
+        return row.field.length > 0 && row.operator.length > 0;
+      }
+      return row.field.length > 0 && row.operator.length > 0 && row.value.length > 0;
+    }
+  );
 }
 
 /**

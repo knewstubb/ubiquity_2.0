@@ -4,12 +4,15 @@
  * Uses Popover for the floating panel and Calendar for the date grid.
  *
  * @designDecisions
- * - Built on library primitives: Popover (floating panel), Calendar (date grid), Button (trigger)
+ * - Built on library primitives: Popover (floating panel), Calendar (date grid)
+ * - Trigger is a styled native button (not the Button component) for lighter weight
  * - Presets are domain-configurable — pass any array of {label, start, end} objects
  * - Active preset highlighted in teal to show current selection
  * - Panel uses Popover's built-in animation (200ms fade+slide) and focus management
  * - Trigger shows formatted date range with calendar icon and tabular-nums
  * - Calendar range edges use filled teal circles (rounded-full exception documented here — standard date picker pattern)
+ * - Calendar wrapper has no extra padding — Calendar owns its own internal spacing (per component-usage rules)
+ * - Panel stays open after calendar range selection so users can refine; closes only on preset click or outside click
  *
  * @usage
  * - Use for any date range filter where presets speed up common selections
@@ -21,7 +24,6 @@ import { useState, useCallback, useMemo } from 'react'
 import { CalendarBlank } from '@phosphor-icons/react'
 import { type DateRange } from 'react-day-picker'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
@@ -44,6 +46,10 @@ export interface DateRangePickerProps {
   presets?: DateRangePreset[]
   /** Placeholder text when no date is selected */
   placeholder?: string
+  /** Show two months side by side for easier range selection */
+  sideBySide?: boolean
+  /** Selection mode: 'single' for one date, 'range' for start+end */
+  mode?: 'single' | 'range'
   /** Additional className for the trigger button */
   className?: string
 }
@@ -67,6 +73,8 @@ export function DateRangePicker({
   onEndDateChange,
   presets = [],
   placeholder = 'Select date range',
+  sideBySide = false,
+  mode = 'range',
   className,
 }: DateRangePickerProps) {
   const [open, setOpen] = useState(false)
@@ -90,8 +98,19 @@ export function DateRangePicker({
         onStartDateChange(toIso(range.from))
         if (range.to) {
           onEndDateChange(toIso(range.to))
-          setOpen(false)
         }
+      }
+    },
+    [onStartDateChange, onEndDateChange],
+  )
+
+  const handleSingleSelect = useCallback(
+    (date: Date | undefined) => {
+      if (date) {
+        const iso = toIso(date)
+        onStartDateChange(iso)
+        onEndDateChange(iso)
+        setOpen(false)
       }
     },
     [onStartDateChange, onEndDateChange],
@@ -108,25 +127,29 @@ export function DateRangePicker({
 
   const hasSelection = startDate && endDate
   const displayLabel = hasSelection
-    ? `${formatDisplayDate(startDate)} — ${formatDisplayDate(endDate)}`
+    ? mode === 'single'
+      ? formatDisplayDate(startDate)
+      : `${formatDisplayDate(startDate)} — ${formatDisplayDate(endDate)}`
     : placeholder
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
+        <button
+          type="button"
           className={cn(
-            "justify-start gap-2 font-medium",
+            "flex h-9 w-full items-center gap-2 rounded-md border border-input bg-background px-3 text-sm transition-colors",
+            "hover:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             !hasSelection && "text-muted-foreground",
+            hasSelection && "text-foreground",
             className,
           )}
           aria-label="Select date range"
           aria-expanded={open}
         >
-          <CalendarBlank size={16} weight="regular" className="text-tertiary-foreground shrink-0" />
-          <span className="tabular-nums">{displayLabel}</span>
-        </Button>
+          <CalendarBlank size={14} className="text-muted-foreground shrink-0" />
+          <span className="tabular-nums truncate">{displayLabel}</span>
+        </button>
       </PopoverTrigger>
 
       <PopoverContent
@@ -135,14 +158,24 @@ export function DateRangePicker({
         sideOffset={4}
       >
         {/* Calendar */}
-        <div className="p-3">
-          <Calendar
-            mode="range"
-            selected={selected}
-            onSelect={handleRangeSelect}
-            defaultMonth={defaultMonth}
-            numberOfMonths={1}
-          />
+        <div>
+          {mode === 'single' ? (
+            <Calendar
+              mode="single"
+              selected={startDate ? new Date(startDate + 'T00:00:00') : undefined}
+              onSelect={handleSingleSelect}
+              defaultMonth={defaultMonth}
+              numberOfMonths={1}
+            />
+          ) : (
+            <Calendar
+              mode="range"
+              selected={selected}
+              onSelect={handleRangeSelect}
+              defaultMonth={defaultMonth}
+              numberOfMonths={sideBySide ? 2 : 1}
+            />
+          )}
         </div>
 
         {/* Presets */}

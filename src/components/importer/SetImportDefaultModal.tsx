@@ -2,24 +2,19 @@ import { useState, useMemo } from 'react';
 import { Tag, CalendarBlank } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { SelectorCard } from '../composed/selector-card';
+import { ModalHeader } from '../composed/modal-header';
+import { ModalFooter } from '../composed/modal-footer';
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogBody,
-  DialogFooter,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
 } from '../ui/dialog';
 import { Separator } from '../ui/separator';
 import { Combobox } from '../ui/combobox';
-import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
 import { Badge } from '../ui/badge';
-import { CloseButton } from '../ui/close-button';
 import { ChipInput } from '../composed/chip-input';
 import { DayPicker } from '../composed/day-picker';
 import type { ImportDefaultRow } from '../../models/importer';
@@ -141,18 +136,13 @@ export function SetImportDefaultModal({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-[560px]">
-        <DialogHeader>
-          <DialogTitle>Set import default</DialogTitle>
-          <DialogClose asChild>
-            <CloseButton size="sm" />
-          </DialogClose>
-        </DialogHeader>
+        <ModalHeader
+          title="Add field value"
+          description="Choose a database column and define what value to inject when this import runs."
+          onClose={() => handleOpenChange(false)}
+        />
 
         <DialogBody className="space-y-4">
-          {/* Subtitle */}
-          <DialogDescription className="text-sm m-0">
-            Choose a database column and define what value to inject when this import runs.
-          </DialogDescription>
 
           {/* Step 1: Target Field */}
           <div className="space-y-2">
@@ -193,7 +183,7 @@ export function SetImportDefaultModal({
                 {/* Card A: Fixed Value */}
                 <SelectorCard
                   variant="option"
-                  icon={<Tag size={20} weight="duotone" className="text-primary" />}
+                  icon={<Tag size={20} className="text-primary" />}
                   label="Fixed value"
                   description="Apply the same value to every record on import — useful for campaign codes, source tags, or category labels."
                   selected={mode === 'fixed'}
@@ -203,7 +193,7 @@ export function SetImportDefaultModal({
                 {/* Card B: Next Send Date/Time */}
                 <SelectorCard
                   variant="option"
-                  icon={<CalendarBlank size={20} weight="duotone" className={cn(isDateField ? 'text-primary' : 'text-muted-foreground')} />}
+                  icon={<CalendarBlank size={20} className={cn(isDateField ? 'text-primary' : 'text-muted-foreground')} />}
                   label="Next send date/time"
                   description={isDateField
                     ? 'Stamp each imported record with the next scheduled send date, based on your sending schedule.'
@@ -297,14 +287,10 @@ export function SetImportDefaultModal({
           )}
         </DialogBody>
 
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="ghost">Cancel</Button>
-          </DialogClose>
-          <Button disabled={!isValid} onClick={handleSubmit}>
-            Create
-          </Button>
-        </DialogFooter>
+        <ModalFooter
+          secondaryAction={{ label: 'Cancel', onClick: () => handleOpenChange(false) }}
+          primaryAction={{ label: 'Create', onClick: handleSubmit, disabled: !isValid }}
+        />
       </DialogContent>
     </Dialog>
   );
