@@ -1,0 +1,4 @@
+first_name,last_name,email,phone,membership_level
+John,Smith,john@example.com,021555001,Gold
+Jane,Doe,jane@example.com,021555002,Silver
+Bob,Wilson,bob@example.com,021555003,Bronze

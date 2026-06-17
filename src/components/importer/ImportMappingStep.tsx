@@ -5,6 +5,7 @@ import { Button } from '../ui/button';
 import { Combobox } from '../ui/combobox';
 import { Badge } from '../ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { TruncatedText } from '../shared/TruncatedText';
 import { HelpPopover } from '@/components/composed/help-popover';
 import type { FieldMapping, LookupMapping, ImportDefaultRow } from '../../models/importer';
 import { CONTACT_LOOKUP_FIELDS } from '../../models/importer';
@@ -595,11 +596,13 @@ export function ImportMappingStep({
             {/* Source field */}
             <span
               className={cn(
-                "text-sm font-normal text-foreground m-0 break-all",
+                "text-sm font-normal text-foreground m-0",
                 row.status === 'duplicate' && "text-destructive font-medium"
               )}
             >
-              {row.sourceField}
+              <TruncatedText className={cn(
+                row.status === 'duplicate' && "text-destructive font-medium"
+              )}>{row.sourceField}</TruncatedText>
             </span>
 
             {/* Arrow */}

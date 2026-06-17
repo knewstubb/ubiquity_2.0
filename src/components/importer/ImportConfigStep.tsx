@@ -224,7 +224,7 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
             Select which type of update you want. Click here for help with options.
           </p>
         </div>
-        <div className="w-[552px] flex flex-col gap-3">
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
           <div className="flex flex-col gap-2.5">
             {UPDATE_OPTIONS.map((opt) => (
               <label key={opt.value} className="flex items-start gap-2.5 cursor-pointer">
@@ -278,7 +278,7 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
             Choose how to handle blank values in the import
           </p>
         </div>
-        <div className="w-[552px] flex flex-col gap-3">
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
           <div className="flex flex-col gap-2.5">
             {BLANK_OPTIONS.map((opt) => (
               <label key={opt.value} className="flex items-start gap-2.5 cursor-pointer">
@@ -323,7 +323,7 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
             Select the columns that will be used for matching records during updates
           </p>
         </div>
-        <div className="w-[552px] flex flex-col gap-3">
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
           <ChipInput
             chips={chips}
             onRemove={handleRemoveChip}
@@ -354,7 +354,7 @@ export function ImportConfigStep({ type, value, onUpdate }: ImportConfigStepProp
             Remove duplicate contact records in a column
           </p>
         </div>
-        <div className="w-[552px]">
+        <div className="flex-1 min-w-0">
           <div className="flex items-start gap-3">
             <div className="flex items-center gap-2 shrink-0 h-10">
               <Label htmlFor="dedupe-toggle" className="text-sm text-foreground">Enable</Label>

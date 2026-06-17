@@ -4,6 +4,8 @@ import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { DragHandle } from '../shared/DragHandle';
+import { TruncatedText } from '../shared/TruncatedText';
+import { EnrichmentSelector } from './EnrichmentSelector';
 import { Lock, ArrowCounterClockwise } from '@phosphor-icons/react';
 import {
   getFieldsForSources,
@@ -16,6 +18,7 @@ import {
 import { getFieldsForSourceConfig } from '../../utils/source-config-utils';
 import type { ExporterWizardDraft, ColumnRename } from '../../models/wizard';
 import type { SelectedField } from '../../models/automation';
+import type { EnrichmentConfig } from '../../models/source-selection';
 
 interface FieldMappingStepProps {
   draft: ExporterWizardDraft;
@@ -166,6 +169,15 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
     [draft.columnRenames, onUpdate],
   );
 
+  // Enrichment change handler
+  const handleEnrichmentChange = useCallback(
+    (enrichment: EnrichmentConfig | null) => {
+      if (!draft.sourceConfig) return;
+      onUpdate({ sourceConfig: { ...draft.sourceConfig, enrichment } });
+    },
+    [draft.sourceConfig, onUpdate],
+  );
+
   // Drag handlers for reordering
   const handleDragStart = useCallback((index: number) => { setDragIndex(index); }, []);
 
@@ -236,6 +248,15 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
         </div>
       )}
 
+      {/* Enrichment selector — toggle additional source entities */}
+      {draft.sourceConfig && (
+        <EnrichmentSelector
+          primarySource={draft.sourceConfig.primarySource}
+          currentEnrichment={draft.sourceConfig.enrichment}
+          onEnrichmentChange={handleEnrichmentChange}
+        />
+      )}
+
       {/* Event fields section (event-based only) */}
       {isEventBased && eventFields.length > 0 && (
         <div className="flex flex-col gap-2">
@@ -272,7 +293,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                   <DragHandle />
                   <span className="text-xs text-accent-foreground font-semibold min-w-5 text-center shrink-0">{index + 1}</span>
                   <Lock size={12} weight="bold" className="text-muted-foreground shrink-0" />
-                  <span className="text-sm text-foreground font-medium shrink-0">{field.label}</span>
+                  <TruncatedText className="text-sm text-foreground font-medium max-w-[160px]">{field.label}</TruncatedText>
                   <span className="text-xs text-tertiary-foreground ml-1 py-0.5 px-1.5 bg-secondary rounded-full shrink-0">{field.source}</span>
 
                   {/* Column rename input */}
@@ -362,7 +383,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                     checked={true}
                     onCheckedChange={() => handleToggleContactField(field)}
                   />
-                  <Label htmlFor={`field-${field.key}`}>{field.label}</Label>
+                  <TruncatedText className="text-sm font-medium max-w-[160px]">{field.label}</TruncatedText>
                 </div>
                 <span className="text-xs text-tertiary-foreground py-0.5 px-1.5 bg-secondary rounded-full shrink-0">{field.source}</span>
 
@@ -406,7 +427,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                   checked={false}
                   onCheckedChange={() => handleToggleContactField(field)}
                 />
-                <Label htmlFor={`field-${field.key}`}>{field.label}</Label>
+                <TruncatedText className="text-sm font-medium max-w-[160px]">{field.label}</TruncatedText>
               </div>
               <span className="text-xs text-tertiary-foreground ml-auto py-0.5 px-1.5 bg-secondary rounded-full shrink-0">{field.source}</span>
             </div>

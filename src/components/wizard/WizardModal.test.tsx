@@ -72,6 +72,25 @@ vi.mock('./SourceSelectionStep', () => ({
   },
 }))
 
+vi.mock('./DataSourceFilterStep', () => ({
+  DataSourceFilterStep: ({ draft, onUpdate }: { draft: ExporterWizardDraft; onUpdate: (p: Partial<ExporterWizardDraft>) => void }) => (
+    <div data-testid="data-source-filter-step">
+      <button
+        data-testid="set-source-contacts"
+        onClick={() => onUpdate({
+          sourceConfig: {
+            primarySource: 'contacts',
+            filter: { type: 'all' },
+            enrichment: null,
+          } as SourceConfig,
+        })}
+      >
+        Set Contacts Source
+      </button>
+    </div>
+  ),
+}))
+
 vi.mock('./FieldMappingStep', () => ({
   FieldMappingStep: ({ draft, onUpdate }: { draft: ExporterWizardDraft; onUpdate: (p: Partial<ExporterWizardDraft>) => void }) => (
     <div data-testid="field-mapping-step">
@@ -115,7 +134,13 @@ vi.mock('./ReviewStep', () => ({
 /**
  * Unit tests for WizardModal component.
  *
- * Validates: Requirements 1.1, 1.2, 1.3, 1.4, 1.5, 9.1
+ * The wizard step order is:
+ *   0: File Settings (OutputConfigStep)
+ *   1: Data Source (DataSourceFilterStep)
+ *   2: Field Mapping (FieldMappingStep)
+ *   3: Schedule (ScheduleStep)
+ *   4: Notifications (NotificationsStep)
+ *   5: Review (ReviewStep)
  */
 
 describe('WizardModal', () => {
@@ -132,10 +157,10 @@ describe('WizardModal', () => {
   })
 
   describe('Initial render', () => {
-    it('renders with source selection as first step', () => {
+    it('renders with File Settings as first step', () => {
       render(<WizardModal {...defaultProps} />)
 
-      expect(screen.getByTestId('source-selection-step')).toBeInTheDocument()
+      expect(screen.getByTestId('output-config-step')).toBeInTheDocument()
     })
 
     it('renders the wizard modal dialog', () => {
@@ -184,53 +209,56 @@ describe('WizardModal', () => {
       render(<WizardModal {...defaultProps} />)
 
       const nav = screen.getByRole('navigation', { name: 'Progress' })
-      expect(within(nav).getByText('Source')).toBeInTheDocument()
+      expect(within(nav).getByText('File Settings')).toBeInTheDocument()
+      expect(within(nav).getByText('Data Source')).toBeInTheDocument()
       expect(within(nav).getByText('Field Mapping')).toBeInTheDocument()
-      expect(within(nav).getByText('File Configuration')).toBeInTheDocument()
       expect(within(nav).getByText('Schedule')).toBeInTheDocument()
       expect(within(nav).getByText('Notifications')).toBeInTheDocument()
       expect(within(nav).getByText('Review')).toBeInTheDocument()
     })
 
-    it('keeps source step label as "Source" regardless of selection', () => {
+    it('keeps File Settings step label unchanged', () => {
       render(<WizardModal {...defaultProps} />)
 
-      // Select contacts source
-      fireEvent.click(screen.getByTestId('select-contacts'))
-
       const nav = screen.getByRole('navigation', { name: 'Progress' })
-      expect(within(nav).getByText('Source')).toBeInTheDocument()
+      expect(within(nav).getByText('File Settings')).toBeInTheDocument()
     })
   })
 
-  describe('Next button disabled until source config is complete', () => {
-    it('Next button is disabled when no source is selected', () => {
+  describe('Next button validation on File Settings step', () => {
+    it('Next button is enabled on File Settings when connector name is valid', () => {
       render(<WizardModal {...defaultProps} />)
 
-      const nextButton = screen.getByRole('button', { name: 'Next' })
-      expect(nextButton).toBeDisabled()
-    })
-
-    it('Next button is enabled after selecting a complete source config', () => {
-      render(<WizardModal {...defaultProps} />)
-
-      // Select contacts (which is a complete config — no sub-source needed, filter defaults to "all")
-      fireEvent.click(screen.getByTestId('select-contacts'))
-
+      // File Settings step uses the connector name slugified as default prefix,
+      // which is valid for "Test Connector" → "test-connector"
       const nextButton = screen.getByRole('button', { name: 'Next' })
       expect(nextButton).toBeEnabled()
     })
   })
 
   describe('Navigation forward marks steps as completed', () => {
-    it('navigating forward marks the previous step as completed', () => {
+    it('navigating forward from File Settings goes to Data Source', () => {
       render(<WizardModal {...defaultProps} />)
 
-      // Select source and advance
-      fireEvent.click(screen.getByTestId('select-contacts'))
+      // File Settings is valid by default (connector name provides a valid prefix)
       fireEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-      // Now on step 1 (Field Mapping), step 0 should be completed
+      // Now on step 1 (Data Source)
+      expect(screen.getByTestId('data-source-filter-step')).toBeInTheDocument()
+    })
+
+    it('navigating forward from Data Source goes to Field Mapping', () => {
+      render(<WizardModal {...defaultProps} />)
+
+      // Advance to Data Source
+      fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+      expect(screen.getByTestId('data-source-filter-step')).toBeInTheDocument()
+
+      // Must configure a source before proceeding (at least one filter condition required)
+      fireEvent.click(screen.getByTestId('set-source-contacts'))
+      fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+      // Now on step 2 (Field Mapping)
       expect(screen.getByTestId('field-mapping-step')).toBeInTheDocument()
     })
   })
@@ -246,18 +274,15 @@ describe('WizardModal', () => {
     it('Back button navigates to previous step', () => {
       render(<WizardModal {...defaultProps} />)
 
-      // Select source and advance to step 1
-      fireEvent.click(screen.getByTestId('select-contacts'))
+      // Advance to Data Source
       fireEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-      // Verify we're on Field Mapping step
-      expect(screen.getByTestId('field-mapping-step')).toBeInTheDocument()
+      expect(screen.getByTestId('data-source-filter-step')).toBeInTheDocument()
 
       // Click Back
       fireEvent.click(screen.getByRole('button', { name: 'Back' }))
 
-      // Should be back on Source Selection
-      expect(screen.getByTestId('source-selection-step')).toBeInTheDocument()
+      // Should be back on File Settings
+      expect(screen.getByTestId('output-config-step')).toBeInTheDocument()
     })
   })
 
@@ -265,8 +290,8 @@ describe('WizardModal', () => {
     it('close button triggers discard confirmation when draft is dirty', () => {
       render(<WizardModal {...defaultProps} />)
 
-      // Make the draft dirty by selecting a source
-      fireEvent.click(screen.getByTestId('select-contacts'))
+      // Make the draft dirty by setting the prefix
+      fireEvent.click(screen.getByTestId('set-prefix'))
 
       // Click close button
       fireEvent.click(screen.getByTestId('wizard-close-button'))
@@ -289,7 +314,7 @@ describe('WizardModal', () => {
       render(<WizardModal {...defaultProps} />)
 
       // Make dirty
-      fireEvent.click(screen.getByTestId('select-contacts'))
+      fireEvent.click(screen.getByTestId('set-prefix'))
       // Trigger close
       fireEvent.click(screen.getByTestId('wizard-close-button'))
 
@@ -305,7 +330,7 @@ describe('WizardModal', () => {
       render(<WizardModal {...defaultProps} />)
 
       // Make dirty
-      fireEvent.click(screen.getByTestId('select-contacts'))
+      fireEvent.click(screen.getByTestId('set-prefix'))
       // Trigger close
       fireEvent.click(screen.getByTestId('wizard-close-button'))
 
@@ -321,7 +346,7 @@ describe('WizardModal', () => {
       render(<WizardModal {...defaultProps} />)
 
       // Make dirty
-      fireEvent.click(screen.getByTestId('select-contacts'))
+      fireEvent.click(screen.getByTestId('set-prefix'))
 
       // Press Escape
       fireEvent.keyDown(document, { key: 'Escape' })
@@ -343,30 +368,25 @@ describe('WizardModal', () => {
     it('step indicator shows step 1 as current on initial render', () => {
       render(<WizardModal {...defaultProps} />)
 
-      // The stepper should show step 1 (Source) as current
+      // The stepper should show File Settings as first step
       const nav = screen.getByRole('navigation', { name: 'Progress' })
-      const currentStep = within(nav).getByText('Source')
-      expect(currentStep).toBeInTheDocument()
+      expect(within(nav).getByText('File Settings')).toBeInTheDocument()
     })
 
     it('step indicator updates when navigating forward', () => {
       render(<WizardModal {...defaultProps} />)
 
-      // Select source and advance
-      fireEvent.click(screen.getByTestId('select-contacts'))
+      // Advance to Data Source
       fireEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-      // The step content should now be Field Mapping
-      expect(screen.getByTestId('field-mapping-step')).toBeInTheDocument()
+      // The step content should now be Data Source
+      expect(screen.getByTestId('data-source-filter-step')).toBeInTheDocument()
     })
   })
 
   describe('Save/create button on final step', () => {
     it('shows "Next" button when not on the final step', () => {
       render(<WizardModal {...defaultProps} />)
-
-      // Select source to enable Next
-      fireEvent.click(screen.getByTestId('select-contacts'))
 
       expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument()
     })
@@ -405,8 +425,8 @@ describe('WizardModal', () => {
 
       render(<WizardModal {...defaultProps} editConnectorId="auto-edit" />)
 
-      // In edit mode, the wizard should show the source selection step
-      expect(screen.getByTestId('source-selection-step')).toBeInTheDocument()
+      // In edit mode, the wizard still shows File Settings as the first step
+      expect(screen.getByTestId('output-config-step')).toBeInTheDocument()
       // Edit mode title
       expect(screen.getByText('Edit Exporter')).toBeInTheDocument()
 
@@ -447,7 +467,7 @@ describe('WizardModal', () => {
       render(<WizardModal {...defaultProps} />)
 
       // Make dirty
-      fireEvent.click(screen.getByTestId('select-contacts'))
+      fireEvent.click(screen.getByTestId('set-prefix'))
 
       // Click Cancel
       fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))

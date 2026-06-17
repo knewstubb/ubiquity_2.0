@@ -1,5 +1,6 @@
 import { PencilSimple } from '@phosphor-icons/react';
 import { Button } from '../ui/button';
+import { TruncatedText } from '../shared/TruncatedText';
 import type { ExporterWizardDraft, EventSource } from '../../models/wizard';
 import type { ExportDataType } from '../../models/automation';
 import { resolveColumnName, resolveTimestamp } from '../../utils/exporter-utils';
@@ -177,9 +178,9 @@ export function ReviewStep({ draft, onEditStep }: ReviewStepProps) {
               return (
                 <li key={field.key} className="text-sm text-foreground">
                   <span className="text-muted-foreground mr-2 min-w-5 inline-block">{index + 1}.</span>
-                  <span>{columnName}</span>
+                  <TruncatedText className="max-w-[200px]">{columnName}</TruncatedText>
                   {isRenamed && (
-                    <span className="text-xs text-muted-foreground ml-2">(from: {field.label})</span>
+                    <TruncatedText className="text-xs text-muted-foreground ml-2 max-w-[120px]">{`(from: ${field.label})`}</TruncatedText>
                   )}
                 </li>
               );

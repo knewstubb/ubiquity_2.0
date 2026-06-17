@@ -8,6 +8,8 @@ function formatDate(iso: string): string {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
     });
   } catch {
     return iso;

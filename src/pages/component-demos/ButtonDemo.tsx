@@ -4,17 +4,19 @@ import { EnvelopeSimple, Plus, SpinnerGap, Trash, PencilSimple, ArrowRight } fro
 interface ButtonDemoProps {
   label?: string
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'secondaryOutline' | 'ghost' | 'link'
-  size?: 'default' | 'sm' | 'lg' | 'icon'
+  size?: 'default' | 'xs' | 'sm' | 'lg' | 'icon'
   disabled?: boolean
+  'show-icon'?: boolean
 }
 
-export default function ButtonDemo({ label, variant, size, disabled }: ButtonDemoProps) {
+export default function ButtonDemo({ label, variant, size, disabled, 'show-icon': showIcon }: ButtonDemoProps) {
   // If controls are active (any prop passed), render just the interactive button
   const hasControls = label !== undefined
 
   if (hasControls) {
     return (
       <Button variant={variant} size={size} disabled={disabled}>
+        {showIcon && <Plus weight="bold" />}
         {size === 'icon' ? <Plus weight="bold" /> : label}
       </Button>
     )

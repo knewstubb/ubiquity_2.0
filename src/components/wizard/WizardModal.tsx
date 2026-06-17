@@ -1,8 +1,17 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { UploadSimple } from '@phosphor-icons/react';
+import { cn } from '@/lib/utils';
 import { useAutomations } from '../../contexts/AutomationsContext';
 import { useConnections } from '../../contexts/ConnectionsContext';
 import { CloseButton } from '../ui/close-button';
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '../ui/breadcrumb';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -16,6 +25,7 @@ import {
 import { Stepper } from '../composed/stepper';
 import { WizardNavButtons } from './WizardNavButtons';
 import { SourceSelectionStep } from './SourceSelectionStep';
+import { DataSourceFilterStep } from './DataSourceFilterStep';
 import { FieldMappingStep } from './FieldMappingStep';
 import { OutputConfigStep } from './OutputConfigStep';
 import { ScheduleStep } from './ScheduleStep';
@@ -29,8 +39,8 @@ import type {
 import { DEFAULT_EXPORTER_DRAFT } from '../../models/wizard';
 import type { SourceConfig } from '../../models/source-selection';
 import { validateColumnName, validateColumnNames, validatePrefix } from '../../utils/exporter-utils';
-import { isSourceConfigComplete } from '../../utils/source-selection-validation';
 import { hydrateSourceConfig, detectStaleReferences } from '../../utils/source-config-utils';
+import { didSourceOrSubSourceChange, populateFieldsForTransition } from '../../utils/populate-fields';
 
 interface WizardModalProps {
   connectionId: string;
@@ -46,9 +56,9 @@ interface StepDef {
 }
 
 const WIZARD_STEPS: StepDef[] = [
-  { label: 'Source', description: 'Choose your data source and configure filters.' },
+  { label: 'File Settings', description: 'Name your export and configure output file options.' },
+  { label: 'Data Source', description: 'Choose your data source and configure filters.' },
   { label: 'Field Mapping', description: 'Select and reorder the fields to include in your export.' },
-  { label: 'File Configuration', description: 'Configure CSV output format, naming, and delivery options.' },
   { label: 'Schedule', description: 'Configure when and how often this export runs.' },
   { label: 'Notifications', description: 'Configure email notifications for this export.' },
   { label: 'Review', description: 'Review your exporter configuration before saving.' },
@@ -65,24 +75,6 @@ function createDefaultExporterDraft(
   };
 }
 
-/**
- * Returns true when the primary source type or sub-source (tableId/channel) has changed,
- * meaning the available field set has changed and field selections must be cleared.
- */
-function didSourceOrSubSourceChange(
-  oldConfig: SourceConfig | null,
-  newConfig: SourceConfig | null,
-): boolean {
-  if (!oldConfig || !newConfig) return true;
-  if (oldConfig.primarySource !== newConfig.primarySource) return true;
-  if (oldConfig.primarySource === 'transactions' && newConfig.primarySource === 'transactions') {
-    return oldConfig.tableId !== newConfig.tableId;
-  }
-  if (oldConfig.primarySource === 'messages' && newConfig.primarySource === 'messages') {
-    return JSON.stringify(oldConfig.channels) !== JSON.stringify(newConfig.channels);
-  }
-  return false;
-}
 
 export function WizardModal({
   connectionId,
@@ -129,7 +121,7 @@ export function WizardModal({
           selectedEventSources: [],
           selectedFields: [...existing.selectedFields],
           columnRenames: [],
-          fileNamingPrefix: '',
+          fileNamingPrefix: existing.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 100),
           formatOptions: {
             delimiter: existing.formatOptions.delimiter,
             includeHeader: existing.formatOptions.includeHeader,
@@ -158,6 +150,7 @@ export function WizardModal({
   }, [editConnectorId, automations, connectionId, connectorName]);
 
   const [draft, setDraft] = useState<ExporterWizardDraft>(initialDraft);
+  const previousSourceConfigRef = useRef<SourceConfig | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>(
     editConnectorId ? [0, 1, 2, 3, 4, 5] : [],
@@ -181,15 +174,14 @@ export function WizardModal({
 
   // canProceed validation per step
   const canProceed = useMemo(() => {
-    // Step 0: Source Selection — uses isSourceConfigComplete
-    if (currentStep === 0) {
-      return isSourceConfigComplete(draft.sourceConfig);
-    }
-
     // Steps: Source(0) → FieldMapping(1) → FileConfig(2) → Schedule(3) → Notifications(4) → Review(5)
     const stepLabel = steps[currentStep]?.label;
 
     switch (stepLabel) {
+      case 'Data Source': {
+        // Require at least one filter condition before proceeding
+        return draft.sourceConfig !== null;
+      }
       case 'Field Mapping': {
         if (draft.selectedFields.length === 0) return false;
         // Validate column renames
@@ -209,8 +201,10 @@ export function WizardModal({
         if (!dupeResult.valid) return false;
         return true;
       }
-      case 'File Configuration': {
-        return validatePrefix(draft.fileNamingPrefix);
+      case 'File Settings': {
+        // Use the effective prefix — if user hasn't manually set one, fall back to slugified name
+        const effectivePrefix = draft.fileNamingPrefix || draft.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 100);
+        return validatePrefix(effectivePrefix);
       }
       case 'Schedule': {
         const { frequency, weeklyDays, monthlyDays } = draft.schedule;
@@ -277,6 +271,16 @@ export function WizardModal({
       onClose();
       return;
     }
+
+    // Auto-populate fields when transitioning Data Source → Field Mapping
+    if (steps[currentStep]?.label === 'Data Source') {
+      const patch = populateFieldsForTransition(draft, previousSourceConfigRef.current);
+      if (patch) {
+        setDraft(prev => ({ ...prev, ...patch }));
+      }
+      previousSourceConfigRef.current = draft.sourceConfig;
+    }
+
     // Mark current step as completed and advance
     setCompletedSteps((prev) =>
       prev.includes(currentStep) ? prev : [...prev, currentStep],
@@ -349,11 +353,11 @@ export function WizardModal({
   const stepContent = (() => {
     switch (currentStep) {
       case 0:
-        return <SourceSelectionStep draft={draft} onUpdate={handleDraftUpdate} />;
-      case 1:
-        return <FieldMappingStep draft={draft} onUpdate={handleDraftUpdate} />;
-      case 2:
         return <OutputConfigStep draft={draft} onUpdate={handleDraftUpdate} />;
+      case 1:
+        return <DataSourceFilterStep draft={draft} onUpdate={handleDraftUpdate} />;
+      case 2:
+        return <FieldMappingStep draft={draft} onUpdate={handleDraftUpdate} />;
       case 3:
         return <ScheduleStep draft={draft} onUpdate={handleDraftUpdate} />;
       case 4:
@@ -373,13 +377,11 @@ export function WizardModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-xs animate-[fadeIn_200ms_ease]"
-      role="dialog"
-      aria-modal="true"
+      className="flex-1 w-full bg-background flex"
       aria-labelledby="wizard-modal-title"
       data-testid="wizard-modal"
     >
-      <div className="w-[60vw] min-w-[860px] max-w-[1080px] h-[80vh] bg-background rounded-lg border border-border flex overflow-hidden animate-[slideUp_200ms_ease]">
+      <div className="w-full flex flex-1">
         {/* Left sidebar */}
         <div className="w-[239px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto">
           <div className="flex flex-col items-center text-center gap-1">
@@ -404,8 +406,27 @@ export function WizardModal({
 
         {/* Right content area */}
         <div className="flex-1 flex flex-col min-w-0 bg-background relative">
+          <div className="w-full max-w-4xl mx-auto flex flex-col flex-1 min-h-0">
+          {/* Breadcrumb */}
+          <div className="shrink-0 px-8 pt-4 pb-0">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/audiences/databases">Audience</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/">Connectors</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{editConnectorId ? 'Edit Exporter' : 'New Exporter'}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
           {/* Fixed header — title + close button */}
-          <div className="shrink-0 flex items-start justify-between px-8 pt-8 pb-8">
+          <div className="shrink-0 flex items-start justify-between px-8 pt-4 pb-8">
             <div>
               <h3 className="m-0 text-xl font-semibold text-primary">{steps[currentStep]?.label}</h3>
               <p className="mt-1 mb-0 text-sm text-tertiary-foreground">{steps[currentStep]?.description}</p>
@@ -417,7 +438,7 @@ export function WizardModal({
             />
           </div>
 
-          <div className="flex-1 overflow-y-auto px-8 pb-8 flex flex-col gap-6 scrollbar-gutter-stable" data-testid="wizard-step-content">
+          <div className={cn("flex-1 overflow-y-auto px-8 flex flex-col gap-6 scrollbar-gutter-stable", currentStep !== 1 && "pb-8")} data-testid="wizard-step-content">
             {stepContent}
           </div>
 
@@ -431,6 +452,7 @@ export function WizardModal({
               showBack={currentStep > 0}
               submitLabel={editConnectorId ? (isDirty ? 'Save Changes' : 'Done') : 'Create Exporter'}
             />
+          </div>
           </div>
         </div>
       </div>

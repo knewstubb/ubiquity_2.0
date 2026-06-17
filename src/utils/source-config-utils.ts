@@ -160,6 +160,23 @@ function formatFilterDescription(config: SourceConfig): string {
 }
 
 /**
+ * Creates a default EnrichmentConfig for a given entity.
+ * - contacts: { entity: 'contacts' }
+ * - transactions: { entity: 'transactions', tableId: '', joinStrategy: 'most_recent' }
+ * - messages: { entity: 'messages', channel: 'email', statuses: ['delivered'] }
+ */
+export function createDefaultEnrichmentConfig(entity: EnrichmentEntity): EnrichmentConfig {
+  switch (entity) {
+    case 'contacts':
+      return { entity: 'contacts' };
+    case 'transactions':
+      return { entity: 'transactions', tableId: '', joinStrategy: 'most_recent' };
+    case 'messages':
+      return { entity: 'messages', channel: 'email', statuses: ['delivered'] };
+  }
+}
+
+/**
  * Returns enrichment entities excluding the primary source.
  */
 export function getAvailableEnrichments(primarySource: PrimarySourceType): EnrichmentEntity[] {

@@ -14,7 +14,11 @@ function formatDate(d: Date): string {
   const day = d.getDate()
   const month = d.toLocaleString('en-GB', { month: 'short' })
   const year = d.getFullYear()
-  return `${day} ${month}, ${year}`
+  const hours = d.getHours()
+  const minutes = d.getMinutes().toString().padStart(2, '0')
+  const period = hours >= 12 ? 'pm' : 'am'
+  const displayHour = hours % 12 || 12
+  return `${day} ${month}, ${year} at ${displayHour}:${minutes}${period}`
 }
 
 function generateHistoryEntries(connector: Automation): TimelineEntry[] {

@@ -23,6 +23,10 @@ import { ComponentDemoView, CategoryOverview } from './pages/ComponentLibraryPag
 // TokenSubPage lazy-loaded for code splitting
 const TokenSubPage = React.lazy(() => import('./pages/component-demos/TokenSubPage'));
 
+// Wizard pages (full-page, no nav bar)
+const ExporterWizardPage = React.lazy(() => import('./pages/ExporterWizardPage'));
+const ImporterWizardPage = React.lazy(() => import('./pages/ImporterWizardPage'));
+
 // Lazy-loaded page imports for code splitting
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const OverviewDashboardPage = React.lazy(() => import('./pages/OverviewDashboardPage'));
@@ -49,6 +53,7 @@ const AssetsPage = React.lazy(() => import('./pages/AssetsPage'));
 const ActivityLogPage = React.lazy(() => import('./pages/ActivityLogPage'));
 const UserManagementPage = React.lazy(() => import('./pages/UserManagementPage'));
 const PageComponentsPage = React.lazy(() => import('./pages/PageComponentsPage'));
+const FilterSandboxPage = React.lazy(() => import('./pages/FilterSandboxPage'));
 
 /** Redirects non-admin users to /dashboard */
 function AdminRoute({ children }: { children: React.ReactNode }) {
@@ -65,6 +70,59 @@ function App() {
           <FeatureFlagProvider>
             <Routes>
               <Route path="/login" element={<LoginPage />} />
+              {/* Full-page wizard routes — no nav bar */}
+              <Route
+                path="/exporters/new/:connectionId"
+                element={
+                  <ProtectedRoute>
+                    <AppProviders>
+                      <Suspense fallback={<div className="flex items-center justify-center h-screen"><p className="text-sm text-muted-foreground">Loading…</p></div>}>
+                        <ExporterWizardPage />
+                      </Suspense>
+                      <Toaster />
+                    </AppProviders>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/exporters/edit/:automationId"
+                element={
+                  <ProtectedRoute>
+                    <AppProviders>
+                      <Suspense fallback={<div className="flex items-center justify-center h-screen"><p className="text-sm text-muted-foreground">Loading…</p></div>}>
+                        <ExporterWizardPage />
+                      </Suspense>
+                      <Toaster />
+                    </AppProviders>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/importers/new/:connectionId"
+                element={
+                  <ProtectedRoute>
+                    <AppProviders>
+                      <Suspense fallback={<div className="flex items-center justify-center h-screen"><p className="text-sm text-muted-foreground">Loading…</p></div>}>
+                        <ImporterWizardPage />
+                      </Suspense>
+                      <Toaster />
+                    </AppProviders>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/importers/edit/:automationId"
+                element={
+                  <ProtectedRoute>
+                    <AppProviders>
+                      <Suspense fallback={<div className="flex items-center justify-center h-screen"><p className="text-sm text-muted-foreground">Loading…</p></div>}>
+                        <ImporterWizardPage />
+                      </Suspense>
+                      <Toaster />
+                    </AppProviders>
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/*"
                 element={
@@ -122,6 +180,7 @@ function App() {
                             <Route path="*" element={<Navigate to="/admin/components/tokens" replace />} />
                           </Route>
                           <Route path="/admin/page-components" element={<AdminRoute><PageComponentsPage /></AdminRoute>} />
+                          <Route path="/admin/filter-sandbox" element={<FilterSandboxPage />} />
                         </Routes>
                         </Suspense>
                         <FeedbackWidget />

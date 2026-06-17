@@ -135,7 +135,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }
             Be alerted by email when a connector run fails
           </p>
         </div>
-        <div className="w-[552px] flex flex-col gap-3">
+        <div className="flex-1 flex flex-col gap-3">
           <ChipInput
             values={failureEmails}
             onChange={setFailureEmails}
@@ -158,7 +158,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }
             Be alerted by email when a connector run succeeds
           </p>
         </div>
-        <div className="w-[552px] flex flex-col gap-3">
+        <div className="flex-1 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Switch
               id="toggle-success-enable"
@@ -200,7 +200,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }
             available for upload from your defined source
           </p>
         </div>
-        <div className="w-[552px] flex flex-col gap-3">
+        <div className="flex-1 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Switch
               id="toggle-nofile-enable"

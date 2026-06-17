@@ -31,6 +31,7 @@
  * - link: underline on hover — inline navigation
  *
  * @sizes
+ * - xs (h-6, px-2): extra compact — inline badges, filter pills, tight toolbar buttons
  * - sm (h-8, px-3): compact contexts — table rows, filter bars
  * - default (h-9, px-4): standard usage
  * - lg (h-10, px-6): hero CTAs, modal primary actions
@@ -72,6 +73,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
+        xs: "h-6 px-2 text-sm",
         sm: "h-8 px-3 text-sm",
         default: "h-9 px-4 text-base",
         lg: "h-10 px-6 text-base",

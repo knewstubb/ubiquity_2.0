@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CurrencyDollar, PlugsConnected, Plus } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -10,37 +11,19 @@ import { AutomationCard } from '../components/dashboard/AutomationCard';
 import { DeleteConfirmModal } from '../components/dashboard/DeleteConfirmModal';
 import { CreateConnectionModal } from '../components/dashboard/CreateConnectionModal';
 import { InitialModal } from '../components/dashboard/InitialModal';
-import { WizardModal } from '../components/wizard/WizardModal';
-import { ImporterWizardModal } from '../components/importer/ImporterWizardModal';
 import { AutomationSettingsModal } from '../components/dashboard/AutomationSettingsModal';
 import { ActivityLogModal } from '../components/dashboard/ActivityLogModal';
 import { HistoryModal } from '../components/dashboard/HistoryModal';
 import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import type { Automation } from '../models/automation';
-import type { WizardDraft, ExporterWizardDraft } from '../models/wizard';
-import type { ImporterConfig } from '../models/importer';
-
-interface WizardModalState {
-  open: boolean;
-  connectionId: string;
-  connectorName: string;
-  editConnectorId: string | null;
-}
-
-interface ImporterModalState {
-  open: boolean;
-  connectionId: string;
-  connectorName: string;
-  existingConfig?: ImporterConfig;
-  editConnectorId?: string | null;
-}
 
 export default function DashboardPage() {
   const { connections, getConnectionById, addConnection, updateConnection, deleteConnection } = useConnections();
   const { automations, addAutomation, addAutomationDirect, updateAutomation, toggleAutomationStatus, deleteAutomation } =
     useAutomations();
   const { selectedAccountId } = useAccount();
+  const navigate = useNavigate();
 
   const filteredConnections = connections.filter((c) => c.accountId === selectedAccountId);
 
@@ -56,13 +39,11 @@ export default function DashboardPage() {
   const [pendingDeleteConnectionId, setPendingDeleteConnectionId] = useState<string | null>(null);
   const [pendingActivation, setPendingActivation] = useState<Automation | null>(null);
   const [initialModalConnectionId, setInitialModalConnectionId] = useState<string | null>(null);
-  const [wizardModalState, setWizardModalState] = useState<WizardModalState | null>(null);
-  const [importerModalState, setImporterModalState] = useState<ImporterModalState | null>(null);
   const [settingsConnectorId, setSettingsConnectorId] = useState<string | null>(null);
   const [activityLogConnectorId, setActivityLogConnectorId] = useState<string | null>(null);
   const [historyConnectorId, setHistoryConnectorId] = useState<string | null>(null);
 
-  // --- Add Connector flow (InitialModal → WizardModal or ImporterWizardModal) ---
+  // --- Add Connector flow (InitialModal → navigate to wizard route) ---
   function handleAddConnector(connectionId: string) {
     setInitialModalConnectionId(connectionId);
   }
@@ -71,18 +52,9 @@ export default function DashboardPage() {
     if (!initialModalConnectionId) return;
 
     if (direction === 'export') {
-      setWizardModalState({
-        open: true,
-        connectionId: initialModalConnectionId,
-        connectorName: name,
-        editConnectorId: null,
-      });
+      navigate(`/exporters/new/${initialModalConnectionId}`, { state: { connectorName: name } });
     } else {
-      setImporterModalState({
-        open: true,
-        connectionId: initialModalConnectionId,
-        connectorName: name,
-      });
+      navigate(`/importers/new/${initialModalConnectionId}`, { state: { connectorName: name } });
     }
 
     setInitialModalConnectionId(null);
@@ -92,127 +64,16 @@ export default function DashboardPage() {
     setInitialModalConnectionId(null);
   }
 
-  // --- Edit flow (WizardModal directly, skip InitialModal) ---
+  // --- Edit flow (navigate to wizard route directly) ---
   function handleEdit(connectorId: string) {
     const connector = automations.find((c) => c.id === connectorId);
     if (!connector) return;
 
     if (connector.direction === 'import') {
-      // Merge transactionalSource from the automation into the importerConfig
-      const importerConfig = connector.importerConfig
-        ? { ...connector.importerConfig, transactionalTable: connector.transactionalSource ?? connector.importerConfig.transactionalTable }
-        : undefined;
-      setImporterModalState({
-        open: true,
-        connectionId: connector.connectionId,
-        connectorName: connector.name,
-        existingConfig: importerConfig,
-        editConnectorId: connector.id,
-      });
+      navigate(`/importers/edit/${connector.id}`);
     } else {
-      setWizardModalState({
-        open: true,
-        connectionId: connector.connectionId,
-        connectorName: connector.name,
-        editConnectorId: connector.id,
-      });
+      navigate(`/exporters/edit/${connector.id}`);
     }
-  }
-
-  // --- WizardModal save ---
-  function handleWizardSave(exporterDraft: ExporterWizardDraft) {
-    // Adapt ExporterWizardDraft to WizardDraft for the existing context
-    const draft: WizardDraft = {
-      connectionId: exporterDraft.connectionId,
-      name: exporterDraft.name,
-      dataType: exporterDraft.selectedSources[0] ?? 'contact',
-      selectedSources: exporterDraft.selectedSources,
-      transactionalSource: exporterDraft.transactionalSource,
-      enrichmentKeyField: null,
-      selectedFields: exporterDraft.selectedFields,
-      fileType: 'csv',
-      formatOptions: exporterDraft.formatOptions,
-      fileNamingPattern: `${exporterDraft.fileNamingPrefix}{timestamp}.csv`,
-      schedule: exporterDraft.schedule.frequency as WizardDraft['schedule'],
-      filters: exporterDraft.filters,
-      scheduleConfig: {
-        frequency: exporterDraft.schedule.frequency,
-        starting: '',
-        every: '1',
-        at: '',
-        weeklyDays: exporterDraft.schedule.weeklyDays,
-        monthlyPattern: 'day',
-        monthlyOrdinal: '1st',
-        monthlyDayOfWeek: 'Monday',
-        monthlyDates: [],
-      },
-      notifications: {
-        emails: exporterDraft.notifications.failureEmails,
-        successEnabled: exporterDraft.notifications.successEnabled,
-        failureEnabled: true,
-      },
-    };
-    if (wizardModalState?.editConnectorId) {
-      updateAutomation(wizardModalState.editConnectorId, draft);
-    } else {
-      addAutomation(draft);
-    }
-  }
-
-  function handleWizardClose() {
-    setWizardModalState(null);
-  }
-
-  // --- ImporterWizardModal save ---
-  function handleImporterSave(config: ImporterConfig) {
-    const now = new Date().toISOString();
-    const dataType = config.dataType === 'both' ? 'transactional_with_contact' as const
-      : config.dataType === 'transactional' ? 'transactional' as const
-      : 'contact' as const;
-
-    if (importerModalState?.editConnectorId) {
-      // Update existing automation — delete old and add updated version
-      const existingConnector = automations.find((c) => c.id === importerModalState.editConnectorId);
-      if (existingConnector) {
-        const updated: Automation = {
-          ...existingConnector,
-          name: config.name,
-          dataType,
-          ...(config.transactionalTable ? { transactionalSource: config.transactionalTable } : { transactionalSource: undefined }),
-          fileNamingPattern: config.filePathConfig.fileNamePattern || existingConnector.fileNamingPattern,
-          updatedAt: now,
-          importerConfig: config,
-        };
-        deleteAutomation(existingConnector.id);
-        addAutomationDirect(updated);
-      }
-    } else {
-      // Create new automation
-      const connector: Automation = {
-        id: crypto.randomUUID(),
-        connectionId: config.connectionId,
-        name: config.name,
-        direction: 'import',
-        dataType,
-        ...(config.transactionalTable ? { transactionalSource: config.transactionalTable } : {}),
-        selectedFields: [],
-        fileType: 'csv',
-        formatOptions: { delimiter: ',', includeHeader: true, dateFormat: 'ISO8601', timezone: 'Pacific/Auckland' },
-        fileNamingPattern: config.filePathConfig.fileNamePattern || `${config.name.toLowerCase().replace(/\s+/g, '_')}_{date}.csv`,
-        schedule: 'daily',
-        filters: { combinator: 'AND', rules: [], groups: [] },
-        status: 'paused',
-        createdAt: now,
-        updatedAt: now,
-        importerConfig: config,
-      };
-
-      addAutomationDirect(connector);
-    }
-  }
-
-  function handleImporterClose() {
-    setImporterModalState(null);
   }
 
   // --- Delete flow ---
@@ -401,28 +262,6 @@ export default function DashboardPage() {
           connection={initialModalConnection}
           onProceed={handleInitialModalProceed}
           onClose={handleInitialModalClose}
-        />
-      )}
-
-      {/* WizardModal — shown after InitialModal proceed or on edit */}
-      {wizardModalState && (
-        <WizardModal
-          connectionId={wizardModalState.connectionId}
-          connectorName={wizardModalState.connectorName}
-          editConnectorId={wizardModalState.editConnectorId ?? undefined}
-          onSave={handleWizardSave}
-          onClose={handleWizardClose}
-        />
-      )}
-
-      {/* ImporterWizardModal — shown when user selects Importer */}
-      {importerModalState && (
-        <ImporterWizardModal
-          connectionId={importerModalState.connectionId}
-          connectorName={importerModalState.connectorName}
-          existingConfig={importerModalState.existingConfig}
-          onSave={handleImporterSave}
-          onClose={handleImporterClose}
         />
       )}
 

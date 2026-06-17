@@ -1,6 +1,7 @@
 import type { ExportDataType, TransactionalSource, SelectedField, FormatOptions, ScheduleFrequency, FileType } from './automation';
 import type { FilterGroup } from './segment';
 import type { SourceConfig } from './source-selection';
+import type { FilterGroup as CardFilterGroup } from '../components/composed/filter-builder/types';
 
 // --- Existing types ---
 
@@ -120,6 +121,9 @@ export interface ExporterWizardDraft {
   // Source selection (Step 0 — replaces exporterType + selectedSources + etc.)
   sourceConfig: SourceConfig | null;
 
+  // Card-based filter builder state (persisted across step navigation)
+  dataSourceFilter: CardFilterGroup | null;
+
   // --- Legacy fields (deprecated, kept for backward compat until migration tasks 6-13 complete) ---
   exporterType?: ExporterType | null;
   selectedSources?: ExportDataType[];
@@ -146,6 +150,7 @@ export const DEFAULT_EXPORTER_DRAFT: ExporterWizardDraft = {
   connectionId: null,
   name: '',
   sourceConfig: null,
+  dataSourceFilter: null,
   // Legacy fields (deprecated)
   exporterType: null,
   selectedSources: [],

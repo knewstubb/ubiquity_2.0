@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Library Sync Reminder",
+  "description": "When a component in src/components/ui/ or src/components/composed/ is created or modified, remind the agent to update the component registry and demo page if needed.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/components/ui/*.tsx",
+      "src/components/composed/**/*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A UI component was just modified. Check if the component registry at src/data/componentRegistry.tsx needs updating (new variants, props, or design guidance). If a new component was created, ensure it has a demo page and registry entry. Do not make changes automatically — only flag if something appears out of sync."
+  }
+}

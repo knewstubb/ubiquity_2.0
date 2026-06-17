@@ -402,8 +402,25 @@
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-100%); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; max-height: 0; overflow: hidden; }
+  to { opacity: 1; max-height: 80px; overflow: visible; }
+}
+
+@keyframes revealDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 200px;
+    margin-top: 12px;
+    padding-top: 12px;
+    padding-bottom: 0;
+  }
 }
 
 @keyframes slideUp {
@@ -531,4 +548,11 @@
   --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
   --sidebar-border: hsl(240 3.7% 15.9%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   CUSTOM UTILITIES
+   ══════════════════════════════════════════════════════════════════════════════ */
+@utility scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
 }

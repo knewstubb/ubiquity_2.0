@@ -3,7 +3,14 @@ import { toast } from 'sonner';
 import { DownloadSimple } from '@phosphor-icons/react';
 import { useConnections } from '../../contexts/ConnectionsContext';
 import { usePermissions } from '../../contexts/PermissionsContext';
-import { CloseButton } from '../ui/close-button';
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '../ui/breadcrumb';
 import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed';
 import { Stepper } from '../composed/stepper';
 import { WizardNavButtons } from '../wizard/WizardNavButtons';
@@ -352,15 +359,13 @@ export function ImporterWizardModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-xs animate-[fadeIn_200ms_ease]"
-      role="dialog"
-      aria-modal="true"
+      className="flex-1 w-full bg-background flex"
       aria-labelledby="importer-wizard-title"
       data-testid="importer-wizard-modal"
     >
-      <div className="w-[60vw] min-w-[860px] max-w-[1080px] h-[80vh] bg-background rounded-lg border border-border flex overflow-hidden animate-[slideUp_200ms_ease]">
+      <div className="w-full flex flex-1">
         {/* Left sidebar */}
-        <div className="w-[239px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto">
+        <div className="w-[280px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto">
           <div className="flex flex-col items-center text-center gap-1">
             <div className="w-10 h-10 flex items-center justify-center text-primary mb-1">
               <DownloadSimple size={56} />
@@ -383,17 +388,31 @@ export function ImporterWizardModal({
 
         {/* Right content area */}
         <div className="flex-1 flex flex-col min-w-0 bg-background relative">
-          {/* Fixed header — title + close button */}
-          <div className="shrink-0 flex items-start justify-between px-8 pt-8 pb-8">
+          <div className="w-full max-w-5xl mx-auto flex flex-col flex-1 min-h-0">
+          {/* Breadcrumb */}
+          <div className="shrink-0 px-8 pt-4 pb-0">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/audiences/databases">Audience</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/">Connectors</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{existingConfig ? 'Edit Importer' : 'New Importer'}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+          {/* Fixed header — title */}
+          <div className="shrink-0 flex items-start px-8 pt-4 pb-8">
             <div>
               <h3 className="m-0 text-xl font-semibold text-primary">{steps[currentStep]?.label}</h3>
               <p className="mt-1 mb-0 text-sm text-tertiary-foreground">{stepDescription}</p>
             </div>
-            <CloseButton
-              onClick={handleCloseClick}
-              aria-label="Close wizard"
-              data-testid="importer-close-button"
-            />
           </div>
 
           <div className="flex-1 overflow-y-auto px-8 pb-8 flex flex-col gap-6 scrollbar-gutter-stable">
@@ -411,6 +430,7 @@ export function ImporterWizardModal({
               submitLabel={existingConfig ? (isDirty ? 'Save Changes' : 'Done') : 'Create Importer'}
               disabledReason={disabledReason}
             />
+          </div>
           </div>
         </div>
       </div>

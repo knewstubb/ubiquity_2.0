@@ -1,4 +1,5 @@
 import React from 'react';
+import { TruncatedText } from '../shared/TruncatedText';
 import type { ImporterConfig, UpdateType, BlankValueHandling } from '../../models/importer';
 
 interface ImporterReviewStepProps {
@@ -100,10 +101,10 @@ export function ImporterReviewStep({ config }: ImporterReviewStepProps) {
           <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
             {config.contactMapping.map((mapping, index) => (
               <React.Fragment key={index}>
-                <span className="text-sm text-muted-foreground">{mapping.sourceField}</span>
+                <TruncatedText className="text-sm text-muted-foreground">{mapping.sourceField}</TruncatedText>
                 <span className="text-sm text-primary font-medium flex items-center gap-6">
                   <span className="text-muted-foreground">→</span>
-                  <span>{mapping.targetField}</span>
+                  <TruncatedText>{mapping.targetField}</TruncatedText>
                 </span>
               </React.Fragment>
             ))}
@@ -138,10 +139,10 @@ export function ImporterReviewStep({ config }: ImporterReviewStepProps) {
           <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
             {config.transactionalMapping.map((mapping, index) => (
               <React.Fragment key={index}>
-                <span className="text-sm text-muted-foreground">{mapping.sourceField}</span>
+                <TruncatedText className="text-sm text-muted-foreground">{mapping.sourceField}</TruncatedText>
                 <span className="text-sm text-primary font-medium flex items-center gap-6">
                   <span className="text-muted-foreground">→</span>
-                  <span>{mapping.targetField}</span>
+                  <TruncatedText>{mapping.targetField}</TruncatedText>
                 </span>
               </React.Fragment>
             ))}

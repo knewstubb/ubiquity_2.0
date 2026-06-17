@@ -3,6 +3,7 @@ import { cn } from '../../lib/utils';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../ui/dialog';
 import { ModalHeader } from '../composed/modal-header';
 import { ModalFooter } from '../composed/modal-footer';
+import { TruncatedText } from '../shared/TruncatedText';
 import type { Automation, ScheduleFrequency } from '../../models/automation';
 import type { Connection } from '../../models/connection';
 import type { UpdateType, BlankValueHandling } from '../../models/importer';
@@ -111,9 +112,9 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
                       <div className="grid grid-cols-[1fr_auto_1fr] gap-x-3 gap-y-0.5">
                         {connector.importerConfig.contactMapping.map((mapping) => (
                           <React.Fragment key={`${mapping.sourceField}-${mapping.targetField}`}>
-                            <span className="text-sm text-muted-foreground">{mapping.sourceField}</span>
+                            <TruncatedText className="text-sm text-muted-foreground">{mapping.sourceField}</TruncatedText>
                             <span className="text-sm text-muted-foreground">→</span>
-                            <span className="text-sm text-primary font-medium text-right">{mapping.targetField}</span>
+                            <TruncatedText className="text-sm text-primary font-medium text-right">{mapping.targetField}</TruncatedText>
                           </React.Fragment>
                         ))}
                       </div>
@@ -127,9 +128,9 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
                       <div className="grid grid-cols-[1fr_auto_1fr] gap-x-3 gap-y-0.5">
                         {connector.importerConfig.transactionalMapping.map((mapping) => (
                           <React.Fragment key={`${mapping.sourceField}-${mapping.targetField}`}>
-                            <span className="text-sm text-muted-foreground">{mapping.sourceField}</span>
+                            <TruncatedText className="text-sm text-muted-foreground">{mapping.sourceField}</TruncatedText>
                             <span className="text-sm text-muted-foreground">→</span>
-                            <span className="text-sm text-primary font-medium text-right">{mapping.targetField}</span>
+                            <TruncatedText className="text-sm text-primary font-medium text-right">{mapping.targetField}</TruncatedText>
                           </React.Fragment>
                         ))}
                       </div>
@@ -173,7 +174,10 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
                 {connector.selectedFields.length > 0 ? (
                   <>
                     {connector.selectedFields.map((field, index) => (
-                      <Row key={field.key} label={`${index + 1}.`} value={field.label} />
+                      <div key={field.key} className="flex justify-between py-0.5">
+                        <span className="text-sm text-muted-foreground">{index + 1}.</span>
+                        <TruncatedText className="text-sm text-foreground font-medium">{field.label}</TruncatedText>
+                      </div>
                     ))}
                   </>
                 ) : (

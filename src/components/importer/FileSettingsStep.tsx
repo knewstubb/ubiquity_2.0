@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { UploadSimple, X, FileCsv, CaretDown, CaretUp } from '@phosphor-icons/react';
+import { UploadSimple, X, FileCsv, WarningCircle } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { SegmentedControl } from '@/components/composed/segmented-control';
 import { PrefixInput } from '@/components/composed/prefix-input';
@@ -31,6 +31,26 @@ const DATA_TYPES: { value: ImportDataType; label: string }[] = [
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
+const ACCEPTED_ENCODINGS = ['UTF-8', 'ISO-8859-1', 'Windows-1252'];
+const ACCEPTED_DELIMITERS = ['Comma (,)', 'Tab', 'Pipe (|)', 'Semicolon (;)'];
+
+/** Simulates detection of CSV encoding and delimiter from file content */
+function detectCsvFormat(content: string): { encoding: string; delimiter: string; valid: boolean } {
+  // Detect delimiter by checking the first line for common separators
+  const firstLine = content.split('\n')[0] ?? '';
+  let delimiter = 'Comma (,)';
+  if (firstLine.includes('\t')) delimiter = 'Tab';
+  else if (firstLine.includes('|')) delimiter = 'Pipe (|)';
+  else if (firstLine.includes(';')) delimiter = 'Semicolon (;)';
+  else if (firstLine.includes('~')) delimiter = 'Tilde (~)';
+
+  // For the prototype, assume UTF-8 encoding (real implementation would use chardet)
+  const encoding = 'UTF-8';
+
+  const valid = ACCEPTED_ENCODINGS.includes(encoding) && ACCEPTED_DELIMITERS.includes(delimiter);
+  return { encoding, delimiter, valid };
+}
+
 export function truncateFilename(name: string): string {
   if (name.length <= 40) return name;
   return name.slice(0, 40) + '\u2026';
@@ -47,7 +67,7 @@ export function FileSettingsStep({
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [transactionalTable, setTransactionalTable] = useState(config.transactionalTable ?? '');
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [detectedFormat, setDetectedFormat] = useState<{ encoding: string; delimiter: string; valid: boolean } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { filePathConfig, dataType } = config;
@@ -112,6 +132,17 @@ export function FileSettingsStep({
     const reader = new FileReader();
     reader.onload = () => {
       const csvString = reader.result as string;
+
+      // Detect encoding and delimiter
+      const format = detectCsvFormat(csvString);
+      setDetectedFormat(format);
+
+      if (!format.valid) {
+        setUploadedFileName(file.name);
+        setFileError(null);
+        return;
+      }
+
       const result = parse(csvString);
 
       if (result.headers.length === 0) {
@@ -180,6 +211,7 @@ export function FileSettingsStep({
   function handleRemoveFile() {
     setUploadedFileName(null);
     setFileError(null);
+    setDetectedFormat(null);
     onUpdate({
       csvHeaders: undefined,
       csvExampleValues: undefined,
@@ -201,7 +233,7 @@ export function FileSettingsStep({
           <p className="text-sm font-semibold text-foreground m-0">Importer Name <span className="text-destructive">*</span></p>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">A unique name for this importer</p>
         </div>
-        <div className="w-[552px] flex flex-col gap-3">
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
           <Input
             value={config.name}
             onChange={(e) => handleNameChange(e.target.value)}
@@ -232,7 +264,7 @@ export function FileSettingsStep({
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
         </div>
-        <div className="w-[552px] flex flex-col gap-3">
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
           <SegmentedControl
             options={PATH_MODES}
             value={pathMode}
@@ -322,14 +354,26 @@ export function FileSettingsStep({
             <p className="text-sm font-semibold text-foreground m-0">Sample CSV {!isEditing && <span className="text-destructive">*</span>}</p>
             <HelpPopover
               title="Why does the sample file matter?"
-              body="Your sample file defines the permanent column structure for this importer. Every production file you import later must match this exact format — same columns, same order. The file must be a CSV and under 50MB."
+              body={
+                <>
+                  <p className="m-0 mb-2">Your sample file defines the permanent column structure for this importer. Every production file you import later must match this exact format — same columns, same order.</p>
+                  <p className="m-0 mb-2 font-medium">File requirements:</p>
+                  <ul className="m-0 pl-4 list-disc flex flex-col gap-1">
+                    <li>Format: CSV (.csv) under 5 MB</li>
+                    <li>Encoding: UTF-8, ISO-8859-1, or Windows-1252</li>
+                    <li>Delimiter: Comma, Tab, Pipe (|), or Semicolon (;)</li>
+                    <li>Must include a header row</li>
+                  </ul>
+                  <p className="m-0 mt-2 text-muted-foreground">The encoding and delimiter are auto-detected when you upload. If they don't match the accepted options, the file will be rejected.</p>
+                </>
+              }
             />
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">
             This file will define all the fields available for mapping
           </p>
         </div>
-        <div className="w-[552px] flex flex-col gap-3">
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
           <input
             ref={fileInputRef}
             type="file"
@@ -341,9 +385,20 @@ export function FileSettingsStep({
           />
           <div className="flex flex-col">
             {uploadedFileName ? (
-              <div className="border-[1.5px] border-border rounded-md py-2 px-4 flex flex-row items-center gap-2 h-14">
-                <FileCsv size={20} className="text-primary shrink-0" />
-                <p className="text-sm text-foreground m-0 flex-1 truncate">
+              <div className={cn(
+                "border-[1.5px] rounded-md py-2 px-4 flex flex-row items-center gap-2 h-14",
+                detectedFormat && !detectedFormat.valid
+                  ? "border-destructive bg-destructive-subtle"
+                  : "border-border"
+              )}>
+                <FileCsv size={20} className={cn(
+                  "shrink-0",
+                  detectedFormat && !detectedFormat.valid ? "text-destructive" : "text-primary"
+                )} />
+                <p className={cn(
+                  "text-sm m-0 flex-1 truncate",
+                  detectedFormat && !detectedFormat.valid ? "text-destructive" : "text-foreground"
+                )}>
                   {truncateFilename(uploadedFileName)}
                 </p>
                 <button
@@ -382,20 +437,16 @@ export function FileSettingsStep({
               </div>
             )}
 
-            {/* Advanced toggle link */}
-            <button
-              type="button"
-              className="mt-2 flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors bg-transparent border-none cursor-pointer p-0"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-            >
-              {showAdvanced ? <CaretUp size={12} /> : <CaretDown size={12} />}
-              {showAdvanced ? 'Hide advanced options' : 'Advanced options'}
-            </button>
-
-            {/* Advanced fields — indented in a subtle box */}
-            {showAdvanced && (
-              <div className="mt-3 bg-secondary rounded-md px-4 py-3">
-                <CsvFormatFields config={config} onUpdate={onUpdate} />
+            {/* Detected format error bar — only shown for invalid files */}
+            {detectedFormat && !detectedFormat.valid && uploadedFileName && (
+              <div
+                role="alert"
+                className="mt-2 flex items-center gap-2 rounded-md px-3 py-2 text-xs bg-destructive-subtle text-destructive border border-destructive/20"
+              >
+                <WarningCircle size={16} weight="fill" className="text-destructive shrink-0" />
+                <span>
+                  Detected <strong>{detectedFormat.delimiter}</strong> delimiter — not supported. Accepted: Comma, Tab, Pipe, or Semicolon.
+                </span>
               </div>
             )}
           </div>
@@ -431,7 +482,7 @@ export function FileSettingsStep({
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
         </div>
-        <div className="w-[552px] flex flex-col gap-3">
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
           <div className={cn(
             "flex rounded-md border border-input overflow-hidden transition-colors",
             "focus-within:border-ring focus-within:shadow-ring",
@@ -477,7 +528,7 @@ export function FileSettingsStep({
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 mb-0">Select the database you want to update</p>
         </div>
-        <div className="w-[552px] flex flex-col gap-3">
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
           <SegmentedControl
             options={DATA_TYPES}
             value={dataType ?? 'contact'}
@@ -519,65 +570,3 @@ export function FileSettingsStep({
   );
 }
 
-
-
-
-/* ── CSV Format Fields (inside dropzone card) ── */
-
-const DELIMITER_OPTIONS: { value: CsvDelimiter; label: string }[] = [
-  { value: 'comma', label: 'Comma (,)' },
-  { value: 'tab', label: 'Tab' },
-  { value: 'pipe', label: 'Pipe (|)' },
-  { value: 'semicolon', label: 'Semicolon (;)' },
-];
-
-const ENCODING_OPTIONS: { value: CsvEncoding; label: string }[] = [
-  { value: 'utf-8', label: 'UTF-8' },
-  { value: 'iso-8859-1', label: 'ISO-8859-1' },
-  { value: 'windows-1252', label: 'Windows-1252' },
-];
-
-function CsvFormatFields({ config, onUpdate }: { config: ImporterConfig; onUpdate: (patch: Partial<ImporterConfig>) => void }) {
-  const csvFormat = config.csvFormat ?? { delimiter: 'comma' as CsvDelimiter, encoding: 'utf-8' as CsvEncoding, hasHeaderRow: true };
-
-  function updateCsvFormat(patch: Partial<typeof csvFormat>) {
-    onUpdate({ csvFormat: { ...csvFormat, ...patch } });
-  }
-
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      <div>
-        <p className="text-xs font-medium text-muted-foreground m-0">Delimiter</p>
-        <Select
-          value={csvFormat.delimiter}
-          onValueChange={(v) => updateCsvFormat({ delimiter: v as CsvDelimiter })}
-        >
-          <SelectTrigger aria-label="CSV delimiter">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {DELIMITER_OPTIONS.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div>
-        <p className="text-xs font-medium text-muted-foreground m-0">Encoding</p>
-        <Select
-          value={csvFormat.encoding}
-          onValueChange={(v) => updateCsvFormat({ encoding: v as CsvEncoding })}
-        >
-          <SelectTrigger aria-label="File encoding">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {ENCODING_OPTIONS.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-  );
-}
