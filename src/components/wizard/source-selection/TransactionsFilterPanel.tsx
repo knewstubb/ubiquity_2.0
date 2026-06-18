@@ -224,7 +224,7 @@ export function TransactionsFilterPanel({ config, onChange, tableFields }: Trans
 
                       <Button
                         type="button"
-                        variant="ghost"
+                        variant="secondaryGhost"
                         size="icon"
                         onClick={() => handleRemoveRow(index)}
                         aria-label={`Remove filter row ${index + 1}`}

@@ -466,9 +466,9 @@ export function ImportMappingStep({
           <p className="m-0 -mt-1 text-sm text-muted-foreground">
             Map file columns to contact table columns to identify which contact each transactional row belongs to. At least one mapping is required before proceeding.
           </p>
-          <div className="border border-border rounded-lg bg-background overflow-hidden">
+          <div className="border border-border rounded-lg bg-card overflow-hidden">
             {/* Lookup header */}
-            <div className="grid grid-cols-[1fr_1fr_40px] items-center py-3 px-4 bg-secondary border-b border-border">
+            <div className="grid grid-cols-[1fr_1fr_auto] items-center py-3 px-4 bg-secondary border-b border-border gap-3">
               <span className="text-sm font-semibold text-muted-foreground m-0">File Column</span>
               <span className="text-sm font-semibold text-muted-foreground m-0">Contact Table Column</span>
               <span />
@@ -477,7 +477,7 @@ export function ImportMappingStep({
             {/* Lookup rows */}
             {lookupRows.map((row, idx) => (
               <div
-                className="grid grid-cols-[1fr_1fr_40px] items-center py-2 px-4 gap-3"
+                className="grid grid-cols-[1fr_1fr_auto] items-center py-2 px-4 gap-3"
                 key={idx}
                 data-testid={`lookup-row-${idx}`}
               >
@@ -509,15 +509,17 @@ export function ImportMappingStep({
                 {/* Remove button — visible when > 1 row */}
                 <div className="flex items-center justify-center">
                   {lookupRows.length > 1 && (
-                    <button
+                    <Button
                       type="button"
-                      className="p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                      variant="secondaryGhost"
+                      size="icon"
+                      className="h-7 w-7 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                       onClick={() => handleRemoveLookupRow(idx)}
                       aria-label={`Remove lookup row ${idx + 1}`}
                       data-testid={`lookup-remove-${idx}`}
                     >
                       <X size={16} weight="bold" />
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
@@ -525,15 +527,16 @@ export function ImportMappingStep({
 
             {/* Add Lookup Field button — inside table, no separator */}
             <div className="py-3 px-4">
-              <button
+              <Button
                 type="button"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary leading-none hover:underline underline-offset-4"
+                variant="ghost"
+                size="sm"
                 onClick={handleAddLookupRow}
                 data-testid="add-lookup-field-btn"
               >
                 <Plus size={14} weight="bold" className="shrink-0" />
-                <span>Add lookup field</span>
-              </button>
+                Add lookup field
+              </Button>
             </div>
           </div>
         </div>
@@ -542,7 +545,7 @@ export function ImportMappingStep({
       {/* Database Mapping */}
       <div className="flex flex-col gap-3">
 
-      <div className="border border-border rounded-lg bg-background overflow-hidden">
+      <div className="border border-border rounded-lg bg-card overflow-hidden">
         {/* Header */}
         <div className="grid grid-cols-[1fr_32px_1.2fr_32px_1fr] items-center py-3 px-4 bg-secondary border-b border-border">
           <span className="text-sm font-semibold text-muted-foreground m-0">Columns from File</span>
@@ -555,7 +558,7 @@ export function ImportMappingStep({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        variant="ghost"
+                        variant="secondaryGhost"
                         size="icon"
                         className="h-6 w-6 text-muted-foreground/60 border border-border rounded hover:bg-primary/10 hover:text-primary hover:border-primary/30"
                         aria-label="Reset all mappings to auto-matched state"
@@ -572,7 +575,7 @@ export function ImportMappingStep({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      variant="ghost"
+                      variant="secondaryGhost"
                       size="icon"
                       className="h-6 w-6 text-muted-foreground/60 border border-border rounded hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
                       aria-label="Ignore all column mappings"
@@ -686,28 +689,31 @@ export function ImportMappingStep({
               <span className="text-sm text-tertiary-foreground m-0 overflow-hidden text-ellipsis whitespace-nowrap flex-1">
                 {defaultRow.exampleValue}
               </span>
-              <button
+              <Button
                 type="button"
-                className="shrink-0 p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                variant="secondaryGhost"
+                size="icon"
+                className="shrink-0 h-7 w-7 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                 onClick={() => handleRemoveImportDefault(defaultRow.targetField)}
                 aria-label={`Remove import default for ${defaultRow.targetField}`}
               >
                 <X size={14} weight="bold" />
-              </button>
+              </Button>
             </div>
           </div>
         ))}
 
         {/* Add field value button — inside table, no separator */}
         <div className="py-3 px-4">
-          <button
+          <Button
             type="button"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary leading-none hover:underline underline-offset-4"
+            variant="ghost"
+            size="sm"
             onClick={() => setDefaultModalOpen(true)}
           >
             <Plus size={14} weight="bold" className="shrink-0" />
-            <span>Add field value</span>
-          </button>
+            Add field value
+          </Button>
         </div>
       </div>
 

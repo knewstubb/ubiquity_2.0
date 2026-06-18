@@ -840,7 +840,7 @@ export function ConditionModal({
         </DialogBody>
 
         <DialogFooter className="border-t border-border">
-          <Button type="button" variant="ghost" onClick={handleDismiss}>Cancel</Button>
+          <Button type="button" variant="secondaryGhost" onClick={handleDismiss}>Cancel</Button>
           <Button type="button" onClick={handleConfirm} disabled={!canConfirm}>
             {mode === 'edit' ? 'Update' : 'Add Condition'}
           </Button>

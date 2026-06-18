@@ -195,7 +195,7 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
         </div>
 
         <DialogFooter className="border-t border-border px-6 py-4">
-          <Button type="button" variant="ghost" onClick={onClose}>
+          <Button type="button" variant="secondaryGhost" onClick={onClose}>
             Cancel
           </Button>
           <Button type="button" onClick={handleCreate} disabled={!isEditing && !testPassed}>

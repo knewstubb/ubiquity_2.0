@@ -3,13 +3,11 @@ import { UploadSimple } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useAutomations } from '../../contexts/AutomationsContext';
 import { useConnections } from '../../contexts/ConnectionsContext';
-import { CloseButton } from '../ui/close-button';
 import {
   Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from '../ui/breadcrumb';
 import {
@@ -381,9 +379,9 @@ export function WizardModal({
       aria-labelledby="wizard-modal-title"
       data-testid="wizard-modal"
     >
-      <div className="w-full flex flex-1">
+      <div className="w-full flex flex-1 min-h-0">
         {/* Left sidebar */}
-        <div className="w-[239px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto">
+        <div className="w-[280px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto">
           <div className="flex flex-col items-center text-center gap-1">
             <div className="w-10 h-10 flex items-center justify-center text-primary mb-1">
               <UploadSimple size={56} />
@@ -405,10 +403,10 @@ export function WizardModal({
         </div>
 
         {/* Right content area */}
-        <div className="flex-1 flex flex-col min-w-0 bg-background relative">
-          <div className="w-full max-w-4xl mx-auto flex flex-col flex-1 min-h-0">
+        <div className="flex-1 flex flex-col min-w-0 min-h-0 bg-background relative p-6">
+          <div className="w-full max-w-5xl mx-auto flex flex-col flex-1 min-h-0 rounded-lg bg-card overflow-hidden">
           {/* Breadcrumb */}
-          <div className="shrink-0 px-8 pt-4 pb-0">
+          <div className="shrink-0 px-8 pt-6 pb-0">
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
@@ -418,31 +416,22 @@ export function WizardModal({
                 <BreadcrumbItem>
                   <BreadcrumbLink href="/">Connectors</BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{editConnectorId ? 'Edit Exporter' : 'New Exporter'}</BreadcrumbPage>
-                </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          {/* Fixed header — title + close button */}
-          <div className="shrink-0 flex items-start justify-between px-8 pt-4 pb-8">
+          {/* Fixed header — title */}
+          <div className="shrink-0 flex items-start px-8 pt-4 pb-8">
             <div>
               <h3 className="m-0 text-xl font-semibold text-primary">{steps[currentStep]?.label}</h3>
               <p className="mt-1 mb-0 text-sm text-tertiary-foreground">{steps[currentStep]?.description}</p>
             </div>
-            <CloseButton
-              onClick={handleCloseClick}
-              aria-label="Close wizard"
-              data-testid="wizard-close-button"
-            />
           </div>
 
-          <div className={cn("flex-1 overflow-y-auto px-8 flex flex-col gap-6 scrollbar-gutter-stable", currentStep !== 1 && "pb-8")} data-testid="wizard-step-content">
+          <div className={cn("flex-1 px-8 flex flex-col gap-6 scrollbar-gutter-stable min-h-0", currentStep !== 1 && "overflow-y-auto pb-8")} data-testid="wizard-step-content">
             {stepContent}
           </div>
 
-          <div className="shrink-0 pt-4 pb-8 px-8">
+          <div className="shrink-0 pt-4 pb-6 px-8">
             <WizardNavButtons
               onBack={handleBack}
               onNext={handleNext}

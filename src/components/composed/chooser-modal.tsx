@@ -100,7 +100,7 @@ export function ChooserModal({
           secondaryAction={{
             label: cancelLabel,
             onClick: onCancel,
-            variant: 'ghost',
+            variant: 'secondaryGhost',
           }}
         />
       </DialogContent>

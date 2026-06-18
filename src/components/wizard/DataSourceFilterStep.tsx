@@ -235,8 +235,8 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
 
   return (
     <div className="flex flex-col flex-1 min-h-0" data-testid="data-source-filter-step">
-      {/* Filter Builder */}
-      <div className="flex-1">
+      {/* Filter Builder — scrollable */}
+      <div className="flex-1 overflow-y-auto min-h-0 scrollbar-gutter-stable">
         <ModalFilterBuilder
           value={filterValue}
           onChange={handleFilterChange}
@@ -246,8 +246,8 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
         />
       </div>
 
-      {/* Match Count Summary — sticky to bottom of scroll container */}
-      <div className="sticky bottom-0 mt-6 bg-background pt-2 pb-4 z-10">
+      {/* Match Count Summary — fixed at bottom, outside scroll */}
+      <div className="shrink-0 mt-4 pt-4 bg-card">
         <div className="flex items-center justify-between rounded-md bg-secondary/50 border border-border px-4 py-3">
           <span className="text-sm text-muted-foreground">Estimated records matching filters</span>
           <span className="text-sm font-semibold text-foreground">{matchCount.toLocaleString()} records</span>

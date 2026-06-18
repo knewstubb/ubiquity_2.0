@@ -14,7 +14,7 @@
  * @usage
  * - Use for dismissing containers (modals, sheets, panels, banners, toasts)
  * - Do NOT use for chip remove buttons or field clear buttons (those have different semantics)
- * - Do NOT use for "Cancel" actions that need a visible label — use Button variant="ghost" instead
+ * - Do NOT use for "Cancel" actions that need a visible label — use Button variant="secondaryGhost" instead
  * - Position with className (e.g. "absolute right-4 top-4") — the component has no built-in positioning
  *
  * @sizes

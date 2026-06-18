@@ -392,7 +392,7 @@ function EmptyConnectionState({ onCreateConnection }: { onCreateConnection: () =
                 Your technical admin or IT team can provide these details. Each protocol (SFTP, AWS S3, Azure Blob) has specific requirements.
               </div>
               <div className="flex justify-end">
-                <Button size="sm" variant="ghost" className="h-7 text-sm" onClick={() => setShowRequirements(false)}>
+                <Button size="sm" variant="secondaryGhost" className="h-7 text-sm" onClick={() => setShowRequirements(false)}>
                   Done
                 </Button>
               </div>

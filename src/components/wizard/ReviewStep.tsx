@@ -88,7 +88,7 @@ export function ReviewStep({ draft, onEditStep }: ReviewStepProps) {
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-semibold text-foreground m-0">Exporter Type</h4>
           {onEditStep && (
-            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.type)}>
+            <Button variant="secondaryGhost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.type)}>
               <PencilSimple size={12} weight="bold" className="mr-1" />Edit
             </Button>
           )}
@@ -110,7 +110,7 @@ export function ReviewStep({ draft, onEditStep }: ReviewStepProps) {
             {isEventBased ? 'Event Sources' : 'Data Sources'}
           </h4>
           {onEditStep && (
-            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.source)}>
+            <Button variant="secondaryGhost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.source)}>
               <PencilSimple size={12} weight="bold" className="mr-1" />Edit
             </Button>
           )}
@@ -165,7 +165,7 @@ export function ReviewStep({ draft, onEditStep }: ReviewStepProps) {
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-semibold text-foreground m-0">Fields</h4>
           {onEditStep && (
-            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.fields)}>
+            <Button variant="secondaryGhost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.fields)}>
               <PencilSimple size={12} weight="bold" className="mr-1" />Edit
             </Button>
           )}
@@ -196,7 +196,7 @@ export function ReviewStep({ draft, onEditStep }: ReviewStepProps) {
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-semibold text-foreground m-0">Output Configuration</h4>
           {onEditStep && (
-            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.fileConfig)}>
+            <Button variant="secondaryGhost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.fileConfig)}>
               <PencilSimple size={12} weight="bold" className="mr-1" />Edit
             </Button>
           )}
@@ -226,7 +226,7 @@ export function ReviewStep({ draft, onEditStep }: ReviewStepProps) {
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-semibold text-foreground m-0">Schedule</h4>
           {onEditStep && (
-            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.schedule)}>
+            <Button variant="secondaryGhost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.schedule)}>
               <PencilSimple size={12} weight="bold" className="mr-1" />Edit
             </Button>
           )}
@@ -244,7 +244,7 @@ export function ReviewStep({ draft, onEditStep }: ReviewStepProps) {
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-semibold text-foreground m-0">Notifications</h4>
           {onEditStep && (
-            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.notifications)}>
+            <Button variant="secondaryGhost" size="sm" className="h-7 px-2 text-xs" onClick={() => onEditStep(steps.notifications)}>
               <PencilSimple size={12} weight="bold" className="mr-1" />Edit
             </Button>
           )}

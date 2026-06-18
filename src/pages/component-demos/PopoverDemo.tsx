@@ -109,7 +109,7 @@ export default function PopoverDemo(props: PopoverDemoProps) {
             {/* Done button — ghost, right-aligned */}
             {showDone && (
               <div className="flex justify-end">
-                <Button variant="ghost" size="sm" className="h-7 text-sm" onClick={() => setOpen(false)}>
+                <Button variant="secondaryGhost" size="sm" className="h-7 text-sm" onClick={() => setOpen(false)}>
                   {doneLabel}
                 </Button>
               </div>

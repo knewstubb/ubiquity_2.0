@@ -379,7 +379,7 @@ function ConditionRow({ row, fieldIndex, fieldMap, onChange, onRemove, idx, useS
       </div>
 
       {/* Delete */}
-      <Button type="button" variant="ghost" size="icon" onClick={onRemove} aria-label={`Remove filter row ${idx + 1}`} className="shrink-0 h-9 w-9 text-muted-foreground hover:text-destructive">
+      <Button type="button" variant="secondaryGhost" size="icon" onClick={onRemove} aria-label={`Remove filter row ${idx + 1}`} className="shrink-0 h-9 w-9 text-muted-foreground hover:text-destructive">
         <Trash size={16} />
       </Button>
     </div>

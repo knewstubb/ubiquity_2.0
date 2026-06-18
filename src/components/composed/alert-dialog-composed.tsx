@@ -234,7 +234,7 @@ export function AlertDialogComposed({
 
   const cancelButton = showCancel ? (
     <Button
-      variant="ghost"
+      variant="secondaryGhost"
       onClick={handleCancel}
       disabled={cancelDisabled}
     >

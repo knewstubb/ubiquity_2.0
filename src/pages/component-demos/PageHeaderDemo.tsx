@@ -241,7 +241,7 @@ function PageHeaderPreview({
               </Button>
             ))}
             {filterCount > 0 && (
-              <Button variant="ghost" size="sm">Reset</Button>
+              <Button variant="secondaryGhost" size="sm">Reset</Button>
             )}
           </div>
         )}
@@ -253,7 +253,7 @@ function PageHeaderPreview({
             <Button variant="outline" size="sm">Move</Button>
             <Button variant="outline" size="sm">Tag</Button>
             <Button variant="destructiveOutline" size="sm">Delete</Button>
-            <Button variant="ghost" size="sm" className="ml-auto">Clear selection</Button>
+            <Button variant="secondaryGhost" size="sm" className="ml-auto">Clear selection</Button>
           </div>
         )}
       </div>

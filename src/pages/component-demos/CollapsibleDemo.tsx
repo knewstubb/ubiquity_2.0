@@ -27,7 +27,7 @@ export default function CollapsibleDemo(props: CollapsibleDemoProps) {
           <div className="flex items-center justify-between space-x-4 px-4">
             <h4 className="text-sm font-semibold">{title}</h4>
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="w-9 p-0">
+              <Button variant="secondaryGhost" size="sm" className="w-9 p-0">
                 <CaretUpDown className="h-4 w-4" />
                 <span className="sr-only">Toggle</span>
               </Button>
@@ -57,7 +57,7 @@ export default function CollapsibleDemo(props: CollapsibleDemoProps) {
             3 integrations connected
           </h4>
           <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="sm" className="w-9 p-0">
+            <Button variant="secondaryGhost" size="sm" className="w-9 p-0">
               <CaretUpDown className="h-4 w-4" />
               <span className="sr-only">Toggle</span>
             </Button>

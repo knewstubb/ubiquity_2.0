@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { UploadSimple, X, FileCsv, WarningCircle } from '@phosphor-icons/react';
+import { UploadSimple, X, FileCsv, WarningCircle, CaretRight } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { SegmentedControl } from '@/components/composed/segmented-control';
 import { PrefixInput } from '@/components/composed/prefix-input';
@@ -69,6 +69,7 @@ export function FileSettingsStep({
   const [transactionalTable, setTransactionalTable] = useState(config.transactionalTable ?? '');
   const [detectedFormat, setDetectedFormat] = useState<{ encoding: string; delimiter: string; valid: boolean } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { filePathConfig, dataType } = config;
   const { pathMode, folderName, readPath, errorFolderPath, archiveFolderPath, fileNamePattern } =
@@ -450,6 +451,53 @@ export function FileSettingsStep({
               </div>
             )}
           </div>
+
+          {/* Advanced options — shown after successful file upload */}
+          {uploadedFileName && detectedFormat?.valid && (
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => setShowAdvanced((prev) => !prev)}
+                className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer p-0 text-sm text-primary font-medium mt-1"
+              >
+                <CaretRight
+                  size={12}
+                  weight="bold"
+                  className={cn(
+                    "transition-transform duration-150",
+                    showAdvanced && "rotate-90"
+                  )}
+                />
+                {showAdvanced ? 'Hide advanced options' : 'Advanced options'}
+              </button>
+
+              {showAdvanced && detectedFormat && (
+                <div className="border-l-2 border-border pl-4 mt-1">
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Delimiter</p>
+                    <Select
+                      value={config.csvFormat?.delimiter ?? 'comma'}
+                      onValueChange={(v) => onUpdate({ csvFormat: { ...config.csvFormat, delimiter: v as CsvDelimiter } })}
+                    >
+                      <SelectTrigger aria-label="CSV delimiter">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="comma">Comma (,)</SelectItem>
+                        <SelectItem value="tab">Tab</SelectItem>
+                        <SelectItem value="pipe">Pipe (|)</SelectItem>
+                        <SelectItem value="semicolon">Semicolon (;)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-[11px] text-muted-foreground mt-1 mb-0">
+                      Auto-detected: {detectedFormat.delimiter}. Override if incorrect.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {fileError && (
             <p className="text-xs text-destructive -mt-1 mb-0">{fileError}</p>
           )}

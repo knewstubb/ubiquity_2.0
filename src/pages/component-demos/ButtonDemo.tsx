@@ -3,7 +3,7 @@ import { EnvelopeSimple, Plus, SpinnerGap, Trash, PencilSimple, ArrowRight } fro
 
 interface ButtonDemoProps {
   label?: string
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'secondaryOutline' | 'ghost' | 'link'
+  variant?: 'default' | 'destructive' | 'destructiveOutline' | 'destructiveGhost' | 'outline' | 'secondary' | 'secondaryOutline' | 'ghost' | 'secondaryGhost' | 'link'
   size?: 'default' | 'xs' | 'sm' | 'lg' | 'icon'
   disabled?: boolean
   'show-icon'?: boolean
@@ -32,7 +32,7 @@ export default function ButtonDemo({ label, variant, size, disabled, 'show-icon'
           <Button variant="secondaryOutline">Secondary</Button>
           <Button variant="destructive">Destructive</Button>
           <Button variant="outline">Outline</Button>
-          <Button variant="ghost">Ghost</Button>
+          <Button variant="secondaryGhost">Ghost</Button>
           <Button variant="link">Link</Button>
         </div>
       </section>
@@ -55,7 +55,7 @@ export default function ButtonDemo({ label, variant, size, disabled, 'show-icon'
           <Button><EnvelopeSimple weight="bold" /> Send Email</Button>
           <Button variant="secondaryOutline"><Plus weight="bold" /> New Campaign</Button>
           <Button variant="destructive"><Trash weight="bold" /> Delete</Button>
-          <Button variant="ghost"><PencilSimple weight="bold" /> Edit</Button>
+          <Button variant="secondaryGhost"><PencilSimple weight="bold" /> Edit</Button>
           <Button>Continue <ArrowRight weight="bold" /></Button>
         </div>
       </section>
@@ -67,7 +67,7 @@ export default function ButtonDemo({ label, variant, size, disabled, 'show-icon'
           <Button size="icon"><Plus weight="bold" /></Button>
           <Button size="icon" variant="secondaryOutline"><PencilSimple weight="bold" /></Button>
           <Button size="icon" variant="destructive"><Trash weight="bold" /></Button>
-          <Button size="icon" variant="ghost"><EnvelopeSimple weight="bold" /></Button>
+          <Button size="icon" variant="secondaryGhost"><EnvelopeSimple weight="bold" /></Button>
         </div>
       </section>
 
@@ -78,7 +78,7 @@ export default function ButtonDemo({ label, variant, size, disabled, 'show-icon'
           <Button disabled>Primary Disabled</Button>
           <Button variant="secondaryOutline" disabled>Secondary Disabled</Button>
           <Button variant="destructive" disabled>Destructive Disabled</Button>
-          <Button variant="ghost" disabled>Ghost Disabled</Button>
+          <Button variant="secondaryGhost" disabled>Ghost Disabled</Button>
         </div>
       </section>
 

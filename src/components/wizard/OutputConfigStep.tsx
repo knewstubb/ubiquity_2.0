@@ -150,15 +150,16 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
               weight="bold"
               className={cn(
                 "transition-transform duration-150",
-                advancedOpen ? "rotate-[270deg]" : "rotate-90"
+                advancedOpen && "rotate-90"
               )}
             />
             {advancedOpen ? 'Hide advanced options' : 'Advanced options'}
           </button>
 
-          {/* Advanced options content — grey bg, no border, matches importer */}
+          {/* Advanced options content — left border accent */}
           {advancedOpen && (
-            <div className="flex items-start gap-3 rounded-md bg-secondary p-3 mt-1" style={{ animation: "slideDown 300ms ease-out both" }}>
+            <div className="border-l-2 border-border pl-4 mt-1">
+              <div className="flex items-start gap-5">
               {/* Delimiter */}
               <div className="flex-1">
                 <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Delimiter</p>
@@ -208,6 +209,7 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
                   <Label htmlFor="header-row-toggle" className="text-sm">Include</Label>
                 </div>
               </div>
+              </div>
             </div>
           )}
         </div>
@@ -220,8 +222,8 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
           <p className="text-xs text-tertiary-foreground mt-1 m-0">Generated filename</p>
         </div>
         <div className="flex-1">
-          <div className="bg-muted rounded-lg py-2.5 px-3.5">
-            <p className="text-xs text-foreground font-mono m-0 break-all" data-testid="filename-preview">
+          <div className="bg-accent rounded-lg py-3 px-4">
+            <p className="text-xs text-primary font-mono m-0 break-all" data-testid="filename-preview">
               {previewFilename}
             </p>
           </div>

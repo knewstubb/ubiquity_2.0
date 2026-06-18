@@ -24,7 +24,7 @@ const SECTIONED_CONTROLS: PropDefinition[] = [
   { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'primary', section: 'Appearance', options: [
     { label: 'Primary', value: 'primary' },
     { label: 'Secondary', value: 'secondary' },
-    { label: 'Ghost', value: 'ghost' },
+    { label: 'Ghost', value: 'secondaryGhost' },
   ]},
   { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'md', section: 'Appearance', options: [
     { label: 'Small', value: 'sm' },

@@ -93,9 +93,9 @@ export default function ImporterWizardPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col overflow-hidden">
       <WizardTopBar />
-      <div className="flex-1 flex">
+      <div className="flex-1 flex min-h-0">
         <ImporterWizardModal
           connectionId={resolvedConnectionId}
           connectorName={connectorName}

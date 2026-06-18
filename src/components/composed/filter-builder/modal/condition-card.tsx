@@ -165,7 +165,7 @@ export function ConditionCard({
       {/* Remove button */}
       <Button
         type="button"
-        variant="ghost"
+        variant="secondaryGhost"
         size="sm"
         onClick={onRemove}
         className="shrink-0 p-1 h-auto text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10"

@@ -23,7 +23,7 @@ export interface ModalAction {
   label: string
   onClick: () => void
   disabled?: boolean
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'secondaryOutline' | 'ghost' | 'link'
+  variant?: 'default' | 'destructive' | 'destructiveOutline' | 'destructiveGhost' | 'outline' | 'secondary' | 'secondaryOutline' | 'ghost' | 'secondaryGhost' | 'link'
 }
 
 interface ModalFooterProps {
@@ -51,7 +51,7 @@ export function ModalFooter({
       {tertiaryAction && (
         <Button
           type="button"
-          variant={tertiaryAction.variant ?? 'ghost'}
+          variant={tertiaryAction.variant ?? 'secondaryGhost'}
           onClick={tertiaryAction.onClick}
           disabled={tertiaryAction.disabled}
           className="mr-auto"
@@ -62,7 +62,7 @@ export function ModalFooter({
       {secondaryAction && (
         <Button
           type="button"
-          variant={secondaryAction.variant ?? 'ghost'}
+          variant={secondaryAction.variant ?? 'secondaryGhost'}
           onClick={secondaryAction.onClick}
           disabled={secondaryAction.disabled}
         >

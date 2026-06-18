@@ -14,7 +14,7 @@ export default function ModalFooterDemo(props: Record<string, unknown>) {
     return (
       <div className="w-[460px] border border-border rounded-lg overflow-hidden">
         <ModalFooter
-          primaryAction={{ label: secondaryLabel, variant: 'ghost', onClick: () => {} }}
+          primaryAction={{ label: secondaryLabel, variant: 'secondaryGhost', onClick: () => {} }}
           secondaryAction={{ label: primaryLabel, variant: 'destructive', onClick: () => {} }}
         />
       </div>
@@ -31,7 +31,7 @@ export default function ModalFooterDemo(props: Record<string, unknown>) {
   }
 
   const secondary: ModalAction | undefined = showSecondary
-    ? { label: secondaryLabel, variant: 'ghost', onClick: () => {} }
+    ? { label: secondaryLabel, variant: 'secondaryGhost', onClick: () => {} }
     : undefined
 
   const tertiary: ModalAction | undefined = showTertiary

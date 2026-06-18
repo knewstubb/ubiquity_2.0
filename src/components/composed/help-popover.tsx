@@ -99,7 +99,7 @@ export function HelpPopover({
 
           {showDone && (
             <div className="flex justify-end">
-              <Button variant="ghost" size="sm" className="h-7 text-sm" onClick={() => setOpen(false)}>
+              <Button variant="secondaryGhost" size="sm" className="h-7 text-sm" onClick={() => setOpen(false)}>
                 {doneLabel}
               </Button>
             </div>

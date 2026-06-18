@@ -65,7 +65,7 @@ export default function DialogDemo(props: DialogDemoProps) {
           {showFooter && (
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="ghost">Cancel</Button>
+                <Button variant="secondaryGhost">Cancel</Button>
               </DialogClose>
               <Button type="submit">Save changes</Button>
             </DialogFooter>
@@ -105,7 +105,7 @@ export default function DialogDemo(props: DialogDemoProps) {
           </DialogBody>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="ghost">Cancel</Button>
+              <Button variant="secondaryGhost">Cancel</Button>
             </DialogClose>
             <Button type="submit">Create Segment</Button>
           </DialogFooter>

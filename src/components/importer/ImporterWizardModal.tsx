@@ -8,7 +8,6 @@ import {
   BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from '../ui/breadcrumb';
 import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed';
@@ -363,7 +362,7 @@ export function ImporterWizardModal({
       aria-labelledby="importer-wizard-title"
       data-testid="importer-wizard-modal"
     >
-      <div className="w-full flex flex-1">
+      <div className="w-full flex flex-1 min-h-0">
         {/* Left sidebar */}
         <div className="w-[280px] shrink-0 bg-secondary p-8 flex flex-col gap-12 overflow-y-auto">
           <div className="flex flex-col items-center text-center gap-1">
@@ -387,10 +386,10 @@ export function ImporterWizardModal({
         </div>
 
         {/* Right content area */}
-        <div className="flex-1 flex flex-col min-w-0 bg-background relative">
-          <div className="w-full max-w-5xl mx-auto flex flex-col flex-1 min-h-0">
+        <div className="flex-1 flex flex-col min-w-0 min-h-0 bg-background relative p-6">
+          <div className="w-full max-w-5xl mx-auto flex flex-col flex-1 min-h-0 rounded-lg bg-card overflow-hidden">
           {/* Breadcrumb */}
-          <div className="shrink-0 px-8 pt-4 pb-0">
+          <div className="shrink-0 px-8 pt-6 pb-0">
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
@@ -399,10 +398,6 @@ export function ImporterWizardModal({
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbLink href="/">Connectors</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{existingConfig ? 'Edit Importer' : 'New Importer'}</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -419,7 +414,7 @@ export function ImporterWizardModal({
             {stepContent}
           </div>
 
-          <div className="shrink-0 pt-4 pb-8 px-8">
+          <div className="shrink-0 pt-4 pb-6 px-8">
             <WizardNavButtons
               onBack={handleBack}
               onNext={handleNext}

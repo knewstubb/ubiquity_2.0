@@ -6,7 +6,7 @@
  * @designDecisions
  * - Logic toggle is a clickable Button (size="xs") showing "AND" or "OR" — fixed w-10 + text-center so the pill stays the same width regardless of label length, preventing layout shift on toggle
  * - AND uses primary (teal) styling; OR uses purple-500 to visually distinguish alternative logic at a glance
- * - Left border connector line also colour-codes: primary (teal) for AND groups, purple-500 for OR groups
+ * - Left border connector line also colour-codes: primary (teal) for AND groups, zinc-500 for OR groups
  * - Conditions rendered as ConditionCard components (natural language summaries)
  * - Nested groups indented with left border-line (border-l-2) for visual hierarchy
  * - "+Filter" (labelled "Condition") opens the ConditionModal in add mode via onOpenModal callback
@@ -14,6 +14,7 @@
  * - "+Group" disabled with tooltip at maxDepth
  * - Empty nested groups auto-removed via removeEmptyGroups on condition removal
  * - Root depth starts at 1; maxDepth is the limit (e.g., maxDepth=3 means depth 1, 2, 3 allowed)
+ * - Empty state shows a dashed-border "Configure condition" CTA inside the connector line, prompting users to add their first condition — uses the same handleAddFilter action as the "+Condition" button
  *
  * @usage
  * - Internal sub-component of CardFilterBuilder — not used standalone
@@ -184,7 +185,7 @@ export function LogicGroupRenderer({
       </div>
 
       {/* Conditions with left connector line */}
-      {group.conditions.length > 0 && (
+      {group.conditions.length > 0 ? (
         <div className={cn("ml-[18px] pl-4 border-l-2 flex flex-col gap-2", group.logic === "or" ? "border-zinc-500" : "border-primary")}>
           {group.conditions.map((condition, index) => (
             <div key={`${depth}-${index}`}>
@@ -210,6 +211,18 @@ export function LogicGroupRenderer({
               )}
             </div>
           ))}
+        </div>
+      ) : (
+        <div className={cn("ml-[18px] pl-4 border-l-2", group.logic === "or" ? "border-zinc-500" : "border-primary")}>
+          <button
+            type="button"
+            onClick={handleAddFilter}
+            className="w-full flex items-center gap-2 rounded-md border border-dashed border-primary/40 bg-primary/5 px-2 py-2 cursor-pointer hover:bg-primary/10 transition-colors"
+          >
+            <span className="flex-1 text-left text-sm text-primary font-medium px-2 py-1">
+              Configure condition
+            </span>
+          </button>
         </div>
       )}
     </div>

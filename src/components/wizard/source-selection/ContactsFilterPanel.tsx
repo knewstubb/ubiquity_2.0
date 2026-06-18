@@ -142,7 +142,7 @@ export function ContactsFilterPanel({ config, onChange }: ContactsFilterPanelPro
 
                 <Button
                   type="button"
-                  variant="ghost"
+                  variant="secondaryGhost"
                   size="icon"
                   onClick={() => handleRemoveRow(index)}
                   aria-label={`Remove filter row ${index + 1}`}

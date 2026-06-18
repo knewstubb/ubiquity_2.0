@@ -31,7 +31,7 @@ export function WizardNavButtons({
 
   return (
     <div className="flex items-center justify-end gap-3">
-      <Button variant="ghost" onClick={onCancel}>
+      <Button variant="secondaryGhost" onClick={onCancel}>
         Cancel
       </Button>
       <Button variant="outline" onClick={onBack} disabled={!showBack}>

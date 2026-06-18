@@ -73,7 +73,7 @@ function ConditionRow({ condition, onChange, onRemove }: {
           onChange={(e) => onChange({ ...condition, value: e.target.value })}
         />
       )}
-      <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={onRemove}>
+      <Button variant="secondaryGhost" size="icon" className="h-7 w-7 shrink-0" onClick={onRemove}>
         <X weight="bold" className="h-3.5 w-3.5 text-muted-foreground" />
       </Button>
     </div>
@@ -149,7 +149,7 @@ function HubSpotTab() {
                 </button>
               </div>
               {groups.length > 1 && (
-                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeGroup(group.id)}>
+                <Button variant="secondaryGhost" size="icon" className="h-6 w-6" onClick={() => removeGroup(group.id)}>
                   <X weight="bold" className="h-3 w-3" />
                 </Button>
               )}
@@ -170,7 +170,7 @@ function HubSpotTab() {
                 </div>
               ))}
             </div>
-            <Button variant="ghost" size="sm" className="text-xs text-primary" onClick={() => addCondition(group.id)}>
+            <Button variant="secondaryGhost" size="sm" className="text-xs text-primary" onClick={() => addCondition(group.id)}>
               <Plus weight="bold" className="h-3 w-3 mr-1" /> Add condition
             </Button>
           </div>
@@ -247,13 +247,13 @@ function KlaviyoTab() {
               {!prop.operator.includes('blank') && (
                 <Input className="flex-1 h-8 text-xs" placeholder="value..." value={prop.value} onChange={(e) => setProperties(properties.map(p => p.id === prop.id ? { ...p, value: e.target.value } : p))} />
               )}
-              <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => setProperties(properties.filter(p => p.id !== prop.id))}>
+              <Button variant="secondaryGhost" size="icon" className="h-7 w-7 shrink-0" onClick={() => setProperties(properties.filter(p => p.id !== prop.id))}>
                 <X weight="bold" className="h-3.5 w-3.5 text-muted-foreground" />
               </Button>
             </div>
           ))}
         </div>
-        <Button variant="ghost" size="sm" className="text-xs text-primary" onClick={() => setProperties([...properties, { id: genId(), field: 'First Name', operator: 'equals', value: '' }])}>
+        <Button variant="secondaryGhost" size="sm" className="text-xs text-primary" onClick={() => setProperties([...properties, { id: genId(), field: 'First Name', operator: 'equals', value: '' }])}>
           <Plus weight="bold" className="h-3 w-3 mr-1" /> Add property
         </Button>
       </div>
@@ -285,7 +285,7 @@ function KlaviyoTab() {
                   <Input className="w-[60px] h-8 text-xs" placeholder="#" value={m.count} onChange={(e) => setMetrics(metrics.map(x => x.id === m.id ? { ...x, count: e.target.value } : x))} />
                 )}
                 {m.frequency !== 'zero times' && <span className="text-xs text-muted-foreground">times</span>}
-                <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 ml-auto" onClick={() => setMetrics(metrics.filter(x => x.id !== m.id))}>
+                <Button variant="secondaryGhost" size="icon" className="h-7 w-7 shrink-0 ml-auto" onClick={() => setMetrics(metrics.filter(x => x.id !== m.id))}>
                   <X weight="bold" className="h-3.5 w-3.5 text-muted-foreground" />
                 </Button>
               </div>
@@ -301,13 +301,13 @@ function KlaviyoTab() {
                   ))}
                 </div>
               )}
-              <Button variant="ghost" size="sm" className="text-[10px] text-muted-foreground" onClick={() => setMetrics(metrics.map(x => x.id === m.id ? { ...x, subFilters: [...x.subFilters, makeCondition()] } : x))}>
+              <Button variant="secondaryGhost" size="sm" className="text-[10px] text-muted-foreground" onClick={() => setMetrics(metrics.map(x => x.id === m.id ? { ...x, subFilters: [...x.subFilters, makeCondition()] } : x))}>
                 <Plus weight="bold" className="h-3 w-3 mr-1" /> Add where filter
               </Button>
             </div>
           ))}
         </div>
-        <Button variant="ghost" size="sm" className="text-xs text-primary" onClick={() => setMetrics([...metrics, { id: genId(), metric: METRICS[0], frequency: 'at least', count: '1', subFilters: [] }])}>
+        <Button variant="secondaryGhost" size="sm" className="text-xs text-primary" onClick={() => setMetrics([...metrics, { id: genId(), metric: METRICS[0], frequency: 'at least', count: '1', subFilters: [] }])}>
           <Plus weight="bold" className="h-3 w-3 mr-1" /> Add metric
         </Button>
       </div>
@@ -329,7 +329,7 @@ function KlaviyoTab() {
                 <span className="text-xs text-muted-foreground">has</span>
                 <Input className="w-[50px] h-8 text-xs" placeholder="#" value={obj.recordCount} onChange={(e) => setCustomObjects(customObjects.map(x => x.id === obj.id ? { ...x, recordCount: e.target.value } : x))} />
                 <span className="text-xs text-muted-foreground">or more records where:</span>
-                <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 ml-auto" onClick={() => setCustomObjects(customObjects.filter(x => x.id !== obj.id))}>
+                <Button variant="secondaryGhost" size="icon" className="h-7 w-7 shrink-0 ml-auto" onClick={() => setCustomObjects(customObjects.filter(x => x.id !== obj.id))}>
                   <X weight="bold" className="h-3.5 w-3.5 text-muted-foreground" />
                 </Button>
               </div>
@@ -341,7 +341,7 @@ function KlaviyoTab() {
                   />
                 ))}
                 {obj.subFilters.length < 5 && (
-                  <Button variant="ghost" size="sm" className="text-[10px] text-muted-foreground" onClick={() => setCustomObjects(customObjects.map(x => x.id === obj.id ? { ...x, subFilters: [...x.subFilters, makeCondition()] } : x))}>
+                  <Button variant="secondaryGhost" size="sm" className="text-[10px] text-muted-foreground" onClick={() => setCustomObjects(customObjects.map(x => x.id === obj.id ? { ...x, subFilters: [...x.subFilters, makeCondition()] } : x))}>
                     <Plus weight="bold" className="h-3 w-3 mr-1" /> Add field filter ({5 - obj.subFilters.length} remaining)
                   </Button>
                 )}
@@ -349,7 +349,7 @@ function KlaviyoTab() {
             </div>
           ))}
         </div>
-        <Button variant="ghost" size="sm" className="text-xs text-primary" onClick={() => setCustomObjects([...customObjects, { id: genId(), object: OBJECTS[0], recordCount: '1', subFilters: [makeCondition()] }])}>
+        <Button variant="secondaryGhost" size="sm" className="text-xs text-primary" onClick={() => setCustomObjects([...customObjects, { id: genId(), object: OBJECTS[0], recordCount: '1', subFilters: [makeCondition()] }])}>
           <Plus weight="bold" className="h-3 w-3 mr-1" /> Add custom object
         </Button>
       </div>
@@ -414,7 +414,7 @@ function ActiveCampaignTab() {
                 <Badge variant="default-subtle" className="text-[10px] uppercase tracking-wider">AND only</Badge>
               </div>
               {groups.length > 1 && (
-                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeGroup(group.id)}>
+                <Button variant="secondaryGhost" size="icon" className="h-6 w-6" onClick={() => removeGroup(group.id)}>
                   <X weight="bold" className="h-3 w-3" />
                 </Button>
               )}
@@ -435,7 +435,7 @@ function ActiveCampaignTab() {
                 </div>
               ))}
             </div>
-            <Button variant="ghost" size="sm" className="text-xs text-primary" onClick={() => addCondition(group.id)}>
+            <Button variant="secondaryGhost" size="sm" className="text-xs text-primary" onClick={() => addCondition(group.id)}>
               <Plus weight="bold" className="h-3 w-3 mr-1" /> Add AND condition
             </Button>
           </div>
@@ -528,7 +528,7 @@ function IterableTab() {
             </button>
           ))}
         </div>
-        <Button variant="ghost" size="sm" className="ml-auto text-xs" onClick={() => setShowSummary(!showSummary)}>
+        <Button variant="secondaryGhost" size="sm" className="ml-auto text-xs" onClick={() => setShowSummary(!showSummary)}>
           <ArrowsClockwise weight="bold" className="h-3 w-3 mr-1" /> {showSummary ? 'Hide' : 'Show'} summary
         </Button>
       </div>
@@ -573,7 +573,7 @@ function IterableTab() {
                 </div>
               </div>
               {groups.length > 1 && (
-                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeGroup(group.id)}>
+                <Button variant="secondaryGhost" size="icon" className="h-6 w-6" onClick={() => removeGroup(group.id)}>
                   <X weight="bold" className="h-3 w-3" />
                 </Button>
               )}
@@ -602,7 +602,7 @@ function IterableTab() {
                 </div>
               ))}
             </div>
-            <Button variant="ghost" size="sm" className="text-xs text-primary" onClick={() => addCondition(group.id)}>
+            <Button variant="secondaryGhost" size="sm" className="text-xs text-primary" onClick={() => addCondition(group.id)}>
               <Plus weight="bold" className="h-3 w-3 mr-1" /> Add criteria
             </Button>
           </div>

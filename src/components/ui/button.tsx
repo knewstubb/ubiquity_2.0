@@ -17,17 +17,21 @@
  * - `outline` (teal border): secondary action that still needs prominence (e.g. "Add new")
  * - `secondary` (dark solid): strong secondary — use sparingly alongside a primary
  * - `secondaryOutline` (dark grey border): low-emphasis — cancel buttons, filter toggles, toolbar actions
- * - `ghost`: inline/icon-only actions where a border would add noise
+ * - `ghost`: inline/icon-only actions in primary colour — teal text with subtle teal hover
+ * - `secondaryGhost`: inline/icon-only actions where colour prominence isn't needed — neutral text with grey hover
+ * - `destructiveGhost`: inline destructive actions — red text with subtle red hover
  * - `link`: inline text links styled as buttons
  *
  * @variants
  * - default: solid teal — primary actions
  * - destructive: solid red — irreversible/dangerous actions (confirmation dialogs)
  * - destructiveOutline: transparent + red border — lighter-weight destructive (inline remove, secondary destructive)
+ * - destructiveGhost: no border, red text + subtle red hover — lowest-weight destructive (icon-only remove buttons)
  * - outline: transparent + teal border — prominent secondary
  * - secondary: solid dark — strong secondary
  * - secondaryOutline: transparent + border-strong — low-emphasis secondary
- * - ghost: no background until hover — minimal actions
+ * - ghost: primary colour, no background until hover — inline actions that should read as teal
+ * - secondaryGhost: neutral colour, no background until hover — minimal/muted actions
  * - link: underline on hover — inline navigation
  *
  * @sizes
@@ -42,7 +46,7 @@
  * - `<Button variant="secondaryOutline">Cancel</Button>` — cancel/dismiss
  * - `<Button variant="destructive">Delete</Button>` — destructive confirm
  * - `<Button variant="destructiveOutline">Remove</Button>` — lighter destructive action
- * - `<Button variant="ghost" size="icon"><X /></Button>` — icon-only close
+ * - `<Button variant="secondaryGhost" size="icon"><X /></Button>` — icon-only close
  * - `<Button asChild><Link to="/page">Go</Link></Button>` — polymorphic as link
  */
 import * as React from "react"
@@ -58,18 +62,22 @@ const buttonVariants = cva(
       variant: {
         default:
           "bg-primary text-primary-foreground hover:bg-primary/80 active:scale-95",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/80 active:scale-95",
-        destructiveOutline:
-          "bg-transparent text-destructive border border-destructive/40 hover:bg-destructive/5 active:scale-95",
         outline:
           "bg-transparent text-primary border border-primary hover:bg-primary/5 active:translate-y-px",
+        ghost:
+          "text-primary hover:bg-primary/5 hover:text-primary active:scale-95",
         secondary:
           "bg-muted-foreground text-secondary border-transparent hover:bg-muted-foreground/80 active:scale-95",
         secondaryOutline:
           "bg-transparent text-foreground border border-border-strong hover:bg-secondary active:scale-95",
-        ghost:
+        secondaryGhost:
           "hover:bg-secondary hover:text-foreground active:scale-95",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/80 active:scale-95",
+        destructiveOutline:
+          "bg-transparent text-destructive border border-destructive/40 hover:bg-destructive/5 active:scale-95",
+        destructiveGhost:
+          "text-destructive hover:bg-destructive/5 hover:text-destructive active:scale-95",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

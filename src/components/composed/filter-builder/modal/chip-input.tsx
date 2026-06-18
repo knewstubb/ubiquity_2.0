@@ -109,7 +109,7 @@ export function FilterChipInput({
         {value.length > 0 && (
           <Button
             type="button"
-            variant="ghost"
+            variant="secondaryGhost"
             size="xs"
             onClick={clearAll}
             className="text-xs text-muted-foreground hover:text-foreground"
