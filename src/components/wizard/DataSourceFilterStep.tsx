@@ -9,8 +9,9 @@
  * and written to draft.sourceConfig on each change.
  */
 
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { User, ShoppingCart, EnvelopeSimple, ChatCircleDots } from '@phosphor-icons/react'
+import { cn } from '@/lib/utils'
 import { ModalFilterBuilder } from '@/components/composed/filter-builder'
 import type { FilterGroup, SourceCategoryConfig, CardFilterRow } from '@/components/composed/filter-builder'
 import type { ExporterWizardDraft } from '../../models/wizard'
@@ -233,6 +234,29 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
   const conditionCount = filterValue.conditions.length
   const matchCount = conditionCount === 0 ? 12847 : Math.max(0, 12847 - conditionCount * 2341)
 
+  // Count total conditions and groups (for limits display)
+  const { totalConditions, totalGroups } = useMemo(() => {
+    let conditions = 0
+    let groups = 0
+    function walk(group: FilterGroup) {
+      for (const c of group.conditions) {
+        if (c.type === 'row') {
+          conditions++
+        } else {
+          groups++
+          walk(c.group)
+        }
+      }
+    }
+    walk(filterValue)
+    return { totalConditions: conditions, totalGroups: groups }
+  }, [filterValue])
+
+  const MAX_CONDITIONS = 25
+  const MAX_GROUPS = 10
+  const conditionsNearLimit = totalConditions >= MAX_CONDITIONS - 3
+  const groupsNearLimit = totalGroups >= MAX_GROUPS - 2
+
   return (
     <div className="flex flex-col flex-1 min-h-0" data-testid="data-source-filter-step">
       {/* Filter Builder — scrollable */}
@@ -246,8 +270,27 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
         />
       </div>
 
-      {/* Match Count Summary — fixed at bottom, outside scroll */}
+      {/* Limits + Match Count — fixed at bottom, outside scroll */}
       <div className="shrink-0 mt-4 pt-4 bg-card">
+        {/* Condition/Group limits */}
+        <div className="flex items-center gap-4 mb-2 px-1">
+          <span className={cn(
+            "text-xs text-muted-foreground",
+            conditionsNearLimit && "text-warning",
+            totalConditions >= MAX_CONDITIONS && "text-destructive"
+          )}>
+            {totalConditions} / {MAX_CONDITIONS} conditions
+          </span>
+          <span className={cn(
+            "text-xs text-muted-foreground",
+            groupsNearLimit && "text-warning",
+            totalGroups >= MAX_GROUPS && "text-destructive"
+          )}>
+            {totalGroups} / {MAX_GROUPS} groups
+          </span>
+        </div>
+
+        {/* Estimated records */}
         <div className="flex items-center justify-between rounded-md bg-secondary/50 border border-border px-4 py-3">
           <span className="text-sm text-muted-foreground">Estimated records matching filters</span>
           <span className="text-sm font-semibold text-foreground">{matchCount.toLocaleString()} records</span>

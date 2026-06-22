@@ -448,6 +448,11 @@
   }
 }
 
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 /* ══════════════════════════════════════════════════════════════════════════════
    REACT-DAY-PICKER OVERRIDES
 

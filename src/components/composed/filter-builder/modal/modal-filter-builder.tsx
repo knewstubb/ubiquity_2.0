@@ -1,23 +1,25 @@
 /**
  * @component ModalFilterBuilder
  * @description Top-level controlled component for the Card-Based Filter Builder.
- * Orchestrates the LogicGroupRenderer and ConditionModal, manages modal state,
- * and delegates all filter mutations to the parent via onChange.
+ * Orchestrates the LogicGroupRenderer and InlineConditionCard, manages in-progress
+ * card state, and delegates all filter mutations to the parent via onChange.
  *
  * This is a pure controlled component — it maintains no internal filter state.
- * Local state is limited to modal open/close and edit context.
+ * Local state is limited to in-progress card context (add/edit).
  *
  * @designDecisions
  * - No outer border on the main container — the component is borderless so it
  *   inherits the visual context of its parent (card, panel, page section).
  *   The empty-state variant retains a border for standalone visibility.
- * - Always renders root LogicGroupRenderer, even when value has no conditions
+ * - Empty filter (zero conditions) renders a centered Funnel icon + dashed-border
+ *   CTA button ("Add your first condition") on an accent background — friendlier
+ *   onboarding than showing the logic group chrome with no content.
+ * - Populated state renders the LogicGroupRenderer with full logic group chrome
  * - Empty sourceCategories renders a disabled empty state message with border
- * - Modal state (open, mode, editIndex, targetGroupPath) is local only
- * - On modal confirm: mutates filter group and calls props.onChange
- * - On modal dismiss: discards in-progress condition entirely
- * - When "edit" targets an unconfigured row (no sourceCategory or field),
- *   mode downgrades to 'add' so the modal starts at Step 1 instead of Step 4
+ * - InlineConditionCard replaces the previous ConditionModal approach
+ * - In-progress card state (mode, editIndex) is local only
+ * - On confirm: mutates filter group and clears inProgressCard
+ * - On cancel: discards in-progress condition entirely
  *
  * @usage
  * - Use as the modal variant of the FilterBuilder composed component
@@ -26,7 +28,7 @@
  */
 
 import { useState, useCallback } from 'react'
-import { Warning } from '@phosphor-icons/react'
+import { Warning, Funnel } from '@phosphor-icons/react'
 
 import type {
   ModalFilterBuilderProps,
@@ -38,20 +40,13 @@ import {
   replaceConditionInGroup,
 } from '../group-helpers'
 import { LogicGroupRenderer } from './logic-group-renderer'
-import { ConditionModal } from './condition-modal'
+import { InlineConditionCard } from './inline-condition-card'
 
-// ─── Modal State ─────────────────────────────────────────────────────────────
+// ─── In-Progress Card State ──────────────────────────────────────────────────
 
-interface ModalContext {
-  isOpen: boolean
-  mode: 'add' | 'edit'
+interface InProgressCard {
+  mode: 'add' | 'edit' | 'add-group'
   editIndex: number | null
-}
-
-const INITIAL_MODAL_STATE: ModalContext = {
-  isOpen: false,
-  mode: 'add',
-  editIndex: null,
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -63,39 +58,57 @@ export function ModalFilterBuilder({
   allowNesting = true,
   maxDepth = 3,
 }: ModalFilterBuilderProps) {
-  const [modalState, setModalState] = useState<ModalContext>(INITIAL_MODAL_STATE)
+  const [inProgressCard, setInProgressCard] = useState<InProgressCard | null>(null)
 
   // Clamp maxDepth to valid range (1–10)
   const clampedMaxDepth = Math.max(1, Math.min(10, maxDepth))
 
-  // ─── Modal Handlers ────────────────────────────────────────────────────
+  // ─── Handlers ──────────────────────────────────────────────────────────
 
-  const handleOpenModal = useCallback((mode: 'add' | 'edit', editIndex?: number) => {
-    setModalState({
-      isOpen: true,
-      mode,
-      editIndex: editIndex ?? null,
-    })
+  const handleStartAdd = useCallback(() => {
+    setInProgressCard({ mode: 'add', editIndex: null })
   }, [])
 
-  const handleCloseModal = useCallback(() => {
-    setModalState(INITIAL_MODAL_STATE)
+  const handleStartEdit = useCallback((index: number) => {
+    // -1 sentinel means "add new" from the LogicGroupRenderer button
+    // -2 sentinel means "add to new group"
+    if (index === -1) {
+      setInProgressCard({ mode: 'add', editIndex: null })
+    } else if (index === -2) {
+      setInProgressCard({ mode: 'add-group', editIndex: null })
+    } else {
+      setInProgressCard({ mode: 'edit', editIndex: index })
+    }
   }, [])
 
-  const handleConfirmCondition = useCallback(
+  const handleCancelInProgress = useCallback(() => {
+    setInProgressCard(null)
+  }, [])
+
+  const handleConfirmInProgress = useCallback(
     (row: CardFilterRow) => {
       let updatedGroup: FilterGroup
 
-      if (modalState.mode === 'edit' && modalState.editIndex !== null) {
-        updatedGroup = replaceConditionInGroup(value, modalState.editIndex, row)
+      if (inProgressCard?.mode === 'edit' && inProgressCard.editIndex !== null) {
+        updatedGroup = replaceConditionInGroup(value, inProgressCard.editIndex, row)
+      } else if (inProgressCard?.mode === 'add-group') {
+        // Create a new nested group with opposite logic containing this condition
+        const nestedGroup: FilterGroup = {
+          logic: value.logic === 'and' ? 'or' : 'and',
+          conditions: [{ type: 'row', row }],
+        }
+        updatedGroup = {
+          ...value,
+          conditions: [...value.conditions, { type: 'group', group: nestedGroup }],
+        }
       } else {
         updatedGroup = addConditionToGroup(value, row)
       }
 
       onChange(updatedGroup)
-      setModalState(INITIAL_MODAL_STATE)
+      setInProgressCard(null)
     },
-    [modalState.mode, modalState.editIndex, value, onChange]
+    [inProgressCard, value, onChange]
   )
 
   // ─── Root Group Change Handler ─────────────────────────────────────────
@@ -124,8 +137,45 @@ export function ModalFilterBuilder({
 
   // ─── Render ────────────────────────────────────────────────────────────
 
+  // Empty state — no conditions configured yet
+  if (value.conditions.length === 0 && !inProgressCard) {
+    return (
+      <div className="rounded-lg p-8 flex flex-col items-center gap-4">
+        <Funnel size={32} weight="regular" className="text-primary" />
+        <div className="text-center">
+          <p className="text-base font-semibold text-foreground m-0">No conditions yet</p>
+          <p className="text-sm text-muted-foreground mt-1 m-0">
+            Filter your exporter by contact data, activity, or transactional records.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={handleStartAdd}
+          className="w-full max-w-md border-2 border-dashed border-primary/40 rounded-lg py-3 px-4 text-sm font-semibold text-primary bg-transparent cursor-pointer hover:bg-primary/5 hover:border-primary/60 transition-colors"
+        >
+          + Add your first condition
+        </button>
+      </div>
+    )
+  }
+
+  // Empty state with in-progress card (first condition being added)
+  if (value.conditions.length === 0 && inProgressCard) {
+    return (
+      <div className="rounded-lg p-6">
+        <InlineConditionCard
+          sourceCategories={sourceCategories}
+          mode="add"
+          editRow={null}
+          onConfirm={handleConfirmInProgress}
+          onCancel={handleCancelInProgress}
+        />
+      </div>
+    )
+  }
+
   return (
-    <div className="rounded-md p-4">
+    <div className="rounded-lg p-6">
       <LogicGroupRenderer
         group={value}
         onChange={handleGroupChange}
@@ -133,48 +183,11 @@ export function ModalFilterBuilder({
         allowNesting={allowNesting}
         maxDepth={clampedMaxDepth}
         depth={1}
-        onOpenModal={handleOpenModal}
-      />
-
-      {/* ConditionModal */}
-      <ConditionModal
-        key={`${modalState.isOpen}-${modalState.editIndex}`}
-        open={modalState.isOpen}
-        onOpenChange={(open) => {
-          if (!open) handleCloseModal()
-        }}
-        sourceCategories={sourceCategories}
-        mode={(() => {
-          if (modalState.mode === 'edit' && modalState.editIndex !== null) {
-            const row = getRowAtIndex(value, modalState.editIndex)
-            if (row && !row.sourceCategory && !row.field) return 'add'
-          }
-          return modalState.mode
-        })()}
-        editRow={(() => {
-          if (modalState.mode === 'edit' && modalState.editIndex !== null) {
-            const row = getRowAtIndex(value, modalState.editIndex)
-            if (row && !row.sourceCategory && !row.field) return null
-            return row ?? null
-          }
-          return null
-        })()}
-        onConfirm={handleConfirmCondition}
+        inProgressCard={inProgressCard}
+        onStartEdit={handleStartEdit}
+        onCancelInProgress={handleCancelInProgress}
+        onConfirmInProgress={handleConfirmInProgress}
       />
     </div>
   )
-}
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-/**
- * Extracts the CardFilterRow at a given index from the root group's conditions.
- * Returns undefined if the index is out of bounds or the condition isn't a row.
- */
-function getRowAtIndex(group: FilterGroup, index: number): CardFilterRow | undefined {
-  const condition = group.conditions[index]
-  if (condition?.type === 'row') {
-    return condition.row as CardFilterRow
-  }
-  return undefined
 }

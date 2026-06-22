@@ -8,11 +8,15 @@
  * - Popover width matches trigger via --radix-popover-trigger-width for visual alignment
  * - Search resets on close to avoid stale filter state on reopen
  * - Check icon + font-medium on selected item for clear active indication
+ * - placeholderClassName allows context-specific placeholder styling without overriding
+ *   the trigger's own classes (e.g. matching adjacent input placeholder colours)
  *
  * @usage
  * - Use when the option list exceeds ~7 items and benefits from search filtering
  * - For short lists without search, prefer a standard Select
  * - Controlled only (value + onValueChange) — no uncontrolled mode
+ * - Use placeholderClassName to style the placeholder text independently of the trigger
+ * - Use defaultOpen={true} when the combobox should render already expanded (e.g. inline editing contexts)
  *
  * @status
  * - normal: default border, standard focus ring
@@ -34,12 +38,14 @@ import { cn } from "@/lib/utils"
 export interface ComboboxProps {
   value: string
   onValueChange: (value: string) => void
-  options: { value: string; label: string }[]
+  options: { value: string; label: string; badge?: string }[]
   placeholder?: string
   searchPlaceholder?: string
   disabled?: boolean
   className?: string
+  placeholderClassName?: string
   status?: "normal" | "warning" | "error"
+  defaultOpen?: boolean
 }
 
 /* ── Component ── */
@@ -54,11 +60,13 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
       searchPlaceholder = "Search…",
       disabled = false,
       className,
+      placeholderClassName,
       status = "normal",
+      defaultOpen = false,
     },
     ref,
   ) => {
-    const [open, setOpen] = React.useState(false)
+    const [open, setOpen] = React.useState(defaultOpen ?? false)
     const [search, setSearch] = React.useState("")
 
     const selectedLabel = React.useMemo(
@@ -107,7 +115,7 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
             <span
               className={cn(
                 "truncate",
-                !value && "text-muted-foreground",
+                !value && (placeholderClassName || "text-muted-foreground"),
               )}
             >
               {value ? selectedLabel : placeholder}
@@ -148,7 +156,7 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
                     type="button"
                     onClick={() => handleSelect(option.value)}
                     className={cn(
-                      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-secondary focus:bg-secondary",
+                      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm text-left outline-none hover:bg-secondary focus:bg-secondary",
                       option.value === value && "font-medium",
                     )}
                   >
@@ -157,7 +165,12 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
                         <Check className="h-4 w-4" />
                       )}
                     </span>
-                    {option.label}
+                    <span className="flex-1 text-left">{option.label}</span>
+                    {option.badge && (
+                      <span className="ml-2 text-[10px] uppercase font-medium text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">
+                        {option.badge}
+                      </span>
+                    )}
                   </button>
                 ))
               )}

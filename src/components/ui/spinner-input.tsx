@@ -75,7 +75,7 @@ const SpinnerInput = React.forwardRef<HTMLInputElement, SpinnerInputProps>(
         {label && (
           <label className="text-xs font-medium text-muted-foreground">{label}</label>
         )}
-        <div className="flex items-stretch h-9 rounded-md border border-input bg-background overflow-hidden focus-within:border-ring focus-within:shadow-ring">
+        <div className="flex items-stretch h-8 rounded-md border border-input bg-background overflow-hidden focus-within:border-ring focus-within:shadow-ring">
           <input
             ref={ref}
             type="text"

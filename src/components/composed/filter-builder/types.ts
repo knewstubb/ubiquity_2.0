@@ -65,6 +65,7 @@ export interface CardFilterRow {
   operator: string
   value: string | number | boolean | null | [string, string] | string[]
   dateMode: 'specific' | 'anniversary' | 'same_day' | null
+  disabled?: boolean
 }
 
 // ─── Modal State ─────────────────────────────────────────────────────────────

@@ -644,6 +644,7 @@ export const componentRegistry: ComponentEntry[] = [
       ]},
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
     ],
+    usesComponents: [],
     designGuidance: [
       { heading: 'When to use', content: [
         'Option list exceeds ~7 items and benefits from search filtering',
@@ -661,6 +662,10 @@ export const componentRegistry: ComponentEntry[] = [
         'Error: red border and focus ring — validation failure',
         'Open: popover with filtered list, check icon on selected item',
         'Empty results: "No results found" placeholder',
+      ]},
+      { heading: 'Props', content: [
+        'placeholderClassName: Override placeholder text styling without affecting the trigger (e.g. colour-match with adjacent inputs)',
+        'defaultOpen: Render the popover already expanded on mount — useful for inline editing or auto-focus contexts',
       ]},
       { heading: 'Accessibility', content: [
         'Built on Radix Popover with search input — keyboard navigable',
@@ -2155,7 +2160,7 @@ export const componentRegistry: ComponentEntry[] = [
     demoLayout: 'full-bleed',
     description: 'Recursive filter builder with AND/OR logic groups. Supports two variants: inline (dropdowns directly in rows) and modal (progressive drill-down modal with human-readable condition cards).',
     searchTerms: ['filter', 'query builder', 'field filter', 'conditions', 'where clause', 'rule builder', 'AND filter', 'OR filter', 'segment builder', 'nested conditions', 'group filter', 'source', 'category', 'drill-down', 'card', 'progressive'],
-    usesComponents: ['Select', 'Input', 'Button', 'CloseButton', 'Dialog', 'SpinnerInput', 'Popover', 'Calendar', 'Tooltip', 'Badge'],
+    usesComponents: ['Select', 'Input', 'Button', 'CloseButton', 'Dialog', 'SpinnerInput', 'Popover', 'Calendar', 'Tooltip', 'Badge', 'Combobox'],
     designGuidance: [
       { heading: 'When to use', content: [
         'Building filter conditions for data exports (contacts, messages, transactions)',
@@ -2172,23 +2177,33 @@ export const componentRegistry: ComponentEntry[] = [
       { heading: 'Variants', content: [
         'inline (default): Dropdowns rendered directly in rows. Best for simple field sets with < 15 fields from a single source.',
         'inline + sourceCategories: Searchable combobox with hierarchical path display (e.g. "Transactional > Products > Price"). Auto-activates when sourceCategories prop is provided instead of fields.',
-        'modal: Progressive drill-down modal with source categories, sub-sources, and human-readable condition cards. Best when filtering across multiple databases with deep hierarchies.',
+        'modal: Progressive drill-down with source categories, sub-sources, and human-readable condition cards. Conditions are added/edited via an inline card (InlineConditionCard) that appears in-place within the filter list — no overlay modal required. Uses Combobox for searchable source/sub-source/field selection.',
       ]},
       { heading: 'Progressive disclosure', content: [
         'Operator dropdown hidden until a field is selected.',
         'Value input hidden until an operator is selected.',
         'No-value operators (is_empty, is_true, etc.) keep value input hidden.',
-        'Animated transitions (300ms ease-out) on reveal/hide for smooth UX.',
+        'Operator, date mode, and value all sit in a single inline row (no wrap) — progressive reveal left-to-right.',
+        'All three elements use flex-1 basis-1/3 for equal width distribution regardless of selection state.',
+        'Date mode appears inline between operator and value for applicable date operators.',
+        'Value input slides in from the right (slideInRight 250ms).',
+        'Elements shrink rather than wrap to maintain a single-line layout at all widths.',
+        'Phase containers animate in via slideUp (200ms ease-out) — custom @keyframes in globals.css applied via inline style for reliable play-once behaviour.',
+        'Inline reveals (date mode, value) use slideInRight (250ms ease-out) for left-to-right progressive appearance.',
       ]},
       { heading: 'States', content: [
-        'Empty: Dashed-border "Configure condition" CTA inside the connector line, prompting first condition creation. Also shows +Condition button in header.',
-        'Populated: Conditions displayed as inline rows (inline variant) or full-width row cards with drag handle + summary text (modal variant).',
-        'Nested: Sub-groups with opposite logic, visually indented with left border connector.',
-        'AND groups: Teal (primary) toggle pill and left border connector.',
-        'OR groups: Zinc-500 toggle pill and left border connector — distinct colour signals alternative logic at a glance.',
+        'Empty (modal variant): Centred Funnel icon + descriptive text + dashed-border "Add your first condition" CTA on accent background. No logic group chrome until first condition exists.',
+        'Empty (inline variant): Dashed-border "Configure condition" CTA inside the connector line, prompting first condition creation. Also shows +Condition button in header.',
+        'Populated: Conditions displayed as inline rows (inline variant) or full-width row cards with drag handle + summary text + hover actions (clone, disable, remove) (modal variant).',
+        'Nested: Sub-groups with opposite logic, single level only (no nesting inside groups). Group actions (clone, remove) revealed on group hover via CSS (hidden when a child condition card is hovered to avoid conflicting highlights). Nested "Add condition" uses outline variant and "Add condition to group" label to differentiate from root-level add.',
+        'AND groups: Left-aligned teal (primary) toggle pill (short left line + pill + full-width right line) and left border connector.',
+        'OR groups: Left-aligned zinc-500 toggle pill and left border connector — distinct colour signals alternative logic at a glance.',
         'Invalid condition: Row card at opacity-50 with amber warning icon; edit disabled, remove still active.',
+        'Disabled condition: Row card at opacity-40 with Eye/EyeSlash toggle always visible; still editable and removable. Allows temporary exclusion without deletion.',
         'Unconfigured row edit: Clicking an empty (no source/field) condition opens the modal in add mode at Step 1 instead of edit mode at Step 4.',
+        'Add-group inline: Dashed-border frame with "GROUP · {opposite logic}" header wrapping an InlineConditionCard — previews nested group structure before condition is configured.',
         'At max depth: "+Group" button disabled with tooltip.',
+        'Chip input (Is in/Is not in): Focusing the input expands a dropdown textarea panel (portalled to document.body) for bulk multi-line entry. ⌘+Enter or "Add values" button confirms. Inline input still supports single-value Enter and multi-line paste. Summary bar and footer remain visible during expansion — users can read their condition and confirm at any time.',
       ]},
       { heading: 'Container styling', content: [
         'Modal variant: borderless container (padding only) — adapts to parent context (card, panel, page section).',
