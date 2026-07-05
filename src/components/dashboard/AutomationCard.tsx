@@ -63,7 +63,9 @@ export function AutomationCard({ connector, connectionError, onToggleStatus, onV
 
   // Show transactional source name when dataType includes transactional
   let dataTypeLabel: string;
-  if (connector.dataType === 'transactional' && connector.transactionalSource) {
+  if (connector.direction === 'export') {
+    dataTypeLabel = 'Exporter';
+  } else if (connector.dataType === 'transactional' && connector.transactionalSource) {
     dataTypeLabel = connector.transactionalSource;
   } else if (connector.dataType === 'transactional_with_contact' && connector.transactionalSource) {
     dataTypeLabel = `${connector.transactionalSource} + contacts`;
@@ -105,19 +107,19 @@ export function AutomationCard({ connector, connectionError, onToggleStatus, onV
 
       {/* Group 2: Data type */}
       <span className="inline-flex items-center gap-1.5 text-base text-muted-foreground truncate max-w-[200px]">
-        {connector.dataType === 'contact' && (
+        {connector.direction === 'export' ? (
+          dataTypeLabel
+        ) : connector.dataType === 'contact' ? (
           <>
             <UsersThree size={14} weight="regular" />
             {dataTypeLabel}
           </>
-        )}
-        {connector.dataType === 'transactional' && (
+        ) : connector.dataType === 'transactional' ? (
           <>
             <NewspaperClipping size={14} weight="regular" />
             {dataTypeLabel}
           </>
-        )}
-        {connector.dataType === 'transactional_with_contact' && (
+        ) : connector.dataType === 'transactional_with_contact' ? (
           <>
             <NewspaperClipping size={14} weight="regular" />
             {connector.transactionalSource}
@@ -125,7 +127,7 @@ export function AutomationCard({ connector, connectionError, onToggleStatus, onV
             <UsersThree size={14} weight="regular" />
             contacts
           </>
-        )}
+        ) : null}
       </span>
 
       {/* Group 3: Status + Time */}

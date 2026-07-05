@@ -1,13 +1,37 @@
-import { useState } from 'react'
-import { User, ShoppingCart, EnvelopeSimple, ChatCircleDots } from '@phosphor-icons/react'
+import { useState, useMemo } from 'react'
+import { UsersThree, Table, EnvelopeSimple, ChatCentered, Confetti, ClipboardText, ListChecks, Bell, Funnel as FunnelIcon, BookmarkSimple, TrendDown, Trash } from '@phosphor-icons/react'
+import { cn } from '@/lib/utils'
 import { ModalFilterBuilder } from '@/components/composed/filter-builder'
 import type { SourceCategoryConfig, FilterGroup } from '@/components/composed/filter-builder'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogBody,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { toast } from 'sonner'
 
 const DEFAULT_SOURCE_CATEGORIES: SourceCategoryConfig[] = [
   // Contacts → Fields (direct, no sub-sources)
   {
     key: 'contacts',
-    icon: <User size={20} weight="duotone" className="text-primary" />,
+    icon: <UsersThree size={20} weight="duotone" className="text-primary" />,
     title: 'Contacts',
     description: 'Contact profiles and attributes',
     fields: [
@@ -47,7 +71,7 @@ const DEFAULT_SOURCE_CATEGORIES: SourceCategoryConfig[] = [
   // Transactional → Table → Fields (1 level of sub-sources)
   {
     key: 'transactional',
-    icon: <ShoppingCart size={20} weight="duotone" className="text-primary" />,
+    icon: <Table size={20} weight="duotone" className="text-primary" />,
     title: 'Transactional',
     description: 'Purchase and product data',
     fields: [],
@@ -55,6 +79,7 @@ const DEFAULT_SOURCE_CATEGORIES: SourceCategoryConfig[] = [
       {
         key: 'treatments',
         label: 'Treatments',
+        sourceType: 'transactional',
         fields: [
           { key: 'treatment_name', label: 'Treatment Name', dataType: 'text' },
           { key: 'treatment_amount', label: 'Treatment Amount', dataType: 'number' },
@@ -65,6 +90,7 @@ const DEFAULT_SOURCE_CATEGORIES: SourceCategoryConfig[] = [
       {
         key: 'products',
         label: 'Products',
+        sourceType: 'transactional',
         fields: [
           { key: 'product_name', label: 'Product Name', dataType: 'text' },
           { key: 'quantity', label: 'Quantity', dataType: 'number' },
@@ -85,6 +111,7 @@ const DEFAULT_SOURCE_CATEGORIES: SourceCategoryConfig[] = [
       {
         key: 'orders',
         label: 'Orders',
+        sourceType: 'transactional',
         fields: [
           { key: 'order_id', label: 'Order ID', dataType: 'text' },
           { key: 'order_total', label: 'Order Total', dataType: 'number' },
@@ -204,7 +231,7 @@ const DEFAULT_SOURCE_CATEGORIES: SourceCategoryConfig[] = [
   // SMS → Programme → Campaign → Fields (2 levels of nesting)
   {
     key: 'sms',
-    icon: <ChatCircleDots size={20} weight="duotone" className="text-primary" />,
+    icon: <ChatCentered size={20} weight="duotone" className="text-primary" />,
     title: 'SMS',
     description: 'SMS messaging engagement data',
     fields: [],
@@ -277,25 +304,362 @@ const DEFAULT_SOURCE_CATEGORIES: SourceCategoryConfig[] = [
       },
     ],
   },
+
+  // Events → Event → Fields (relationship-based)
+  {
+    key: 'events',
+    icon: <Confetti size={20} weight="duotone" className="text-primary" />,
+    title: 'Events',
+    description: 'Event registrations and attendance',
+    fields: [],
+    subSources: [
+      {
+        key: 'summer-gala-2025',
+        label: 'Summer Gala 2025',
+        sourceType: 'transactional',
+        fields: [
+          { key: 'registration_date', label: 'Registration Date', dataType: 'date' },
+          { key: 'attended', label: 'Attended', dataType: 'boolean' },
+          { key: 'ticket_type', label: 'Ticket Type', dataType: 'enum', enumOptions: [
+            { value: 'general', label: 'General Admission' },
+            { value: 'vip', label: 'VIP' },
+            { value: 'early_bird', label: 'Early Bird' },
+          ]},
+        ],
+      },
+      {
+        key: 'product-launch-webinar',
+        label: 'Product Launch Webinar',
+        sourceType: 'transactional',
+        fields: [
+          { key: 'registered_date', label: 'Registered Date', dataType: 'date' },
+          { key: 'attended', label: 'Attended', dataType: 'boolean' },
+          { key: 'watch_duration_mins', label: 'Watch Duration (mins)', dataType: 'number' },
+        ],
+      },
+      {
+        key: 'monthly-meetup',
+        label: 'Monthly Meetup',
+        sourceType: 'transactional',
+        fields: [
+          { key: 'rsvp_date', label: 'RSVP Date', dataType: 'date' },
+          { key: 'attended', label: 'Attended', dataType: 'boolean' },
+          { key: 'feedback_score', label: 'Feedback Score', dataType: 'number' },
+        ],
+      },
+    ],
+  },
+
+  // Surveys → Survey → Fields (relationship-based)
+  {
+    key: 'surveys',
+    icon: <ClipboardText size={20} weight="duotone" className="text-primary" />,
+    title: 'Surveys',
+    description: 'Survey responses and completion data',
+    fields: [],
+    subSources: [
+      {
+        key: 'nps-q1-2025',
+        label: 'NPS Survey Q1 2025',
+        sourceType: 'transactional',
+        fields: [
+          { key: 'completed_date', label: 'Completed Date', dataType: 'date' },
+          { key: 'nps_score', label: 'NPS Score', dataType: 'number' },
+          { key: 'feedback_text', label: 'Feedback', dataType: 'text' },
+        ],
+      },
+      {
+        key: 'product-satisfaction',
+        label: 'Product Satisfaction',
+        sourceType: 'transactional',
+        fields: [
+          { key: 'completed_date', label: 'Completed Date', dataType: 'date' },
+          { key: 'overall_rating', label: 'Overall Rating', dataType: 'number' },
+          { key: 'would_recommend', label: 'Would Recommend', dataType: 'boolean' },
+        ],
+      },
+      {
+        key: 'onboarding-feedback',
+        label: 'Onboarding Feedback',
+        sourceType: 'transactional',
+        fields: [
+          { key: 'submitted_date', label: 'Submitted Date', dataType: 'date' },
+          { key: 'ease_of_use', label: 'Ease of Use', dataType: 'enum', enumOptions: [
+            { value: 'very_easy', label: 'Very Easy' },
+            { value: 'easy', label: 'Easy' },
+            { value: 'neutral', label: 'Neutral' },
+            { value: 'difficult', label: 'Difficult' },
+            { value: 'very_difficult', label: 'Very Difficult' },
+          ]},
+          { key: 'comments', label: 'Comments', dataType: 'text' },
+        ],
+      },
+    ],
+  },
+
+  // Forms → Form → Fields (relationship-based)
+  {
+    key: 'forms',
+    icon: <ListChecks size={20} weight="duotone" className="text-primary" />,
+    title: 'Forms',
+    description: 'Form submissions and lead capture',
+    fields: [],
+    subSources: [
+      {
+        key: 'contact-us',
+        label: 'Contact Us',
+        sourceType: 'transactional',
+        fields: [
+          { key: 'submitted_date', label: 'Submitted Date', dataType: 'date' },
+          { key: 'subject', label: 'Subject', dataType: 'text' },
+          { key: 'message', label: 'Message', dataType: 'text' },
+        ],
+      },
+      {
+        key: 'newsletter-signup',
+        label: 'Newsletter Signup',
+        sourceType: 'transactional',
+        fields: [
+          { key: 'signup_date', label: 'Signup Date', dataType: 'date' },
+          { key: 'source_page', label: 'Source Page', dataType: 'text' },
+        ],
+      },
+      {
+        key: 'quote-request',
+        label: 'Quote Request',
+        sourceType: 'transactional',
+        fields: [
+          { key: 'request_date', label: 'Request Date', dataType: 'date' },
+          { key: 'service_type', label: 'Service Type', dataType: 'enum', enumOptions: [
+            { value: 'consultation', label: 'Consultation' },
+            { value: 'full_service', label: 'Full Service' },
+            { value: 'maintenance', label: 'Maintenance' },
+          ]},
+          { key: 'budget', label: 'Budget', dataType: 'number' },
+        ],
+      },
+    ],
+  },
+
+  // Push Notifications → Campaign → Fields (relationship-based)
+  {
+    key: 'push',
+    icon: <Bell size={20} weight="duotone" className="text-primary" />,
+    title: 'Push',
+    description: 'Push notification engagement',
+    fields: [],
+    subSources: [
+      {
+        key: 'app-updates',
+        label: 'App Updates',
+        sourceType: 'transactional',
+        fields: [
+          { key: 'sent_date', label: 'Sent Date', dataType: 'date' },
+          { key: 'was_delivered', label: 'Was Delivered', dataType: 'boolean' },
+          { key: 'was_opened', label: 'Was Opened', dataType: 'boolean' },
+        ],
+      },
+      {
+        key: 'promotions',
+        label: 'Promotions',
+        sourceType: 'transactional',
+        fields: [
+          { key: 'sent_date', label: 'Sent Date', dataType: 'date' },
+          { key: 'was_delivered', label: 'Was Delivered', dataType: 'boolean' },
+          { key: 'was_opened', label: 'Was Opened', dataType: 'boolean' },
+          { key: 'converted', label: 'Converted', dataType: 'boolean' },
+        ],
+      },
+    ],
+  },
+
+  // Saved Filters → Boolean include/exclude (composition)
+  {
+    key: 'saved_filters',
+    icon: <FunnelIcon size={20} weight="duotone" className="text-primary" />,
+    title: 'Saved Filters',
+    description: 'Combine with previously saved filter templates',
+    fields: [
+      { key: 'gold-members', label: 'Gold Members', dataType: 'boolean' },
+      { key: 'active-last-90-days', label: 'Active Last 90 Days', dataType: 'boolean' },
+      { key: 'high-value-customers', label: 'High Value Customers', dataType: 'boolean' },
+      { key: 'churned-contacts', label: 'Churned Contacts', dataType: 'boolean' },
+      { key: 'newsletter-subscribers', label: 'Newsletter Subscribers', dataType: 'boolean' },
+    ],
+  },
 ]
 
 const EMPTY_GROUP: FilterGroup = { logic: 'and', conditions: [] }
+
+const MAX_CONDITIONS = 25
+const MAX_GROUPS = 10
 
 export default function CardFilterBuilderDemo(props: Record<string, unknown>) {
   const allowNesting = (props['allow-nesting'] as boolean) ?? true
   const maxDepth = (props['max-depth'] as number) ?? 3
 
   const [value, setValue] = useState<FilterGroup>(EMPTY_GROUP)
+  const [templateDialogOpen, setTemplateDialogOpen] = useState(false)
+  const [templateName, setTemplateName] = useState('')
+  const [clearAllDialogOpen, setClearAllDialogOpen] = useState(false)
+
+  // Count total conditions and groups (for limits display)
+  const { totalConditions, totalGroups } = useMemo(() => {
+    let conditions = 0
+    let groups = 0
+    function walk(group: FilterGroup) {
+      for (const c of group.conditions) {
+        if (c.type === 'row') {
+          conditions++
+        } else {
+          groups++
+          walk(c.group)
+        }
+      }
+    }
+    walk(value)
+    return { totalConditions: conditions, totalGroups: groups }
+  }, [value])
+
+  const conditionsNearLimit = totalConditions >= MAX_CONDITIONS * 0.8
+  const groupsNearLimit = totalGroups >= MAX_GROUPS * 0.8
+
+  // Mock match count — decreases as conditions are added
+  const matchCount = totalConditions === 0 ? 12847 : Math.max(0, 12847 - totalConditions * 2341)
+
+  // Clear all handler (with confirmation)
+  function handleClearAllConfirm() {
+    setValue(EMPTY_GROUP)
+    setClearAllDialogOpen(false)
+  }
+
+  // Save template handler
+  function handleSaveTemplate() {
+    toast.success('Template saved')
+    setTemplateDialogOpen(false)
+    setTemplateName('')
+  }
+
+  // Count colour styles
+  const conditionCountColour = totalConditions >= MAX_CONDITIONS
+    ? "text-destructive"
+    : conditionsNearLimit
+      ? "text-amber-600"
+      : "text-foreground"
+
+  const groupCountColour = totalGroups >= MAX_GROUPS
+    ? "text-destructive"
+    : groupsNearLimit
+      ? "text-amber-600"
+      : "text-foreground"
 
   return (
-    <div className="w-full">
-      <ModalFilterBuilder
-        value={value}
-        onChange={setValue}
-        sourceCategories={DEFAULT_SOURCE_CATEGORIES}
-        allowNesting={allowNesting}
-        maxDepth={maxDepth}
-      />
+    <div className="flex flex-col w-full h-[600px] min-h-0 rounded-lg border border-border overflow-hidden">
+      {/* Top bar — white bg, border bottom */}
+      <div className="shrink-0 flex items-center justify-end gap-3 px-4 py-2 bg-background border-b border-border">
+        <Button
+          variant="ghost"
+          size="xs"
+          onClick={() => setClearAllDialogOpen(true)}
+          disabled={totalConditions === 0}
+          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+        >
+          <Trash size={14} weight="regular" />
+          Clear all
+        </Button>
+        <Button
+          variant="outline"
+          size="xs"
+          onClick={() => setTemplateDialogOpen(true)}
+          disabled={totalConditions === 0}
+        >
+          <BookmarkSimple size={14} weight="regular" />
+          Save as template
+        </Button>
+      </div>
+
+      {/* Filter Builder — scrollable, surface background, vertically centres empty state */}
+      <div className="flex-1 overflow-y-auto min-h-0 scrollbar-gutter-stable px-4 bg-surface flex flex-col">
+        <ModalFilterBuilder
+          value={value}
+          onChange={setValue}
+          sourceCategories={DEFAULT_SOURCE_CATEGORIES}
+          allowNesting={allowNesting}
+          maxDepth={maxDepth}
+          maxConditions={25}
+          maxGroups={10}
+        />
+      </div>
+
+      {/* Footer — white bg, border top */}
+      <div className="shrink-0 border-t border-border px-4 py-3 bg-background">
+        <div className="flex items-center gap-6">
+          {/* Condition count */}
+          <span className="text-sm text-muted-foreground">
+            Conditions <span className={cn("font-semibold", conditionCountColour)}>{totalConditions}/{MAX_CONDITIONS}</span>
+          </span>
+
+          {/* Group count */}
+          <span className="text-sm text-muted-foreground">
+            Groups <span className={cn("font-semibold", groupCountColour)}>{totalGroups}/{MAX_GROUPS}</span>
+          </span>
+
+          {/* Estimated records — right-aligned with trend icon */}
+          <span className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
+            <TrendDown size={18} weight="regular" />
+            <span className="font-semibold text-foreground">{matchCount.toLocaleString()}</span>
+            estimated records
+          </span>
+        </div>
+      </div>
+
+      {/* Save as template dialog */}
+      <Dialog open={templateDialogOpen} onOpenChange={setTemplateDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Save as template</DialogTitle>
+          </DialogHeader>
+          <DialogBody className="space-y-4">
+            <DialogDescription className="text-sm">
+              Give your filter template a name so you can reuse it later.
+            </DialogDescription>
+            <Input
+              placeholder="Template name"
+              value={templateName}
+              onChange={(e) => setTemplateName(e.target.value)}
+            />
+          </DialogBody>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondaryGhost">Cancel</Button>
+            </DialogClose>
+            <Button onClick={handleSaveTemplate} disabled={!templateName.trim()}>
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Clear all confirmation dialog */}
+      <AlertDialog open={clearAllDialogOpen} onOpenChange={setClearAllDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Clear all conditions?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will remove all filter conditions and groups. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleClearAllConfirm}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Clear all
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

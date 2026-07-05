@@ -14,8 +14,6 @@ function createDefaultConfig(overrides?: Partial<ExporterNotificationConfig>): E
     failureEmails: [],
     successEnabled: false,
     successEmails: [],
-    noFileAlertEnabled: false,
-    noFileAlertEmails: [],
     ...overrides,
   }
 }
@@ -65,10 +63,8 @@ describe('NotificationsStep', () => {
       const onUpdate = vi.fn()
       render(<NotificationsStep value={createDefaultConfig()} onUpdate={onUpdate} />)
 
-      // Both success and no-file sections have an "Enable" switch
       const switches = screen.getAllByRole('switch')
-      expect(switches.length).toBe(2)
-      // First switch is the success toggle
+      expect(switches.length).toBe(1)
       expect(switches[0]).toHaveAttribute('id', 'toggle-success-enable')
     })
 
@@ -99,46 +95,12 @@ describe('NotificationsStep', () => {
     })
   })
 
-  describe('No File section (toggle + schedule)', () => {
-    it('renders the No File section heading', () => {
+  describe('No File section removed', () => {
+    it('does not render a No File section', () => {
       const onUpdate = vi.fn()
       render(<NotificationsStep value={createDefaultConfig()} onUpdate={onUpdate} />)
 
-      expect(screen.getByText('No File')).toBeInTheDocument()
-    })
-
-    it('does not show schedule config when no-file toggle is off', () => {
-      const onUpdate = vi.fn()
-      render(
-        <NotificationsStep
-          value={createDefaultConfig({ noFileAlertEnabled: false })}
-          onUpdate={onUpdate}
-        />
-      )
-
-      // Schedule-related elements should not be visible
-      expect(screen.queryByText('Hourly')).not.toBeInTheDocument()
-      expect(screen.queryByText('Starting')).not.toBeInTheDocument()
-    })
-
-    it('shows schedule config when no-file toggle is on', () => {
-      const onUpdate = vi.fn()
-      render(
-        <NotificationsStep
-          value={createDefaultConfig({ noFileAlertEnabled: true })}
-          onUpdate={onUpdate}
-        />
-      )
-
-      // Frequency options should be visible
-      expect(screen.getByText('Hourly')).toBeInTheDocument()
-      expect(screen.getByText('Daily')).toBeInTheDocument()
-      expect(screen.getByText('Weekly')).toBeInTheDocument()
-      expect(screen.getByText('Monthly')).toBeInTheDocument()
-      // Schedule fields
-      expect(screen.getByText('Starting')).toBeInTheDocument()
-      expect(screen.getByText('Every')).toBeInTheDocument()
-      expect(screen.getByText('At')).toBeInTheDocument()
+      expect(screen.queryByText('No File')).not.toBeInTheDocument()
     })
   })
 
@@ -197,7 +159,7 @@ describe('NotificationsStep', () => {
         />
       )
 
-      // Find the first switch (success toggle)
+      // Find the switch (success toggle)
       const switches = screen.getAllByRole('switch')
       const successSwitch = switches[0]
       fireEvent.click(successSwitch)
@@ -206,27 +168,6 @@ describe('NotificationsStep', () => {
         const calls = onUpdate.mock.calls
         const lastCall = calls[calls.length - 1][0]
         expect(lastCall.successEnabled).toBe(true)
-      })
-    })
-
-    it('calls onUpdate when no-file toggle is changed', async () => {
-      const onUpdate = vi.fn()
-      render(
-        <NotificationsStep
-          value={createDefaultConfig()}
-          onUpdate={onUpdate}
-        />
-      )
-
-      // The second switch is the no-file toggle
-      const switches = screen.getAllByRole('switch')
-      const noFileSwitch = switches[1]
-      fireEvent.click(noFileSwitch)
-
-      await waitFor(() => {
-        const calls = onUpdate.mock.calls
-        const lastCall = calls[calls.length - 1][0]
-        expect(lastCall.noFileAlertEnabled).toBe(true)
       })
     })
   })
@@ -245,37 +186,13 @@ describe('NotificationsStep', () => {
       )
 
       // Click "copy from above" in the success section
-      const copyButtons = screen.getAllByText('copy from above')
-      fireEvent.click(copyButtons[0])
+      const copyButton = screen.getByText('copy from above')
+      fireEvent.click(copyButton)
 
       await waitFor(() => {
         const calls = onUpdate.mock.calls
         const lastCall = calls[calls.length - 1][0]
         expect(lastCall.successEmails).toEqual(['admin@test.com', 'ops@test.com'])
-      })
-    })
-
-    it('copies failure emails to no-file section when copy-from-above is clicked', async () => {
-      const onUpdate = vi.fn()
-      render(
-        <NotificationsStep
-          value={createDefaultConfig({
-            failureEmails: ['admin@test.com'],
-            noFileAlertEnabled: true,
-          })}
-          onUpdate={onUpdate}
-        />
-      )
-
-      // The "copy from above" in the no-file section
-      const copyButtons = screen.getAllByText('copy from above')
-      // Last copy button is in the no-file section
-      fireEvent.click(copyButtons[copyButtons.length - 1])
-
-      await waitFor(() => {
-        const calls = onUpdate.mock.calls
-        const lastCall = calls[calls.length - 1][0]
-        expect(lastCall.noFileAlertEmails).toEqual(['admin@test.com'])
       })
     })
   })

@@ -45,10 +45,12 @@ interface NotificationsStepProps {
   onValidChange?: (valid: boolean) => void;
   /** List of team member emails to show as suggestions */
   teamEmails?: string[];
+  /** Show the "No File" alert option (used by importers) */
+  showNoFileAlert?: boolean;
 }
 
 /* ── Main Component ── */
-export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }: NotificationsStepProps) {
+export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails, showNoFileAlert }: NotificationsStepProps) {
   /* Failure emails (always visible) */
   const [failureEmails, setFailureEmails] = useState<string[]>(value.failureEmails);
 
@@ -129,13 +131,10 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">Failure <span className="text-destructive">*</span></p>
+            <p className="text-sm font-semibold text-foreground m-0">Failure notification <span className="text-destructive">*</span></p>
           </div>
-          <p className="text-xs text-tertiary-foreground mt-1 mb-0">
-            Be alerted by email when a connector run fails
-          </p>
         </div>
-        <div className="flex-1 flex flex-col gap-3">
+        <div className="w-[552px] flex flex-col gap-3">
           <ChipInput
             values={failureEmails}
             onChange={setFailureEmails}
@@ -152,13 +151,10 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">Success</p>
+            <p className="text-sm font-semibold text-foreground m-0">Success notification</p>
           </div>
-          <p className="text-xs text-tertiary-foreground mt-1 mb-0">
-            Be alerted by email when a connector run succeeds
-          </p>
         </div>
-        <div className="flex-1 flex flex-col gap-3">
+        <div className="w-[552px] flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Switch
               id="toggle-success-enable"
@@ -186,6 +182,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }
       </div>
 
       {/* ── Row 3: No File ── */}
+      {showNoFileAlert && (
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
@@ -200,7 +197,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }
             available for upload from your defined source
           </p>
         </div>
-        <div className="flex-1 flex flex-col gap-3">
+        <div className="w-[552px] flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Switch
               id="toggle-nofile-enable"
@@ -378,6 +375,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }

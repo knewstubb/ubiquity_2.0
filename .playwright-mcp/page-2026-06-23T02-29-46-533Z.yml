@@ -1,0 +1,246 @@
+- generic [ref=e9]:
+  - generic [ref=e10]:
+    - generic [ref=e11]:
+      - generic [ref=e12]:
+        - link [ref=e13] [cursor=pointer]:
+          - /url: /dashboard
+        - generic [ref=e15]:
+          - generic [ref=e16] [cursor=pointer]:
+            - strong [ref=e17]: "Account: Chenchen AWS Test"
+            - img [ref=e20]
+          - list [ref=e23]:
+            - listitem [ref=e24]:
+              - link "Chenchen AWS Test" [ref=e25] [cursor=pointer]:
+                - /url: /accounts/Home/SwitchTo/93z9c1_btp3n77m313g7dwnmsj04k_4pj_pdvkv3mtkjkr3qfv9x8v40vsbj
+              - list [ref=e26]:
+                - listitem [ref=e27]:
+                  - link "AA-Customer Account" [ref=e28] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/glk5cld736tnr3r013gr26g9f80798lpt63kmdvckwj0krck374qp6vjylk0
+                - listitem [ref=e29]:
+                  - link "API Test" [ref=e30] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/z00l97g6yffn517t13g7m4hhb80h0094mr3gqqv2jmxjkr3tl7rp40h151jj
+                - listitem [ref=e31]:
+                  - link "DB Test" [ref=e32] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/_ntd5b5l31k4199613g7dx0w_00hvdq2p2t1jsl0nnm0kr3qg0f_kylswqcj
+                - listitem [ref=e33]:
+                  - link "Email Test" [ref=e34] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/cn04q7012pv4c3tp13gwhqknqs05v02c3j0kby25kxvjkrfrw8vcdxgjb7p0
+                - listitem [ref=e35]:
+                  - link "feature flag child account" [ref=e36] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/9f0dw8lz9x44fbd_13h9_pnh4404qj6fn9h4z226p6hjkrn_vv7l2r0gmrhj
+                - listitem [ref=e37]:
+                  - link "Push Test" [ref=e38] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/1krcmmq8x194hh6d13g7dwxp8x00swpttw4g0nl7rm60kr3qfzbnhs8fm7cj
+                - listitem [ref=e39]:
+                  - link "SSO test" [ref=e40] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/q2x8nh6gtdhnm68w13gwn5xcw00c1g4b7m7dq7v9m4fjkrfv2z5ykv2l0pcj
+                - listitem [ref=e41]:
+                  - link "Txt Test" [ref=e42] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/gfk5kpgc4jcnm5hw13g7dwy3rs076slsvr5l85v9lryjkr3qfzkwy1kpkjp0
+      - generic [ref=e43]:
+        - generic [ref=e44]: Brad Knewstubb
+        - link "My Settings" [ref=e45] [cursor=pointer]:
+          - /url: /administrators/Home/Edit/SXagsqgxz0mNGwjeMx4hMw
+        - link "Users" [ref=e46] [cursor=pointer]:
+          - /url: /members
+        - link "Accounts" [ref=e47] [cursor=pointer]:
+          - /url: /accounts/home
+        - link "API" [ref=e48] [cursor=pointer]:
+          - /url: /api
+        - link "Admin" [ref=e49] [cursor=pointer]:
+          - /url: /administrators
+        - link "Logout" [ref=e50] [cursor=pointer]:
+          - /url: /logout
+    - generic [ref=e51]:
+      - generic [ref=e52]:
+        - link "Dashboard" [ref=e53] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Database" [ref=e54] [cursor=pointer]:
+          - /url: /list
+        - link "Forms" [ref=e55] [cursor=pointer]:
+          - /url: /forms/dashboard/dnxxt97rqc6npf70b8d83x689j04k_4pj_pdvkv3mtkjkr3qfv9x8wk7x7h0
+        - link "Email" [ref=e56] [cursor=pointer]:
+          - /url: /email/dashboard/xg8bwkx_vg8n3glxf35q42p84d04k_4pj_pdvkv3mtkjkr3qfv9x9f_vxqjj
+        - link "Surveys" [ref=e57] [cursor=pointer]:
+          - /url: /surveys
+        - link "Events" [ref=e58] [cursor=pointer]:
+          - /url: /events/dashboard/qspk5mhvy0h4h21hfpdgtw07k004k_4pj_pdvkv3mtkjkr3qfv9x966cfj0j
+        - link "TXT" [ref=e59] [cursor=pointer]:
+          - /url: /txt
+        - link "Push" [ref=e60] [cursor=pointer]:
+          - /url: /push
+        - link "Campaigns" [ref=e61] [cursor=pointer]:
+          - /url: /components/txd9hwv23lhnrc1ssdltsw_yss04k_4pj_pdvkv3mtkjkr3qfv9x8x25rkpj
+        - link "Social" [ref=e62] [cursor=pointer]:
+          - /url: /social/dashboard/r3j14qf71b3471fdr3lhfnjf5404k_4pj_pdvkv3mtkjkr3qfv9x9thmzp5j
+      - generic [ref=e63]:
+        - link "Media Manager" [ref=e64] [cursor=pointer]:
+          - /url: /MediaManager
+          - img [ref=e66]
+          - text: Media Manager
+        - generic [ref=e68] [cursor=pointer]: Contact
+        - link "Help Centre" [ref=e69] [cursor=pointer]:
+          - /url: https://docs.ubiquity.co.nz/
+  - generic [ref=e76]:
+    - heading "Survey" [level=3] [ref=e77]
+    - generic [ref=e79]:
+      - generic [ref=e81]:
+        - button "New survey" [ref=e82] [cursor=pointer]:
+          - generic [ref=e83]: New survey
+        - button "Manage layouts" [ref=e84] [cursor=pointer]:
+          - text: Manage layouts
+          - img [ref=e86]
+      - generic [ref=e88]:
+        - button "Edited" [ref=e90] [cursor=pointer]:
+          - generic [ref=e91]: Edited
+        - button [ref=e92] [cursor=pointer]
+        - generic [ref=e98]:
+          - textbox [ref=e99]
+          - img [ref=e103] [cursor=pointer]
+          - generic: Search
+    - generic [ref=e108]:
+      - generic [ref=e110]:
+        - img [ref=e113] [cursor=pointer]
+        - generic [ref=e115]:
+          - img [ref=e118]
+          - generic [ref=e120]:
+            - link "179 Test" [ref=e122] [cursor=pointer]:
+              - /url: /surveys/home/dashboard/_h4b8btbkp9nffh_13hdjs4dms04k_4pj_pdvkv3mtkjkr3qfv9x8j18jydj
+            - generic [ref=e124]:
+              - generic [ref=e125]: Created 12 Jun, 2026
+              - generic [ref=e126]: Edited 12 Jun, 2026
+              - link "0 Triggered emails" [ref=e127] [cursor=pointer]:
+                - /url: /surveys/triggeredemails/index/_h4b8btbkp9nffh_13hdjs4dms04k_4pj_pdvkv3mtkjkr3qfv9x8j18jydj
+              - link "0 Responses" [ref=e128] [cursor=pointer]:
+                - /url: /surveys/data/viewresponses/_h4b8btbkp9nffh_13hdjs4dms04k_4pj_pdvkv3mtkjkr3qfv9x8j18jydj
+              - link "0 Reports" [ref=e129] [cursor=pointer]:
+                - /url: /surveys/reports/index/_h4b8btbkp9nffh_13hdjs4dms04k_4pj_pdvkv3mtkjkr3qfv9x8j18jydj
+              - generic [ref=e130]: Inactive
+        - img [ref=e133] [cursor=pointer]
+      - generic [ref=e138]:
+        - img [ref=e141] [cursor=pointer]
+        - generic [ref=e143]:
+          - img [ref=e146]
+          - generic [ref=e148]:
+            - link "176 test" [ref=e150] [cursor=pointer]:
+              - /url: /surveys/home/dashboard/1wpk9hc0scqn_6rk13h7whys5n04k_4pj_pdvkv3mtkjkr3qfv9x9bpgpnw0
+            - generic [ref=e152]:
+              - generic [ref=e153]: Created 9 Mar, 2026
+              - generic [ref=e154]: Edited 9 Mar, 2026
+              - link "0 Triggered emails" [ref=e155] [cursor=pointer]:
+                - /url: /surveys/triggeredemails/index/1wpk9hc0scqn_6rk13h7whys5n04k_4pj_pdvkv3mtkjkr3qfv9x9bpgpnw0
+              - link "0 Responses" [ref=e156] [cursor=pointer]:
+                - /url: /surveys/data/viewresponses/1wpk9hc0scqn_6rk13h7whys5n04k_4pj_pdvkv3mtkjkr3qfv9x9bpgpnw0
+              - link "0 Reports" [ref=e157] [cursor=pointer]:
+                - /url: /surveys/reports/index/1wpk9hc0scqn_6rk13h7whys5n04k_4pj_pdvkv3mtkjkr3qfv9x9bpgpnw0
+              - generic [ref=e158]: Inactive
+        - img [ref=e161] [cursor=pointer]
+      - generic [ref=e166]:
+        - img [ref=e169] [cursor=pointer]
+        - generic [ref=e171]:
+          - img [ref=e174]
+          - generic [ref=e176]:
+            - link "1.172 Survey" [ref=e178] [cursor=pointer]:
+              - /url: /surveys/home/dashboard/54q2_ln_2n0n_h6413h0q3hdbj04k_4pj_pdvkv3mtkjkr3qfv9x870crm70
+            - generic [ref=e180]:
+              - generic [ref=e181]: Created 14 Oct, 2025
+              - generic [ref=e182]: Edited 14 Oct, 2025
+              - link "4 Triggered emails" [ref=e183] [cursor=pointer]:
+                - /url: /surveys/triggeredemails/index/54q2_ln_2n0n_h6413h0q3hdbj04k_4pj_pdvkv3mtkjkr3qfv9x870crm70
+              - link "5 Responses" [ref=e184] [cursor=pointer]:
+                - /url: /surveys/data/viewresponses/54q2_ln_2n0n_h6413h0q3hdbj04k_4pj_pdvkv3mtkjkr3qfv9x870crm70
+              - link "0 Reports" [ref=e185] [cursor=pointer]:
+                - /url: /surveys/reports/index/54q2_ln_2n0n_h6413h0q3hdbj04k_4pj_pdvkv3mtkjkr3qfv9x870crm70
+              - generic [ref=e186]: Active
+        - img [ref=e189] [cursor=pointer]
+      - generic [ref=e194]:
+        - img [ref=e197] [cursor=pointer]
+        - generic [ref=e199]:
+          - img [ref=e202]
+          - generic [ref=e204]:
+            - link "1.172 Bulk Survey Email Test" [ref=e206] [cursor=pointer]:
+              - /url: /surveys/home/dashboard/6j3tl30r064n368v13h0hvthm004k_4pj_pdvkv3mtkjkr3qfv9x91j9zp_0
+            - generic [ref=e208]:
+              - generic [ref=e209]: Created 10 Oct, 2025
+              - generic [ref=e210]: Edited 10 Oct, 2025
+              - link "6 Triggered emails" [ref=e211] [cursor=pointer]:
+                - /url: /surveys/triggeredemails/index/6j3tl30r064n368v13h0hvthm004k_4pj_pdvkv3mtkjkr3qfv9x91j9zp_0
+              - link "12 Responses" [ref=e212] [cursor=pointer]:
+                - /url: /surveys/data/viewresponses/6j3tl30r064n368v13h0hvthm004k_4pj_pdvkv3mtkjkr3qfv9x91j9zp_0
+              - link "0 Reports" [ref=e213] [cursor=pointer]:
+                - /url: /surveys/reports/index/6j3tl30r064n368v13h0hvthm004k_4pj_pdvkv3mtkjkr3qfv9x91j9zp_0
+              - generic [ref=e214]: Active
+        - img [ref=e217] [cursor=pointer]
+      - generic [ref=e222]:
+        - img [ref=e225] [cursor=pointer]
+        - generic [ref=e227]:
+          - img [ref=e230]
+          - generic [ref=e232]:
+            - link "SPCA" [ref=e234] [cursor=pointer]:
+              - /url: /surveys/home/dashboard/sqskz6v8g4p459cz13h00h9mt404k_4pj_pdvkv3mtkjkr3qfv9x9336f2zj
+            - generic [ref=e236]:
+              - generic [ref=e237]: Created 30 Sep, 2025
+              - generic [ref=e238]: Edited 9 Oct, 2025
+              - link "2 Triggered emails" [ref=e239] [cursor=pointer]:
+                - /url: /surveys/triggeredemails/index/sqskz6v8g4p459cz13h00h9mt404k_4pj_pdvkv3mtkjkr3qfv9x9336f2zj
+              - link "1 Response" [ref=e240] [cursor=pointer]:
+                - /url: /surveys/data/viewresponses/sqskz6v8g4p459cz13h00h9mt404k_4pj_pdvkv3mtkjkr3qfv9x9336f2zj
+              - link "0 Reports" [ref=e241] [cursor=pointer]:
+                - /url: /surveys/reports/index/sqskz6v8g4p459cz13h00h9mt404k_4pj_pdvkv3mtkjkr3qfv9x9336f2zj
+              - generic [ref=e242]: Active
+        - img [ref=e245] [cursor=pointer]
+      - generic [ref=e250]:
+        - img [ref=e253] [cursor=pointer]
+        - generic [ref=e255]:
+          - img [ref=e258]
+          - generic [ref=e260]:
+            - link "1.167" [ref=e262] [cursor=pointer]:
+              - /url: /surveys/home/dashboard/rx_n6yfcccxntcgm13gw9j908404k_4pj_pdvkv3mtkjkr3qfv9x8vpy1my0
+            - generic [ref=e264]:
+              - generic [ref=e265]: Created 26 Jun, 2025
+              - generic [ref=e266]: Edited 17 Jul, 2025
+              - link "1 Triggered email" [ref=e267] [cursor=pointer]:
+                - /url: /surveys/triggeredemails/index/rx_n6yfcccxntcgm13gw9j908404k_4pj_pdvkv3mtkjkr3qfv9x8vpy1my0
+              - link "9 Responses" [ref=e268] [cursor=pointer]:
+                - /url: /surveys/data/viewresponses/rx_n6yfcccxntcgm13gw9j908404k_4pj_pdvkv3mtkjkr3qfv9x8vpy1my0
+              - link "0 Reports" [ref=e269] [cursor=pointer]:
+                - /url: /surveys/reports/index/rx_n6yfcccxntcgm13gw9j908404k_4pj_pdvkv3mtkjkr3qfv9x8vpy1my0
+              - generic [ref=e270]: Active
+        - img [ref=e273] [cursor=pointer]
+      - generic [ref=e278]:
+        - img [ref=e281] [cursor=pointer]
+        - generic [ref=e283]:
+          - img [ref=e286]
+          - generic [ref=e288]:
+            - link "Rate Our Food" [ref=e290] [cursor=pointer]:
+              - /url: /surveys/home/dashboard/stbdrhtjdnfn7c5j13gh_tc3kd04k_4pj_pdvkv3mtkjkr3qfv9x8c3_dj8j
+            - generic [ref=e292]:
+              - generic [ref=e293]: Created 8 Nov, 2024
+              - generic [ref=e294]: Edited 25 Feb, 2025
+              - link "3 Triggered emails" [ref=e295] [cursor=pointer]:
+                - /url: /surveys/triggeredemails/index/stbdrhtjdnfn7c5j13gh_tc3kd04k_4pj_pdvkv3mtkjkr3qfv9x8c3_dj8j
+              - link "4 Responses" [ref=e296] [cursor=pointer]:
+                - /url: /surveys/data/viewresponses/stbdrhtjdnfn7c5j13gh_tc3kd04k_4pj_pdvkv3mtkjkr3qfv9x8c3_dj8j
+              - link "0 Reports" [ref=e297] [cursor=pointer]:
+                - /url: /surveys/reports/index/stbdrhtjdnfn7c5j13gh_tc3kd04k_4pj_pdvkv3mtkjkr3qfv9x8c3_dj8j
+              - generic [ref=e298]: Active
+        - img [ref=e301] [cursor=pointer]
+      - generic [ref=e306]:
+        - img [ref=e309] [cursor=pointer]
+        - generic [ref=e311]:
+          - img [ref=e314]
+          - generic [ref=e316]:
+            - link "Rate your stay" [ref=e318] [cursor=pointer]:
+              - /url: /surveys/home/dashboard/q4tpmrbjvhhnp4w613g7xpyjr804k_4pj_pdvkv3mtkjkr3qfv9x8y4cf720
+            - generic [ref=e320]:
+              - generic [ref=e321]: Created 27 May, 2024
+              - generic [ref=e322]: Edited 7 Nov, 2024
+              - link "2 Triggered emails" [ref=e323] [cursor=pointer]:
+                - /url: /surveys/triggeredemails/index/q4tpmrbjvhhnp4w613g7xpyjr804k_4pj_pdvkv3mtkjkr3qfv9x8y4cf720
+              - link "12 Responses" [ref=e324] [cursor=pointer]:
+                - /url: /surveys/data/viewresponses/q4tpmrbjvhhnp4w613g7xpyjr804k_4pj_pdvkv3mtkjkr3qfv9x8y4cf720
+              - link "1 Report" [ref=e325] [cursor=pointer]:
+                - /url: /surveys/reports/index/q4tpmrbjvhhnp4w613g7xpyjr804k_4pj_pdvkv3mtkjkr3qfv9x8y4cf720
+              - generic [ref=e326]: Active
+        - img [ref=e329] [cursor=pointer]
+  - contentinfo [ref=e333]

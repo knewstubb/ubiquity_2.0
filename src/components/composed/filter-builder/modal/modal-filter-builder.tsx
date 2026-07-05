@@ -11,15 +11,21 @@
  * - No outer border on the main container — the component is borderless so it
  *   inherits the visual context of its parent (card, panel, page section).
  *   The empty-state variant retains a border for standalone visibility.
- * - Empty filter (zero conditions) renders a centered Funnel icon + dashed-border
- *   CTA button ("Add your first condition") on an accent background — friendlier
- *   onboarding than showing the logic group chrome with no content.
+ * - Empty filter (zero conditions) renders a flex-fill top-biased layout (flex-1 +
+ *   flex spacer at 25% height) with Funnel icon + dashed-border CTA button —
+ *   positions content in the upper third rather than dead-centre, which feels more
+ *   natural in tall panels and avoids the "floating in space" look.
+ *   Button is auto-width (not full-width) to avoid looking oversized in wide panels.
  * - Populated state renders the LogicGroupRenderer with full logic group chrome
  * - Empty sourceCategories renders a disabled empty state message with border
  * - InlineConditionCard replaces the previous ConditionModal approach
  * - In-progress card state (mode, editIndex) is local only
  * - On confirm: mutates filter group and clears inProgressCard
  * - On cancel: discards in-progress condition entirely
+ * - Limit enforcement (maxConditions/maxGroups): conditions and groups are counted
+ *   via recursive walk of the FilterGroup tree. When at limit, add actions are
+ *   disabled at the LogicGroupRenderer level — buttons become inert rather than
+ *   hidden, so users understand why they can't add more.
  *
  * @usage
  * - Use as the modal variant of the FilterBuilder composed component
@@ -27,7 +33,7 @@
  * - For simpler field sets (< 15 fields, single source), prefer the inline variant
  */
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Warning, Funnel } from '@phosphor-icons/react'
 
 import type {
@@ -57,11 +63,30 @@ export function ModalFilterBuilder({
   sourceCategories,
   allowNesting = true,
   maxDepth = 3,
+  maxConditions,
+  maxGroups,
 }: ModalFilterBuilderProps) {
   const [inProgressCard, setInProgressCard] = useState<InProgressCard | null>(null)
 
   // Clamp maxDepth to valid range (1–10)
   const clampedMaxDepth = Math.max(1, Math.min(10, maxDepth))
+
+  // Count conditions and groups for limit enforcement
+  const { totalConditions, totalGroups } = useMemo(() => {
+    let conditions = 0
+    let groups = 0
+    function walk(group: FilterGroup) {
+      for (const c of group.conditions) {
+        if (c.type === 'row') conditions++
+        else { groups++; walk(c.group) }
+      }
+    }
+    walk(value)
+    return { totalConditions: conditions, totalGroups: groups }
+  }, [value])
+
+  const conditionsAtLimit = maxConditions != null && totalConditions >= maxConditions
+  const groupsAtLimit = maxGroups != null && totalGroups >= maxGroups
 
   // ─── Handlers ──────────────────────────────────────────────────────────
 
@@ -140,18 +165,19 @@ export function ModalFilterBuilder({
   // Empty state — no conditions configured yet
   if (value.conditions.length === 0 && !inProgressCard) {
     return (
-      <div className="rounded-lg p-8 flex flex-col items-center gap-4">
+      <div className="flex-1 flex flex-col items-center gap-4">
+        <div className="flex-[0_0_25%]" />
         <Funnel size={32} weight="regular" className="text-primary" />
         <div className="text-center">
           <p className="text-base font-semibold text-foreground m-0">No conditions yet</p>
           <p className="text-sm text-muted-foreground mt-1 m-0">
-            Filter your exporter by contact data, activity, or transactional records.
+            Filter your exporter by contact data, activity,<br />or transactional records.
           </p>
         </div>
         <button
           type="button"
           onClick={handleStartAdd}
-          className="w-full max-w-md border-2 border-dashed border-primary/40 rounded-lg py-3 px-4 text-sm font-semibold text-primary bg-transparent cursor-pointer hover:bg-primary/5 hover:border-primary/60 transition-colors"
+          className="border-2 border-dashed border-primary/40 rounded-lg py-2.5 px-5 text-sm font-semibold text-primary bg-transparent cursor-pointer hover:bg-primary/5 hover:border-primary/60 transition-colors"
         >
           + Add your first condition
         </button>
@@ -187,6 +213,8 @@ export function ModalFilterBuilder({
         onStartEdit={handleStartEdit}
         onCancelInProgress={handleCancelInProgress}
         onConfirmInProgress={handleConfirmInProgress}
+        disableAddCondition={conditionsAtLimit}
+        disableAddGroup={groupsAtLimit}
       />
     </div>
   )

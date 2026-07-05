@@ -1,0 +1,89 @@
+- generic [ref=e9]:
+  - generic [ref=e10]:
+    - generic [ref=e11]:
+      - generic [ref=e12]:
+        - link [ref=e13] [cursor=pointer]:
+          - /url: /dashboard
+        - generic [ref=e15]:
+          - generic [ref=e16] [cursor=pointer]:
+            - strong [ref=e17]: "Account: Chenchen AWS Test"
+            - img [ref=e20]
+          - list [ref=e23]:
+            - listitem [ref=e24]:
+              - link "Chenchen AWS Test" [ref=e25] [cursor=pointer]:
+                - /url: /accounts/Home/SwitchTo/93z9c1_btp3n77m313g7dwnmsj04k_4pj_pdvkv3mtkjkr3qfv9x8v40vsbj
+              - list [ref=e26]:
+                - listitem [ref=e27]:
+                  - link "AA-Customer Account" [ref=e28] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/glk5cld736tnr3r013gr26g9f80798lpt63kmdvckwj0krck374qp6vjylk0
+                - listitem [ref=e29]:
+                  - link "API Test" [ref=e30] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/z00l97g6yffn517t13g7m4hhb80h0094mr3gqqv2jmxjkr3tl7rp40h151jj
+                - listitem [ref=e31]:
+                  - link "DB Test" [ref=e32] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/_ntd5b5l31k4199613g7dx0w_00hvdq2p2t1jsl0nnm0kr3qg0f_kylswqcj
+                - listitem [ref=e33]:
+                  - link "Email Test" [ref=e34] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/cn04q7012pv4c3tp13gwhqknqs05v02c3j0kby25kxvjkrfrw8vcdxgjb7p0
+                - listitem [ref=e35]:
+                  - link "feature flag child account" [ref=e36] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/9f0dw8lz9x44fbd_13h9_pnh4404qj6fn9h4z226p6hjkrn_vv7l2r0gmrhj
+                - listitem [ref=e37]:
+                  - link "Push Test" [ref=e38] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/1krcmmq8x194hh6d13g7dwxp8x00swpttw4g0nl7rm60kr3qfzbnhs8fm7cj
+                - listitem [ref=e39]:
+                  - link "SSO test" [ref=e40] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/q2x8nh6gtdhnm68w13gwn5xcw00c1g4b7m7dq7v9m4fjkrfv2z5ykv2l0pcj
+                - listitem [ref=e41]:
+                  - link "Txt Test" [ref=e42] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/gfk5kpgc4jcnm5hw13g7dwy3rs076slsvr5l85v9lryjkr3qfzkwy1kpkjp0
+      - generic [ref=e43]:
+        - generic [ref=e44]: Brad Knewstubb
+        - link "My Settings" [ref=e45] [cursor=pointer]:
+          - /url: /administrators/Home/Edit/SXagsqgxz0mNGwjeMx4hMw
+        - link "Users" [ref=e46] [cursor=pointer]:
+          - /url: /members
+        - link "Accounts" [ref=e47] [cursor=pointer]:
+          - /url: /accounts/home
+        - link "API" [ref=e48] [cursor=pointer]:
+          - /url: /api
+        - link "Admin" [ref=e49] [cursor=pointer]:
+          - /url: /administrators
+        - link "Logout" [ref=e50] [cursor=pointer]:
+          - /url: /logout
+    - generic [ref=e51]:
+      - generic [ref=e52]:
+        - link "Dashboard" [ref=e53] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Database" [ref=e54] [cursor=pointer]:
+          - /url: /list
+        - link "Forms" [ref=e55] [cursor=pointer]:
+          - /url: /forms/dashboard/bxjx__htx48nt3hm9ftyn2jp0404k_4pj_pdvkv3mtkjkr3qfv9x9qgnwxl0
+        - link "Email" [ref=e56] [cursor=pointer]:
+          - /url: /email/dashboard/x2fnfg4d7dl4_3rt65djq_hhj004k_4pj_pdvkv3mtkjkr3qfv9x95dhqmk0
+        - link "Surveys" [ref=e57] [cursor=pointer]:
+          - /url: /surveys
+        - link "Events" [ref=e58] [cursor=pointer]:
+          - /url: /events/dashboard/9l1f_x30pd6nr05xj56f1dgg8j04k_4pj_pdvkv3mtkjkr3qfv9x8148z_70
+        - link "TXT" [ref=e59] [cursor=pointer]:
+          - /url: /txt
+        - link "Push" [ref=e60] [cursor=pointer]:
+          - /url: /push
+        - link "Campaigns" [ref=e61] [cursor=pointer]:
+          - /url: /components/x9mhgshddv7ny7hn48bl3p635404k_4pj_pdvkv3mtkjkr3qfv9x8z8y62n0
+        - link "Social" [ref=e62] [cursor=pointer]:
+          - /url: /social/dashboard/l6fwt3svnhw4c0y8hph847npw804k_4pj_pdvkv3mtkjkr3qfv9x8pmfdts0
+      - generic [ref=e63]:
+        - link "Media Manager" [ref=e64] [cursor=pointer]:
+          - /url: /MediaManager
+          - img [ref=e66]
+          - text: Media Manager
+        - generic [ref=e68] [cursor=pointer]: Contact
+        - link "Help Centre" [ref=e69] [cursor=pointer]:
+          - /url: https://docs.ubiquity.co.nz/
+  - generic [ref=e74]:
+    - heading "Hi Brad Knewstubb!" [level=3] [ref=e75]
+    - generic [ref=e76]: How would you like to interact with Chenchen AWS Test's audience?
+    - button "New" [ref=e78] [cursor=pointer]:
+      - generic [ref=e79]: New
+  - contentinfo [ref=e81]

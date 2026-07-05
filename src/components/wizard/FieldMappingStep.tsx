@@ -5,7 +5,8 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { DragHandle } from '../shared/DragHandle';
 import { TruncatedText } from '../shared/TruncatedText';
-import { EnrichmentSelector } from './EnrichmentSelector';
+import { SourceChipsRow } from './SourceChipsRow';
+import { AddSourceModal } from './AddSourceModal';
 import { Lock, ArrowCounterClockwise } from '@phosphor-icons/react';
 import {
   getFieldsForSources,
@@ -16,6 +17,8 @@ import {
   validateColumnNames,
 } from '../../utils/exporter-utils';
 import { getFieldsForSourceConfig } from '../../utils/source-config-utils';
+import { getSourceTag } from '../../models/source-selection';
+import { usePrototypePhases } from '../../contexts/PrototypePhaseContext';
 import type { ExporterWizardDraft, ColumnRename } from '../../models/wizard';
 import type { SelectedField } from '../../models/automation';
 import type { EnrichmentConfig } from '../../models/source-selection';
@@ -26,8 +29,11 @@ interface FieldMappingStepProps {
 }
 
 export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
+  const { phases } = usePrototypePhases()
+  const exporterPhase = phases.exporterPhase
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const isEventBased = draft.exporterType === 'event_based';
 
@@ -169,11 +175,44 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
     [draft.columnRenames, onUpdate],
   );
 
-  // Enrichment change handler
-  const handleEnrichmentChange = useCallback(
-    (enrichment: EnrichmentConfig | null) => {
+  // Remove enrichment handler — removes the enrichment at the given index,
+  // cleans up selectedFields and columnRenames for fields belonging to that source
+  const handleRemoveEnrichment = useCallback(
+    (index: number) => {
       if (!draft.sourceConfig) return;
-      onUpdate({ sourceConfig: { ...draft.sourceConfig, enrichment } });
+      const enrichments = draft.sourceConfig.enrichments ?? [];
+      if (index < 0 || index >= enrichments.length) return;
+
+      const removed = enrichments[index];
+      const sourceTag = getSourceTag(removed);
+
+      // Remove the enrichment from the array
+      const newEnrichments = [...enrichments.slice(0, index), ...enrichments.slice(index + 1)];
+
+      // Filter out selected fields whose source matches the removed enrichment
+      const newSelectedFields = draft.selectedFields.filter((f) => f.source !== sourceTag);
+
+      // Filter out column renames for fields that were removed
+      const remainingFieldKeys = new Set(newSelectedFields.map((f) => f.key));
+      const newColumnRenames = draft.columnRenames.filter((r) => remainingFieldKeys.has(r.fieldKey));
+
+      onUpdate({
+        sourceConfig: { ...draft.sourceConfig, enrichments: newEnrichments },
+        selectedFields: newSelectedFields,
+        columnRenames: newColumnRenames,
+      });
+    },
+    [draft.sourceConfig, draft.selectedFields, draft.columnRenames, onUpdate],
+  );
+
+  // Confirm add handler — appends new enrichments to the existing array
+  const handleConfirmAdd = useCallback(
+    (newEnrichments: EnrichmentConfig[]) => {
+      if (!draft.sourceConfig) return;
+      const existing = draft.sourceConfig.enrichments ?? [];
+      onUpdate({
+        sourceConfig: { ...draft.sourceConfig, enrichments: [...existing, ...newEnrichments] },
+      });
     },
     [draft.sourceConfig, onUpdate],
   );
@@ -248,13 +287,23 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
         </div>
       )}
 
-      {/* Enrichment selector — toggle additional source entities */}
-      {draft.sourceConfig && (
-        <EnrichmentSelector
-          primarySource={draft.sourceConfig.primarySource}
-          currentEnrichment={draft.sourceConfig.enrichment}
-          onEnrichmentChange={handleEnrichmentChange}
-        />
+      {/* Source chips row — shows active sources with add/remove (Phase 2+) */}
+      {draft.sourceConfig && exporterPhase >= 2 && (
+        <>
+          <SourceChipsRow
+            primarySource={draft.sourceConfig.primarySource}
+            enrichments={draft.sourceConfig.enrichments ?? []}
+            onRemoveEnrichment={handleRemoveEnrichment}
+            onOpenAddModal={() => setModalOpen(true)}
+          />
+          <AddSourceModal
+            open={modalOpen}
+            onOpenChange={setModalOpen}
+            activeEnrichments={draft.sourceConfig.enrichments ?? []}
+            primarySource={draft.sourceConfig.primarySource}
+            onConfirm={handleConfirmAdd}
+          />
+        </>
       )}
 
       {/* Event fields section (event-based only) */}
@@ -279,7 +328,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                   key={field.key}
                   className={cn(
                     "flex items-center gap-2 py-2 px-3 border-b border-border last:border-b-0 transition-colors duration-150 cursor-grab bg-accent/50 border-l-[3px] border-l-muted-foreground pl-[calc(0.75rem-3px)]",
-                    "hover:bg-accent active:cursor-grabbing",
+                    "hover:bg-accent/70 active:cursor-grabbing",
                     dragIndex === index && "opacity-50 shadow-md scale-[1.02] z-[1] relative",
                     dragOverIndex === index && "border-t-2 border-t-primary pt-[calc(0.5rem-2px)]"
                   )}
@@ -294,7 +343,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                   <span className="text-xs text-accent-foreground font-semibold min-w-5 text-center shrink-0">{index + 1}</span>
                   <Lock size={12} weight="bold" className="text-muted-foreground shrink-0" />
                   <TruncatedText className="text-sm text-foreground font-medium max-w-[160px]">{field.label}</TruncatedText>
-                  <span className="text-xs text-tertiary-foreground ml-1 py-0.5 px-1.5 bg-secondary rounded-full shrink-0">{field.source}</span>
+                  <span className="text-xs text-muted-foreground font-medium py-0.5 px-2 bg-secondary border border-border/60 rounded-full shrink-0">{field.source}</span>
 
                   {/* Column rename input */}
                   <div className="ml-auto flex items-center gap-1.5 shrink-0">
@@ -364,8 +413,8 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
               <div
                 key={field.key}
                 className={cn(
-                  "flex items-center gap-2 py-2 px-3 border-b border-border last:border-b-0 transition-colors duration-150 cursor-grab bg-accent border-l-[3px] border-l-primary pl-[calc(0.75rem-3px)]",
-                  "hover:bg-accent active:cursor-grabbing",
+                  "flex items-center gap-2 py-2 px-3 border-b border-border last:border-b-0 transition-colors duration-150 cursor-grab bg-accent/50 border-l-[3px] border-l-primary pl-[calc(0.75rem-3px)]",
+                  "hover:bg-accent/70 active:cursor-grabbing",
                   dragIndex === (isEventBased ? eventFields.length + index : index) && "opacity-50 shadow-md scale-[1.02] z-[1] relative",
                   dragOverIndex === (isEventBased ? eventFields.length + index : index) && "border-t-2 border-t-primary pt-[calc(0.5rem-2px)]"
                 )}
@@ -385,7 +434,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                   />
                   <TruncatedText className="text-sm font-medium max-w-[160px]">{field.label}</TruncatedText>
                 </div>
-                <span className="text-xs text-tertiary-foreground py-0.5 px-1.5 bg-secondary rounded-full shrink-0">{field.source}</span>
+                <span className="text-xs text-muted-foreground font-medium py-0.5 px-2 bg-secondary border border-border/60 rounded-full shrink-0">{field.source}</span>
 
                 {/* Column rename input */}
                 <div className="ml-auto flex items-center gap-1.5 shrink-0">
@@ -418,8 +467,8 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
 
           {/* Unselected fields — not draggable */}
           {unselectedContactFields.map((field) => (
-            <div key={field.key} className="flex items-center gap-2 py-2 px-3 border-b border-border last:border-b-0 bg-background transition-colors duration-150 hover:bg-background">
-              <div className="w-4 shrink-0" />
+            <div key={field.key} className="flex items-center gap-2 py-2 px-3 border-b border-border last:border-b-0 bg-card transition-colors duration-150 hover:bg-card min-h-[44px]">
+              <span className="w-[22px] shrink-0" />
               <span className="min-w-5 shrink-0" />
               <div className="flex items-center gap-2">
                 <Checkbox
@@ -429,7 +478,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                 />
                 <TruncatedText className="text-sm font-medium max-w-[160px]">{field.label}</TruncatedText>
               </div>
-              <span className="text-xs text-tertiary-foreground ml-auto py-0.5 px-1.5 bg-secondary rounded-full shrink-0">{field.source}</span>
+              <span className="text-xs text-muted-foreground font-medium py-0.5 px-2 bg-secondary border border-border/60 rounded-full shrink-0">{field.source}</span>
             </div>
           ))}
         </div>

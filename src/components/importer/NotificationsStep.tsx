@@ -46,6 +46,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails }
       onUpdate={handleUpdate}
       onValidChange={onValidChange}
       teamEmails={teamEmails}
+      showNoFileAlert
     />
   );
 }

@@ -1,0 +1,204 @@
+- generic [ref=e9]:
+  - generic [ref=e10]:
+    - generic [ref=e11]:
+      - generic [ref=e12]:
+        - link [ref=e13] [cursor=pointer]:
+          - /url: /dashboard
+        - generic [ref=e15]:
+          - generic [ref=e16] [cursor=pointer]:
+            - strong [ref=e17]: "Account: Chenchen AWS Test"
+            - img [ref=e20]
+          - list [ref=e23]:
+            - listitem [ref=e24]:
+              - link "Chenchen AWS Test" [ref=e25] [cursor=pointer]:
+                - /url: /accounts/Home/SwitchTo/93z9c1_btp3n77m313g7dwnmsj04k_4pj_pdvkv3mtkjkr3qfv9x8v40vsbj
+              - list [ref=e26]:
+                - listitem [ref=e27]:
+                  - link "AA-Customer Account" [ref=e28] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/glk5cld736tnr3r013gr26g9f80798lpt63kmdvckwj0krck374qp6vjylk0
+                - listitem [ref=e29]:
+                  - link "API Test" [ref=e30] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/z00l97g6yffn517t13g7m4hhb80h0094mr3gqqv2jmxjkr3tl7rp40h151jj
+                - listitem [ref=e31]:
+                  - link "DB Test" [ref=e32] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/_ntd5b5l31k4199613g7dx0w_00hvdq2p2t1jsl0nnm0kr3qg0f_kylswqcj
+                - listitem [ref=e33]:
+                  - link "Email Test" [ref=e34] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/cn04q7012pv4c3tp13gwhqknqs05v02c3j0kby25kxvjkrfrw8vcdxgjb7p0
+                - listitem [ref=e35]:
+                  - link "feature flag child account" [ref=e36] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/9f0dw8lz9x44fbd_13h9_pnh4404qj6fn9h4z226p6hjkrn_vv7l2r0gmrhj
+                - listitem [ref=e37]:
+                  - link "Push Test" [ref=e38] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/1krcmmq8x194hh6d13g7dwxp8x00swpttw4g0nl7rm60kr3qfzbnhs8fm7cj
+                - listitem [ref=e39]:
+                  - link "SSO test" [ref=e40] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/q2x8nh6gtdhnm68w13gwn5xcw00c1g4b7m7dq7v9m4fjkrfv2z5ykv2l0pcj
+                - listitem [ref=e41]:
+                  - link "Txt Test" [ref=e42] [cursor=pointer]:
+                    - /url: /accounts/Home/SwitchTo/gfk5kpgc4jcnm5hw13g7dwy3rs076slsvr5l85v9lryjkr3qfzkwy1kpkjp0
+      - generic [ref=e43]:
+        - generic [ref=e44]: Brad Knewstubb
+        - link "My Settings" [ref=e45] [cursor=pointer]:
+          - /url: /administrators/Home/Edit/SXagsqgxz0mNGwjeMx4hMw
+        - link "Users" [ref=e46] [cursor=pointer]:
+          - /url: /members
+        - link "Accounts" [ref=e47] [cursor=pointer]:
+          - /url: /accounts/home
+        - link "API" [ref=e48] [cursor=pointer]:
+          - /url: /api
+        - link "Admin" [ref=e49] [cursor=pointer]:
+          - /url: /administrators
+        - link "Logout" [ref=e50] [cursor=pointer]:
+          - /url: /logout
+    - generic [ref=e51]:
+      - generic [ref=e52]:
+        - link "Dashboard" [ref=e53] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Database" [ref=e54] [cursor=pointer]:
+          - /url: /list
+        - link "Forms" [ref=e55] [cursor=pointer]:
+          - /url: /forms/dashboard/vf_j7qv9ks4nh4v447k_hccdxn04k_4pj_pdvkv3mtkjkr3qfv9x8bf3t6lj
+        - link "Email" [ref=e56] [cursor=pointer]:
+          - /url: /email/dashboard/j_kc3t05wwh4f8bgycpqgslqzs04k_4pj_pdvkv3mtkjkr3qfv9x80qgkw50
+        - link "Surveys" [ref=e57] [cursor=pointer]:
+          - /url: /surveys
+        - link "Events" [ref=e58] [cursor=pointer]:
+          - /url: /events/dashboard/7cqvksgfn7_4rc6qzls063z5nx04k_4pj_pdvkv3mtkjkr3qfv9x9_fb3b0j
+        - link "TXT" [ref=e59] [cursor=pointer]:
+          - /url: /txt
+        - link "Push" [ref=e60] [cursor=pointer]:
+          - /url: /push
+        - link "Campaigns" [ref=e61] [cursor=pointer]:
+          - /url: /components/24jr1g9n_274_dm0k5hntjlpq804k_4pj_pdvkv3mtkjkr3qfv9x8dn9b_nj
+        - link "Social" [ref=e62] [cursor=pointer]:
+          - /url: /social/dashboard/_qhjy3fgsy4nmdsn9t5gcb_nc404k_4pj_pdvkv3mtkjkr3qfv9x8mg68t00
+      - generic [ref=e63]:
+        - link "Media Manager" [ref=e64] [cursor=pointer]:
+          - /url: /MediaManager
+          - img [ref=e66]
+          - text: Media Manager
+        - generic [ref=e68] [cursor=pointer]: Contact
+        - link "Help Centre" [ref=e69] [cursor=pointer]:
+          - /url: https://docs.ubiquity.co.nz/
+  - generic [ref=e73]:
+    - generic [ref=e74]:
+      - heading "Hi Brad Knewstubb!" [level=3] [ref=e75]
+      - generic [ref=e76]: How would you like to interact with Chenchen AWS Test's audience?
+      - button "New" [ref=e78] [cursor=pointer]:
+        - generic [ref=e79]: New
+      - generic [ref=e80]:
+        - heading "Here's what you've been working on recently" [level=6] [ref=e81]
+        - generic [ref=e82]:
+          - generic "Event Trigger" [ref=e83]:
+            - link "Event Trigger Accessed on 23 Jun, 2026" [ref=e84] [cursor=pointer]:
+              - /url: /administrators/RootAccounts/SwitchTo/SPyVh-rNR0OeYwjcdm6TxA?returnUri=%2Fcampaigns%2Fmailouts%2Fdesign%2FDashboard%2F92k_v_6w1sg43dd713hdd1fz7801wjx7b4
+              - generic [ref=e85]:
+                - img [ref=e88]
+                - generic [ref=e90]:
+                  - generic [ref=e91]: Event Trigger
+                  - generic [ref=e92]: Accessed on 23 Jun, 2026
+          - generic "1.179.2 test" [ref=e93]:
+            - link "1.179.2 test Accessed on 23 Jun, 2026" [ref=e94] [cursor=pointer]:
+              - /url: /administrators/RootAccounts/SwitchTo/SPyVh-rNR0OeYwjcdm6TxA?returnUri=%2Fcampaigns%2FMailout%2FDashboard%2Fu7h4dLdct06R4wje0HsEdQ
+              - generic [ref=e95]:
+                - img [ref=e98]
+                - generic [ref=e100]:
+                  - generic [ref=e101]: 1.179.2 test
+                  - generic [ref=e102]: Accessed on 23 Jun, 2026
+          - generic "Personalized Attachment - Copy" [ref=e103]:
+            - link "Personalized Attachment - Copy Accessed on 1 Apr, 2026" [ref=e104] [cursor=pointer]:
+              - /url: /administrators/RootAccounts/SwitchTo/SPyVh-rNR0OeYwjcdm6TxA?returnUri=%2Fcampaigns%2FMailout%2FDashboard%2FCaAdfkrhhkOSZQjehZWn2A
+              - generic [ref=e105]:
+                - img [ref=e108]
+                - generic [ref=e110]:
+                  - generic [ref=e111]: Personalized Attachment - Copy
+                  - generic [ref=e112]: Accessed on 1 Apr, 2026
+          - generic "Send Status Test" [ref=e113]:
+            - link "Send Status Test Accessed on 20 Mar, 2026" [ref=e114] [cursor=pointer]:
+              - /url: /administrators/RootAccounts/SwitchTo/SPyVh-rNR0OeYwjcdm6TxA?returnUri=%2Fcampaigns%2Fmailouts%2Frecurring%2FDashboard%2Fsz_3fvdlhw54m7w113h8f4mkt009t3_1f0
+              - generic [ref=e115]:
+                - img [ref=e118]
+                - generic [ref=e120]:
+                  - generic [ref=e121]: Send Status Test
+                  - generic [ref=e122]: Accessed on 20 Mar, 2026
+      - generic [ref=e124]:
+        - heading "Your contacts" [level=6] [ref=e125]
+        - generic [ref=e126]:
+          - generic [ref=e127]: 60,702
+          - generic [ref=e128]: 40,736 are available to receive communications
+          - generic [ref=e130]:
+            - img [ref=e132]
+            - text: 452522.22% increase on last month's total
+          - img [ref=e135]:
+            - img [ref=e136]:
+              - generic [ref=e138]:
+                - generic: Sep
+              - generic [ref=e140]:
+                - generic: Oct
+              - generic [ref=e142]:
+                - generic: Nov
+              - generic [ref=e144]:
+                - generic: Dec
+              - generic [ref=e146]:
+                - generic: Jan
+              - generic [ref=e148]:
+                - generic: Feb
+            - img
+            - img [ref=e150]
+    - generic [ref=e153]:
+      - generic [ref=e155]:
+        - heading "Recent activity" [level=6] [ref=e156]
+        - link "Email dashboard" [ref=e157] [cursor=pointer]:
+          - /url: /email/dashboard/93z9c1_btp3n77m313g7dwnmsj04k_4pj_pdvkv3mtkjkr3qfv9x8v40vsbj
+          - button "Email dashboard" [ref=e158]:
+            - generic [ref=e159]: Email dashboard
+        - img [ref=e161]:
+          - img [ref=e162]:
+            - generic [ref=e163]:
+              - generic [ref=e164]: ⬤
+              - text: Delivered
+              - generic [ref=e165]: ⬤
+              - text: Read
+              - generic [ref=e166]: ⬤
+              - text: Clicked
+      - img [ref=e167]:
+        - generic:
+          - img
+        - img [ref=e168]:
+          - generic: "10"
+          - generic: "8"
+          - generic: "5"
+          - generic: "3"
+          - generic: "0"
+          - generic [ref=e172]:
+            - generic: 09/06/26
+          - generic [ref=e176]:
+            - generic: 10/06/26
+          - generic [ref=e179]:
+            - generic: 11/06/26
+          - generic [ref=e183]:
+            - generic: 12/06/26
+          - generic [ref=e186]:
+            - generic: 13/06/26
+          - generic [ref=e189]:
+            - generic: 14/06/26
+          - generic [ref=e193]:
+            - generic: 15/06/26
+          - generic [ref=e197]:
+            - generic: 16/06/26
+          - generic [ref=e201]:
+            - generic: 17/06/26
+          - generic [ref=e205]:
+            - generic: 18/06/26
+          - generic [ref=e209]:
+            - generic: 19/06/26
+          - generic [ref=e212]:
+            - generic: 20/06/26
+          - generic [ref=e215]:
+            - generic: 21/06/26
+          - generic [ref=e220]:
+            - generic: 22/06/26
+        - img
+        - img [ref=e221]
+  - contentinfo [ref=e223]

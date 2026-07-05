@@ -6,7 +6,7 @@
  */
 
 import type { CardFilterRow, FilterFieldDef } from './types'
-import { NO_VALUE_OPERATORS, ARRAY_VALUE_OPERATORS } from './operators'
+import { NO_VALUE_OPERATORS, ARRAY_VALUE_OPERATORS, SUB_FILTER_OPERATORS } from './operators'
 
 // ─── Validation Result ───────────────────────────────────────────────────────
 
@@ -22,7 +22,10 @@ export interface ValidationResult {
  *
  * Rules:
  * - sourceCategory, field, and operator must be non-empty strings.
- * - For no-value operators (is_empty, is_not_empty, is_true, is_false): value can be null.
+ * - For no-value operators (is_empty, is_not_empty, is_true, is_false,
+ *   has_transactions, has_no_transactions): value can be null.
+ * - For sub-filter operators (has_matching_transactions, does_not_have_matching):
+ *   at least one sub-filter condition must be present.
  * - For array-value operators (is_in, is_not_in): value must be a non-empty string[].
  * - For value-requiring operators: value must be present (non-null, non-empty string).
  */
@@ -32,9 +35,24 @@ export function isConditionComplete(row: CardFilterRow): boolean {
     return false
   }
 
-  // No-value operators don't require a value
+  // No-value operators don't require a value (includes has_transactions, has_no_transactions)
   if (NO_VALUE_OPERATORS.includes(row.operator)) {
     return true
+  }
+
+  // Sub-filter operators require at least one sub-filter condition
+  if (SUB_FILTER_OPERATORS.includes(row.operator)) {
+    return !!(
+      row.subFilters &&
+      row.subFilters.conditions.length > 0 &&
+      row.subFilters.conditions.every((c) => {
+        if (c.type === 'row') {
+          const r = c.row
+          return !!(r.field && r.operator && (r.value !== null && r.value !== undefined && r.value !== ''))
+        }
+        return true
+      })
+    )
   }
 
   // Array-value operators (is_in, is_not_in) require a non-empty string[]

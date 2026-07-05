@@ -1,5 +1,4 @@
 export { FilterBuilder } from './filter-builder'
-export { InlineFilterBuilder } from './inline/inline-filter-builder'
 export { ModalFilterBuilder } from './modal/modal-filter-builder'
 
 // Types
@@ -15,7 +14,6 @@ export type {
   SubSourceConfig,
   CardFilterRow,
   ModalState,
-  InlineFilterBuilderProps,
   ModalFilterBuilderProps,
 } from './types'
 

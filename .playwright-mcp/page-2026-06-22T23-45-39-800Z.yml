@@ -1,0 +1,217 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ubiquity" [ref=e4] [cursor=pointer]:
+      - /url: /dashboard
+    - paragraph [ref=e6] [cursor=pointer]:
+      - strong [ref=e7]: "Account:"
+      - text: Chenchen AWS Test
+    - list [ref=e8]:
+      - listitem [ref=e9]: Brad Knewstubb
+      - listitem [ref=e10]:
+        - link "My Settings" [ref=e11] [cursor=pointer]:
+          - /url: /administrators/Home/Edit/SXagsqgxz0mNGwjeMx4hMw
+      - listitem [ref=e12]:
+        - link "Users" [ref=e13] [cursor=pointer]:
+          - /url: /members
+      - listitem [ref=e14]:
+        - link "Accounts" [ref=e15] [cursor=pointer]:
+          - /url: /accounts/Home
+      - listitem [ref=e16]:
+        - link "API" [ref=e17] [cursor=pointer]:
+          - /url: /api
+      - listitem [ref=e18]:
+        - link "Admin" [ref=e19] [cursor=pointer]:
+          - /url: /administrators
+      - listitem [ref=e20]:
+        - link "Logout" [ref=e21] [cursor=pointer]:
+          - /url: /Logout
+  - generic [ref=e23]:
+    - list [ref=e24]:
+      - listitem [ref=e25]:
+        - link "Dashboard" [ref=e26] [cursor=pointer]:
+          - /url: /dashboard
+      - listitem [ref=e27]:
+        - link "Database" [ref=e28] [cursor=pointer]:
+          - /url: /list
+      - listitem [ref=e29]:
+        - link "Forms" [ref=e30] [cursor=pointer]:
+          - /url: /forms/dashboard/hqhpzw5rhf0n3d72gv1v1kpbvj04k_4pj_pdvkv3mtkjkr3qfv9x9gdxj4pj
+      - listitem [ref=e31]:
+        - link "Email" [ref=e32] [cursor=pointer]:
+          - /url: /email/dashboard/0yr_3q9rjkxn5434fhb2xzzn4s04k_4pj_pdvkv3mtkjkr3qfv9x8sjnchj0
+      - listitem [ref=e33]:
+        - link "Surveys" [ref=e34] [cursor=pointer]:
+          - /url: /surveys
+      - listitem [ref=e35]:
+        - link "Events" [ref=e36] [cursor=pointer]:
+          - /url: /events/dashboard/b1d5z3x__wcnr5klgvzs95_r7004k_4pj_pdvkv3mtkjkr3qfv9x9hwjd1g0
+      - listitem [ref=e37]:
+        - link "TXT" [ref=e38] [cursor=pointer]:
+          - /url: /txt
+      - listitem [ref=e39]:
+        - link "Push" [ref=e40] [cursor=pointer]:
+          - /url: /push
+      - listitem [ref=e41]:
+        - link "Campaigns" [ref=e42] [cursor=pointer]:
+          - /url: /components/zhc8qpb_ds7n9dg2bgdv2l03dd04k_4pj_pdvkv3mtkjkr3qfv9x97yt_fjj
+      - listitem [ref=e43]:
+        - link "Social" [ref=e44] [cursor=pointer]:
+          - /url: /social/dashboard/kfr0g_34ppmnmdxh9gvvt8783d04k_4pj_pdvkv3mtkjkr3qfv9x83tsxr10
+    - list [ref=e45]:
+      - listitem [ref=e46]:
+        - link "Media Manager" [ref=e47] [cursor=pointer]:
+          - /url: /MediaManager
+          - generic [ref=e48]: 
+          - text: Media Manager
+      - listitem [ref=e49]:
+        - link "Contact" [ref=e50] [cursor=pointer]:
+          - /url: /Home/ContactUs
+      - listitem [ref=e51]:
+        - link "Help Centre" [ref=e52] [cursor=pointer]:
+          - /url: https://docs.ubiquity.co.nz/
+  - generic [ref=e53]:
+    - generic [ref=e55]:
+      - link "Delete Mailout" [ref=e56] [cursor=pointer]:
+        - /url: /campaigns/Shared/DeleteMailout?mailoutID=u7h4dLdct06R4wje0HsEdQ
+        - generic [ref=e57]: Delete Mailout
+      - link "Copy Mailout" [ref=e58] [cursor=pointer]:
+        - /url: /campaigns/Mailout/CopyMailout/u7h4dLdct06R4wje0HsEdQ
+        - generic [ref=e59]: Copy Mailout
+      - generic [ref=e60]:
+        - heading "Related Tasks" [level=3] [ref=e61]
+        - list [ref=e62]:
+          - listitem [ref=e63]:
+            - link "Email Templates" [ref=e64] [cursor=pointer]:
+              - /url: /email/dashboard/templates/4ftx455y6dz4m2cfjcbb69126j04k_4pj_pdvkv3mtkjkr3qfv9x95ddslgj
+          - listitem [ref=e65]:
+            - link "Mailouts" [ref=e66] [cursor=pointer]:
+              - /url: /email/dashboard/4_hl6n311rk4p8hskdjf36pgs404k_4pj_pdvkv3mtkjkr3qfv9x8_b8vnw0
+          - listitem [ref=e67]:
+            - link "Automated Mailouts" [ref=e68] [cursor=pointer]:
+              - /url: /email/dashboard/automated/gn8qjtf2p9x410f4kd6tdhtx1x04k_4pj_pdvkv3mtkjkr3qfv9x9s29jvr0
+          - listitem [ref=e69]:
+            - link "Move to Mailout Folder" [ref=e70] [cursor=pointer]:
+              - /url: /campaigns/mailouts/shared/MoveMailout/u7h4dLdct06R4wje0HsEdQ
+      - heading "Help" [level=3] [ref=e72] [cursor=pointer]: Help
+    - generic [ref=e75]:
+      - heading "Random/ 1.179.2 test" [level=1] [ref=e76]:
+        - link "Random/" [ref=e77] [cursor=pointer]:
+          - /url: /email/dashboard/folder/x87jn1nj2twncf4x13gfkj1n7804k_4pj_pdvkv3mtkjkr3qfv9x8k974yt0
+        - text: 1.179.2 test
+      - heading "Mailout Dashboard" [level=2] [ref=e78]
+      - paragraph [ref=e79]: View and report on your scheduled or deployed mailout.
+      - paragraph [ref=e80]: If your mailout is scheduled to be sent or is still sending you can pause and cancel the mailout.
+      - generic [ref=e82]:
+        - generic [ref=e83]:
+          - link "" [ref=e84] [cursor=pointer]:
+            - /url: /campaigns/Mailout/Details/u7h4dLdct06R4wje0HsEdQ
+            - generic [ref=e85]: 
+          - heading "Mailout Details" [level=2] [ref=e86]:
+            - link "Mailout Details" [ref=e87] [cursor=pointer]:
+              - /url: /campaigns/Mailout/Details/u7h4dLdct06R4wje0HsEdQ
+          - paragraph [ref=e88] [cursor=pointer]: View and edit your mailout details.
+        - generic [ref=e89]:
+          - link "" [ref=e90] [cursor=pointer]:
+            - /url: /campaigns/Mailout/BeginEditLinks/u7h4dLdct06R4wje0HsEdQ
+            - generic [ref=e91]: 
+          - heading "Edit Link Names" [level=2] [ref=e92]:
+            - link "Edit Link Names" [ref=e93] [cursor=pointer]:
+              - /url: /campaigns/Mailout/BeginEditLinks/u7h4dLdct06R4wje0HsEdQ
+          - paragraph [ref=e94] [cursor=pointer]: Edit the link friendly names in this mailout.
+        - generic [ref=e95]:
+          - link "" [ref=e96] [cursor=pointer]:
+            - /url: /campaigns/reports/mailout/u7h4dLdct06R4wje0HsEdQ
+            - generic [ref=e97]: 
+          - heading "Mailout Report" [level=2] [ref=e98]:
+            - link "Mailout Report" [ref=e99] [cursor=pointer]:
+              - /url: /campaigns/reports/mailout/u7h4dLdct06R4wje0HsEdQ
+          - paragraph [ref=e100] [cursor=pointer]: View your reporting for this mailout.
+        - generic [ref=e101]:
+          - link "" [ref=e102] [cursor=pointer]:
+            - /url: /campaigns/data/BeginDataQuery/4g8KBpAWd0W0nAjc2MA0Og/u7h4dLdct06R4wje0HsEdQ?request=Any
+            - generic [ref=e103]: 
+          - heading "Mailout Recipients" [level=2] [ref=e104]:
+            - link "Mailout Recipients" [ref=e105] [cursor=pointer]:
+              - /url: /campaigns/data/BeginDataQuery/4g8KBpAWd0W0nAjc2MA0Og/u7h4dLdct06R4wje0HsEdQ?request=Any
+          - paragraph [ref=e106] [cursor=pointer]: View your recipients for this mailout.
+        - generic [ref=e107]:
+          - link "" [ref=e108] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/ContentPreviewDialog/1x_JFq5dfUCPoQje0Rzyyw
+            - generic [ref=e109]: 
+          - heading "Mailout Preview" [level=2] [ref=e110]:
+            - link "Mailout Preview" [ref=e111] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/ContentPreviewDialog/1x_JFq5dfUCPoQje0Rzyyw
+          - paragraph [ref=e112] [cursor=pointer]: Preview the email template used in this mailout.
+      - heading "Mailout Summary" [level=2] [ref=e116]
+  - generic [ref=e118]:
+    - link "Powered by Ubiquity Software":
+      - /url: https://www.qrious.co.nz/
+    - paragraph [ref=e119]: UbiQuity test build 1.179.2.2557
+  - generic [ref=e121]:
+    - heading "Delete Mailout" [level=3] [ref=e122]
+    - generic [ref=e123]:
+      - generic [ref=e124]:
+        - paragraph [ref=e125]: Please type ACCEPT into the box below to confirm that you want to delete this mailout.
+        - emphasis [ref=e126]: This action cannot be undone.
+        - generic [ref=e128]:
+          - generic [ref=e129]: Confirm Deletion
+          - textbox "Confirm Deletion" [ref=e130]
+      - generic [ref=e131]:
+        - generic [ref=e132] [cursor=pointer]: Cancel
+        - generic [ref=e133] [cursor=pointer]:
+          - generic [ref=e134]: 
+          - text: Delete Mailout
+  - generic [ref=e136]:
+    - heading "Pause Mailout" [level=3] [ref=e137]
+    - generic [ref=e138]:
+      - generic [ref=e139]:
+        - paragraph [ref=e140]: "Pause the mailout now and restart the mailout:"
+        - generic [ref=e142]:
+          - generic [ref=e143]:
+            - radio "When I click \"Resume\"" [checked] [ref=e144] [cursor=pointer]
+            - generic [ref=e145]: When I click "Resume"
+          - generic [ref=e146]:
+            - radio "At a specific time:" [ref=e147] [cursor=pointer]
+            - generic [ref=e148]: "At a specific time:"
+      - generic [ref=e149]:
+        - generic [ref=e150] [cursor=pointer]: Cancel
+        - generic [ref=e151] [cursor=pointer]: Pause
+  - generic [ref=e152]:
+    - heading "Resume Mailout" [level=3] [ref=e153]
+    - generic [ref=e154]:
+      - paragraph [ref=e158]: Are you sure you want to resume this mailout?
+      - generic [ref=e159]:
+        - generic [ref=e160] [cursor=pointer]: Cancel
+        - generic [ref=e161] [cursor=pointer]: Resume Mailout
+  - generic [ref=e162]:
+    - heading "Cancel Mailout" [level=3] [ref=e163]
+    - paragraph [ref=e164]: Please enter a reason into the box below to confirm cancellation of this mailout.
+    - generic [ref=e165]:
+      - generic [ref=e168]:
+        - generic [ref=e169]: Reason*
+        - textbox "Reason*" [ref=e171]
+      - generic [ref=e172]:
+        - generic [ref=e173] [cursor=pointer]: Close
+        - generic [ref=e174] [cursor=pointer]:
+          - generic [ref=e175]: 
+          - text: Cancel Mailout
+  - generic [ref=e176]:
+    - heading "Address Book" [level=3] [ref=e177]
+    - generic [ref=e180]:
+      - generic [ref=e181]: Select all | Select none
+      - generic:
+        - list
+      - generic [ref=e182]:
+        - textbox [ref=e183]
+        - list [ref=e184]:
+          - listitem [ref=e185]:
+            - generic [ref=e186] [cursor=pointer]:
+              - generic [ref=e187]: 
+              - text: Add
+    - generic [ref=e188]:
+      - generic [ref=e189] [cursor=pointer]: Cancel
+      - generic [ref=e190]:
+        - generic [ref=e191]: 
+        - text: Insert
+  - iframe [ref=e192]:
+    

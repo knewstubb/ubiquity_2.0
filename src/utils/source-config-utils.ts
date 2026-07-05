@@ -51,12 +51,12 @@ const TRANSACTIONS_FIELDS: SourceFieldDefinition[] = [
 ];
 
 const MESSAGES_FIELDS: SourceFieldDefinition[] = [
-  { key: 'message_id', label: 'Message ID', source: 'messages' },
-  { key: 'message_contactId', label: 'Contact ID', source: 'messages' },
-  { key: 'message_channel', label: 'Channel', source: 'messages' },
-  { key: 'message_status', label: 'Status', source: 'messages' },
-  { key: 'message_sentAt', label: 'Sent At', source: 'messages' },
-  { key: 'message_campaignId', label: 'Campaign ID', source: 'messages' },
+  { key: 'message_id', label: 'Message ID', source: 'mailout' },
+  { key: 'message_contactId', label: 'Contact ID', source: 'mailout' },
+  { key: 'message_channel', label: 'Channel', source: 'mailout' },
+  { key: 'message_status', label: 'Status', source: 'mailout' },
+  { key: 'message_sentAt', label: 'Sent At', source: 'mailout' },
+  { key: 'message_campaignId', label: 'Campaign ID', source: 'mailout' },
 ];
 
 function getPrimaryFields(primarySource: PrimarySourceType): SourceFieldDefinition[] {
@@ -71,29 +71,53 @@ function getPrimaryFields(primarySource: PrimarySourceType): SourceFieldDefiniti
 }
 
 function getEnrichmentFields(enrichment: EnrichmentConfig): SourceFieldDefinition[] {
-  const entityFields = getPrimaryFields(enrichment.entity);
-  const prefix = enrichment.entity.charAt(0).toUpperCase() + enrichment.entity.slice(1, -1);
-
-  return entityFields.map((field) => ({
-    key: `enrichment_${enrichment.entity}_${field.key}`,
-    label: `${prefix}: ${field.label}`,
-    source: enrichment.entity,
-  }));
+  switch (enrichment.entity) {
+    case 'messages': {
+      const entityFields = getPrimaryFields('messages');
+      return entityFields.map((field) => ({
+        key: `enrichment_messages_${field.key}`,
+        label: field.label,
+        source: 'messages',
+      }));
+    }
+    case 'transactions': {
+      const { tableId } = enrichment;
+      const table = transactionalDatabases.find((t) => t.id === tableId);
+      const tableName = table?.name ?? tableId;
+      const entityFields = getPrimaryFields('transactions');
+      return entityFields.map((field) => ({
+        key: `enrichment_txn_${tableId}_${field.key}`,
+        label: field.label,
+        source: `txn:${tableId}`,
+      }));
+    }
+    case 'contacts': {
+      const entityFields = getPrimaryFields('contacts');
+      return entityFields.map((field) => ({
+        key: `enrichment_contacts_${field.key}`,
+        label: field.label,
+        source: 'contacts',
+      }));
+    }
+  }
 }
 
 // ─── Exported functions ──────────────────────────────────────────────────────
 
 /**
- * Returns primary source fields + enrichment fields (prefixed with entity name).
+ * Returns primary source fields + enrichment fields for all active enrichments.
+ * Uses `config.enrichments` array as the authoritative source.
+ * Falls back to legacy `config.enrichment` if `enrichments` is empty/undefined.
  */
 export function getFieldsForSourceConfig(config: SourceConfig): SourceFieldDefinition[] {
   const primaryFields = getPrimaryFields(config.primarySource);
+  const enrichments = config.enrichments?.length
+    ? config.enrichments
+    : config.enrichment
+      ? [config.enrichment]
+      : [];
 
-  if (!config.enrichment) {
-    return primaryFields;
-  }
-
-  const enrichmentFields = getEnrichmentFields(config.enrichment);
+  const enrichmentFields = enrichments.flatMap(getEnrichmentFields);
   return [...primaryFields, ...enrichmentFields];
 }
 
@@ -135,13 +159,35 @@ export function formatSourceConfigSummary(config: SourceConfig): string {
   const filterDesc = formatFilterDescription(config);
   parts.push(filterDesc);
 
-  // Enrichment
-  if (config.enrichment) {
-    const enrichLabel = config.enrichment.entity.charAt(0).toUpperCase() + config.enrichment.entity.slice(1);
-    parts.push(`enriched with ${enrichLabel}`);
+  // Multi-enrichment support: use enrichments[] when available, fall back to legacy enrichment
+  const enrichments = config.enrichments?.length
+    ? config.enrichments
+    : config.enrichment
+      ? [config.enrichment]
+      : [];
+
+  if (enrichments.length > 0) {
+    const labels = enrichments.map(formatEnrichmentLabel);
+    parts.push(`enriched with ${labels.join(', ')}`);
   }
 
   return parts.join(' — ');
+}
+
+/**
+ * Returns a human-readable label for an enrichment config.
+ */
+function formatEnrichmentLabel(enrichment: EnrichmentConfig): string {
+  switch (enrichment.entity) {
+    case 'messages':
+      return 'Messages';
+    case 'transactions': {
+      const table = transactionalDatabases.find((t) => t.id === enrichment.tableId);
+      return table ? table.name : enrichment.tableId || 'Transactions';
+    }
+    case 'contacts':
+      return 'Contacts';
+  }
 }
 
 function formatFilterDescription(config: SourceConfig): string {
@@ -198,6 +244,7 @@ export function resetDownstreamOnSourceChange(
         primarySource: 'contacts',
         filter: { type: 'field_filter', fieldFilters: [{ field: '', operator: '', value: '' }] },
         enrichment: null,
+        enrichments: [],
       } satisfies ContactsSourceConfig;
 
     case 'transactions':
@@ -206,6 +253,7 @@ export function resetDownstreamOnSourceChange(
         tableId: '',
         filter: { type: 'all' },
         enrichment: null,
+        enrichments: [],
       } satisfies TransactionsSourceConfig;
 
     case 'messages':
@@ -214,6 +262,7 @@ export function resetDownstreamOnSourceChange(
         channels: [],
         filter: { type: 'field_filter', fieldFilters: [{ field: '', operator: '', value: '' }] },
         enrichment: null,
+        enrichments: [],
       } satisfies MessagesSourceConfig;
   }
 }

@@ -88,7 +88,7 @@ export interface ColumnRename {
 }
 
 export interface ExporterScheduleConfig {
-  frequency: 'hourly' | 'daily' | 'weekly' | 'monthly';
+  frequency: '10_minute' | 'hourly' | 'daily' | 'weekly';
   weeklyDays: boolean[];           // 7 booleans, Mon–Sun
   monthlyDays: number[];           // 1–28
   // No time fields — system assigns execution time
@@ -98,18 +98,18 @@ export interface ExporterNotificationConfig {
   failureEmails: string[];          // Required, at least one
   successEnabled: boolean;
   successEmails: string[];
-  noFileAlertEnabled: boolean;
-  noFileAlertEmails: string[];
-  noFileSchedule?: {
-    frequency: 'hourly' | 'daily' | 'weekly' | 'monthly';
+  noFileAlertEnabled?: boolean;     // Optional — used by importers
+  noFileAlertEmails?: string[];     // Optional — used by importers
+  noFileSchedule?: {                // Optional — schedule config for no-file alerts
+    frequency: string;
     starting: string;
     every: string;
     at: string;
-    weeklyDays: boolean[];
-    monthlyPattern: 'day' | 'date';
-    monthlyOrdinal: string;
-    monthlyDayOfWeek: string;
-    monthlyDates: string[];
+    weeklyDays?: boolean[];
+    monthlyPattern?: 'day' | 'date';
+    monthlyOrdinal?: string;
+    monthlyDayOfWeek?: string;
+    monthlyDates?: string[];
   };
 }
 
@@ -123,6 +123,7 @@ export interface ExporterWizardDraft {
 
   // Card-based filter builder state (persisted across step navigation)
   dataSourceFilter: CardFilterGroup | null;
+  dataSourceMode: 'all_changes' | 'filtered' | 'mailout' | null;
 
   // --- Legacy fields (deprecated, kept for backward compat until migration tasks 6-13 complete) ---
   exporterType?: ExporterType | null;
@@ -137,6 +138,7 @@ export interface ExporterWizardDraft {
 
   // File configuration
   fileNamingPrefix: string;
+  destinationPath: string;
   formatOptions: FormatOptions;
 
   // Schedule
@@ -151,6 +153,7 @@ export const DEFAULT_EXPORTER_DRAFT: ExporterWizardDraft = {
   name: '',
   sourceConfig: null,
   dataSourceFilter: null,
+  dataSourceMode: null,
   // Legacy fields (deprecated)
   exporterType: null,
   selectedSources: [],
@@ -160,6 +163,7 @@ export const DEFAULT_EXPORTER_DRAFT: ExporterWizardDraft = {
   selectedFields: [],
   columnRenames: [],
   fileNamingPrefix: '',
+  destinationPath: '/exports/',
   formatOptions: {
     delimiter: ',',
     includeHeader: true,
@@ -175,8 +179,6 @@ export const DEFAULT_EXPORTER_DRAFT: ExporterWizardDraft = {
     failureEmails: [],
     successEnabled: false,
     successEmails: [],
-    noFileAlertEnabled: false,
-    noFileAlertEmails: [],
   },
 };
 

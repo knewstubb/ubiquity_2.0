@@ -1,0 +1,83 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - navigation "Wizard navigation" [ref=e5]:
+      - generic [ref=e6]:
+        - button "UbiQuity home" [ref=e7] [cursor=pointer]:
+          - generic [ref=e8]: U
+        - button "Serenity Spa Group" [ref=e11] [cursor=pointer]:
+          - generic [ref=e12]: Serenity Spa Group
+          - img [ref=e14]
+    - generic "New Exporter" [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]:
+            - img [ref=e22]
+            - heading "New Exporter" [level=2] [ref=e24]
+            - generic [ref=e25]: "Connector:"
+          - navigation "Progress" [ref=e26]:
+            - generic [ref=e27]:
+              - button [ref=e109] [cursor=pointer]:
+                - img [ref=e110]
+              - generic [ref=e32]: File Settings
+            - generic [ref=e33]:
+              - generic [ref=e35]: "2"
+              - generic [ref=e38]: Data Source
+            - generic [ref=e39]:
+              - generic [ref=e41]: "3"
+              - generic [ref=e44]: Field Mapping
+            - generic [ref=e45]:
+              - generic [ref=e47]: "4"
+              - generic [ref=e50]: Schedule
+            - generic [ref=e51]:
+              - generic [ref=e53]: "5"
+              - generic [ref=e56]: Notifications
+            - generic [ref=e57]:
+              - generic [ref=e59]: "6"
+              - generic [ref=e61]: Review
+        - generic [ref=e63]:
+          - navigation "breadcrumb" [ref=e65]:
+            - list [ref=e66]:
+              - listitem [ref=e67]:
+                - link "Audience" [ref=e68] [cursor=pointer]:
+                  - /url: /audiences/databases
+              - listitem [ref=e69]:
+                - img [ref=e70]
+              - listitem [ref=e72]:
+                - link "Connectors" [ref=e73] [cursor=pointer]:
+                  - /url: /
+          - generic [ref=e75]:
+            - heading "Data Source" [level=3] [ref=e112]
+            - paragraph [ref=e77]: Choose your data source and configure filters.
+          - generic [ref=e113]:
+            - generic [ref=e114]:
+              - button "Clear all" [disabled]:
+                - img
+                - text: Clear all
+              - button "Save as template" [disabled]:
+                - img
+                - text: Save as template
+            - generic [ref=e116]:
+              - img [ref=e117]
+              - generic [ref=e119]:
+                - paragraph [ref=e120]: No conditions yet
+                - paragraph [ref=e121]:
+                  - text: Filter your exporter by contact data, activity,
+                  - text: or transactional records.
+              - button "+ Add your first condition" [ref=e122] [cursor=pointer]
+            - generic [ref=e124]:
+              - generic [ref=e125]:
+                - text: Conditions
+                - generic [ref=e126]: 0/25
+              - generic [ref=e127]:
+                - text: Groups
+                - generic [ref=e128]: 0/10
+              - generic [ref=e129]:
+                - img [ref=e130]
+                - generic [ref=e132]: 12,847
+                - text: estimated records
+          - generic [ref=e107]:
+            - button "Cancel" [ref=e108] [cursor=pointer]
+            - button "Back" [ref=e133] [cursor=pointer]
+            - button "Next" [disabled]
+  - region "Notifications alt+T"
+  - status

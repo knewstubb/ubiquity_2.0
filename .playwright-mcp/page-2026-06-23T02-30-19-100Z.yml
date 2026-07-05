@@ -1,0 +1,230 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ubiquity" [ref=e4] [cursor=pointer]:
+      - /url: /dashboard
+    - paragraph [ref=e6] [cursor=pointer]:
+      - strong [ref=e7]: "Account:"
+      - text: Chenchen AWS Test
+    - list [ref=e8]:
+      - listitem [ref=e9]: Brad Knewstubb
+      - listitem [ref=e10]:
+        - link "My Settings" [ref=e11] [cursor=pointer]:
+          - /url: /administrators/Home/Edit/SXagsqgxz0mNGwjeMx4hMw
+      - listitem [ref=e12]:
+        - link "Users" [ref=e13] [cursor=pointer]:
+          - /url: /members
+      - listitem [ref=e14]:
+        - link "Accounts" [ref=e15] [cursor=pointer]:
+          - /url: /accounts/Home
+      - listitem [ref=e16]:
+        - link "API" [ref=e17] [cursor=pointer]:
+          - /url: /api
+      - listitem [ref=e18]:
+        - link "Admin" [ref=e19] [cursor=pointer]:
+          - /url: /administrators
+      - listitem [ref=e20]:
+        - link "Logout" [ref=e21] [cursor=pointer]:
+          - /url: /Logout
+  - generic [ref=e23]:
+    - list [ref=e24]:
+      - listitem [ref=e25]:
+        - link "Dashboard" [ref=e26] [cursor=pointer]:
+          - /url: /dashboard
+      - listitem [ref=e27]:
+        - link "Database" [ref=e28] [cursor=pointer]:
+          - /url: /list
+      - listitem [ref=e29]:
+        - link "Forms" [ref=e30] [cursor=pointer]:
+          - /url: /forms/dashboard/lxgglb09ks64t4h0lmg7qvgmqs04k_4pj_pdvkv3mtkjkr3qfv9x9hzrqq40
+      - listitem [ref=e31]:
+        - link "Email" [ref=e32] [cursor=pointer]:
+          - /url: /email/dashboard/451c5y54lcm4y4yhnrrxz0nh9n04k_4pj_pdvkv3mtkjkr3qfv9x9cdv503j
+      - listitem [ref=e33]:
+        - link "Surveys" [ref=e34] [cursor=pointer]:
+          - /url: /surveys
+      - listitem [ref=e35]:
+        - link "Events" [ref=e36] [cursor=pointer]:
+          - /url: /events/dashboard/ndcp97ngk1hn52hh4sqvzrr6ws04k_4pj_pdvkv3mtkjkr3qfv9x8mxjx7q0
+      - listitem [ref=e37]:
+        - link "TXT" [ref=e38] [cursor=pointer]:
+          - /url: /txt
+      - listitem [ref=e39]:
+        - link "Push" [ref=e40] [cursor=pointer]:
+          - /url: /push
+      - listitem [ref=e41]:
+        - link "Campaigns" [ref=e42] [cursor=pointer]:
+          - /url: /components/v61rg6h00jmn90qdn6l26xw_yj04k_4pj_pdvkv3mtkjkr3qfv9x97jj0s3j
+      - listitem [ref=e43]:
+        - link "Social" [ref=e44] [cursor=pointer]:
+          - /url: /social/dashboard/h_136n816gr45769ltk6j517pj04k_4pj_pdvkv3mtkjkr3qfv9x8xhzyrz0
+    - list [ref=e45]:
+      - listitem [ref=e46]:
+        - link "Media Manager" [ref=e47] [cursor=pointer]:
+          - /url: /MediaManager
+          - generic [ref=e48]: 
+          - text: Media Manager
+      - listitem [ref=e49]:
+        - link "Contact" [ref=e50] [cursor=pointer]:
+          - /url: /Home/ContactUs
+      - listitem [ref=e51]:
+        - link "Help Centre" [ref=e52] [cursor=pointer]:
+          - /url: https://docs.ubiquity.co.nz/
+  - generic [ref=e53]:
+    - generic [ref=e55]:
+      - generic [ref=e57] [cursor=pointer]: Create New TXT Programme
+      - link "View Messages" [ref=e58] [cursor=pointer]:
+        - /url: /txt/Data
+        - generic [ref=e59]: View Messages
+      - generic [ref=e60]:
+        - heading "Related Tasks" [level=3] [ref=e61]
+        - list [ref=e62]:
+          - listitem [ref=e63]:
+            - link "My Dashboard" [ref=e64] [cursor=pointer]:
+              - /url: /dashboard
+      - heading "Help" [level=3] [ref=e66] [cursor=pointer]: Help
+    - generic [ref=e69]:
+      - heading "TXT" [level=2] [ref=e70]
+      - paragraph [ref=e71]:
+        - text: Create TXT Programmes to communicate with your customers through their mobile phone.
+        - text: TXT Programmes make it easy to deliver content directly to the people that are most interested.
+      - table [ref=e76]:
+        - rowgroup [ref=e85]:
+          - row "Name Short Code Keyword Captures Keywordless Status Created Last Modified" [ref=e86]:
+            - columnheader "Name" [ref=e87]:
+              - link "Name" [ref=e90] [cursor=pointer]:
+                - /url: yui-dt0-href-Name
+            - columnheader "Short Code" [ref=e91]:
+              - link "Short Code" [ref=e94] [cursor=pointer]:
+                - /url: yui-dt0-href-ShortCode
+            - columnheader "Keyword" [ref=e95]:
+              - link "Keyword" [ref=e98] [cursor=pointer]:
+                - /url: yui-dt0-href-Keyword
+            - columnheader "Captures Keywordless" [ref=e99]:
+              - link "Captures Keywordless" [ref=e102] [cursor=pointer]:
+                - /url: yui-dt0-href-Keywordless
+            - columnheader "Status" [ref=e103]:
+              - link "Status" [ref=e106] [cursor=pointer]:
+                - /url: yui-dt0-href-Status
+            - columnheader "Created" [ref=e107]:
+              - link "Created" [ref=e110] [cursor=pointer]:
+                - /url: yui-dt0-href-Created
+            - columnheader "Last Modified" [ref=e111]:
+              - link "Last Modified" [ref=e114] [cursor=pointer]:
+                - /url: yui-dt0-href-Modified
+        - rowgroup [ref=e115]:
+          - row "Chenchen Test 8686 CHENCHENAWSTEST No Inactive 2 years ago 1 year ago" [ref=e116]:
+            - cell "Chenchen Test" [ref=e117]:
+              - link "Chenchen Test" [ref=e119] [cursor=pointer]:
+                - /url: /txt/Home/Dashboard/0FXe5hXnLEephQjchkqPpA
+            - cell "8686" [ref=e120]:
+              - generic [ref=e121]: "8686"
+            - cell "CHENCHENAWSTEST" [ref=e122]:
+              - generic [ref=e123]: CHENCHENAWSTEST
+            - cell "No" [ref=e124]:
+              - generic [ref=e125]: "No"
+            - cell "Inactive" [ref=e126]:
+              - generic [ref=e127]: Inactive
+            - cell "2 years ago" [ref=e128]:
+              - generic [ref=e129]: 2 years ago
+            - cell "1 year ago" [ref=e130]:
+              - generic [ref=e131]: 1 year ago
+          - row "Chenchen Test - Copy 8686 CHENCHENTESTCOPY No Inactive 10 months ago 10 months ago" [ref=e132]:
+            - cell "Chenchen Test - Copy" [ref=e133]:
+              - link "Chenchen Test - Copy" [ref=e135] [cursor=pointer]:
+                - /url: /txt/Home/Dashboard/upJB5UoqIUSd5gjd4-p4Wg
+            - cell "8686" [ref=e136]:
+              - generic [ref=e137]: "8686"
+            - cell "CHENCHENTESTCOPY" [ref=e138]:
+              - generic [ref=e139]: CHENCHENTESTCOPY
+            - cell "No" [ref=e140]:
+              - generic [ref=e141]: "No"
+            - cell "Inactive" [ref=e142]:
+              - generic [ref=e143]: Inactive
+            - cell "10 months ago" [ref=e144]:
+              - generic [ref=e145]: 10 months ago
+            - cell "10 months ago" [ref=e146]:
+              - generic [ref=e147]: 10 months ago
+          - row "Inbound Test 8686 INBOUNDCHENCHEN No Active 8 months ago 8 months ago" [ref=e148]:
+            - cell "Inbound Test" [ref=e149]:
+              - link "Inbound Test" [ref=e151] [cursor=pointer]:
+                - /url: /txt/Home/Dashboard/6VjIU_wHk0qIrgjeC9kzxA
+            - cell "8686" [ref=e152]:
+              - generic [ref=e153]: "8686"
+            - cell "INBOUNDCHENCHEN" [ref=e154]:
+              - generic [ref=e155]: INBOUNDCHENCHEN
+            - cell "No" [ref=e156]:
+              - generic [ref=e157]: "No"
+            - cell "Active" [ref=e158]:
+              - generic [ref=e159]: Active
+            - cell "8 months ago" [ref=e160]:
+              - generic [ref=e161]: 8 months ago
+            - cell "8 months ago" [ref=e162]:
+              - generic [ref=e163]: 8 months ago
+          - row "Spark Channel Parent Account 2835 SPARKPARENT No Active 2 years ago 10 months ago" [ref=e164]:
+            - cell "Spark Channel Parent Account" [ref=e165]:
+              - link "Spark Channel Parent Account" [ref=e167] [cursor=pointer]:
+                - /url: /txt/Home/Dashboard/vlm_FJFA30eNkwjcx1AOnw
+            - cell "2835" [ref=e168]:
+              - generic [ref=e169]: "2835"
+            - cell "SPARKPARENT" [ref=e170]:
+              - generic [ref=e171]: SPARKPARENT
+            - cell "No" [ref=e172]:
+              - generic [ref=e173]: "No"
+            - cell "Active" [ref=e174]:
+              - generic [ref=e175]: Active
+            - cell "2 years ago" [ref=e176]:
+              - generic [ref=e177]: 2 years ago
+            - cell "10 months ago" [ref=e178]:
+              - generic [ref=e179]: 10 months ago
+          - row "Spark Channel Parent Account - Copy 8686 SPARKPARENT2 No Archived 2 years ago 2 years ago" [ref=e180]:
+            - cell "Spark Channel Parent Account - Copy" [ref=e181]:
+              - link "Spark Channel Parent Account - Copy" [ref=e183] [cursor=pointer]:
+                - /url: /txt/Home/Dashboard/I4OCaXqInE6CRgjcx1GMKQ
+            - cell "8686" [ref=e184]:
+              - generic [ref=e185]: "8686"
+            - cell "SPARKPARENT2" [ref=e186]:
+              - generic [ref=e187]: SPARKPARENT2
+            - cell "No" [ref=e188]:
+              - generic [ref=e189]: "No"
+            - cell "Archived" [ref=e190]:
+              - generic [ref=e191]: Archived
+            - cell "2 years ago" [ref=e192]:
+              - generic [ref=e193]: 2 years ago
+            - cell "2 years ago" [ref=e194]:
+              - generic [ref=e195]: 2 years ago
+          - row "Spark Channel Parent Account 2 2835 SPARKPARENT3 No Inactive 2 years ago 10 months ago" [ref=e196]:
+            - cell "Spark Channel Parent Account 2" [ref=e197]:
+              - link "Spark Channel Parent Account 2" [ref=e199] [cursor=pointer]:
+                - /url: /txt/Home/Dashboard/JqzBaPU0sU2XdQjcx1IRlg
+            - cell "2835" [ref=e200]:
+              - generic [ref=e201]: "2835"
+            - cell "SPARKPARENT3" [ref=e202]:
+              - generic [ref=e203]: SPARKPARENT3
+            - cell "No" [ref=e204]:
+              - generic [ref=e205]: "No"
+            - cell "Inactive" [ref=e206]:
+              - generic [ref=e207]: Inactive
+            - cell "2 years ago" [ref=e208]:
+              - generic [ref=e209]: 2 years ago
+            - cell "10 months ago" [ref=e210]:
+              - generic [ref=e211]: 10 months ago
+          - row "testtest 3010 TESTTEST No Inactive 6 months ago 6 months ago" [ref=e212]:
+            - cell "testtest" [ref=e213]:
+              - link "testtest" [ref=e215] [cursor=pointer]:
+                - /url: /txt/Home/Dashboard/is8PQrg5akqbLQjeON2wYA
+            - cell "3010" [ref=e216]:
+              - generic [ref=e217]: "3010"
+            - cell "TESTTEST" [ref=e218]:
+              - generic [ref=e219]: TESTTEST
+            - cell "No" [ref=e220]:
+              - generic [ref=e221]: "No"
+            - cell "Inactive" [ref=e222]:
+              - generic [ref=e223]: Inactive
+            - cell "6 months ago" [ref=e224]:
+              - generic [ref=e225]: 6 months ago
+            - cell "6 months ago" [ref=e226]:
+              - generic [ref=e227]: 6 months ago
+  - generic [ref=e228]:
+    - link "Powered by Ubiquity Software":
+      - /url: https://www.qrious.co.nz/
+    - paragraph [ref=e229]: UbiQuity test build 1.179.2.2557

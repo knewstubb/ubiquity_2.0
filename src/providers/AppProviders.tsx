@@ -12,6 +12,7 @@ import { AssetsProvider } from '../contexts/AssetsContext';
 import { ConnectionsProvider } from '../contexts/ConnectionsContext';
 import { AutomationsProvider } from '../contexts/AutomationsContext';
 import { DataProvider } from '../contexts/DataContext';
+import { PrototypePhaseProvider } from '../contexts/PrototypePhaseContext';
 
 /**
  * Composes all domain-level providers that live inside ProtectedRoute.
@@ -20,6 +21,7 @@ import { DataProvider } from '../contexts/DataContext';
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
     /* Infrastructure & role resolution */
+    <PrototypePhaseProvider>
     <DataLayerProvider>
       <RoleSimulatorProvider>
         <CollaborationProvider>
@@ -48,5 +50,6 @@ export function AppProviders({ children }: { children: ReactNode }) {
         </CollaborationProvider>
       </RoleSimulatorProvider>
     </DataLayerProvider>
+    </PrototypePhaseProvider>
   );
 }

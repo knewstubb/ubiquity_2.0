@@ -102,6 +102,7 @@ export interface ContactsSourceConfig {
   primarySource: 'contacts';
   filter: ContactsFilterConfig;
   enrichment: EnrichmentConfig | null;
+  enrichments: EnrichmentConfig[];
 }
 
 export interface TransactionsSourceConfig {
@@ -109,6 +110,7 @@ export interface TransactionsSourceConfig {
   tableId: string;
   filter: TransactionsFilterConfig;
   enrichment: EnrichmentConfig | null;
+  enrichments: EnrichmentConfig[];
 }
 
 export interface MessagesSourceConfig {
@@ -116,9 +118,46 @@ export interface MessagesSourceConfig {
   channels: Channel[];
   filter: MessagesFilterConfig;
   enrichment: EnrichmentConfig | null;
+  enrichments: EnrichmentConfig[];
 }
 
 export type SourceConfig =
   | ContactsSourceConfig
   | TransactionsSourceConfig
   | MessagesSourceConfig;
+
+// --- Enrichment helpers ---
+
+/**
+ * Returns a unique string identifier for an EnrichmentConfig.
+ * - Messages enrichment → "messages"
+ * - Transactions enrichment → "txn:{tableId}"
+ * - Contacts enrichment → "contacts"
+ */
+export function enrichmentKey(config: EnrichmentConfig): string {
+  switch (config.entity) {
+    case 'messages':
+      return 'messages';
+    case 'transactions':
+      return `txn:${config.tableId}`;
+    case 'contacts':
+      return 'contacts';
+  }
+}
+
+/**
+ * Maps an EnrichmentConfig to the `source` string used on SourceFieldDefinition.
+ * - Messages enrichment → "messages"
+ * - Transactions enrichment → "txn:{tableId}"
+ * - Contacts enrichment → "contacts"
+ */
+export function getSourceTag(config: EnrichmentConfig): string {
+  switch (config.entity) {
+    case 'messages':
+      return 'messages';
+    case 'transactions':
+      return `txn:${config.tableId}`;
+    case 'contacts':
+      return 'contacts';
+  }
+}

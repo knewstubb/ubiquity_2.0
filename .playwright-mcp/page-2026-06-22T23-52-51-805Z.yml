@@ -1,0 +1,227 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - link "Ubiquity" [ref=e5] [cursor=pointer]:
+      - /url: /dashboard
+    - paragraph [ref=e7] [cursor=pointer]:
+      - strong [ref=e8]: "Account:"
+      - text: Chenchen AWS Test
+    - list [ref=e9]:
+      - listitem [ref=e10]: Brad Knewstubb
+      - listitem [ref=e11]:
+        - link "My Settings" [ref=e12] [cursor=pointer]:
+          - /url: /administrators/Home/Edit/SXagsqgxz0mNGwjeMx4hMw
+      - listitem [ref=e13]:
+        - link "Users" [ref=e14] [cursor=pointer]:
+          - /url: /members
+      - listitem [ref=e15]:
+        - link "Accounts" [ref=e16] [cursor=pointer]:
+          - /url: /accounts/Home
+      - listitem [ref=e17]:
+        - link "API" [ref=e18] [cursor=pointer]:
+          - /url: /api
+      - listitem [ref=e19]:
+        - link "Admin" [ref=e20] [cursor=pointer]:
+          - /url: /administrators
+      - listitem [ref=e21]:
+        - link "Logout" [ref=e22] [cursor=pointer]:
+          - /url: /Logout
+  - generic [ref=e24]:
+    - list [ref=e25]:
+      - listitem [ref=e26]:
+        - link "Dashboard" [ref=e27] [cursor=pointer]:
+          - /url: /dashboard
+      - listitem [ref=e28]:
+        - link "Database" [ref=e29] [cursor=pointer]:
+          - /url: /list
+      - listitem [ref=e30]:
+        - link "Forms" [ref=e31] [cursor=pointer]:
+          - /url: /forms/dashboard/tt3q85x3qht4k3jvwd65139hlj04k_4pj_pdvkv3mtkjkr3qfv9x81t6yx00
+      - listitem [ref=e32]:
+        - link "Email" [ref=e33] [cursor=pointer]:
+          - /url: /email/dashboard/m0n0cqp1m0qn121_ms785ggm5404k_4pj_pdvkv3mtkjkr3qfv9x9n_j8z80
+      - listitem [ref=e34]:
+        - link "Surveys" [ref=e35] [cursor=pointer]:
+          - /url: /surveys
+      - listitem [ref=e36]:
+        - link "Events" [ref=e37] [cursor=pointer]:
+          - /url: /events/dashboard/s1r67ymyt3d4yh10ky0qnzx4x004k_4pj_pdvkv3mtkjkr3qfv9x9lxvg2s0
+      - listitem [ref=e38]:
+        - link "TXT" [ref=e39] [cursor=pointer]:
+          - /url: /txt
+      - listitem [ref=e40]:
+        - link "Push" [ref=e41] [cursor=pointer]:
+          - /url: /push
+      - listitem [ref=e42]:
+        - link "Campaigns" [ref=e43] [cursor=pointer]:
+          - /url: /components/4pf8fkx282tnp4bty64mml31p404k_4pj_pdvkv3mtkjkr3qfv9x9l27f5qj
+      - listitem [ref=e44]:
+        - link "Social" [ref=e45] [cursor=pointer]:
+          - /url: /social/dashboard/yf39c8l5cj1nr2gy5r01g68fh004k_4pj_pdvkv3mtkjkr3qfv9x8xvd6lx0
+    - list [ref=e46]:
+      - listitem [ref=e47]:
+        - link "Media Manager" [ref=e48] [cursor=pointer]:
+          - /url: /MediaManager
+          - generic [ref=e49]: 
+          - text: Media Manager
+      - listitem [ref=e50]:
+        - link "Contact" [ref=e51] [cursor=pointer]:
+          - /url: /Home/ContactUs
+      - listitem [ref=e52]:
+        - link "Help Centre" [ref=e53] [cursor=pointer]:
+          - /url: https://docs.ubiquity.co.nz/
+  - generic [ref=e54]:
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - heading "Related Tasks" [level=3] [ref=e58]
+        - list [ref=e59]:
+          - listitem [ref=e60]:
+            - link "Email Templates" [ref=e61] [cursor=pointer]:
+              - /url: /email/dashboard/templates/j8b8slf6d574mhnmjgntfjq78x04k_4pj_pdvkv3mtkjkr3qfv9x9zjzx880
+          - listitem [ref=e62]:
+            - link "Mailouts" [ref=e63] [cursor=pointer]:
+              - /url: /email/dashboard/8dw357962ynnfh0d1yclkvtfnx04k_4pj_pdvkv3mtkjkr3qfv9x9wxr8tjj
+          - listitem [ref=e64]:
+            - link "Automated Mailouts" [ref=e65] [cursor=pointer]:
+              - /url: /email/dashboard/automated/sjskr9m7h84457_b3xhqtb3kl404k_4pj_pdvkv3mtkjkr3qfv9x90s12f90
+      - heading "Help" [level=3] [ref=e67] [cursor=pointer]: Help
+    - generic [ref=e70]:
+      - generic [ref=e71]:
+        - text: "Campaign:"
+        - link "Campaign 1" [ref=e72] [cursor=pointer]:
+          - /url: /components/bb85pl5272qnt3h1yd660n5j1d04k_4pj_pdvkv3mtkjkr3qfv9x8cf8t3zj/xyhfcsht3zr4k8lv13g926nwvs04k_4pj_pdvkv3mtkjkr3qfv9x8yk10r2j
+      - heading "Campaign 1/ Mailout Folder Filter" [level=1] [ref=e73]:
+        - link "Campaign 1/" [ref=e74] [cursor=pointer]:
+          - /url: /email/dashboard/folder/04kl2yh17bl4r0v313g926p2px04k_4pj_pdvkv3mtkjkr3qfv9x8dsznz60
+        - text: Mailout Folder Filter
+      - heading "Build Filter" [level=2] [ref=e75]
+      - paragraph [ref=e76]: Build or edit a filter for all mailouts sent within this mailout folder.
+      - heading "Filter" [level=2] [ref=e79] [cursor=pointer]
+      - generic [ref=e82]:
+        - link "Cancel" [ref=e83] [cursor=pointer]:
+          - /url: ""
+        - generic [ref=e84] [cursor=pointer]: Save
+      - heading "Show/Hide Fields" [level=2] [ref=e87] [cursor=pointer]
+      - generic [ref=e88]:
+        - heading "Filtered Results" [level=2] [ref=e89]
+        - table [ref=e93]:
+          - rowgroup [ref=e101]:
+            - row "Email MobileNumber Notes DOB WholeNumber" [ref=e102]:
+              - columnheader [ref=e103]
+              - columnheader "Email" [ref=e105]:
+                - link "Email" [ref=e108] [cursor=pointer]:
+                  - /url: yui-dt0-href-email
+              - columnheader "MobileNumber" [ref=e109]:
+                - link "MobileNumber" [ref=e112] [cursor=pointer]:
+                  - /url: yui-dt0-href-mobilenumber
+              - columnheader "Notes" [ref=e113]:
+                - link "Notes" [ref=e116] [cursor=pointer]:
+                  - /url: yui-dt0-href-notes
+              - columnheader "DOB" [ref=e117]:
+                - link "DOB" [ref=e120] [cursor=pointer]:
+                  - /url: yui-dt0-href-dob
+              - columnheader "WholeNumber" [ref=e121]:
+                - link "WholeNumber" [ref=e124] [cursor=pointer]:
+                  - /url: yui-dt0-href-wholenumber
+          - rowgroup [ref=e125]:
+            - row [ref=e126]:
+              - cell [ref=e127] [cursor=pointer]:
+                - img [ref=e131]
+          - rowgroup
+  - generic [ref=e133]:
+    - link "Powered by Ubiquity Software":
+      - /url: https://www.qrious.co.nz/
+    - paragraph [ref=e134]: UbiQuity test build 1.179.2.2557
+  - generic [ref=e136]:
+    - heading "Set a filter" [level=3] [ref=e137]
+    - generic:
+      - generic [ref=e139]:
+        - heading "1. Select a statement" [level=2] [ref=e140]
+        - generic [ref=e144]:
+          - table [ref=e146]:
+            - rowgroup [ref=e147]:
+              - row "Database" [ref=e148]:
+                - cell [ref=e149] [cursor=pointer]:
+                  - link [ref=e150]:
+                    - /url: "#"
+                - cell "Database" [ref=e151]:
+                  - generic [ref=e152]: Database
+          - table [ref=e154]:
+            - rowgroup [ref=e155]:
+              - row "Forms" [ref=e156]:
+                - cell [ref=e157] [cursor=pointer]:
+                  - link [ref=e158]:
+                    - /url: "#"
+                - cell "Forms" [ref=e159]:
+                  - generic [ref=e160]: Forms
+          - table [ref=e162]:
+            - rowgroup [ref=e163]:
+              - row "Mailout Folders" [ref=e164]:
+                - cell [ref=e165] [cursor=pointer]:
+                  - link [ref=e166]:
+                    - /url: "#"
+                - cell "Mailout Folders" [ref=e167]:
+                  - generic [ref=e168]: Mailout Folders
+          - table [ref=e170]:
+            - rowgroup [ref=e171]:
+              - row "Surveys" [ref=e172]:
+                - cell [ref=e173] [cursor=pointer]:
+                  - link [ref=e174]:
+                    - /url: "#"
+                - cell "Surveys" [ref=e175]:
+                  - generic [ref=e176]: Surveys
+          - table [ref=e178]:
+            - rowgroup [ref=e179]:
+              - row "Events" [ref=e180]:
+                - cell [ref=e181] [cursor=pointer]:
+                  - link [ref=e182]:
+                    - /url: "#"
+                - cell "Events" [ref=e183]:
+                  - generic [ref=e184]: Events
+          - table [ref=e186]:
+            - rowgroup [ref=e187]:
+              - row "TXT Programmes" [ref=e188]:
+                - cell [ref=e189] [cursor=pointer]:
+                  - link [ref=e190]:
+                    - /url: "#"
+                - cell "TXT Programmes" [ref=e191]:
+                  - generic [ref=e192]: TXT Programmes
+          - table [ref=e194]:
+            - rowgroup [ref=e195]:
+              - row "Filters" [ref=e196]:
+                - cell [ref=e197] [cursor=pointer]:
+                  - link [ref=e198]:
+                    - /url: "#"
+                - cell "Filters" [ref=e199]:
+                  - generic [ref=e200]: Filters
+      - generic [ref=e202]:
+        - heading "2. Select a condition" [level=2] [ref=e203]
+        - paragraph [ref=e204]: Please select a statement.
+      - generic [ref=e206]:
+        - heading "3. Enter a value" [level=2] [ref=e207]
+        - paragraph [ref=e208]: Please select a statement.
+      - generic [ref=e210]:
+        - heading "And" [level=2] [ref=e211]
+        - paragraph [ref=e212]: Please select a statement.
+    - generic [ref=e213]:
+      - generic [ref=e214] [cursor=pointer]: Cancel
+      - generic [ref=e215]: Ok
+  - generic [ref=e216]:
+    - heading "Delete Filter" [level=3] [ref=e217]
+    - generic [ref=e218]:
+      - generic [ref=e219]: Deleting this filter will disable the following active mailouts. To ensure that the mailouts stay active, please apply a filter on the mailouts before deleting this filter.
+      - generic [ref=e221]:
+        - generic [ref=e222] [cursor=pointer]: Cancel
+        - generic [ref=e223] [cursor=pointer]: Delete Filter
+  - generic [ref=e224]:
+    - heading "Save filter" [level=3] [ref=e225]
+    - generic [ref=e226]:
+      - paragraph [ref=e227]: Are you sure you want to save these changes? Please note that this will affect ALL MAILOUTS in this folder and could include marketing permissions.
+      - paragraph [ref=e228]: Please type ACCEPT into the box below to confirm.
+      - textbox [ref=e231]
+    - generic [ref=e232]:
+      - generic [ref=e233] [cursor=pointer]: Cancel
+      - generic:
+        - generic: 
+        - text: Save
+  - iframe [ref=e234]:
+    

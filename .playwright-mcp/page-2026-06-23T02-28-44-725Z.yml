@@ -1,0 +1,152 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ubiquity" [ref=e4] [cursor=pointer]:
+      - /url: /dashboard
+    - paragraph [ref=e6] [cursor=pointer]:
+      - strong [ref=e7]: "Account:"
+      - text: Chenchen AWS Test
+    - list [ref=e8]:
+      - listitem [ref=e9]: Brad Knewstubb
+      - listitem [ref=e10]:
+        - link "My Settings" [ref=e11] [cursor=pointer]:
+          - /url: /administrators/Home/Edit/SXagsqgxz0mNGwjeMx4hMw
+      - listitem [ref=e12]:
+        - link "Users" [ref=e13] [cursor=pointer]:
+          - /url: /members
+      - listitem [ref=e14]:
+        - link "Accounts" [ref=e15] [cursor=pointer]:
+          - /url: /accounts/Home
+      - listitem [ref=e16]:
+        - link "API" [ref=e17] [cursor=pointer]:
+          - /url: /api
+      - listitem [ref=e18]:
+        - link "Admin" [ref=e19] [cursor=pointer]:
+          - /url: /administrators
+      - listitem [ref=e20]:
+        - link "Logout" [ref=e21] [cursor=pointer]:
+          - /url: /Logout
+  - generic [ref=e23]:
+    - list [ref=e24]:
+      - listitem [ref=e25]:
+        - link "Dashboard" [ref=e26] [cursor=pointer]:
+          - /url: /dashboard
+      - listitem [ref=e27]:
+        - link "Database" [ref=e28] [cursor=pointer]:
+          - /url: /list
+      - listitem [ref=e29]:
+        - link "Forms" [ref=e30] [cursor=pointer]:
+          - /url: /forms/dashboard/hjqt47vr_ng4h83fjj_r9w0y9s04k_4pj_pdvkv3mtkjkr3qfv9x9fcsx1x0
+      - listitem [ref=e31]:
+        - link "Email" [ref=e32] [cursor=pointer]:
+          - /url: /email/dashboard/dyclsnx_6wc4tdnbmt30dr1bk404k_4pj_pdvkv3mtkjkr3qfv9x8w2_zbn0
+      - listitem [ref=e33]:
+        - link "Surveys" [ref=e34] [cursor=pointer]:
+          - /url: /surveys
+      - listitem [ref=e35]:
+        - link "Events" [ref=e36] [cursor=pointer]:
+          - /url: /events/dashboard/33y_7b1m4lc415x0l2_m0hvwls04k_4pj_pdvkv3mtkjkr3qfv9x8p5q65s0
+      - listitem [ref=e37]:
+        - link "TXT" [ref=e38] [cursor=pointer]:
+          - /url: /txt
+      - listitem [ref=e39]:
+        - link "Push" [ref=e40] [cursor=pointer]:
+          - /url: /push
+      - listitem [ref=e41]:
+        - link "Campaigns" [ref=e42] [cursor=pointer]:
+          - /url: /components/x8ylxb0z92jnp5yy_2_nfpptpx04k_4pj_pdvkv3mtkjkr3qfv9x9mhd7ml0
+      - listitem [ref=e43]:
+        - link "Social" [ref=e44] [cursor=pointer]:
+          - /url: /social/dashboard/kcp72g8rl1949b4zzbdqz4lc5804k_4pj_pdvkv3mtkjkr3qfv9x9j80d1r0
+    - list [ref=e45]:
+      - listitem [ref=e46]:
+        - link "Media Manager" [ref=e47] [cursor=pointer]:
+          - /url: /MediaManager
+          - generic [ref=e48]: 
+          - text: Media Manager
+      - listitem [ref=e49]:
+        - link "Contact" [ref=e50] [cursor=pointer]:
+          - /url: /Home/ContactUs
+      - listitem [ref=e51]:
+        - link "Help Centre" [ref=e52] [cursor=pointer]:
+          - /url: https://docs.ubiquity.co.nz/
+  - generic [ref=e53]:
+    - generic [ref=e55]:
+      - generic [ref=e56]:
+        - heading "Related Tasks" [level=3] [ref=e57]
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "My Dashboard" [ref=e60] [cursor=pointer]:
+              - /url: /dashboard
+      - heading "Help" [level=3] [ref=e62] [cursor=pointer]: Help
+    - generic [ref=e65]:
+      - heading "Database" [level=1] [ref=e68]
+      - paragraph [ref=e69]: Manage your database using the options below.
+      - generic [ref=e70]:
+        - generic [ref=e72]:
+          - heading "Your Database" [level=2] [ref=e73]
+          - link "Configure Details" [ref=e75] [cursor=pointer]:
+            - /url: /list/Details
+          - link "Edit Fields" [ref=e77] [cursor=pointer]:
+            - /url: /list/schema
+          - link "Manage Transactional Data" [ref=e79] [cursor=pointer]:
+            - /url: /list/transactionaldata
+        - generic [ref=e81]:
+          - heading "Your Contacts" [level=2] [ref=e82]
+          - link "View and Edit" [ref=e84] [cursor=pointer]:
+            - /url: /list/data
+          - link "Manage Connectors" [ref=e86] [cursor=pointer]:
+            - /url: /database/connectors
+          - link "Manage Imports" [ref=e88] [cursor=pointer]:
+            - /url: /list/import/Index
+          - link "Add New" [ref=e90] [cursor=pointer]:
+            - /url: /list/data/AddRecord
+          - link "Manage Filters" [ref=e92] [cursor=pointer]:
+            - /url: /filter
+        - generic [ref=e93]:
+          - generic [ref=e94]:
+            - heading "Database Summary" [level=2] [ref=e95]
+            - generic [ref=e96]:
+              - generic [ref=e97]:
+                - strong [ref=e99]: "Total records:"
+                - strong [ref=e101]: 60,702
+              - generic [ref=e102]:
+                - generic [ref=e103]: "Opted in:"
+                - text: 40,736
+              - generic [ref=e104]:
+                - generic [ref=e105]: "Opted out:"
+                - text: 19,966
+              - generic [ref=e106]:
+                - generic [ref=e107]: "GNA:"
+                - text: "0"
+              - generic [ref=e108]:
+                - strong [ref=e110]: "Mailouts:"
+                - text: "284"
+              - generic [ref=e111]:
+                - strong [ref=e113]: "Total transactions:"
+                - text: "44"
+              - generic [ref=e114]:
+                - generic [ref=e115]: AAM_WELCOME
+                - link "7" [ref=e116] [cursor=pointer]:
+                  - /url: /administrators/RootAccounts/SwitchTo/SPyVh-rNR0OeYwjcdm6TxA?returnUri=%2Flist%2Ftransactionaldata%2Fdata%2FIndex%2FzDd9UBnIOkOWhAjddoMp-w
+              - generic [ref=e117]:
+                - generic [ref=e118]: Car Insurance
+                - link "3" [ref=e119] [cursor=pointer]:
+                  - /url: /administrators/RootAccounts/SwitchTo/SPyVh-rNR0OeYwjcdm6TxA?returnUri=%2Flist%2Ftransactionaldata%2Fdata%2FIndex%2FCkKyQ9jgL0uguAjef3NB8Q
+              - generic [ref=e120]:
+                - generic [ref=e121]: Purchase
+                - link "34" [ref=e122] [cursor=pointer]:
+                  - /url: /administrators/RootAccounts/SwitchTo/SPyVh-rNR0OeYwjcdm6TxA?returnUri=%2Flist%2Ftransactionaldata%2Fdata%2FIndex%2FZ23lycM5fU-YZgjcf-Lopg
+              - list [ref=e123]:
+                - listitem:
+                  - link "Refresh" [ref=e124] [cursor=pointer]:
+                    - /url: /widgets/public/DatabaseSummary/rmVUeiYQjUaxSgje0RuGGQ/SPyVh-rNR0OeYwjcdm6TxA/SPyVh-rNR0OeYwjcdm6TxA?refresh=True
+          - generic [ref=e125]:
+            - heading "Database Overview" [level=2] [ref=e126]
+            - img [ref=e130]:
+              - generic [ref=e138]:
+                - generic [ref=e140] [cursor=pointer]: Opted In
+                - generic [ref=e143] [cursor=pointer]: Opted Out
+  - generic [ref=e150]:
+    - link "Powered by Ubiquity Software":
+      - /url: https://www.qrious.co.nz/
+    - paragraph [ref=e151]: UbiQuity test build 1.179.2.2557

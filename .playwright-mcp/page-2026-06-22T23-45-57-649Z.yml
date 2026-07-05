@@ -1,0 +1,179 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ubiquity" [ref=e4] [cursor=pointer]:
+      - /url: /dashboard
+    - paragraph [ref=e6] [cursor=pointer]:
+      - strong [ref=e7]: "Account:"
+      - text: Chenchen AWS Test
+    - list [ref=e8]:
+      - listitem [ref=e9]: Brad Knewstubb
+      - listitem [ref=e10]:
+        - link "My Settings" [ref=e11] [cursor=pointer]:
+          - /url: /administrators/Home/Edit/SXagsqgxz0mNGwjeMx4hMw
+      - listitem [ref=e12]:
+        - link "Users" [ref=e13] [cursor=pointer]:
+          - /url: /members
+      - listitem [ref=e14]:
+        - link "Accounts" [ref=e15] [cursor=pointer]:
+          - /url: /accounts/Home
+      - listitem [ref=e16]:
+        - link "API" [ref=e17] [cursor=pointer]:
+          - /url: /api
+      - listitem [ref=e18]:
+        - link "Admin" [ref=e19] [cursor=pointer]:
+          - /url: /administrators
+      - listitem [ref=e20]:
+        - link "Logout" [ref=e21] [cursor=pointer]:
+          - /url: /Logout
+  - generic [ref=e23]:
+    - list [ref=e24]:
+      - listitem [ref=e25]:
+        - link "Dashboard" [ref=e26] [cursor=pointer]:
+          - /url: /dashboard
+      - listitem [ref=e27]:
+        - link "Database" [ref=e28] [cursor=pointer]:
+          - /url: /list
+      - listitem [ref=e29]:
+        - link "Forms" [ref=e30] [cursor=pointer]:
+          - /url: /forms/dashboard/33lll7tx7rp4f93kvt46r7lllx04k_4pj_pdvkv3mtkjkr3qfv9x85tk3040
+      - listitem [ref=e31]:
+        - link "Email" [ref=e32] [cursor=pointer]:
+          - /url: /email/dashboard/jd44jhf_6vrn51cgncx10kp8d804k_4pj_pdvkv3mtkjkr3qfv9x9npgq7z0
+      - listitem [ref=e33]:
+        - link "Surveys" [ref=e34] [cursor=pointer]:
+          - /url: /surveys
+      - listitem [ref=e35]:
+        - link "Events" [ref=e36] [cursor=pointer]:
+          - /url: /events/dashboard/hwd4r1p5vhgnc6jhll_3bfps_804k_4pj_pdvkv3mtkjkr3qfv9x88ptzj00
+      - listitem [ref=e37]:
+        - link "TXT" [ref=e38] [cursor=pointer]:
+          - /url: /txt
+      - listitem [ref=e39]:
+        - link "Push" [ref=e40] [cursor=pointer]:
+          - /url: /push
+      - listitem [ref=e41]:
+        - link "Campaigns" [ref=e42] [cursor=pointer]:
+          - /url: /components/6vqc24n4jx34h0ywx4js0v8gfn04k_4pj_pdvkv3mtkjkr3qfv9x8v3lzp90
+      - listitem [ref=e43]:
+        - link "Social" [ref=e44] [cursor=pointer]:
+          - /url: /social/dashboard/2sw6df2_lsrny6d6q0xm1_1mcs04k_4pj_pdvkv3mtkjkr3qfv9x8qj1hnj0
+    - list [ref=e45]:
+      - listitem [ref=e46]:
+        - link "Media Manager" [ref=e47] [cursor=pointer]:
+          - /url: /MediaManager
+          - generic [ref=e48]: 
+          - text: Media Manager
+      - listitem [ref=e49]:
+        - link "Contact" [ref=e50] [cursor=pointer]:
+          - /url: /Home/ContactUs
+      - listitem [ref=e51]:
+        - link "Help Centre" [ref=e52] [cursor=pointer]:
+          - /url: https://docs.ubiquity.co.nz/
+  - generic [ref=e53]:
+    - generic [ref=e55]:
+      - link "Delete Mailout" [ref=e56] [cursor=pointer]:
+        - /url: /campaigns/Shared/DeleteMailout?mailoutID=SKP9fNsOHEGxhwjexgW-Og
+        - generic [ref=e57]: Delete Mailout
+      - link "Copy Mailout" [ref=e58] [cursor=pointer]:
+        - /url: /campaigns/Mailout/CopyMailout/SKP9fNsOHEGxhwjexgW-Og
+        - generic [ref=e59]: Copy Mailout
+      - generic [ref=e60]:
+        - heading "Related Tasks" [level=3] [ref=e61]
+        - list [ref=e62]:
+          - listitem [ref=e63]:
+            - link "Mailouts" [ref=e64] [cursor=pointer]:
+              - /url: /email/dashboard/l977l83phv7n3b69v1q0lb89q804k_4pj_pdvkv3mtkjkr3qfv9x9bf_25m0
+          - listitem [ref=e65]:
+            - link "Email Templates" [ref=e66] [cursor=pointer]:
+              - /url: /email/dashboard/templates/rp7n8d6gbxl4_9t_5rx7t3qm3804k_4pj_pdvkv3mtkjkr3qfv9x9pzbjf50
+          - listitem [ref=e67]:
+            - link "Automated Mailouts" [ref=e68] [cursor=pointer]:
+              - /url: /email/dashboard/automated/9plz376q2b847h5bydfh682b1804k_4pj_pdvkv3mtkjkr3qfv9x8bcq92g0
+          - listitem [ref=e69]:
+            - link "Move to Mailout Folder" [ref=e70] [cursor=pointer]:
+              - /url: /campaigns/mailouts/shared/MoveMailout/SKP9fNsOHEGxhwjexgW-Og
+      - heading "Help" [level=3] [ref=e72] [cursor=pointer]: Help
+    - generic [ref=e75]:
+      - generic [ref=e76]:
+        - text: "Campaign:"
+        - link "Test" [ref=e77] [cursor=pointer]:
+          - /url: /components/wvr0wppn6dynr7c3kxj8hgmq4d04k_4pj_pdvkv3mtkjkr3qfv9x9s8f29gj/kxt035g_1nn492p013ghb4x7ld04k_4pj_pdvkv3mtkjkr3qfv9x9wg6_bp0
+      - heading "Test/ Event Trigger" [level=1] [ref=e78]:
+        - link "Test/" [ref=e79] [cursor=pointer]:
+          - /url: /email/dashboard/folder/f2f486nt_pkny6w313ghj3b3b004k_4pj_pdvkv3mtkjkr3qfv9x9zlkf840
+        - text: Event Trigger
+      - heading "Mailout Dashboard" [level=2] [ref=e80]
+      - paragraph [ref=e81]: Setup your mailout and then schedule it to be sent when you're ready.
+      - paragraph [ref=e82]: You can continuously follow through the wizard steps by clicking next or jump between each step by saving each page.
+      - generic [ref=e83]:
+        - generic [ref=e84]:
+          - link "" [ref=e85] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/Details/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+            - generic [ref=e86]: 
+          - heading "Mailout Details" [level=2] [ref=e87]:
+            - link "Mailout Details" [ref=e88] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Details/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+          - paragraph [ref=e89] [cursor=pointer]: View your mailout details.
+        - generic [ref=e90]:
+          - link "" [ref=e91] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/Content/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+            - generic [ref=e92]: 
+          - heading "Content and Preview" [level=2] [ref=e93]:
+            - link "Content and Preview" [ref=e94] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Content/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+          - paragraph [ref=e95] [cursor=pointer]: Set the to and from address, add your HTML and/or text content and preview your mailout.
+        - generic [ref=e96]:
+          - generic [ref=e98]: 
+          - heading "Track Links" [level=2] [ref=e99]
+          - paragraph [ref=e100]: Track all, selected or no links.
+          - paragraph [ref=e101]: You must have content before you can track links.
+        - generic [ref=e102]:
+          - link "" [ref=e103] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/Filter/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+            - generic [ref=e104]: 
+          - heading "Filter" [level=2] [ref=e105]:
+            - link "Filter" [ref=e106] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Filter/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+          - paragraph [ref=e107] [cursor=pointer]: Create filters to segregate people for this mailout.
+          - paragraph [ref=e108] [cursor=pointer]: Without a filter this mailout will target all opted in, non GNA members.
+        - generic [ref=e109]:
+          - link "" [ref=e110] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/Dedupe/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+            - generic [ref=e111]: 
+          - heading "Dedupe" [level=2] [ref=e112]:
+            - link "Dedupe" [ref=e113] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Dedupe/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+          - paragraph [ref=e114] [cursor=pointer]: Dedupe your list to remove duplicates based on field(s).
+        - generic [ref=e115]:
+          - link "" [ref=e116] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/Schedule/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+            - generic [ref=e117]: 
+          - heading "Schedule" [level=2] [ref=e118]:
+            - link "Schedule" [ref=e119] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Schedule/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+          - paragraph [ref=e120] [cursor=pointer]: Schedule when this mailout should be sent and how many per hour.
+        - generic [ref=e121]:
+          - generic [ref=e123]: 
+          - heading "Confirm" [level=2] [ref=e124]
+          - paragraph [ref=e125]: The final step in the wizard, click send here to send your mailout.
+          - paragraph [ref=e126]: You must have content before you can send a mailout.
+  - generic [ref=e127]:
+    - link "Powered by Ubiquity Software":
+      - /url: https://www.qrious.co.nz/
+    - paragraph [ref=e128]: UbiQuity test build 1.179.2.2557
+  - generic [ref=e130]:
+    - heading "Delete Mailout" [level=3] [ref=e131]
+    - generic [ref=e132]:
+      - generic [ref=e133]:
+        - paragraph [ref=e134]: Please type ACCEPT into the box below to confirm that you want to delete this mailout.
+        - emphasis [ref=e135]: This action cannot be undone.
+        - generic [ref=e137]:
+          - generic [ref=e138]: Confirm Deletion
+          - textbox "Confirm Deletion" [ref=e139]
+      - generic [ref=e140]:
+        - generic [ref=e141] [cursor=pointer]: Cancel
+        - generic [ref=e142] [cursor=pointer]:
+          - generic [ref=e143]: 
+          - text: Delete Mailout
+  - iframe [ref=e145]:
+    

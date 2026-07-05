@@ -239,25 +239,29 @@ export function ImporterWizardModal({
 
     // Validate Transactional Mapping step before proceeding
     if (stepLabel === 'Transactional Mapping') {
-      const lookups = config.lookupMappings ?? [];
-      const hasCompleteLookup = lookups.some(
-        (m) => m.sourceField.trim() !== '' && m.contactField.trim() !== ''
-      );
-      if (!hasCompleteLookup) {
-        setMappingAlertMessage('At least one Lookup Mapping is required. Select a File Column and Contact Table Column to link transactions to contacts.');
-        setShowMappingAlert(true);
-        return;
-      }
+      // Skip mapping validation when editing and no new CSV has been uploaded
+      const hasCsvHeaders = (config.csvHeaders?.length ?? 0) > 0;
+      if (!existingConfig || hasCsvHeaders) {
+        const lookups = config.lookupMappings ?? [];
+        const hasCompleteLookup = lookups.some(
+          (m) => m.sourceField.trim() !== '' && m.contactField.trim() !== ''
+        );
+        if (!hasCompleteLookup) {
+          setMappingAlertMessage('At least one Lookup Mapping is required. Select a File Column and Contact Table Column to link transactions to contacts.');
+          setShowMappingAlert(true);
+          return;
+        }
 
-      // Check for duplicate target mappings in the field mapping
-      const mappedTargets = config.transactionalMapping
-        .filter((m) => m.targetField && m.targetField !== '[[Ignore Field]]')
-        .map((m) => m.targetField);
-      const duplicates = mappedTargets.filter((t, i) => mappedTargets.indexOf(t) !== i);
-      if (duplicates.length > 0) {
-        setMappingAlertMessage(`Duplicate field mapping detected: "${duplicates[0]}" is mapped more than once. Each UbiQuity field can only be mapped to one file column.`);
-        setShowMappingAlert(true);
-        return;
+        // Check for duplicate target mappings in the field mapping
+        const mappedTargets = config.transactionalMapping
+          .filter((m) => m.targetField && m.targetField !== '[[Ignore Field]]')
+          .map((m) => m.targetField);
+        const duplicates = mappedTargets.filter((t, i) => mappedTargets.indexOf(t) !== i);
+        if (duplicates.length > 0) {
+          setMappingAlertMessage(`Duplicate field mapping detected: "${duplicates[0]}" is mapped more than once. Each UbiQuity field can only be mapped to one file column.`);
+          setShowMappingAlert(true);
+          return;
+        }
       }
     }
 

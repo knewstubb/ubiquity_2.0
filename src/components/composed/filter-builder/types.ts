@@ -1,8 +1,8 @@
 /**
- * Shared type definitions for the Filter Builder (both inline and modal variants).
+ * Shared type definitions for the Filter Builder component.
  *
  * Core filter types (FilterGroup, FilterCondition, FilterLogic) are defined here
- * as the single source of truth. The modal variant extends these with source
+ * as the single source of truth. The component extends these with source
  * category configuration and card filter row types.
  */
 
@@ -54,6 +54,7 @@ export interface SubSourceConfig {
   label: string
   fields: FilterFieldDef[]
   subSources?: SubSourceConfig[]
+  sourceType?: 'transactional' // marks this sub-source as a transactional table
 }
 
 // ─── Card Filter Row (Modal variant) ─────────────────────────────────────────
@@ -66,6 +67,26 @@ export interface CardFilterRow {
   value: string | number | boolean | null | [string, string] | string[]
   dateMode: 'specific' | 'anniversary' | 'same_day' | null
   disabled?: boolean
+  subFilters?: FilterGroup | null // nested conditions for "has matching" / "does not have matching"
+  aggregate?: AggregateCondition | null // "And those transactions have" section
+}
+
+// ─── Aggregate Condition ─────────────────────────────────────────────────────
+
+export type AggregateType = 'number_of_rows' | 'total_value' | 'highest_value' | 'lowest_value' | 'average'
+
+export interface AggregateFieldRow {
+  field: string | null
+  operator: string
+  value: string
+}
+
+export interface AggregateCondition {
+  type: AggregateType
+  field?: string | null // which numeric field to aggregate (not needed for number_of_rows)
+  operator: string // equals, greater_than, less_than, etc.
+  value: string // numeric value
+  additionalFields?: AggregateFieldRow[] // extra field conditions within aggregate
 }
 
 // ─── Modal State ─────────────────────────────────────────────────────────────
@@ -84,19 +105,12 @@ export interface ModalState {
 
 // ─── Props API ───────────────────────────────────────────────────────────────
 
-export interface InlineFilterBuilderProps {
-  fields?: FilterFieldDef[]
-  sourceCategories?: SourceCategoryConfig[]
-  value: FilterGroup
-  onChange: (value: FilterGroup) => void
-  allowNesting?: boolean
-  maxDepth?: number
-}
-
 export interface ModalFilterBuilderProps {
   value: FilterGroup
   onChange: (value: FilterGroup) => void
   sourceCategories: SourceCategoryConfig[]
   allowNesting?: boolean
   maxDepth?: number
+  maxConditions?: number
+  maxGroups?: number
 }

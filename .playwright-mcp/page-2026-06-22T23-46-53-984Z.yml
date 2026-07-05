@@ -1,0 +1,412 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ubiquity" [ref=e4] [cursor=pointer]:
+      - /url: /dashboard
+    - paragraph [ref=e6] [cursor=pointer]:
+      - strong [ref=e7]: "Account:"
+      - text: Chenchen AWS Test
+    - list [ref=e8]:
+      - listitem [ref=e9]: Brad Knewstubb
+      - listitem [ref=e10]:
+        - link "My Settings" [ref=e11] [cursor=pointer]:
+          - /url: /administrators/Home/Edit/SXagsqgxz0mNGwjeMx4hMw
+      - listitem [ref=e12]:
+        - link "Users" [ref=e13] [cursor=pointer]:
+          - /url: /members
+      - listitem [ref=e14]:
+        - link "Accounts" [ref=e15] [cursor=pointer]:
+          - /url: /accounts/Home
+      - listitem [ref=e16]:
+        - link "API" [ref=e17] [cursor=pointer]:
+          - /url: /api
+      - listitem [ref=e18]:
+        - link "Admin" [ref=e19] [cursor=pointer]:
+          - /url: /administrators
+      - listitem [ref=e20]:
+        - link "Logout" [ref=e21] [cursor=pointer]:
+          - /url: /Logout
+  - generic [ref=e23]:
+    - list [ref=e24]:
+      - listitem [ref=e25]:
+        - link "Dashboard" [ref=e26] [cursor=pointer]:
+          - /url: /dashboard
+      - listitem [ref=e27]:
+        - link "Database" [ref=e28] [cursor=pointer]:
+          - /url: /list
+      - listitem [ref=e29]:
+        - link "Forms" [ref=e30] [cursor=pointer]:
+          - /url: /forms/dashboard/r6rxznv63qnn_gjr4xtysxhj_004k_4pj_pdvkv3mtkjkr3qfv9x8h1by2gj
+      - listitem [ref=e31]:
+        - link "Email" [ref=e32] [cursor=pointer]:
+          - /url: /email/dashboard/j5ynwvytb9wn1bysk7qlxln7v404k_4pj_pdvkv3mtkjkr3qfv9x9z22z1_0
+      - listitem [ref=e33]:
+        - link "Surveys" [ref=e34] [cursor=pointer]:
+          - /url: /surveys
+      - listitem [ref=e35]:
+        - link "Events" [ref=e36] [cursor=pointer]:
+          - /url: /events/dashboard/1zr781nk8w4n7fqj1c43djlzfx04k_4pj_pdvkv3mtkjkr3qfv9x8z9n2l40
+      - listitem [ref=e37]:
+        - link "TXT" [ref=e38] [cursor=pointer]:
+          - /url: /txt
+      - listitem [ref=e39]:
+        - link "Push" [ref=e40] [cursor=pointer]:
+          - /url: /push
+      - listitem [ref=e41]:
+        - link "Campaigns" [ref=e42] [cursor=pointer]:
+          - /url: /components/4w8s4vwbvpb431rnybxbwkbcks04k_4pj_pdvkv3mtkjkr3qfv9x9kg6xb80
+      - listitem [ref=e43]:
+        - link "Social" [ref=e44] [cursor=pointer]:
+          - /url: /social/dashboard/yxg1zcj3y6b4thp_sz_drv17m004k_4pj_pdvkv3mtkjkr3qfv9x9qy1vht0
+    - list [ref=e45]:
+      - listitem [ref=e46]:
+        - link "Media Manager" [ref=e47] [cursor=pointer]:
+          - /url: /MediaManager
+          - generic [ref=e48]: 
+          - text: Media Manager
+      - listitem [ref=e49]:
+        - link "Contact" [ref=e50] [cursor=pointer]:
+          - /url: /Home/ContactUs
+      - listitem [ref=e51]:
+        - link "Help Centre" [ref=e52] [cursor=pointer]:
+          - /url: https://docs.ubiquity.co.nz/
+  - generic [ref=e53]:
+    - generic [ref=e55]:
+      - generic [ref=e56]:
+        - heading "Mailout Wizard" [level=3] [ref=e57]
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Mailout Dashboard" [ref=e60] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Dashboard/92k_v_6w1sg43dd713hdd1fz7804k_4pj_pdvkv3mtkjkr3qfv9x9vmbs_bj
+          - listitem [ref=e61]:
+            - link "Mailout Details" [ref=e62] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Details/92k_v_6w1sg43dd713hdd1fz7804k_4pj_pdvkv3mtkjkr3qfv9x9vmbs_bj
+          - listitem [ref=e63]:
+            - link "Content and Preview" [ref=e64] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Content/92k_v_6w1sg43dd713hdd1fz7804k_4pj_pdvkv3mtkjkr3qfv9x9vmbs_bj
+          - listitem [ref=e65]:
+            - link "Track Links" [ref=e66] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Links/92k_v_6w1sg43dd713hdd1fz7804k_4pj_pdvkv3mtkjkr3qfv9x9vmbs_bj
+          - listitem [ref=e67]:
+            - link "Filter" [ref=e68] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Filter/92k_v_6w1sg43dd713hdd1fz7804k_4pj_pdvkv3mtkjkr3qfv9x9vmbs_bj
+          - listitem [ref=e69]:
+            - link "Dedupe" [ref=e70] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Dedupe/92k_v_6w1sg43dd713hdd1fz7804k_4pj_pdvkv3mtkjkr3qfv9x9vmbs_bj
+          - listitem [ref=e71]:
+            - link "Schedule" [ref=e72] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Schedule/92k_v_6w1sg43dd713hdd1fz7804k_4pj_pdvkv3mtkjkr3qfv9x9vmbs_bj
+          - listitem [ref=e73]:
+            - link "Confirm" [ref=e74] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/Confirm/92k_v_6w1sg43dd713hdd1fz7804k_4pj_pdvkv3mtkjkr3qfv9x9vmbs_bj
+      - heading "Help" [level=3] [ref=e76] [cursor=pointer]: Help
+    - generic [ref=e79]:
+      - generic [ref=e80]:
+        - text: "Campaign:"
+        - link "Test" [ref=e81] [cursor=pointer]:
+          - /url: /components/csrf9285rsd4ybb_5flqlpwqf404k_4pj_pdvkv3mtkjkr3qfv9x98434t70/kxt035g_1nn492p013ghb4x7ld04k_4pj_pdvkv3mtkjkr3qfv9x9wg6_bp0
+      - heading "Test/ Event Trigger/ Content and Preview" [level=1] [ref=e82]:
+        - link "Test/" [ref=e83] [cursor=pointer]:
+          - /url: /email/dashboard/folder/f2f486nt_pkny6w313ghj3b3b004k_4pj_pdvkv3mtkjkr3qfv9x9zlkf840
+        - link "Event Trigger/" [ref=e84] [cursor=pointer]:
+          - /url: /campaigns/mailouts/design/Dashboard/92k_v_6w1sg43dd713hdd1fz7804k_4pj_pdvkv3mtkjkr3qfv9x9vmbs_bj
+        - text: Content and Preview
+      - heading "Content and Preview" [level=2] [ref=e85]
+      - paragraph [ref=e86]: Create or load the email template that will be sent for this mailout.
+      - generic [ref=e87]:
+        - generic [ref=e88]:
+          - link "Preview" [ref=e90] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/ContentPreviewDialog/tLuv10DlN06faQje0Rz9Dg
+          - generic [ref=e91]:
+            - link "Load Template" [ref=e92] [cursor=pointer]:
+              - /url: /campaigns/mailouts/design/LoadTemplate/tLuv10DlN06faQje0Rz9Dg
+            - generic [ref=e93] [cursor=pointer]: Save Template
+        - heading "Header" [level=2] [ref=e96] [cursor=pointer]
+        - generic [ref=e99]:
+          - generic [ref=e100]:
+            - generic [ref=e101]: From Email*
+            - generic [ref=e102]:
+              - textbox "From Email*" [ref=e103]: t833784
+              - link "Insert Merge Field" [ref=e104] [cursor=pointer]:
+                - /url: /campaigns/mailouts/design/DynamicDataDialog/tLuv10DlN06faQje0Rz9Dg
+              - text: "@"
+              - combobox [ref=e105] [cursor=pointer]:
+                - option "cbb7646453a867fe8e653933adc2d884.e.ubiquity-test.co.nz" [selected]
+            - generic [ref=e106]:
+              - generic [ref=e107]: From Name
+              - generic [ref=e108]:
+                - textbox "From Name" [ref=e109]: Brad Knewstubb
+                - link "Insert Merge Field" [ref=e110] [cursor=pointer]:
+                  - /url: /campaigns/mailouts/design/DynamicDataDialog/tLuv10DlN06faQje0Rz9Dg
+          - generic [ref=e111]:
+            - generic [ref=e112]: Reply Email
+            - generic [ref=e113]:
+              - textbox "Reply Email" [ref=e114]
+              - link "Insert Merge Field" [ref=e115] [cursor=pointer]:
+                - /url: /campaigns/mailouts/design/DynamicDataDialog/tLuv10DlN06faQje0Rz9Dg
+            - generic [ref=e116]:
+              - generic [ref=e117]: Reply Name
+              - generic [ref=e118]:
+                - textbox "Reply Name" [ref=e119]
+                - link "Insert Merge Field" [ref=e120] [cursor=pointer]:
+                  - /url: /campaigns/mailouts/design/DynamicDataDialog/tLuv10DlN06faQje0Rz9Dg
+          - generic [ref=e121]:
+            - generic [ref=e122]: Subject*
+            - generic [ref=e123]:
+              - textbox "Subject*" [ref=e124]: Subject
+              - link "Insert Merge Field" [ref=e125] [cursor=pointer]:
+                - /url: /campaigns/mailouts/design/DynamicDataDialog/tLuv10DlN06faQje0Rz9Dg
+              - paragraph [ref=e126]: Want to run an A/B subject line test? Add another subject line
+          - generic [ref=e127]:
+            - generic [ref=e128]: Pre-Header Text
+            - generic [ref=e129]:
+              - textbox "Pre-Header Text" [ref=e130]
+              - link "Insert Merge Field" [ref=e131] [cursor=pointer]:
+                - /url: /campaigns/mailouts/design/DynamicDataDialog/tLuv10DlN06faQje0Rz9Dg
+          - generic [ref=e132]:
+            - generic [ref=e133]: Attachments
+            - link "Add attachment" [ref=e135] [cursor=pointer]:
+              - /url: /campaigns/Mailout/attachments/AddAttachment/tLuv10DlN06faQje0Rz9Dg/AAAAAAAAAAAAAAAAAAAAAA
+          - generic [ref=e136]:
+            - generic [ref=e137]: Personalised Attachments
+            - link "Add attachment" [ref=e140] [cursor=pointer]:
+              - /url: /dynamicattachments/GetDynamicAttachmentDialog/tLuv10DlN06faQje0Rz9Dg/Mailout/KmZlXZo8GkqviTrmCL7oUA/-1
+      - list [ref=e141]:
+        - listitem [ref=e142]:
+          - link "Html Email" [ref=e143] [cursor=pointer]:
+            - /url: "#html_tab"
+        - listitem [ref=e144]:
+          - link "Text Email" [ref=e145] [cursor=pointer]:
+            - /url: "#text_tab"
+      - generic [ref=e148]:
+        - generic [ref=e149]:
+          - generic [ref=e150] [cursor=pointer]:
+            - generic [ref=e151]: 
+            - text: Edit Html
+          - link "Template Options" [ref=e152] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/EditOptions/tLuv10DlN06faQje0Rz9Dg
+          - generic [ref=e154]:
+            - link "" [ref=e155] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e157]: 
+            - link "" [ref=e158] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e160]: 
+            - link "" [ref=e161] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e163]: 
+          - iframe [ref=e166]:
+            - generic [active] [ref=f21e1]:
+              - generic [ref=f21e2]:
+                - text: Need help?
+                - link "Check out our Easy Edit documentation here" [ref=f21e3] [cursor=pointer]:
+                  - /url: https://resources.ubiquity.co.nz/home/using-engage/email/default-easy-edit/introduction
+              - table [ref=f21e4]:
+                - rowgroup [ref=f21e5]:
+                  - row "View online" [ref=f21e6]:
+                    - cell "View online" [ref=f21e7]:
+                      - link "View online" [ref=f21e8] [cursor=pointer]:
+                        - /url: https://customhost.ubiquity-test.co.nz/campaigns/Mailout/viewonline/tLuv10DlN06faQje0Rz9Dg
+                  - row "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles Logo" [ref=f21e9]:
+                    - cell "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles Logo" [ref=f21e10]:
+                      - table [ref=f21e11]:
+                        - rowgroup [ref=f21e12]:
+                          - row "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles":
+                            - cell "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles":
+                              - generic [ref=f21e13]:
+                                - img "Add Article" [ref=f21e15] [cursor=pointer]
+                                - img "Edit Article" [ref=f21e17] [cursor=pointer]
+                                - img "Copy Article" [ref=f21e19] [cursor=pointer]
+                                - img "Delete Article" [ref=f21e21] [cursor=pointer]
+                                - img "Reorder Articles" [ref=f21e23] [cursor=pointer]
+                          - row "Logo" [ref=f21e24]:
+                            - cell "Logo" [ref=f21e25]:
+                              - table [ref=f21e26]:
+                                - rowgroup [ref=f21e27]:
+                                  - row "Logo" [ref=f21e28]:
+                                    - cell "Logo" [ref=f21e29]:
+                                      - link "Logo" [ref=f21e30] [cursor=pointer]:
+                                        - /url: https://yourcompany.com
+                                        - img "Logo" [ref=f21e31]
+                  - row "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles Banner image" [ref=f21e32]:
+                    - cell "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles Banner image" [ref=f21e33]:
+                      - table [ref=f21e34]:
+                        - rowgroup [ref=f21e35]:
+                          - row "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles":
+                            - cell "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles":
+                              - generic [ref=f21e36]:
+                                - img "Add Article" [ref=f21e38] [cursor=pointer]
+                                - img "Edit Article" [ref=f21e40] [cursor=pointer]
+                                - img "Copy Article" [ref=f21e42] [cursor=pointer]
+                                - img "Delete Article" [ref=f21e44] [cursor=pointer]
+                                - img "Reorder Articles" [ref=f21e46] [cursor=pointer]
+                          - row "Banner image" [ref=f21e47]:
+                            - cell "Banner image" [ref=f21e48]:
+                              - img "Banner image" [ref=f21e50]
+                  - row "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles Example heading Example subheading Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Read more Learn more" [ref=f21e51]:
+                    - cell "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles Example heading Example subheading Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Read more Learn more" [ref=f21e52]:
+                      - table [ref=f21e53]:
+                        - rowgroup [ref=f21e54]:
+                          - row "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles":
+                            - cell "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles":
+                              - generic [ref=f21e55]:
+                                - img "Add Article" [ref=f21e57] [cursor=pointer]
+                                - img "Edit Article" [ref=f21e59] [cursor=pointer]
+                                - img "Copy Article" [ref=f21e61] [cursor=pointer]
+                                - img "Delete Article" [ref=f21e63] [cursor=pointer]
+                                - img "Reorder Articles" [ref=f21e65] [cursor=pointer]
+                          - row "Example heading Example subheading Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Read more Learn more" [ref=f21e66]:
+                            - cell "Example heading Example subheading Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Read more Learn more" [ref=f21e67]:
+                              - table [ref=f21e68]:
+                                - rowgroup [ref=f21e69]:
+                                  - row "Example heading Example subheading Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim." [ref=f21e70]:
+                                    - cell "Example heading Example subheading Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim." [ref=f21e71]:
+                                      - heading "Example heading" [level=1] [ref=f21e72]
+                                      - heading "Example subheading" [level=2] [ref=f21e73]
+                                      - paragraph [ref=f21e74]:
+                                        - text: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        - link "Aenean massa" [ref=f21e75] [cursor=pointer]:
+                                          - /url: https://yourcompany.com
+                                        - text: .
+                                      - paragraph [ref=f21e76]: Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+                                      - paragraph [ref=f21e77]: Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+                                  - row "Read more Learn more" [ref=f21e78]:
+                                    - cell "Read more Learn more" [ref=f21e79]:
+                                      - table [ref=f21e80]:
+                                        - rowgroup [ref=f21e81]:
+                                          - row "Read more Learn more" [ref=f21e82]:
+                                            - cell "Read more" [ref=f21e83]:
+                                              - table [ref=f21e84]:
+                                                - rowgroup [ref=f21e85]:
+                                                  - row "Read more" [ref=f21e86]:
+                                                    - cell "Read more" [ref=f21e87]:
+                                                      - link "Read more" [ref=f21e88] [cursor=pointer]:
+                                                        - /url: https://yourcompany.com
+                                            - cell "Learn more" [ref=f21e89]:
+                                              - table [ref=f21e90]:
+                                                - rowgroup [ref=f21e91]:
+                                                  - row "Learn more" [ref=f21e92]:
+                                                    - cell "Learn more" [ref=f21e93]:
+                                                      - link "Learn more" [ref=f21e94] [cursor=pointer]:
+                                                        - /url: https://yourcompany.com
+                  - row "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles Unsubscribe" [ref=f21e95]:
+                    - cell "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles Unsubscribe" [ref=f21e96]:
+                      - table [ref=f21e97]:
+                        - rowgroup [ref=f21e98]:
+                          - row "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles":
+                            - cell "Add ArticleEdit ArticleCopy ArticleDelete ArticleReorder Articles":
+                              - generic [ref=f21e99]:
+                                - img "Add Article" [ref=f21e101] [cursor=pointer]
+                                - img "Edit Article" [ref=f21e103] [cursor=pointer]
+                                - img "Copy Article" [ref=f21e105] [cursor=pointer]
+                                - img "Delete Article" [ref=f21e107] [cursor=pointer]
+                                - img "Reorder Articles" [ref=f21e109] [cursor=pointer]
+                          - row "Unsubscribe" [ref=f21e110]:
+                            - cell "Unsubscribe" [ref=f21e111]:
+                              - table [ref=f21e112]:
+                                - rowgroup [ref=f21e113]:
+                                  - row "Unsubscribe" [ref=f21e114]:
+                                    - cell "Unsubscribe" [ref=f21e115]:
+                                      - link "Unsubscribe" [ref=f21e116] [cursor=pointer]:
+                                        - /url: https://customhost.ubiquity-test.co.nz/forms/Preview/BeginPreview/WGlAkpdMr0aJvwjceYxJbw
+                  - row "Powered by UbiQuity" [ref=f21e117]:
+                    - cell "Powered by UbiQuity" [ref=f21e118]:
+                      - link "Powered by UbiQuity" [ref=f21e119] [cursor=pointer]:
+                        - /url: https://ubiquity.co.nz
+                        - img "Powered by UbiQuity" [ref=f21e120]
+        - text: 
+      - generic [ref=e167]:
+        - generic [ref=e168]:
+          - link "Cancel" [ref=e169] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/Dashboard/92k_v_6w1sg43dd713hdd1fz7804k_4pj_pdvkv3mtkjkr3qfv9x9vmbs_bj
+          - link "Save" [ref=e170] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/Content/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+            - generic [ref=e171]: 
+            - text: Save
+        - generic [ref=e172]:
+          - link "Back" [ref=e173] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/Content/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+          - link "Next" [ref=e174] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/Content/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+          - link "Confirm" [ref=e175] [cursor=pointer]:
+            - /url: /campaigns/mailouts/design/Content/qlyv_pv0xnwny7w913hf277y1s04k_4pj_pdvkv3mtkjkr3qfv9x9006vmq0
+  - generic [ref=e176]:
+    - link "Powered by Ubiquity Software":
+      - /url: https://www.qrious.co.nz/
+    - paragraph [ref=e177]: UbiQuity test build 1.179.2.2557
+  - generic [ref=e179]:
+    - heading "Save Template" [level=3] [ref=e180]
+    - generic [ref=e181]:
+      - generic [ref=e184]:
+        - radio "Overwrite an existing email template" [ref=e185] [cursor=pointer]
+        - generic [ref=e186]: Overwrite an existing email template
+      - generic [ref=e187]:
+        - generic [ref=e189]:
+          - radio "Save as a new email template" [checked] [ref=e190] [cursor=pointer]
+          - generic [ref=e191]: Save as a new email template
+        - generic [ref=e192]:
+          - generic [ref=e193]:
+            - generic [ref=e194]: Name*
+            - textbox "Name*" [ref=e195]
+          - generic [ref=e196]:
+            - generic [ref=e197]: Description
+            - textbox "Description" [ref=e198]
+    - generic [ref=e199]:
+      - generic [ref=e200] [cursor=pointer]: Cancel
+      - generic [ref=e201] [cursor=pointer]:
+        - generic [ref=e202]: 
+        - text: Save Template
+  - generic [ref=e203]:
+    - heading "Html Template" [level=3] [ref=e204]
+    - generic [ref=e205]:
+      - generic [ref=e208]:
+        - generic [ref=e210]:
+          - textbox [ref=e211]
+          - generic [ref=e219]: "1"
+        - link "Insert Merge Field" [ref=e225] [cursor=pointer]:
+          - /url: /campaigns/mailouts/design/DynamicDataDialog/tLuv10DlN06faQje0Rz9Dg
+        - link "Insert UbiQuity - Test Link" [ref=e226] [cursor=pointer]:
+          - /url: /connect/Render/tLuv10DlN06faQje0Rz9Dg
+        - generic "Insert Media Manager Link" [ref=e227]
+      - generic [ref=e228]:
+        - generic [ref=e229] [cursor=pointer]: Cancel
+        - generic [ref=e230] [cursor=pointer]: OK
+  - generic [ref=e231]:
+    - heading "Text Template" [level=3] [ref=e232]
+    - generic [ref=e233]:
+      - generic [ref=e236]:
+        - textbox [ref=e237]
+        - link "Insert Merge Field" [ref=e238] [cursor=pointer]:
+          - /url: /campaigns/mailouts/design/DynamicDataDialog/tLuv10DlN06faQje0Rz9Dg
+        - link "Insert UbiQuity - Test Link" [ref=e239] [cursor=pointer]:
+          - /url: /connect/Render/tLuv10DlN06faQje0Rz9Dg
+      - generic [ref=e240]:
+        - generic [ref=e241] [cursor=pointer]: Cancel
+        - generic [ref=e242] [cursor=pointer]: OK
+  - generic [ref=e243]:
+    - heading "Address Book" [level=3] [ref=e244]
+    - generic [ref=e247]:
+      - generic [ref=e248]: Select all | Select none
+      - generic:
+        - list
+      - generic [ref=e249]:
+        - textbox [ref=e250]
+        - list [ref=e251]:
+          - listitem [ref=e252]:
+            - generic [ref=e253] [cursor=pointer]:
+              - generic [ref=e254]: 
+              - text: Add
+    - generic [ref=e255]:
+      - generic [ref=e256] [cursor=pointer]: Cancel
+      - generic [ref=e257]:
+        - generic [ref=e258]: 
+        - text: Insert
+  - generic [ref=e264]:
+    - heading "Delete Article" [level=3] [ref=e265]
+    - paragraph [ref=e266]: Are you sure you want to delete this article?
+    - generic [ref=e268]:
+      - generic [ref=e269] [cursor=pointer]: Cancel
+      - generic [ref=e270] [cursor=pointer]:
+        - generic [ref=e271]: 
+        - text: Delete Article
+  - iframe [ref=e273]:
+    

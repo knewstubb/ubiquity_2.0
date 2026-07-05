@@ -309,8 +309,6 @@ describe('ReviewStep', () => {
           failureEmails: ['admin@example.com', 'ops@example.com'],
           successEnabled: false,
           successEmails: [],
-          noFileAlertEnabled: false,
-          noFileAlertEmails: [],
         },
       })
       render(<ReviewStep draft={draft} />)
@@ -324,8 +322,6 @@ describe('ReviewStep', () => {
           failureEmails: [],
           successEnabled: false,
           successEmails: [],
-          noFileAlertEnabled: false,
-          noFileAlertEmails: [],
         },
       })
       render(<ReviewStep draft={draft} />)
@@ -339,8 +335,6 @@ describe('ReviewStep', () => {
           failureEmails: ['admin@example.com'],
           successEnabled: true,
           successEmails: ['success@example.com'],
-          noFileAlertEnabled: false,
-          noFileAlertEmails: [],
         },
       })
       render(<ReviewStep draft={draft} />)
@@ -354,35 +348,14 @@ describe('ReviewStep', () => {
           failureEmails: ['admin@example.com'],
           successEnabled: false,
           successEmails: [],
-          noFileAlertEnabled: false,
-          noFileAlertEmails: [],
         },
       })
       render(<ReviewStep draft={draft} />)
-
-      // Both success and no-file alerts show "Disabled" — use getAllByText
-      const disabledElements = screen.getAllByText('Disabled')
-      expect(disabledElements.length).toBeGreaterThanOrEqual(1)
 
       // Verify the success notifications row specifically
       expect(screen.getByText('Success Notifications')).toBeInTheDocument()
       const successRow = screen.getByText('Success Notifications').closest('div')
       expect(successRow).toHaveTextContent('Disabled')
-    })
-
-    it('shows no-file alert emails when enabled', () => {
-      const draft = createDraft({
-        notifications: {
-          failureEmails: ['admin@example.com'],
-          successEnabled: false,
-          successEmails: [],
-          noFileAlertEnabled: true,
-          noFileAlertEmails: ['alert@example.com'],
-        },
-      })
-      render(<ReviewStep draft={draft} />)
-
-      expect(screen.getByText('alert@example.com')).toBeInTheDocument()
     })
   })
 
@@ -420,18 +393,18 @@ describe('ReviewStep', () => {
       expect(onEditStep).toHaveBeenCalledWith(2)
     })
 
-    it('calls onEditStep with step 3 when file config edit is clicked', () => {
+    it('calls onEditStep with step 0 when file config edit is clicked', () => {
       const onEditStep = vi.fn()
       const draft = createDraft({ exporterType: 'contact_transactional' })
       render(<ReviewStep draft={draft} onEditStep={onEditStep} />)
 
       const editButtons = screen.getAllByRole('button', { name: /edit/i })
-      fireEvent.click(editButtons[3]) // Fourth edit button is for file config
+      fireEvent.click(editButtons[3]) // Fourth edit button is for file config (step 0)
 
-      expect(onEditStep).toHaveBeenCalledWith(3)
+      expect(onEditStep).toHaveBeenCalledWith(0)
     })
 
-    it('calls onEditStep with step 4 when schedule edit is clicked', () => {
+    it('calls onEditStep with step 3 when schedule edit is clicked', () => {
       const onEditStep = vi.fn()
       const draft = createDraft({ exporterType: 'contact_transactional' })
       render(<ReviewStep draft={draft} onEditStep={onEditStep} />)
@@ -439,18 +412,18 @@ describe('ReviewStep', () => {
       const editButtons = screen.getAllByRole('button', { name: /edit/i })
       fireEvent.click(editButtons[4]) // Fifth edit button is for schedule
 
-      expect(onEditStep).toHaveBeenCalledWith(4)
+      expect(onEditStep).toHaveBeenCalledWith(3)
     })
 
-    it('calls onEditStep with step 5 when notifications edit is clicked', () => {
+    it('calls onEditStep with step 3 when notifications edit is clicked', () => {
       const onEditStep = vi.fn()
       const draft = createDraft({ exporterType: 'contact_transactional' })
       render(<ReviewStep draft={draft} onEditStep={onEditStep} />)
 
       const editButtons = screen.getAllByRole('button', { name: /edit/i })
-      fireEvent.click(editButtons[5]) // Sixth edit button is for notifications
+      fireEvent.click(editButtons[5]) // Sixth edit button is for notifications (same step as schedule)
 
-      expect(onEditStep).toHaveBeenCalledWith(5)
+      expect(onEditStep).toHaveBeenCalledWith(3)
     })
 
     it('does not render edit buttons when onEditStep is not provided', () => {

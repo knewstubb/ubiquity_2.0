@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
 import { CaretRight } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
+import { InfoHint } from '@/components/composed/info-hint';
+import { HelpPopover } from '@/components/composed/help-popover';
 import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
-import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
 import { resolveTimestamp } from '../../utils/exporter-utils';
 import type { ExporterWizardDraft } from '../../models/wizard';
 import type { FormatOptions } from '../../models/automation';
@@ -13,6 +14,7 @@ import type { FormatOptions } from '../../models/automation';
 interface OutputConfigStepProps {
   draft: ExporterWizardDraft;
   onUpdate: (patch: Partial<ExporterWizardDraft>) => void;
+  connectionBasePath?: string;
 }
 
 const DELIMITER_OPTIONS: { value: FormatOptions['delimiter']; label: string }[] = [
@@ -37,7 +39,7 @@ function slugifyName(name: string): string {
     .slice(0, 100)
 }
 
-export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
+export function OutputConfigStep({ draft, onUpdate, connectionBasePath = '' }: OutputConfigStepProps) {
   const { formatOptions, fileNamingPrefix, name } = draft;
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [fileNameManuallyEdited, setFileNameManuallyEdited] = useState(false);
@@ -85,7 +87,7 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
           </p>
           <p className="text-xs text-tertiary-foreground mt-1 m-0">A unique name for this exporter</p>
         </div>
-        <div className="flex-1">
+        <div className="w-[552px]">
           <Input
             data-testid="exporter-name-input"
             value={name}
@@ -101,18 +103,15 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
         <div className="w-40 shrink-0">
           <div className="flex items-center gap-1.5">
             <p className="text-sm font-semibold text-foreground m-0">File Name</p>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button type="button" className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold shrink-0 hover:opacity-80">?</button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 text-xs" align="start">
-                Only letters, numbers, hyphens (-) and underscores (_) are allowed. A timestamp and .csv extension are appended automatically. If you type .csv it will be removed.
-              </PopoverContent>
-            </Popover>
+            <HelpPopover
+              title="File Name"
+              body="Only letters, numbers, hyphens (-) and underscores (_) are allowed. A timestamp and .csv extension are appended automatically. If you type .csv it will be removed."
+              width="narrow"
+            />
           </div>
           <p className="text-xs text-tertiary-foreground mt-1 m-0">System filename prefix</p>
         </div>
-        <div className="flex-1 flex flex-col gap-2">
+        <div className="w-[552px] flex flex-col gap-2">
           <div className={cn(
             "flex items-center gap-0 rounded-md border overflow-hidden",
             "focus-within:shadow-ring",
@@ -215,16 +214,59 @@ export function OutputConfigStep({ draft, onUpdate }: OutputConfigStepProps) {
         </div>
       </div>
 
+      {/* Destination Path */}
+      <div className="flex items-start gap-14">
+        <div className="w-40 shrink-0">
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm font-semibold text-foreground m-0">Destination</p>
+            <HelpPopover
+              title="Destination Path"
+              body="The folder on your connected storage where export files will be written. Use forward slashes to create nested folders. The folder will be created automatically on the first export if it doesn't exist."
+              width="default"
+            />
+          </div>
+          <p className="text-xs text-tertiary-foreground mt-1 m-0">Folder path on the connection where files will be written</p>
+        </div>
+        <div className="w-[552px] flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <div className="flex items-stretch flex-1 rounded-md border border-input overflow-hidden focus-within:border-ring focus-within:shadow-ring">
+              {connectionBasePath && (
+                <span className="inline-flex items-center h-9 px-3 text-sm text-muted-foreground bg-secondary border-r border-input whitespace-nowrap select-none">
+                  {connectionBasePath}
+                </span>
+              )}
+              <Input
+                value={draft.destinationPath ?? '/exports/'}
+                onChange={(e) => onUpdate({ destinationPath: e.target.value })}
+                placeholder="exports/"
+                aria-label="Destination folder path"
+                className="flex-1 rounded-none border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => {/* TODO: open folder browser modal */}}
+              className="shrink-0 h-9 px-3 text-xs font-medium text-primary border border-border rounded-md bg-background hover:bg-secondary transition-colors cursor-pointer"
+            >
+              Browse
+            </button>
+          </div>
+          <InfoHint>
+            Folder will be created on first export if it doesn't exist.
+          </InfoHint>
+        </div>
+      </div>
+
       {/* Preview */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
           <p className="text-sm font-semibold text-foreground m-0">Preview</p>
           <p className="text-xs text-tertiary-foreground mt-1 m-0">Generated filename</p>
         </div>
-        <div className="flex-1">
+        <div className="w-[552px]">
           <div className="bg-accent rounded-lg py-3 px-4">
             <p className="text-xs text-primary font-mono m-0 break-all" data-testid="filename-preview">
-              {previewFilename}
+              {connectionBasePath}{(draft.destinationPath ?? '/exports/').replace(/\/$/, '')}/{previewFilename}
             </p>
           </div>
         </div>

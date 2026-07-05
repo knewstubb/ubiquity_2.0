@@ -13,7 +13,7 @@ import {
 // ─── Expected Operator Values by Data Type ───────────────────────────────────
 
 const EXPECTED_OPERATORS: Record<string, string[]> = {
-  text: ['equals', 'not_equals', 'contains', 'starts_with', 'ends_with', 'is_in', 'is_not_in', 'is_empty', 'is_not_empty'],
+  text: ['equals', 'not_equals', 'contains', 'does_not_contain', 'starts_with', 'ends_with', 'is_in', 'is_not_in', 'is_empty', 'is_not_empty'],
   number: ['equals', 'not_equals', 'greater_than', 'less_than', 'greater_or_equal', 'less_or_equal', 'is_in', 'is_not_in', 'is_empty', 'is_not_empty'],
   date: ['equals', 'before', 'after', 'between', 'in_last_n_days', 'is_empty', 'is_not_empty'],
   boolean: ['is_true', 'is_false'],

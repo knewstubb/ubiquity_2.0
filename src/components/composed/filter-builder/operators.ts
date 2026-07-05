@@ -18,6 +18,7 @@ export const TEXT_OPERATORS: OperatorDef[] = [
   { value: 'equals', label: 'Equals' },
   { value: 'not_equals', label: 'Not equals' },
   { value: 'contains', label: 'Contains' },
+  { value: 'does_not_contain', label: 'Does not contain' },
   { value: 'starts_with', label: 'Starts with' },
   { value: 'ends_with', label: 'Ends with' },
   { value: 'is_in', label: 'Is in' },
@@ -74,6 +75,29 @@ export const NO_VALUE_OPERATORS: string[] = [
   'is_false',
   'is_empty',
   'is_not_empty',
+  'has_transactions',
+  'has_no_transactions',
+]
+
+// ─── Relationship Operators ──────────────────────────────────────────────────
+
+/**
+ * Operators for transactional sub-source relationships.
+ * Used when a sub-source has sourceType: 'transactional' instead of field-level operators.
+ */
+export const RELATIONSHIP_OPERATORS: OperatorDef[] = [
+  { value: 'has_transactions', label: 'Has transactions' },
+  { value: 'has_no_transactions', label: 'Has no transactions' },
+  { value: 'has_matching_transactions', label: 'Has matching transactions' },
+  { value: 'does_not_have_matching', label: 'Does not have matching transactions' },
+]
+
+/**
+ * Relationship operators that require sub-filter conditions.
+ */
+export const SUB_FILTER_OPERATORS: string[] = [
+  'has_matching_transactions',
+  'does_not_have_matching',
 ]
 
 // ─── Array-Value Operators ───────────────────────────────────────────────────

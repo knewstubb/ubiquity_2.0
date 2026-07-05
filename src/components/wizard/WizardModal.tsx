@@ -27,15 +27,16 @@ import { DataSourceFilterStep } from './DataSourceFilterStep';
 import { FieldMappingStep } from './FieldMappingStep';
 import { OutputConfigStep } from './OutputConfigStep';
 import { ScheduleStep } from './ScheduleStep';
-import { NotificationsStep } from '../shared/NotificationsStep';
 import { ReviewStep } from './ReviewStep';
+import { PhaseToggle } from '../layout/PhaseToggle';
 import type {
   ExporterWizardDraft,
+  ExporterScheduleConfig,
   ExporterType,
-  ExporterNotificationConfig,
 } from '../../models/wizard';
 import { DEFAULT_EXPORTER_DRAFT } from '../../models/wizard';
 import type { SourceConfig } from '../../models/source-selection';
+import { enrichmentKey, getSourceTag } from '../../models/source-selection';
 import { validateColumnName, validateColumnNames, validatePrefix } from '../../utils/exporter-utils';
 import { hydrateSourceConfig, detectStaleReferences } from '../../utils/source-config-utils';
 import { didSourceOrSubSourceChange, populateFieldsForTransition } from '../../utils/populate-fields';
@@ -58,7 +59,6 @@ const WIZARD_STEPS: StepDef[] = [
   { label: 'Data Source', description: 'Choose your data source and configure filters.' },
   { label: 'Field Mapping', description: 'Select and reorder the fields to include in your export.' },
   { label: 'Schedule', description: 'Configure when and how often this export runs.' },
-  { label: 'Notifications', description: 'Configure email notifications for this export.' },
   { label: 'Review', description: 'Review your exporter configuration before saving.' },
 ];
 
@@ -111,6 +111,9 @@ export function WizardModal({
           connectionId: existing.connectionId,
           name: existing.name,
           sourceConfig: hydratedConfig,
+          dataSourceFilter: null,
+          dataSourceMode: null,
+          destinationPath: '/exports/',
           // Legacy fields (deprecated — kept for backward compat)
           exporterType: 'contact_transactional' as ExporterType,
           selectedSources: [existing.dataType],
@@ -127,7 +130,7 @@ export function WizardModal({
             timezone: 'Pacific/Auckland', // Override legacy timezone
           },
           schedule: {
-            frequency: (existing.scheduleConfig?.frequency ?? 'daily') as 'hourly' | 'daily' | 'weekly' | 'monthly',
+            frequency: (existing.scheduleConfig?.frequency ?? 'daily') as ExporterScheduleConfig['frequency'],
             weeklyDays: existing.scheduleConfig?.weeklyDays ?? [false, false, false, false, false, false, false],
             monthlyDays: [],
           },
@@ -136,9 +139,6 @@ export function WizardModal({
                 failureEmails: existing.notifications.failureEmails ?? [],
                 successEnabled: existing.notifications.successEnabled ?? false,
                 successEmails: existing.notifications.successEmails ?? [],
-                noFileAlertEnabled: existing.notifications.noFileAlertEnabled ?? false,
-                noFileAlertEmails: existing.notifications.noFileAlertEmails ?? [],
-                noFileSchedule: existing.notifications.noFileSchedule,
               }
             : { ...DEFAULT_EXPORTER_DRAFT.notifications },
         };
@@ -151,7 +151,7 @@ export function WizardModal({
   const previousSourceConfigRef = useRef<SourceConfig | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>(
-    editConnectorId ? [0, 1, 2, 3, 4, 5] : [],
+    editConnectorId ? [0, 1, 2, 3, 4] : [],
   );
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
   const [notificationsValid, setNotificationsValid] = useState(
@@ -172,12 +172,13 @@ export function WizardModal({
 
   // canProceed validation per step
   const canProceed = useMemo(() => {
-    // Steps: Source(0) → FieldMapping(1) → FileConfig(2) → Schedule(3) → Notifications(4) → Review(5)
+    // Steps: FileSettings(0) → DataSource(1) → FieldMapping(2) → Schedule(3) → Review(4)
     const stepLabel = steps[currentStep]?.label;
 
     switch (stepLabel) {
       case 'Data Source': {
-        // Require at least one filter condition before proceeding
+        // Allow proceeding if "All changes" or "Mailout" mode selected, or if filter has conditions
+        if (draft.dataSourceMode === 'all_changes' || draft.dataSourceMode === 'mailout') return true;
         return draft.sourceConfig !== null;
       }
       case 'Field Mapping': {
@@ -205,13 +206,11 @@ export function WizardModal({
         return validatePrefix(effectivePrefix);
       }
       case 'Schedule': {
-        const { frequency, weeklyDays, monthlyDays } = draft.schedule;
+        const { frequency, weeklyDays } = draft.schedule;
         if (frequency === 'weekly' && !weeklyDays.some(Boolean)) return false;
-        if (frequency === 'monthly' && monthlyDays.length === 0) return false;
+        // Notifications validation is part of this step
+        if (!notificationsValid) return false;
         return true;
-      }
-      case 'Notifications': {
-        return notificationsValid;
       }
       case 'Review': {
         return true;
@@ -304,7 +303,36 @@ export function WizardModal({
             };
           }
 
-          // Only filter or enrichment changed — preserve valid fields
+          // Multi-enrichment array diff — detect removed enrichments and clean up their fields
+          const oldEnrichments = oldConfig?.enrichments ?? [];
+          const newEnrichments = newConfig?.enrichments ?? [];
+
+          const removedSources = oldEnrichments.filter(
+            (old) => !newEnrichments.some((ne) => enrichmentKey(ne) === enrichmentKey(old))
+          );
+
+          if (removedSources.length > 0) {
+            // Build set of source tags being removed
+            const removedTags = new Set(removedSources.map((r) => getSourceTag(r)));
+
+            // Filter out selected fields belonging to removed enrichments
+            const preservedFields = prev.selectedFields.filter(
+              (field) => !removedTags.has(field.source),
+            );
+            const preservedFieldKeys = new Set(preservedFields.map((f) => f.key));
+            const preservedRenames = prev.columnRenames.filter(
+              (rename) => preservedFieldKeys.has(rename.fieldKey),
+            );
+
+            return {
+              ...prev,
+              ...patch,
+              selectedFields: preservedFields,
+              columnRenames: preservedRenames,
+            };
+          }
+
+          // Legacy single enrichment change — preserve valid fields
           const oldEnrichmentEntity = oldConfig?.enrichment?.entity ?? null;
           const newEnrichmentEntity = newConfig?.enrichment?.entity ?? null;
 
@@ -336,13 +364,6 @@ export function WizardModal({
     [],
   );
 
-  const handleNotificationsUpdate = useCallback(
-    (config: ExporterNotificationConfig) => {
-      setDraft((prev) => ({ ...prev, notifications: config }));
-    },
-    [],
-  );
-
   const handleNotificationsValidChange = useCallback((valid: boolean) => {
     setNotificationsValid(valid);
   }, []);
@@ -351,22 +372,14 @@ export function WizardModal({
   const stepContent = (() => {
     switch (currentStep) {
       case 0:
-        return <OutputConfigStep draft={draft} onUpdate={handleDraftUpdate} />;
+        return <OutputConfigStep draft={draft} onUpdate={handleDraftUpdate} connectionBasePath={connection?.basePath ?? ''} />;
       case 1:
         return <DataSourceFilterStep draft={draft} onUpdate={handleDraftUpdate} />;
       case 2:
         return <FieldMappingStep draft={draft} onUpdate={handleDraftUpdate} />;
       case 3:
-        return <ScheduleStep draft={draft} onUpdate={handleDraftUpdate} />;
+        return <ScheduleStep draft={draft} onUpdate={handleDraftUpdate} onNotificationsValidChange={handleNotificationsValidChange} />;
       case 4:
-        return (
-          <NotificationsStep
-            value={draft.notifications}
-            onUpdate={handleNotificationsUpdate}
-            onValidChange={handleNotificationsValidChange}
-          />
-        );
-      case 5:
         return <ReviewStep draft={draft} onEditStep={(step) => setCurrentStep(step)} />;
       default:
         return null;
@@ -400,6 +413,10 @@ export function WizardModal({
             onStepClick={handleStepClick}
             orientation="vertical"
           />
+          {/* Phase toggle — bottom of sidebar */}
+          <div className="mt-auto pt-4">
+            <PhaseToggle />
+          </div>
         </div>
 
         {/* Right content area */}
