@@ -113,4 +113,6 @@ export interface ModalFilterBuilderProps {
   maxDepth?: number
   maxConditions?: number
   maxGroups?: number
+  /** Custom empty state content — replaces the default "No filter applied" view */
+  emptyState?: React.ReactNode
 }

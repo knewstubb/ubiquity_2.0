@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../ui/dia
 import { ModalHeader } from '../composed/modal-header';
 import { ModalFooter } from '../composed/modal-footer';
 import { TruncatedText } from '../shared/TruncatedText';
+import { transactionalDatabases } from '../../data/transactionalData';
+import { useAccount } from '../../contexts/AccountContext';
 import type { Automation, ScheduleFrequency } from '../../models/automation';
 import type { Connection } from '../../models/connection';
 import type { UpdateType, BlankValueHandling } from '../../models/importer';
@@ -47,6 +49,19 @@ const PATH_MODE_LABELS: Record<string, string> = {
 };
 
 export function AutomationSettingsModal({ connector, connection, onClose, onEdit }: AutomationSettingsModalProps) {
+  const { selectedAccount } = useAccount();
+
+  function getSourceDisplayName(source: string): string {
+    if (source === 'contacts') return selectedAccount.name;
+    if (source === 'mailout') return 'Mailout';
+    if (source.startsWith('txn:')) {
+      const tableId = source.slice(4);
+      const table = transactionalDatabases.find((t) => t.id === tableId);
+      return table?.name ?? tableId;
+    }
+    return source;
+  }
+
   return (
     <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent className="max-w-[560px] p-0 gap-0">
@@ -153,49 +168,47 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
             </>
           ) : (
             <>
-              {/* Exporter: Data Source */}
-              <Section title="Data Source">
-                <Row label="Connection" value={connection.name} />
-                <Row label="Exporting From" value={DATA_TYPE_LABELS[connector.dataType] ?? connector.dataType} />
-                {(connector.dataType === 'contact' || connector.dataType === 'transactional_with_contact') && (
-                  <Row label="Contacts Database" value="Customer Contacts" />
-                )}
-                {connector.transactionalSource && (
-                  <Row label="Source Table" value={connector.transactionalSource} />
-                )}
-                {connector.enrichmentKeyField && (
-                  <Row label="Key Field" value={`${connector.enrichmentKeyField} → ContactRecord.id`} />
-                )}
-                <Row label="Filters" value="No filters applied" />
-              </Section>
-
-              {/* Exporter: Field Mapping */}
-              <Section title="Field Mapping">
-                {connector.selectedFields.length > 0 ? (
-                  <>
-                    {connector.selectedFields.map((field, index) => (
-                      <div key={field.key} className="flex justify-between py-0.5">
-                        <span className="text-sm text-muted-foreground">{index + 1}.</span>
-                        <TruncatedText className="text-sm text-foreground font-medium">{field.label}</TruncatedText>
-                      </div>
-                    ))}
-                  </>
-                ) : (
-                  <Row label="" value="No fields selected" />
-                )}
-              </Section>
-
-              {/* Exporter: File Configuration */}
-              <Section title="File Configuration">
+              {/* Exporter: File Settings */}
+              <Section title="File Settings">
+                <Row label="Exporter Name" value={connector.name} />
                 <Row label="File Type" value={connector.fileType.toUpperCase()} />
                 {connector.fileType === 'csv' && (
                   <Row label="Delimiter" value={connector.formatOptions.delimiter === ',' ? 'Comma (,)' : connector.formatOptions.delimiter === '|' ? 'Pipe (|)' : connector.formatOptions.delimiter === '\t' ? 'Tab' : connector.formatOptions.delimiter} />
                 )}
                 <Row label="Header Row" value={connector.formatOptions.includeHeader ? 'Enabled' : 'Disabled'} />
-                <Row label="Date Format" value={connector.formatOptions.dateFormat} />
                 <Row label="Timezone" value={connector.formatOptions.timezone} />
                 <Row label="File Naming" value={connector.fileNamingPattern || '—'} />
-                <Row label="Output Path" value={`/company/base-path/${toKebabCase(connector.name)}/`} />
+                <Row label="Destination" value={`/company/base-path/${toKebabCase(connector.name)}/`} />
+              </Section>
+
+              {/* Exporter: Data Source */}
+              <Section title="Data Source">
+                <Row label="Connection" value={connection.name} />
+                <Row label="Source" value={DATA_TYPE_LABELS[connector.dataType] ?? connector.dataType} />
+                {connector.transactionalSource && (
+                  <Row label="Table" value={connector.transactionalSource} />
+                )}
+              </Section>
+
+              {/* Exporter: Filter */}
+              <Section title="Filter">
+                <Row label="Conditions" value="No filters applied" />
+              </Section>
+
+              {/* Exporter: Export Fields */}
+              <Section title="Export Fields">
+                {connector.selectedFields.length > 0 ? (
+                  <div className="grid grid-cols-[140px_1fr] gap-x-6 gap-y-0.5">
+                    {connector.selectedFields.map((field) => (
+                      <React.Fragment key={field.key}>
+                        <span className="text-sm text-muted-foreground truncate" title={getSourceDisplayName(field.source)}>{getSourceDisplayName(field.source)}</span>
+                        <span className="text-sm text-foreground font-medium truncate text-right" title={field.label}>{field.label}</span>
+                      </React.Fragment>
+                    ))}
+                  </div>
+                ) : (
+                  <Row label="" value="No fields selected" />
+                )}
               </Section>
 
               {/* Exporter: Schedule */}
@@ -210,9 +223,8 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
 
               {/* Exporter: Notifications */}
               <Section title="Notifications">
-                <Row label="Email Address" value={connector.notifications?.emails?.join(', ') || '—'} />
-                <Row label="Successful Export" value={connector.notifications?.successEnabled ? 'Enabled' : 'Disabled'} />
-                <Row label="Failed Export" value={connector.notifications?.failureEnabled ? 'Enabled' : 'Disabled'} />
+                <Row label="Failure" value={connector.notifications?.emails?.join(', ') || '—'} />
+                <Row label="Success" value={connector.notifications?.successEnabled ? 'Enabled' : 'Disabled'} />
               </Section>
             </>
           )}

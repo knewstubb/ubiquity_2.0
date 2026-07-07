@@ -137,7 +137,7 @@ export type SourceConfig =
 export function enrichmentKey(config: EnrichmentConfig): string {
   switch (config.entity) {
     case 'messages':
-      return 'messages';
+      return 'mailout';
     case 'transactions':
       return `txn:${config.tableId}`;
     case 'contacts':
@@ -154,7 +154,7 @@ export function enrichmentKey(config: EnrichmentConfig): string {
 export function getSourceTag(config: EnrichmentConfig): string {
   switch (config.entity) {
     case 'messages':
-      return 'messages';
+      return 'mailout';
     case 'transactions':
       return `txn:${config.tableId}`;
     case 'contacts':

@@ -19,6 +19,8 @@ import {
 import { getFieldsForSourceConfig } from '../../utils/source-config-utils';
 import { getSourceTag } from '../../models/source-selection';
 import { usePrototypePhases } from '../../contexts/PrototypePhaseContext';
+import { useAccount } from '../../contexts/AccountContext';
+import { transactionalDatabases } from '../../data/transactionalData';
 import type { ExporterWizardDraft, ColumnRename } from '../../models/wizard';
 import type { SelectedField } from '../../models/automation';
 import type { EnrichmentConfig } from '../../models/source-selection';
@@ -31,6 +33,19 @@ interface FieldMappingStepProps {
 export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
   const { phases } = usePrototypePhases()
   const exporterPhase = phases.exporterPhase
+  const { selectedAccount } = useAccount()
+
+  // Resolve display name for source tags
+  function getSourceDisplayName(source: string): string {
+    if (source === 'contacts') return selectedAccount.name;
+    if (source === 'mailout') return 'Mailout';
+    if (source.startsWith('txn:')) {
+      const tableId = source.slice(4);
+      const table = transactionalDatabases.find((t) => t.id === tableId);
+      return table?.name ?? tableId;
+    }
+    return source;
+  }
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -343,10 +358,11 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                   <span className="text-xs text-accent-foreground font-semibold min-w-5 text-center shrink-0">{index + 1}</span>
                   <Lock size={12} weight="bold" className="text-muted-foreground shrink-0" />
                   <TruncatedText className="text-sm text-foreground font-medium max-w-[160px]">{field.label}</TruncatedText>
-                  <span className="text-xs text-muted-foreground font-medium py-0.5 px-2 bg-secondary border border-border/60 rounded-full shrink-0">{field.source}</span>
+                  <span className="text-xs text-muted-foreground font-medium py-0.5 px-2 bg-secondary border border-border/60 rounded-full shrink-0">{getSourceDisplayName(field.source)}</span>
 
                   {/* Column rename input */}
                   <div className="ml-auto flex items-center gap-1.5 shrink-0">
+                    {error && <span className="text-xs text-destructive whitespace-nowrap" data-testid={`field-error-${field.key}`}>{error}</span>}
                     <Input
                       value={renameValue}
                       onChange={(e) => handleRename(field.key, e.target.value)}
@@ -357,19 +373,20 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                       aria-invalid={!!error}
                       data-testid={`rename-input-${field.key}`}
                     />
-                    {isRenamed && (
-                      <button
-                        type="button"
-                        onClick={() => handleResetRename(field.key)}
-                        className="p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                        aria-label={`Reset column name for ${field.label}`}
-                        data-testid={`reset-rename-${field.key}`}
-                      >
-                        <ArrowCounterClockwise size={12} weight="bold" />
-                      </button>
-                    )}
+                    <div className="w-5 shrink-0 flex items-center justify-center">
+                      {isRenamed && (
+                        <button
+                          type="button"
+                          onClick={() => handleResetRename(field.key)}
+                          className="p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                          aria-label={`Reset column name for ${field.label}`}
+                          data-testid={`reset-rename-${field.key}`}
+                        >
+                          <ArrowCounterClockwise size={12} weight="bold" />
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  {error && <span className="text-xs text-destructive ml-1" data-testid={`field-error-${field.key}`}>{error}</span>}
                 </div>
               );
             })}
@@ -434,10 +451,11 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                   />
                   <TruncatedText className="text-sm font-medium max-w-[160px]">{field.label}</TruncatedText>
                 </div>
-                <span className="text-xs text-muted-foreground font-medium py-0.5 px-2 bg-secondary border border-border/60 rounded-full shrink-0">{field.source}</span>
+                <span className="text-xs text-muted-foreground font-medium py-0.5 px-2 bg-secondary border border-border/60 rounded-full shrink-0">{getSourceDisplayName(field.source)}</span>
 
                 {/* Column rename input */}
                 <div className="ml-auto flex items-center gap-1.5 shrink-0">
+                  {error && <span className="text-xs text-destructive whitespace-nowrap" data-testid={`field-error-${field.key}`}>{error}</span>}
                   <Input
                     value={renameValue}
                     onChange={(e) => handleRename(field.key, e.target.value)}
@@ -448,19 +466,20 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                     aria-invalid={!!error}
                     data-testid={`rename-input-${field.key}`}
                   />
-                  {isRenamed && (
-                    <button
-                      type="button"
-                      onClick={() => handleResetRename(field.key)}
-                      className="p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                      aria-label={`Reset column name for ${field.label}`}
-                      data-testid={`reset-rename-${field.key}`}
-                    >
-                      <ArrowCounterClockwise size={12} weight="bold" />
-                    </button>
-                  )}
+                  <div className="w-5 shrink-0 flex items-center justify-center">
+                    {isRenamed && (
+                      <button
+                        type="button"
+                        onClick={() => handleResetRename(field.key)}
+                        className="p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                        aria-label={`Reset column name for ${field.label}`}
+                        data-testid={`reset-rename-${field.key}`}
+                      >
+                        <ArrowCounterClockwise size={12} weight="bold" />
+                      </button>
+                    )}
+                  </div>
                 </div>
-                {error && <span className="text-xs text-destructive ml-1" data-testid={`field-error-${field.key}`}>{error}</span>}
               </div>
             );
           })}
@@ -478,7 +497,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                 />
                 <TruncatedText className="text-sm font-medium max-w-[160px]">{field.label}</TruncatedText>
               </div>
-              <span className="text-xs text-muted-foreground font-medium py-0.5 px-2 bg-secondary border border-border/60 rounded-full shrink-0">{field.source}</span>
+              <span className="text-xs text-muted-foreground font-medium py-0.5 px-2 bg-secondary border border-border/60 rounded-full shrink-0">{getSourceDisplayName(field.source)}</span>
             </div>
           ))}
         </div>

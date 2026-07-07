@@ -12,9 +12,12 @@
  *   inherits the visual context of its parent (card, panel, page section).
  *   The empty-state variant retains a border for standalone visibility.
  * - Empty filter (zero conditions) renders a flex-fill top-biased layout (flex-1 +
- *   flex spacer at 25% height) with Funnel icon + dashed-border CTA button —
+ *   flex spacer at 20% height) with ArrowsClockwise icon + dashed-border CTA button —
  *   positions content in the upper third rather than dead-centre, which feels more
  *   natural in tall panels and avoids the "floating in space" look.
+ *   Copy explains that all records are included by default (delta export model) —
+ *   the filter is optional narrowing, not a required gate.
+ *   Text capped at max-w-sm to maintain readable line lengths in wide panels.
  *   Button is auto-width (not full-width) to avoid looking oversized in wide panels.
  * - Populated state renders the LogicGroupRenderer with full logic group chrome
  * - Empty sourceCategories renders a disabled empty state message with border
@@ -26,15 +29,20 @@
  *   via recursive walk of the FilterGroup tree. When at limit, add actions are
  *   disabled at the LogicGroupRenderer level — buttons become inert rather than
  *   hidden, so users understand why they can't add more.
+ * - Custom empty state (emptyState prop): allows consumers to replace the default
+ *   "No filter applied" icon/text/CTA with context-specific content (e.g. segment
+ *   builder may show different copy). The dashed "Add a filter condition" CTA button
+ *   is always rendered below the custom content so add-flow remains accessible.
  *
  * @usage
  * - Use as the modal variant of the FilterBuilder composed component
  * - Best suited for multi-source filtering with deep hierarchies
  * - For simpler field sets (< 15 fields, single source), prefer the inline variant
+ * - Pass `emptyState` to customise the zero-condition view for different contexts
  */
 
 import { useState, useCallback, useMemo } from 'react'
-import { Warning, Funnel } from '@phosphor-icons/react'
+import { Warning, Funnel, ArrowsClockwise } from '@phosphor-icons/react'
 
 import type {
   ModalFilterBuilderProps,
@@ -65,6 +73,7 @@ export function ModalFilterBuilder({
   maxDepth = 3,
   maxConditions,
   maxGroups,
+  emptyState,
 }: ModalFilterBuilderProps) {
   const [inProgressCard, setInProgressCard] = useState<InProgressCard | null>(null)
 
@@ -166,20 +175,24 @@ export function ModalFilterBuilder({
   if (value.conditions.length === 0 && !inProgressCard) {
     return (
       <div className="flex-1 flex flex-col items-center gap-4">
-        <div className="flex-[0_0_25%]" />
-        <Funnel size={32} weight="regular" className="text-primary" />
-        <div className="text-center">
-          <p className="text-base font-semibold text-foreground m-0">No conditions yet</p>
-          <p className="text-sm text-muted-foreground mt-1 m-0">
-            Filter your exporter by contact data, activity,<br />or transactional records.
-          </p>
-        </div>
+        <div className="flex-[0_0_20%]" />
+        {emptyState ?? (
+          <>
+            <ArrowsClockwise size={32} weight="regular" className="text-primary" />
+            <div className="text-center max-w-sm">
+              <p className="text-base font-semibold text-foreground m-0">No filter applied</p>
+              <p className="text-sm text-muted-foreground mt-1.5 m-0">
+                All records created or modified since the last export will be included. You can also add conditions to narrow the export to specific records.
+              </p>
+            </div>
+          </>
+        )}
         <button
           type="button"
           onClick={handleStartAdd}
           className="border-2 border-dashed border-primary/40 rounded-lg py-2.5 px-5 text-sm font-semibold text-primary bg-transparent cursor-pointer hover:bg-primary/5 hover:border-primary/60 transition-colors"
         >
-          + Add your first condition
+          + Add a filter condition
         </button>
       </div>
     )

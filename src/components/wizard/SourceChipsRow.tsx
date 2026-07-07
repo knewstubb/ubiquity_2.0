@@ -18,7 +18,7 @@ interface SourceChipsRowProps {
 function getEnrichmentLabel(config: EnrichmentConfig): string {
   switch (config.entity) {
     case 'messages':
-      return 'Messages';
+      return 'Mailout';
     case 'transactions': {
       const table = transactionalDatabases.find((t) => t.id === config.tableId);
       return table?.name ?? config.tableId;

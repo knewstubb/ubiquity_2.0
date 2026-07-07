@@ -11,6 +11,8 @@ import {
 import { SelectorCard } from '../composed/selector-card';
 import { Button } from '../ui/button';
 import { transactionalDatabases } from '../../data/transactionalData';
+import { usePrototypePhases } from '../../contexts/PrototypePhaseContext';
+import { useAccount } from '../../contexts/AccountContext';
 import type { EnrichmentConfig } from '../../models/source-selection';
 import type { PrimarySourceType } from '../../models/source-selection';
 import { enrichmentKey } from '../../models/source-selection';
@@ -34,46 +36,70 @@ interface SourceCategory {
   hideWhenPrimary?: PrimarySourceType[];
 }
 
-function buildCategories(primarySource: PrimarySourceType): SourceCategory[] {
+function buildCategories(primarySource: PrimarySourceType, exporterPhase: number, accountName: string): SourceCategory[] {
   const categories: SourceCategory[] = [];
 
-  // Contacts — available when primary source is mailout (messages)
-  if (primarySource === 'messages') {
+  // Contacts — available when primary source is NOT contacts
+  if (primarySource !== 'contacts') {
     categories.push({
       id: 'contacts',
       label: 'Contacts',
       items: [
-        { key: 'contacts', label: 'Contacts', description: 'Profile and attribute fields', fieldCount: 7 },
+        { key: 'contacts', label: accountName, description: 'Profile and attribute fields', fieldCount: 12 },
       ],
     });
   }
 
-  // Messages — available when primary source is contacts
-  if (primarySource === 'contacts') {
+  // Phase 2: only Contacts enrichment is available
+  if (exporterPhase <= 2) return categories;
+
+  // Mailout — available when primary source is NOT mailout (messages), Phase 3+
+  if (primarySource !== 'messages') {
     categories.push({
-      id: 'messages',
-      label: 'Messages',
+      id: 'mailout',
+      label: 'Mailout',
       items: [
-        { key: 'messages', label: 'Messages', description: 'Email send and engagement data', fieldCount: 6 },
+        { key: 'mailout', label: 'Mailout', description: 'Email send and engagement data', fieldCount: 10 },
       ],
     });
   }
 
-  // Transaction Databases — always available
-  const txnItems: SourceItem[] = transactionalDatabases.map((table) => ({
-    key: `txn:${table.id}`,
-    label: table.name,
-    description: 'Purchase and activity data',
-    fieldCount: 6,
-  }));
+  // SMS — Phase 3 only
+  categories.push({
+    id: 'sms',
+    label: 'SMS',
+    items: [
+      { key: 'sms', label: 'SMS', description: 'SMS delivery and engagement data', fieldCount: 6 },
+    ],
+  });
 
-  if (txnItems.length > 0) {
-    categories.push({
-      id: 'transactions',
-      label: 'Transaction Databases',
-      items: txnItems,
-    });
+  // Transaction Databases — available when primary source is NOT transactions
+  if (primarySource !== 'transactions') {
+    const txnItems: SourceItem[] = transactionalDatabases.map((table) => ({
+      key: `txn:${table.id}`,
+      label: table.name,
+      description: 'Purchase and activity data',
+      fieldCount: 8,
+    }));
+
+    if (txnItems.length > 0) {
+      categories.push({
+        id: 'transactions',
+        label: 'Transactional',
+        items: txnItems,
+      });
+    }
   }
+
+  // Data Capture — Phase 3 only
+  categories.push({
+    id: 'data-capture',
+    label: 'Data Capture',
+    items: [
+      { key: 'surveys', label: 'Surveys', description: 'Survey response and completion data', fieldCount: 8 },
+      { key: 'forms', label: 'Forms', description: 'Form submission and field data', fieldCount: 6 },
+    ],
+  });
 
   return categories;
 }
@@ -106,8 +132,12 @@ export function AddSourceModal({
     }
   }, [open]);
 
-  // Build categories based on primary source
-  const categories = useMemo(() => buildCategories(primarySource), [primarySource]);
+  const { phases } = usePrototypePhases();
+  const exporterPhase = phases.exporterPhase;
+  const { selectedAccount } = useAccount();
+
+  // Build categories based on primary source and phase
+  const categories = useMemo(() => buildCategories(primarySource, exporterPhase, selectedAccount.name), [primarySource, exporterPhase, selectedAccount.name]);
 
   // Build a set of active enrichment keys for quick lookup
   const activeKeys = new Set(activeEnrichments.map(enrichmentKey));
@@ -140,7 +170,7 @@ export function AddSourceModal({
     for (const key of pendingSelections) {
       if (key === 'contacts') {
         newEnrichments.push({ entity: 'contacts' });
-      } else if (key === 'messages') {
+      } else if (key === 'mailout') {
         newEnrichments.push({
           entity: 'messages',
           channel: 'email',
@@ -216,6 +246,7 @@ export function AddSourceModal({
                       onToggle={() => handleToggle(item.key)}
                       label={item.label}
                       description={`${item.description} · ${item.fieldCount} fields`}
+                      className="w-full"
                     />
                   ))}
                 </div>

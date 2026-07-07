@@ -67,21 +67,9 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
                 Fix connection
               </Button>
             ) : (
-              connectorCount === 0 ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="ml-auto mr-10 text-primary border-primary/40 hover:bg-primary/5 hover:text-primary"
-                  onClick={(e) => { e.stopPropagation(); onAddConnector(connection.id); }}
-                >
-                  <Plus size={14} weight="bold" />
-                  Add automation
-                </Button>
-              ) : (
-                <span className="ml-auto mr-10 text-base text-muted-foreground">
+              <span className="ml-auto mr-10 text-base text-muted-foreground">
                   <span className="font-semibold">{activeCount}</span> of <span className="font-semibold">{connectorCount}</span> automations active
                 </span>
-              )
             )}
 
             {/* Right: Actions menu */}

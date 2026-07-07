@@ -24,13 +24,6 @@ const DELIMITER_OPTIONS: { value: FormatOptions['delimiter']; label: string }[] 
   { value: ';', label: 'Semicolon (;)' },
 ];
 
-const DATE_FORMAT_OPTIONS = [
-  { value: 'ISO8601', label: 'ISO 8601 (2025-05-09)' },
-  { value: 'US', label: 'US (05/09/2025)' },
-  { value: 'EU', label: 'EU (09/05/2025)' },
-  { value: 'UNIX', label: 'UNIX Timestamp' },
-];
-
 function slugifyName(name: string): string {
   return name
     .toLowerCase()
@@ -177,24 +170,6 @@ export function OutputConfigStep({ draft, onUpdate, connectionBasePath = '' }: O
                 </Select>
               </div>
 
-              {/* Date Format */}
-              <div className="flex-1">
-                <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Date Format</p>
-                <Select
-                  value={formatOptions.dateFormat}
-                  onValueChange={(v) => updateFormat({ dateFormat: v as FormatOptions['dateFormat'] })}
-                >
-                  <SelectTrigger aria-label="Date format" data-testid="date-format-select">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {DATE_FORMAT_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
               {/* Header Row */}
               <div className="flex-1">
                 <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Header Row</p>
@@ -243,13 +218,6 @@ export function OutputConfigStep({ draft, onUpdate, connectionBasePath = '' }: O
                 className="flex-1 rounded-none border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent"
               />
             </div>
-            <button
-              type="button"
-              onClick={() => {/* TODO: open folder browser modal */}}
-              className="shrink-0 h-9 px-3 text-xs font-medium text-primary border border-border rounded-md bg-background hover:bg-secondary transition-colors cursor-pointer"
-            >
-              Browse
-            </button>
           </div>
           <InfoHint>
             Folder will be created on first export if it doesn't exist.

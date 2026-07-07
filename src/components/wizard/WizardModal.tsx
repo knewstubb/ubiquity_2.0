@@ -40,6 +40,7 @@ import { enrichmentKey, getSourceTag } from '../../models/source-selection';
 import { validateColumnName, validateColumnNames, validatePrefix } from '../../utils/exporter-utils';
 import { hydrateSourceConfig, detectStaleReferences } from '../../utils/source-config-utils';
 import { didSourceOrSubSourceChange, populateFieldsForTransition } from '../../utils/populate-fields';
+import { usePrototypePhases } from '../../contexts/PrototypePhaseContext';
 
 interface WizardModalProps {
   connectionId: string;
@@ -56,8 +57,9 @@ interface StepDef {
 
 const WIZARD_STEPS: StepDef[] = [
   { label: 'File Settings', description: 'Name your export and configure output file options.' },
-  { label: 'Data Source', description: 'Choose your data source and configure filters.' },
-  { label: 'Field Mapping', description: 'Select and reorder the fields to include in your export.' },
+  { label: 'Data Source', description: 'Choose your primary data source.' },
+  { label: 'Filter', description: 'Define which records to include in the export.' },
+  { label: 'Export Fields', description: 'Select and reorder the fields to include in your export.' },
   { label: 'Schedule', description: 'Configure when and how often this export runs.' },
   { label: 'Review', description: 'Review your exporter configuration before saving.' },
 ];
@@ -151,7 +153,7 @@ export function WizardModal({
   const previousSourceConfigRef = useRef<SourceConfig | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>(
-    editConnectorId ? [0, 1, 2, 3, 4] : [],
+    editConnectorId ? Array.from({ length: WIZARD_STEPS.length }, (_, i) => i) : [],
   );
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
   const [notificationsValid, setNotificationsValid] = useState(
@@ -159,6 +161,9 @@ export function WizardModal({
   );
 
   // Dynamic steps — derive stepper label for Step 0 based on source selection
+  const { phases } = usePrototypePhases();
+  const exporterPhase = phases.exporterPhase;
+
   const steps = useMemo(() => {
     return WIZARD_STEPS;
   }, []);
@@ -177,11 +182,14 @@ export function WizardModal({
 
     switch (stepLabel) {
       case 'Data Source': {
-        // Allow proceeding if "All changes" or "Mailout" mode selected, or if filter has conditions
-        if (draft.dataSourceMode === 'all_changes' || draft.dataSourceMode === 'mailout') return true;
+        // Allow proceeding when a source is selected
         return draft.sourceConfig !== null;
       }
-      case 'Field Mapping': {
+      case 'Filter': {
+        // Filter is always valid — empty means "all changes since last export"
+        return true;
+      }
+      case 'Export Fields': {
         if (draft.selectedFields.length === 0) return false;
         // Validate column renames
         for (const field of draft.selectedFields) {
@@ -208,8 +216,8 @@ export function WizardModal({
       case 'Schedule': {
         const { frequency, weeklyDays } = draft.schedule;
         if (frequency === 'weekly' && !weeklyDays.some(Boolean)) return false;
-        // Notifications validation is part of this step
-        if (!notificationsValid) return false;
+        // Notifications validation only applies in Phase 2+ (when notifications section is visible)
+        if (exporterPhase >= 2 && !notificationsValid) return false;
         return true;
       }
       case 'Review': {
@@ -269,8 +277,10 @@ export function WizardModal({
       return;
     }
 
-    // Auto-populate fields when transitioning Data Source → Field Mapping
-    if (steps[currentStep]?.label === 'Data Source') {
+    // Auto-populate fields when transitioning to Export Fields
+    // This happens from Filter (Phase 3) or from Data Source (Phase 1–2 when Filter is hidden)
+    const nextStepLabel = steps[currentStep + 1]?.label;
+    if (nextStepLabel === 'Export Fields') {
       const patch = populateFieldsForTransition(draft, previousSourceConfigRef.current);
       if (patch) {
         setDraft(prev => ({ ...prev, ...patch }));
@@ -368,18 +378,21 @@ export function WizardModal({
     setNotificationsValid(valid);
   }, []);
 
-  // Step content based on current step index
+  // Step content based on current step label
   const stepContent = (() => {
-    switch (currentStep) {
-      case 0:
+    const stepLabel = steps[currentStep]?.label;
+    switch (stepLabel) {
+      case 'File Settings':
         return <OutputConfigStep draft={draft} onUpdate={handleDraftUpdate} connectionBasePath={connection?.basePath ?? ''} />;
-      case 1:
-        return <DataSourceFilterStep draft={draft} onUpdate={handleDraftUpdate} />;
-      case 2:
+      case 'Data Source':
+        return <DataSourceFilterStep key="data-source" draft={draft} onUpdate={handleDraftUpdate} />;
+      case 'Filter':
+        return <DataSourceFilterStep key="filter" draft={{ ...draft, dataSourceMode: 'filtered' }} onUpdate={handleDraftUpdate} />;
+      case 'Export Fields':
         return <FieldMappingStep draft={draft} onUpdate={handleDraftUpdate} />;
-      case 3:
+      case 'Schedule':
         return <ScheduleStep draft={draft} onUpdate={handleDraftUpdate} onNotificationsValidChange={handleNotificationsValidChange} />;
-      case 4:
+      case 'Review':
         return <ReviewStep draft={draft} onEditStep={(step) => setCurrentStep(step)} />;
       default:
         return null;
@@ -444,7 +457,7 @@ export function WizardModal({
             </div>
           </div>
 
-          <div className={cn("flex-1 px-8 flex flex-col gap-6 scrollbar-gutter-stable min-h-0", currentStep !== 1 && "overflow-y-auto pb-8")} data-testid="wizard-step-content">
+          <div className={cn("flex-1 px-8 flex flex-col gap-6 scrollbar-gutter-stable min-h-0", steps[currentStep]?.label !== 'Data Source' && steps[currentStep]?.label !== 'Filter' && "overflow-y-auto pb-8")} data-testid="wizard-step-content">
             {stepContent}
           </div>
 

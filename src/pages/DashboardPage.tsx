@@ -140,34 +140,78 @@ export default function DashboardPage() {
               onFixConnection={(id) => setPendingFixConnectionId(id)}
               onDeleteConnection={(id) => setPendingDeleteConnectionId(id)}
             >
-              {childConnectors.map((connector) => (
-                <AutomationCard
-                  key={connector.id}
-                  connector={connector}
-                  connectionError={connection.status === 'error'}
-                  onToggleStatus={() => {
-                    if (connector.status === 'paused') {
-                      setPendingActivation(connector);
-                    } else {
-                      toggleAutomationStatus(connector.id);
-                    }
-                  }}
-                  onViewSettings={() => setSettingsConnectorId(connector.id)}
-                  onEditWizard={() => handleEdit(connector.id)}
-                  onDelete={() => handleDeleteRequest(connector)}
-                  onActivityLog={() => setActivityLogConnectorId(connector.id)}
-                  onHistory={() => setHistoryConnectorId(connector.id)}
-                />
-              ))}
-              {!connection.status.includes('error') && (
-                <button
-                  type="button"
-                  className="flex items-center justify-center h-11 border border-dashed border-primary/40 rounded-lg bg-surface text-primary text-base font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary"
-                  onClick={() => handleAddConnector(connection.id)}
-                >
-                  + Add Automation
-                </button>
-              )}
+              {(() => {
+                const importers = childConnectors.filter((c) => c.direction === 'import');
+                const exporters = childConnectors.filter((c) => c.direction === 'export');
+                const showButtons = !connection.status.includes('error');
+                return (
+                  <>
+                    {/* Importers section */}
+                    <p className="text-sm text-muted-foreground font-semibold uppercase tracking-wide m-0 px-1 pt-2">Importers</p>
+                    {importers.map((connector) => (
+                      <AutomationCard
+                        key={connector.id}
+                        connector={connector}
+                        connectionError={connection.status === 'error'}
+                        onToggleStatus={() => {
+                          if (connector.status === 'paused') {
+                            setPendingActivation(connector);
+                          } else {
+                            toggleAutomationStatus(connector.id);
+                          }
+                        }}
+                        onViewSettings={() => setSettingsConnectorId(connector.id)}
+                        onEditWizard={() => handleEdit(connector.id)}
+                        onDelete={() => handleDeleteRequest(connector)}
+                        onActivityLog={() => setActivityLogConnectorId(connector.id)}
+                        onHistory={() => setHistoryConnectorId(connector.id)}
+                      />
+                    ))}
+                    {showButtons && (
+                      <button
+                        type="button"
+                        className="flex items-center gap-2.5 px-4 py-1.5 min-h-[38px] border border-solid border-primary/30 rounded-lg bg-surface text-primary text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary"
+                        onClick={() => navigate(`/importers/new/${connection.id}`, { state: { connectorName: '' } })}
+                      >
+                        <Plus size={16} weight="bold" className="shrink-0" />
+                        <span>Add Importer</span>
+                      </button>
+                    )}
+
+                    {/* Exporters section */}
+                    <p className="text-sm text-muted-foreground font-semibold uppercase tracking-wide m-0 px-1 pt-2">Exporters</p>
+                    {exporters.map((connector) => (
+                      <AutomationCard
+                        key={connector.id}
+                        connector={connector}
+                        connectionError={connection.status === 'error'}
+                        onToggleStatus={() => {
+                          if (connector.status === 'paused') {
+                            setPendingActivation(connector);
+                          } else {
+                            toggleAutomationStatus(connector.id);
+                          }
+                        }}
+                        onViewSettings={() => setSettingsConnectorId(connector.id)}
+                        onEditWizard={() => handleEdit(connector.id)}
+                        onDelete={() => handleDeleteRequest(connector)}
+                        onActivityLog={() => setActivityLogConnectorId(connector.id)}
+                        onHistory={() => setHistoryConnectorId(connector.id)}
+                      />
+                    ))}
+                    {showButtons && (
+                      <button
+                        type="button"
+                        className="flex items-center gap-2.5 px-4 py-1.5 min-h-[38px] border border-solid border-primary/30 rounded-lg bg-surface text-primary text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary"
+                        onClick={() => navigate(`/exporters/new/${connection.id}`, { state: { connectorName: '' } })}
+                      >
+                        <Plus size={16} weight="bold" className="shrink-0" />
+                        <span>Add Exporter</span>
+                      </button>
+                    )}
+                  </>
+                );
+              })()}
             </ConnectionRow>
           );
         })}

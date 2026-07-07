@@ -35,10 +35,15 @@ const CONTACTS_FIELDS: SourceFieldDefinition[] = [
   { key: 'contact_email', label: 'Email', source: 'contacts' },
   { key: 'contact_firstName', label: 'First Name', source: 'contacts' },
   { key: 'contact_lastName', label: 'Last Name', source: 'contacts' },
-  { key: 'contact_createdAt', label: 'Created At', source: 'contacts' },
-  { key: 'contact_status', label: 'Status', source: 'contacts' },
   { key: 'contact_phone', label: 'Phone', source: 'contacts' },
+  { key: 'contact_mobilePhone', label: 'Mobile Phone', source: 'contacts' },
+  { key: 'contact_dateOfBirth', label: 'Date of Birth', source: 'contacts' },
+  { key: 'contact_company', label: 'Company', source: 'contacts' },
+  { key: 'contact_status', label: 'Status', source: 'contacts' },
   { key: 'contact_segment', label: 'Segment', source: 'contacts' },
+  { key: 'contact_source', label: 'Acquisition Source', source: 'contacts' },
+  { key: 'contact_createdAt', label: 'Created At', source: 'contacts' },
+  { key: 'contact_updatedAt', label: 'Last Modified', source: 'contacts' },
 ];
 
 const TRANSACTIONS_FIELDS: SourceFieldDefinition[] = [
@@ -48,15 +53,21 @@ const TRANSACTIONS_FIELDS: SourceFieldDefinition[] = [
   { key: 'transaction_date', label: 'Date', source: 'transactions' },
   { key: 'transaction_type', label: 'Type', source: 'transactions' },
   { key: 'transaction_status', label: 'Status', source: 'transactions' },
+  { key: 'transaction_reference', label: 'Reference', source: 'transactions' },
+  { key: 'transaction_notes', label: 'Notes', source: 'transactions' },
 ];
 
 const MESSAGES_FIELDS: SourceFieldDefinition[] = [
   { key: 'message_id', label: 'Message ID', source: 'mailout' },
   { key: 'message_contactId', label: 'Contact ID', source: 'mailout' },
   { key: 'message_channel', label: 'Channel', source: 'mailout' },
-  { key: 'message_status', label: 'Status', source: 'mailout' },
+  { key: 'message_status', label: 'Delivery Status', source: 'mailout' },
   { key: 'message_sentAt', label: 'Sent At', source: 'mailout' },
+  { key: 'message_openedAt', label: 'Opened At', source: 'mailout' },
+  { key: 'message_clickedAt', label: 'Clicked At', source: 'mailout' },
+  { key: 'message_bouncedAt', label: 'Bounced At', source: 'mailout' },
   { key: 'message_campaignId', label: 'Campaign ID', source: 'mailout' },
+  { key: 'message_subject', label: 'Subject Line', source: 'mailout' },
 ];
 
 function getPrimaryFields(primarySource: PrimarySourceType): SourceFieldDefinition[] {
@@ -75,9 +86,9 @@ function getEnrichmentFields(enrichment: EnrichmentConfig): SourceFieldDefinitio
     case 'messages': {
       const entityFields = getPrimaryFields('messages');
       return entityFields.map((field) => ({
-        key: `enrichment_messages_${field.key}`,
+        key: `enrichment_mailout_${field.key}`,
         label: field.label,
-        source: 'messages',
+        source: 'mailout',
       }));
     }
     case 'transactions': {
@@ -180,7 +191,7 @@ export function formatSourceConfigSummary(config: SourceConfig): string {
 function formatEnrichmentLabel(enrichment: EnrichmentConfig): string {
   switch (enrichment.entity) {
     case 'messages':
-      return 'Messages';
+      return 'Mailout';
     case 'transactions': {
       const table = transactionalDatabases.find((t) => t.id === enrichment.tableId);
       return table ? table.name : enrichment.tableId || 'Transactions';
