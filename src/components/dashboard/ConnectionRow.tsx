@@ -86,14 +86,6 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-[220px] p-1.5" onClick={(e) => e.stopPropagation()}>
-                  {!isError && (
-                    <DropdownMenuItem
-                      className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md"
-                      onSelect={(e) => { e.preventDefault(); onAddConnector(connection.id); }}
-                    >
-                      <Plus size={16} weight="regular" /> Add Automation
-                    </DropdownMenuItem>
-                  )}
                   <DropdownMenuItem
                     className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md"
                     onSelect={(e) => { e.preventDefault(); onEditConnection?.(connection.id); }}

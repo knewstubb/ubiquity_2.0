@@ -91,7 +91,7 @@ export interface ExporterScheduleConfig {
   frequency: '10_minute' | 'hourly' | 'daily' | 'weekly';
   weeklyDays: boolean[];           // 7 booleans, Mon–Sun
   monthlyDays: number[];           // 1–28
-  // No time fields — system assigns execution time
+  timeOfDay: 'morning' | 'afternoon' | 'evening' | 'overnight' | null;
 }
 
 export interface ExporterNotificationConfig {
@@ -174,6 +174,7 @@ export const DEFAULT_EXPORTER_DRAFT: ExporterWizardDraft = {
     frequency: 'daily',
     weeklyDays: [false, false, false, false, false, false, false],
     monthlyDays: [],
+    timeOfDay: null,
   },
   notifications: {
     failureEmails: [],

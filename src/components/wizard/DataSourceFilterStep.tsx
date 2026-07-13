@@ -643,26 +643,19 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
             </div>
           )}
 
-          {/* Footer — estimated records always shown */}
-          <div className="shrink-0 border-t border-border px-4 py-3 bg-background">
-            <div className="flex items-center gap-6">
-              {exporterPhase >= 3 && totalConditions > 0 && (
-                <>
-                  <span className="text-sm text-muted-foreground">
-                    Conditions <span className={cn("font-semibold", conditionCountColour)}>{totalConditions}/{MAX_CONDITIONS}</span>
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    Groups <span className={cn("font-semibold", groupCountColour)}>{totalGroups}/{MAX_GROUPS}</span>
-                  </span>
-                </>
-              )}
-              <span className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
-                <TrendDown size={18} weight="regular" />
-                <span className="font-semibold text-foreground">{matchCount.toLocaleString()}</span>
-                estimated records
-              </span>
+          {/* Footer — conditions and groups counter */}
+          {exporterPhase >= 3 && totalConditions > 0 && (
+            <div className="shrink-0 border-t border-border px-4 py-3 bg-background">
+              <div className="flex items-center gap-6">
+                <span className="text-sm text-muted-foreground">
+                  Conditions <span className={cn("font-semibold", conditionCountColour)}>{totalConditions}/{MAX_CONDITIONS}</span>
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  Groups <span className={cn("font-semibold", groupCountColour)}>{totalGroups}/{MAX_GROUPS}</span>
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 

@@ -2819,7 +2819,7 @@ export const componentRegistry: ComponentEntry[] = [
     name: 'InfoHint',
     slug: 'info-hint',
     category: 'compositions',
-    description: 'Lightweight informational annotation with icon + text. Two variants: inline (transparent) and panel (contained info-coloured card).',
+    description: 'Lightweight informational annotation with icon + text. Two variants: inline (transparent) and panel (contained muted card).',
     searchTerms: ['info', 'hint', 'annotation', 'helper text', 'note', 'fyi', 'explanation'],
     component: lazy(() => import('../pages/component-demos/InfoHintDemo')),
     usesComponents: [],
@@ -2843,7 +2843,7 @@ export const componentRegistry: ComponentEntry[] = [
       ]},
       { heading: 'Variants', content: [
         'inline (default): transparent, just icon + text — sits within form groups without visual weight',
-        'panel: contained in a subtle info-coloured card — use when the hint needs visual separation from surrounding content',
+        'panel: contained in a muted card (bg-muted, text-muted-foreground) — use when the hint needs visual separation from surrounding content',
       ]},
     ],
   },

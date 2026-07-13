@@ -132,7 +132,7 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
       name: name.trim(),
       protocol,
       status: editConnection?.status ?? 'connected',
-      basePath: basePath || '/company/base-path/',
+      basePath: basePath || '/',
       accountId: editConnection?.accountId ?? selectedAccountId,
       config,
     }
@@ -217,8 +217,8 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
             <Input id="conn-name-input" type="text" placeholder="Enter connection name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="conn-base-path">Base Path</Label>
-            <Input id="conn-base-path" type="text" placeholder="/company/inbound/" value={basePath} onChange={(e) => setBasePath(e.target.value)} />
+            <Label htmlFor="conn-base-path">Base Path <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
+            <Input id="conn-base-path" type="text" placeholder="Leave blank for bucket root" value={basePath} onChange={(e) => setBasePath(e.target.value)} />
           </div>
           <ChipInput values={alertEmails} onChange={setAlertEmails} label="Alert Email(s)" type="email" placeholder="Add email…" aria-label="Alert email addresses" />
         </div>
@@ -309,8 +309,8 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
             <Input id="conn-name-input" type="text" placeholder="Enter connection name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="conn-base-path">Base Path</Label>
-            <Input id="conn-base-path" type="text" placeholder="/company/inbound/" value={basePath} onChange={(e) => setBasePath(e.target.value)} />
+            <Label htmlFor="conn-base-path">Base Path <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
+            <Input id="conn-base-path" type="text" placeholder="Leave blank for container root" value={basePath} onChange={(e) => setBasePath(e.target.value)} />
           </div>
           <ChipInput values={alertEmails} onChange={setAlertEmails} label="Alert Email(s)" type="email" placeholder="Add email…" aria-label="Alert email addresses" />
         </div>
@@ -355,8 +355,9 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
             <Input id="conn-name-input" type="text" placeholder="Enter connection name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="conn-base-path">Base Path</Label>
-            <Input id="conn-base-path" type="text" placeholder="/company/inbound/" value={basePath} onChange={(e) => setBasePath(e.target.value)} />
+            <Label htmlFor="conn-base-path">Base Path <span className="text-destructive">*</span></Label>
+            <Input id="conn-base-path" type="text" placeholder="/home/username/data/" value={basePath} onChange={(e) => setBasePath(e.target.value)} />
+            <p className="text-xs text-muted-foreground m-0">SFTP requires a writable base path. Root level is not supported.</p>
           </div>
           <ChipInput values={alertEmails} onChange={setAlertEmails} label="Alert Email(s)" type="email" placeholder="Add email…" aria-label="Alert email addresses" />
         </div>

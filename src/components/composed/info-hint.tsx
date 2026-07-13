@@ -17,7 +17,7 @@
  *
  * @variants
  * - inline: transparent background, icon + text only (default) — use within form groups
- * - panel: contained info-coloured card with centred layout — use when the hint needs visual separation from surrounding content
+ * - panel: contained muted card (bg-muted/text-muted-foreground) with centred layout — use when the hint needs visual separation from surrounding content
  */
 
 import { Info } from '@phosphor-icons/react'
@@ -35,7 +35,7 @@ export function InfoHint({ children, variant = 'inline', className }: InfoHintPr
     <div className={cn(
       'flex items-center gap-2 text-xs',
       variant === 'inline' && 'text-tertiary-foreground',
-      variant === 'panel' && 'rounded bg-info-subtle text-info-foreground px-3 py-2 justify-center',
+      variant === 'panel' && 'rounded bg-muted text-muted-foreground px-3 py-2 justify-center',
       className,
     )}>
       <Info size={14} weight="regular" className="shrink-0" />

@@ -2,6 +2,7 @@ import { SelectorCard } from '@/components/composed/selector-card';
 import { InfoHint } from '@/components/composed/info-hint';
 import { HelpPopover } from '@/components/composed/help-popover';
 import { DayPicker } from '@/components/composed/day-picker';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 import { NotificationsStep } from '../shared/NotificationsStep';
 import { usePrototypePhases } from '../../contexts/PrototypePhaseContext';
 import type { ExporterWizardDraft, ExporterScheduleConfig, ExporterNotificationConfig } from '../../models/wizard';
@@ -19,6 +20,15 @@ const FREQUENCY_OPTIONS: { value: Frequency; label: string; price: string }[] = 
   { value: 'hourly', label: 'Hourly', price: '$500 /month' },
   { value: 'daily', label: 'Daily', price: '$250 /month' },
   { value: 'weekly', label: 'Weekly', price: '$250 /month' },
+];
+
+type TimeOfDay = NonNullable<ExporterScheduleConfig['timeOfDay']>;
+
+const TIME_OF_DAY_OPTIONS: { value: TimeOfDay; label: string; description: string }[] = [
+  { value: 'morning', label: 'Morning', description: '6am – 12pm' },
+  { value: 'afternoon', label: 'Afternoon', description: '12pm – 6pm' },
+  { value: 'evening', label: 'Evening', description: '6pm – 12am' },
+  { value: 'overnight', label: 'Overnight', description: '12am – 6am' },
 ];
 
 export function ScheduleStep({ draft, onUpdate, onNotificationsValidChange }: ScheduleStepProps) {
@@ -69,12 +79,54 @@ export function ScheduleStep({ draft, onUpdate, onNotificationsValidChange }: Sc
 
           {/* Weekly: day-of-week picker */}
           {schedule.frequency === 'weekly' && (
+            <div className="flex items-start gap-6">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground m-0 mb-2">On <span className="text-destructive">*</span></p>
+                <DayPicker
+                  value={schedule.weeklyDays}
+                  onChange={(days) => updateSchedule({ weeklyDays: days })}
+                />
+              </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground m-0 mb-2">At</p>
+                <Select
+                  value={schedule.timeOfDay ?? undefined}
+                  onValueChange={(v) => updateSchedule({ timeOfDay: v as TimeOfDay })}
+                >
+                  <SelectTrigger aria-label="Time of day" className="w-48">
+                    <SelectValue placeholder="Select time window" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TIME_OF_DAY_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label} ({opt.description})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+
+          {/* Time of day: shown for Daily only */}
+          {schedule.frequency === 'daily' && (
             <div>
-              <p className="text-xs font-medium text-muted-foreground m-0 mb-2">On <span className="text-destructive">*</span></p>
-              <DayPicker
-                value={schedule.weeklyDays}
-                onChange={(days) => updateSchedule({ weeklyDays: days })}
-              />
+              <p className="text-xs font-medium text-muted-foreground m-0 mb-2">At</p>
+              <Select
+                value={schedule.timeOfDay ?? undefined}
+                onValueChange={(v) => updateSchedule({ timeOfDay: v as TimeOfDay })}
+              >
+                <SelectTrigger aria-label="Time of day" className="w-48">
+                  <SelectValue placeholder="Select time window" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TIME_OF_DAY_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label} ({opt.description})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           )}
         </div>
@@ -85,7 +137,7 @@ export function ScheduleStep({ draft, onUpdate, onNotificationsValidChange }: Sc
         <div className="w-40 shrink-0" />
         <div className="w-[552px]">
           <InfoHint variant="panel">
-            Execution time is assigned automatically by the system to avoid scheduling conflicts.
+            Specific execution time is assigned automatically by the system to avoid scheduling conflicts.
           </InfoHint>
         </div>
       </div>

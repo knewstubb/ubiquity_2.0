@@ -135,6 +135,7 @@ export function WizardModal({
             frequency: (existing.scheduleConfig?.frequency ?? 'daily') as ExporterScheduleConfig['frequency'],
             weeklyDays: existing.scheduleConfig?.weeklyDays ?? [false, false, false, false, false, false, false],
             monthlyDays: [],
+            timeOfDay: null,
           },
           notifications: existing.notifications
             ? {
