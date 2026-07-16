@@ -25,7 +25,7 @@ export interface Connection {
   name: string;
   protocol: 'S3' | 'SFTP' | 'Azure Blob';
   status: 'connected' | 'error';
-  basePath: string;
+  basePath: string | null;
   accountId: string;
   config: S3Config | SFTPConfig | AzureBlobConfig;
 }

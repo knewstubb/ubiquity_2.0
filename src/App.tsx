@@ -54,6 +54,7 @@ const ActivityLogPage = React.lazy(() => import('./pages/ActivityLogPage'));
 const UserManagementPage = React.lazy(() => import('./pages/UserManagementPage'));
 const PageComponentsPage = React.lazy(() => import('./pages/PageComponentsPage'));
 const FilterSandboxPage = React.lazy(() => import('./pages/FilterSandboxPage'));
+const AccountSyncPage = React.lazy(() => import('./pages/AccountSyncPage'));
 
 /** Redirects non-admin users to /dashboard */
 function AdminRoute({ children }: { children: React.ReactNode }) {
@@ -181,6 +182,7 @@ function App() {
                           </Route>
                           <Route path="/admin/page-components" element={<AdminRoute><PageComponentsPage /></AdminRoute>} />
                           <Route path="/admin/filter-sandbox" element={<FilterSandboxPage />} />
+                          <Route path="/admin/account-sync" element={<AdminRoute><AccountSyncPage /></AdminRoute>} />
                         </Routes>
                         </Suspense>
                         <FeedbackWidget />

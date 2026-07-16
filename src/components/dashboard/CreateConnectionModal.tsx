@@ -132,7 +132,7 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
       name: name.trim(),
       protocol,
       status: editConnection?.status ?? 'connected',
-      basePath: basePath || '/',
+      basePath: connectionType === 'sftp' ? (basePath || '/') : (basePath || null),
       accountId: editConnection?.accountId ?? selectedAccountId,
       config,
     }

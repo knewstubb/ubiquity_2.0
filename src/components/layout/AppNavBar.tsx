@@ -77,6 +77,7 @@ const NAV_ITEMS: NavItem[] = [
       { label: 'Brand Configuration', path: '/admin/brand' },
       { label: 'Business Rules', path: '/admin/rules' },
       { label: 'Integrations Config', path: '/admin/integrations' },
+      { label: 'Account Sync', path: '/admin/account-sync' },
       { label: 'Users & Permissions', path: '/settings/permissions' },
       { label: 'Sending Domains', path: '/admin/domains' },
       { label: 'API & Webhooks', path: '/admin/api' },

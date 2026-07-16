@@ -223,7 +223,7 @@ export function FileSettingsStep({
   }
 
   const effectiveBasePath =
-    !basePath || basePath === '/' ? '/company/base-path/' : basePath;
+    !basePath || basePath === '/' ? '/' : basePath;
 
   return (
     <div className="flex flex-col gap-8">
@@ -269,7 +269,15 @@ export function FileSettingsStep({
           <SegmentedControl
             options={PATH_MODES}
             value={pathMode}
-            onValueChange={(v) => updatePath({ pathMode: v as PathMode })}
+            onValueChange={(v) => {
+              const newMode = v as PathMode;
+              const patch: Partial<typeof filePathConfig> = { pathMode: newMode };
+              if (newMode === 'custom') {
+                if (!errorFolderPath) patch.errorFolderPath = 'error';
+                if (!archiveFolderPath) patch.archiveFolderPath = 'archive';
+              }
+              updatePath(patch);
+            }}
           />
 
           {pathMode === 'automatic' && (
@@ -308,40 +316,52 @@ export function FileSettingsStep({
           {pathMode === 'custom' && (
             <>
               <div>
-                <p className="text-xs font-medium text-muted-foreground m-0">Read Path <span className="text-destructive">*</span></p>
-                <Input
-                  value={readPath}
-                  onChange={(e) => {
-                    const newReadPath = e.target.value;
-                    const basePath = newReadPath.replace(/\/$/, '');
-                    const patch: Partial<typeof filePathConfig> = { readPath: newReadPath };
-                    // Autocomplete error and archive paths when they're empty or match the previous auto-generated value
-                    if (!errorFolderPath || errorFolderPath === readPath.replace(/\/$/, '') + '/error/') {
-                      patch.errorFolderPath = basePath ? basePath + '/error/' : '';
-                    }
-                    if (!archiveFolderPath || archiveFolderPath === readPath.replace(/\/$/, '') + '/archive/') {
-                      patch.archiveFolderPath = basePath ? basePath + '/archive/' : '';
-                    }
-                    updatePath(patch);
-                  }}
-                  placeholder="/custom/inbound/"
-                />
+                <p className="text-xs font-medium text-muted-foreground m-0">Read Path</p>
+                <div className="flex items-center h-9 rounded-md border border-input bg-background not-focus-within:hover:border-border-strong focus-within:border-ring focus-within:shadow-ring overflow-hidden">
+                  <span className="shrink-0 h-full flex items-center px-3 text-sm text-muted-foreground bg-muted border-r border-input select-none">{effectiveBasePath}</span>
+                  <input
+                    className="flex-1 h-full px-3 text-sm bg-transparent border-0 outline-none ring-0 placeholder:text-muted-foreground"
+                    value={readPath}
+                    onChange={(e) => {
+                      const newReadPath = e.target.value;
+                      const patch: Partial<typeof filePathConfig> = { readPath: newReadPath };
+                      if (!errorFolderPath || errorFolderPath === (readPath || '') + '/error') {
+                        patch.errorFolderPath = newReadPath ? newReadPath + '/error' : 'error';
+                      }
+                      if (!archiveFolderPath || archiveFolderPath === (readPath || '') + '/archive') {
+                        patch.archiveFolderPath = newReadPath ? newReadPath + '/archive' : 'archive';
+                      }
+                      updatePath(patch);
+                    }}
+                    placeholder="Leave blank to read from base path"
+                  />
+                </div>
               </div>
               <div>
-                <p className="text-xs font-medium text-muted-foreground m-0">Error Folder Path <span className="text-destructive">*</span></p>
-                <Input
-                  value={errorFolderPath}
-                  onChange={(e) => updatePath({ errorFolderPath: e.target.value })}
-                  placeholder="/custom/inbound/error/"
-                />
+                <p className="text-xs font-medium text-muted-foreground m-0">Error Folder Path</p>
+                <div className={cn("flex items-center h-9 rounded-md border bg-background not-focus-within:hover:border-border-strong focus-within:border-ring focus-within:shadow-ring overflow-hidden", !errorFolderPath ? "border-destructive" : "border-input")}>
+                  <span className="shrink-0 h-full flex items-center px-3 text-sm text-muted-foreground bg-muted border-r border-input select-none">{effectiveBasePath}</span>
+                  <input
+                    className="flex-1 h-full px-3 text-sm bg-transparent border-0 outline-none ring-0 placeholder:text-muted-foreground"
+                    value={errorFolderPath}
+                    onChange={(e) => updatePath({ errorFolderPath: e.target.value })}
+                    placeholder="error"
+                  />
+                </div>
+                {!errorFolderPath && <p className="text-xs text-destructive mt-1 m-0">Error folder path is required</p>}
               </div>
               <div>
-                <p className="text-xs font-medium text-muted-foreground m-0">Archive Folder Path <span className="text-destructive">*</span></p>
-                <Input
-                  value={archiveFolderPath}
-                  onChange={(e) => updatePath({ archiveFolderPath: e.target.value })}
-                  placeholder="/custom/inbound/archive/"
-                />
+                <p className="text-xs font-medium text-muted-foreground m-0">Archive Folder Path</p>
+                <div className={cn("flex items-center h-9 rounded-md border bg-background not-focus-within:hover:border-border-strong focus-within:border-ring focus-within:shadow-ring overflow-hidden", !archiveFolderPath ? "border-destructive" : "border-input")}>
+                  <span className="shrink-0 h-full flex items-center px-3 text-sm text-muted-foreground bg-muted border-r border-input select-none">{effectiveBasePath}</span>
+                  <input
+                    className="flex-1 h-full px-3 text-sm bg-transparent border-0 outline-none ring-0 placeholder:text-muted-foreground"
+                    value={archiveFolderPath}
+                    onChange={(e) => updatePath({ archiveFolderPath: e.target.value })}
+                    placeholder="archive"
+                  />
+                </div>
+                {!archiveFolderPath && <p className="text-xs text-destructive mt-1 m-0">Archive folder path is required</p>}
               </div>
             </>
           )}
