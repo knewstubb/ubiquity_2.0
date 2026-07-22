@@ -1,14 +1,15 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { ArrowRight, ArrowsLeftRight, WarningCircle } from '@phosphor-icons/react';
+import { ArrowRight, ArrowsLeftRight, WarningCircle, Key } from '@phosphor-icons/react';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@/components/ui/combobox';
-import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { CloseButton } from '@/components/ui/close-button';
+import { SegmentedToggle } from '@/components/ui/segmented-toggle';
 import { useAccount } from '../../contexts/AccountContext';
 import { accountSchemas } from '../../data/account-sync';
+import { SectionDivider } from '@/components/composed/section-divider';
 import type { SyncRule, ColumnMapping, SyncTableType, OnMissingBehaviour } from '../../models/account-sync';
 import { cn } from '@/lib/utils';
 
@@ -19,6 +20,8 @@ interface CreateSyncRuleModalProps {
   rule?: SyncRule;
   onSave: (rule: SyncRule) => void;
   onClose: () => void;
+  existingRules?: SyncRule[];
+  availableAccounts?: { id: string; name: string }[];
 }
 
 function generateId(): string {
@@ -35,7 +38,7 @@ function autoMatchColumn(source: string, targetColumns: string[]): string {
   return match ?? '';
 }
 
-export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave, onClose }: CreateSyncRuleModalProps) {
+export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave, onClose, existingRules = [], availableAccounts }: CreateSyncRuleModalProps) {
   const { accountsInActiveTree } = useAccount();
   const isEditing = !!rule;
   const isTransaction = tableType === 'transaction';
@@ -56,15 +59,38 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
   // Mapping rows — one per source column, target starts empty or auto-matched
   const [mappingRows, setMappingRows] = useState<{ sourceColumn: string; targetColumn: string }[]>([]);
 
-  // Account options
+  // Account options — use provided availableAccounts (from customer tree) or fall back to active tree
+  const accountPool = availableAccounts ?? accountsInActiveTree;
   const accountOptions = useMemo(
-    () => accountsInActiveTree.map((a) => ({ value: a.id, label: a.name })),
-    [accountsInActiveTree],
+    () => accountPool.map((a) => ({ value: a.id, label: a.name })),
+    [accountPool],
   );
 
   // Effective source/target
   const effectiveSourceId = isTransaction ? lockedSourceAccountId : sourceAccountId;
   const effectiveTargetId = isTransaction ? lockedTargetAccountId : targetAccountId;
+
+  // Detect duplicate source/target combo
+  const isDuplicateCombo = useMemo(() => {
+    if (!effectiveSourceId || !effectiveTargetId) return false;
+    return existingRules.some((r) =>
+      r.id !== rule?.id &&
+      r.tableType === tableType &&
+      r.sourceAccountId === effectiveSourceId &&
+      r.targetAccountId === effectiveTargetId,
+    );
+  }, [effectiveSourceId, effectiveTargetId, existingRules, rule?.id, tableType]);
+
+  // Detect bidirectional sync (reverse of an existing rule)
+  const isBidirectional = useMemo(() => {
+    if (!effectiveSourceId || !effectiveTargetId) return false;
+    return existingRules.some((r) =>
+      r.id !== rule?.id &&
+      r.tableType === tableType &&
+      r.sourceAccountId === effectiveTargetId &&
+      r.targetAccountId === effectiveSourceId,
+    );
+  }, [effectiveSourceId, effectiveTargetId, existingRules, rule?.id, tableType]);
 
   // Schemas
   const sourceSchema = useMemo(
@@ -90,6 +116,14 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
     const list = targetSchema.transactionalLists.find((l) => l.name === targetListName);
     return list?.columns ?? [];
   }, [targetSchema, isTransaction, targetListName]);
+
+  // Example values for source columns
+  const sourceExamples = useMemo<Record<string, string>>(() => {
+    if (!sourceSchema) return {};
+    if (!isTransaction) return sourceSchema.contactExamples ?? {};
+    const list = sourceSchema.transactionalLists.find((l) => l.name === sourceListName);
+    return list?.examples ?? {};
+  }, [sourceSchema, isTransaction, sourceListName]);
 
   // Target options with "— Do not sync —" at top
   const targetColumnOptions = useMemo(
@@ -147,6 +181,16 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
     }
   }, [sourceColumns, targetColumns, isEditing]);
 
+  // Sync match key selection into the mapping row (lock it)
+  useEffect(() => {
+    if (!matchColumnSource || !matchColumnTarget) return;
+    setMappingRows((prev) =>
+      prev.map((row) =>
+        row.sourceColumn === matchColumnSource ? { ...row, targetColumn: matchColumnTarget } : row,
+      ),
+    );
+  }, [matchColumnSource, matchColumnTarget]);
+
   // Handle target column change for a mapping row
   const handleMappingTargetChange = useCallback((index: number, newTarget: string) => {
     setMappingRows((prev) => prev.map((row, i) => i === index ? { ...row, targetColumn: newTarget } : row));
@@ -154,6 +198,15 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
 
   // Derived: how many are mapped
   const mappedCount = mappingRows.filter((r) => r.targetColumn !== '').length;
+
+  // Sort rows: match key row first (as soon as source is selected), then the rest in original order
+  const sortedMappingRows = useMemo(() => {
+    if (!matchColumnSource) return mappingRows;
+    const matchRow = mappingRows.find((r) => r.sourceColumn === matchColumnSource);
+    const rest = mappingRows.filter((r) => r.sourceColumn !== matchColumnSource);
+    return matchRow ? [matchRow, ...rest] : mappingRows;
+  }, [mappingRows, matchColumnSource]);
+
   const hasDuplicateTargets = useMemo(() => {
     const targets = mappingRows.filter((r) => r.targetColumn).map((r) => r.targetColumn);
     return targets.length !== new Set(targets).size;
@@ -170,7 +223,7 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
   const hasAccounts = effectiveSourceId && effectiveTargetId && effectiveSourceId !== effectiveTargetId;
   const hasMatchKey = matchColumnSource && matchColumnTarget;
   const hasLists = !isTransaction || (sourceListName && targetListName);
-  const isValid = hasAccounts && hasMatchKey && hasLists && !hasDuplicateTargets;
+  const isValid = hasAccounts && hasMatchKey && hasLists && !hasDuplicateTargets && !isDuplicateCombo;
 
   // Save
   function handleSave() {
@@ -207,7 +260,7 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
 
   return (
     <Dialog open={open} onOpenChange={(val) => { if (!val) onClose(); }}>
-      <DialogContent className="max-w-[1100px] max-h-[85vh] flex flex-col">
+      <DialogContent className="max-w-[1380px] max-h-[85vh] flex flex-col">
         <DialogHeader className="border-b border-border px-6 py-5 space-y-0">
           <DialogTitle>{modalTitle}</DialogTitle>
           <DialogDescription className="sr-only">Configure sync rule settings and column mappings</DialogDescription>
@@ -218,139 +271,144 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
         <div className="flex flex-1 overflow-hidden border-t border-border">
 
           {/* LEFT PANEL — Settings */}
-          <div className="w-[380px] shrink-0 overflow-y-auto border-r border-border px-6 py-5 space-y-6">
+          <div className="w-[380px] shrink-0 overflow-y-auto border-r border-border px-6 py-6">
 
-            {/* Source & Target */}
-            <section className="space-y-3">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground m-0">Source & Target</h3>
-
+            {/* Accounts section */}
+            <SectionDivider label="Accounts" className="mb-0" />
+            <div className="mt-3 flex flex-col gap-3">
               {isTransaction ? (
-                <div className="flex items-center gap-2 px-3 py-2.5 bg-secondary/60 border border-border rounded-md">
-                  <span className="text-xs font-medium text-foreground truncate">{sourceAccountName}</span>
-                  <ArrowRight size={12} weight="bold" className="shrink-0 text-muted-foreground" />
-                  <span className="text-xs font-medium text-foreground truncate">{targetAccountName}</span>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-sm font-semibold text-primary truncate">{sourceAccountName}</span>
+                  <ArrowRight size={14} weight="bold" className="shrink-0 text-primary" />
+                  <span className="text-sm font-semibold text-primary truncate">{targetAccountName}</span>
                 </div>
               ) : (
-                <div className="space-y-2.5">
+                <>
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Source Account</Label>
+                    <Label htmlFor="source-account">Source Account</Label>
                     <Combobox
                       value={sourceAccountId}
                       onValueChange={setSourceAccountId}
                       options={accountOptions.filter((a) => a.value !== targetAccountId)}
                       placeholder="Select source..."
                       searchPlaceholder="Search accounts..."
+                      disabled={isEditing}
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Target Account</Label>
+                    <Label htmlFor="target-account">Target Account</Label>
                     <Combobox
                       value={targetAccountId}
                       onValueChange={setTargetAccountId}
                       options={accountOptions.filter((a) => a.value !== sourceAccountId)}
                       placeholder="Select target..."
                       searchPlaceholder="Search accounts..."
+                      disabled={isEditing}
                     />
                   </div>
                   {sourceAccountId && targetAccountId && sourceAccountId === targetAccountId && (
                     <p className="text-xs text-destructive m-0">Source and target must be different accounts.</p>
                   )}
-                </div>
+                  {isDuplicateCombo && (
+                    <p className="text-xs text-destructive m-0">A sync rule with this source/target combination already exists.</p>
+                  )}
+                  {isBidirectional && !isDuplicateCombo && (
+                    <p className="text-xs text-amber-600 m-0">A reverse sync already exists for these accounts. While bidirectional syncs are possible, we don't recommend them.</p>
+                  )}
+                </>
               )}
-            </section>
+            </div>
 
             {/* Transactional lists (transaction only) */}
             {isTransaction && (
-              <section className="space-y-3 pt-4 border-t border-border">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground m-0">Lists</h3>
-                <div className="space-y-2.5">
+              <>
+                <div className="mt-6">
+                  <SectionDivider label="Lists" className="mb-0" />
+                </div>
+                <div className="mt-3 flex flex-col gap-3">
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Source List</Label>
-                    <Combobox value={sourceListName} onValueChange={setSourceListName} options={sourceListOptions} placeholder="Select..." />
+                    <Label>Source List</Label>
+                    <Combobox value={sourceListName} onValueChange={setSourceListName} options={sourceListOptions} placeholder="Select..." disabled={isEditing} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Target List</Label>
-                    <Combobox value={targetListName} onValueChange={setTargetListName} options={targetListOptions} placeholder="Select..." />
+                    <Label>Target List</Label>
+                    <Combobox value={targetListName} onValueChange={setTargetListName} options={targetListOptions} placeholder="Select..." disabled={isEditing} />
                   </div>
                 </div>
-              </section>
+              </>
             )}
 
-            {/* Match Key */}
-            <section className="space-y-3 pt-4 border-t border-border">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground m-0">Match Key</h3>
-              <p className="text-xs text-muted-foreground m-0">
-                {isTransaction
-                  ? 'Identifies the same transaction in both lists.'
-                  : 'Identifies the same contact in both accounts. Must be unique in the target.'
-                }
-              </p>
-              <div className="space-y-2.5">
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Source Column</Label>
-                  <Combobox
-                    value={matchColumnSource}
-                    onValueChange={setMatchColumnSource}
-                    options={sourceColumnOptions}
-                    placeholder="Select..."
-                    disabled={sourceColumns.length === 0}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Target Column</Label>
-                  <Combobox
-                    value={matchColumnTarget}
-                    onValueChange={setMatchColumnTarget}
-                    options={targetColumnOptionsForMatch}
-                    placeholder="Select..."
-                    disabled={targetColumns.length === 0}
-                  />
-                </div>
-              </div>
-            </section>
-
-            {/* Behaviour */}
-            <section className="space-y-4 pt-4 border-t border-border">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground m-0">Behaviour</h3>
-
+            {/* Match Key section — 24px gap above */}
+            <div className="mt-6">
+              <SectionDivider label="Match Key" className="mb-0" />
+            </div>
+            <p className="text-xs text-muted-foreground m-0 text-center mt-3">
+              {isTransaction
+                ? 'Identifies the same transaction in both lists.'
+                : 'Identifies the same contact in both accounts. Must be unique in the target.'
+              }
+            </p>
+            <div className="mt-3 flex flex-col gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs">
-                  {isTransaction ? 'When target not found' : 'When target contact not found'}
-                </Label>
-                <div className="flex items-center gap-1 p-0.5 bg-secondary rounded-md w-fit">
-                  <button
-                    type="button"
-                    className={cn(
-                      'px-2.5 py-1 text-xs font-medium rounded-md transition-colors',
-                      onMissing === 'create' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground',
-                    )}
-                    onClick={() => setOnMissing('create')}
-                  >
-                    Create new
-                  </button>
-                  <button
-                    type="button"
-                    className={cn(
-                      'px-2.5 py-1 text-xs font-medium rounded-md transition-colors',
-                      onMissing === 'skip' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground',
-                    )}
-                    onClick={() => setOnMissing('skip')}
-                  >
-                    Skip
-                  </button>
-                </div>
+                <Label>Source Column</Label>
+                <Combobox
+                  value={matchColumnSource}
+                  onValueChange={setMatchColumnSource}
+                  options={sourceColumnOptions}
+                  placeholder="Select..."
+                  disabled={sourceColumns.length === 0 || isEditing}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Target Column</Label>
+                <Combobox
+                  value={matchColumnTarget}
+                  onValueChange={setMatchColumnTarget}
+                  options={targetColumnOptionsForMatch}
+                  placeholder="Select..."
+                  disabled={targetColumns.length === 0 || isEditing}
+                />
+              </div>
+            </div>
+
+            {/* Behaviour section — 24px gap above */}
+            <div className="mt-6">
+              <SectionDivider label="Behaviour" className="mb-0" />
+            </div>
+            <div className="mt-3 flex flex-col gap-3">
+              {/* On Missing */}
+              <div>
+                <Label className="text-sm font-semibold">When target record not found</Label>
+                <p className="text-xs text-muted-foreground m-0 mt-0.5">Choose what happens when no matching record exists.</p>
+                <SegmentedToggle
+                  className="mt-2"
+                  value={onMissing}
+                  onValueChange={(val) => setOnMissing(val as OnMissingBehaviour)}
+                  options={[
+                    { value: 'create', label: 'Create new' },
+                    { value: 'skip', label: 'Skip missing' },
+                  ]}
+                  disabled={isEditing}
+                />
               </div>
 
-              <div className="flex items-center justify-between gap-3">
-                <div className="space-y-0.5 min-w-0">
-                  <Label className="text-xs font-medium">Mapped columns only</Label>
-                  <p className="text-[11px] text-muted-foreground m-0">
-                    Only trigger when a mapped column changes.
-                  </p>
-                </div>
-                <Switch size="xs" checked={triggerOnMappedOnly} onCheckedChange={setTriggerOnMappedOnly} />
+              {/* Trigger Scope */}
+              <div>
+                <Label className="text-sm font-semibold">Trigger scope</Label>
+                <p className="text-xs text-muted-foreground m-0 mt-0.5">A mapped column is any column you've linked to a field.</p>
+                <SegmentedToggle
+                  className="mt-2"
+                  value={triggerOnMappedOnly ? 'mapped' : 'any'}
+                  onValueChange={(val) => setTriggerOnMappedOnly(val === 'mapped')}
+                  options={[
+                    { value: 'any', label: 'Any column' },
+                    { value: 'mapped', label: 'Mapped only' },
+                  ]}
+                  disabled={isEditing}
+                />
               </div>
-            </section>
+            </div>
+
           </div>
 
           {/* RIGHT PANEL — Column Mapping Table */}
@@ -378,52 +436,82 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
                 </div>
 
                 {/* Table header */}
-                <div className="grid grid-cols-[1fr_auto_1.2fr] items-center px-5 py-2.5 bg-secondary border-b border-border gap-3">
-                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Source Column</span>
-                  <span className="w-5" />
-                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Target Column</span>
+                <div className="grid grid-cols-[1fr_40px_1.2fr_40px_1fr] items-center px-4 py-3 bg-secondary border-b border-border">
+                  <span className="text-sm font-semibold text-muted-foreground">Source Column</span>
+                  <span />
+                  <span className="text-sm font-semibold text-muted-foreground">Target Column</span>
+                  <span />
+                  <span className="text-sm font-semibold text-muted-foreground">Example Values</span>
                 </div>
 
                 {/* Mapping rows */}
                 <div className="flex-1 overflow-y-auto">
-                  {mappingRows.map((row, idx) => {
+                  {sortedMappingRows.map((row) => {
+                    const idx = mappingRows.findIndex((r) => r.sourceColumn === row.sourceColumn);
                     const isDuplicate = row.targetColumn !== '' &&
                       mappingRows.some((r, i) => i !== idx && r.targetColumn === row.targetColumn);
+                    const exampleValue = sourceExamples[row.sourceColumn] ?? '';
+                    const isMatchKeyRow = row.sourceColumn === matchColumnSource;
 
                     return (
                       <div
                         key={row.sourceColumn}
                         className={cn(
-                          'grid grid-cols-[1fr_auto_1.2fr] items-center px-5 py-2 gap-3 border-b border-border/50',
-                          isDuplicate && 'bg-destructive/5',
+                          'grid grid-cols-[1fr_40px_1.2fr_40px_1fr] items-center px-4 py-2 border-b border-border/50',
+                          isMatchKeyRow && 'bg-primary/5 border-b-border',
                         )}
                       >
                         {/* Source (read-only) */}
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-sm text-foreground font-medium truncate">{row.sourceColumn}</span>
-                        </div>
+                        <span className={cn(
+                          'text-sm font-normal text-foreground truncate flex items-center gap-1.5',
+                          isDuplicate && 'text-destructive font-medium',
+                          isMatchKeyRow && 'font-semibold text-primary',
+                        )}>
+                          {isMatchKeyRow && <Key size={14} weight="fill" className="shrink-0" />}
+                          {row.sourceColumn}
+                        </span>
 
                         {/* Arrow */}
-                        <ArrowRight
-                          size={12}
-                          weight="bold"
-                          className={cn(
-                            'shrink-0',
-                            row.targetColumn ? 'text-primary' : 'text-border',
-                          )}
-                        />
+                        <span className={cn(
+                          'text-sm text-center select-none',
+                          isDuplicate ? 'text-destructive' : row.targetColumn ? 'text-primary' : 'text-tertiary-foreground',
+                        )} aria-hidden="true">→</span>
 
-                        {/* Target (combobox) */}
+                        {/* Target — plain text when match key, combobox otherwise */}
                         <div className="flex items-center gap-2">
-                          <Combobox
-                            value={row.targetColumn}
-                            onValueChange={(val) => handleMappingTargetChange(idx, val)}
-                            options={targetColumnOptions}
-                            placeholder="— Do not sync —"
-                            status={isDuplicate ? 'error' : 'normal'}
-                          />
-                          {isDuplicate && (
-                            <WarningCircle size={14} weight="fill" className="shrink-0 text-destructive" />
+                          {isMatchKeyRow ? (
+                            <span className="text-sm font-semibold text-primary truncate px-3 h-9 flex items-center">{row.targetColumn}</span>
+                          ) : (
+                            <Combobox
+                              value={row.targetColumn}
+                              onValueChange={(val) => handleMappingTargetChange(idx, val)}
+                              options={targetColumnOptions}
+                              placeholder="— Do not sync —"
+                              status={isDuplicate ? 'error' : 'normal'}
+                            />
+                          )}
+                        </div>
+
+                        {/* Equals */}
+                        <span className={cn(
+                          'text-sm text-center select-none',
+                          isMatchKeyRow ? 'text-primary' : 'text-tertiary-foreground',
+                        )} aria-hidden="true">{row.targetColumn ? '=' : ''}</span>
+
+                        {/* Example value or status label */}
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          {isDuplicate ? (
+                            <>
+                              <WarningCircle size={16} weight="regular" className="shrink-0 text-destructive" />
+                              <span className="text-xs text-destructive">Duplicate mapping</span>
+                            </>
+                          ) : (
+                            <span className={cn(
+                              'text-sm truncate',
+                              isMatchKeyRow ? 'text-primary' : 'text-tertiary-foreground',
+                            )} title={row.targetColumn ? exampleValue : ''}>
+                              {row.targetColumn ? (exampleValue || '—') : ''}
+                            </span>
                           )}
                         </div>
                       </div>

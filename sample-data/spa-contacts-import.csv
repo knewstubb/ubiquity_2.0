@@ -1,0 +1,16 @@
+customer_id,first_name,last_name,email,mobile,date_of_birth,membership_tier,preferred_location,marketing_opt_in,sms_opt_in,signup_date,gender,address,city,postcode,referral_source,last_visit_date,total_spend,loyalty_points,preferred_therapist,allergies
+CUS-00501,Sarah,Chen,sarah.chen@gmail.com,+64 21 555 0142,1988-03-15,Gold,Auckland CBD,true,true,2024-01-20,Female,42 Queen Street,Auckland,1010,Instagram Ad,2026-07-10,2340.00,1870,Emma Wilson,Lavender oil
+CUS-00502,James,Wright,james.wright@outlook.co.nz,+64 22 301 8877,1992-11-28,Silver,Newmarket,true,false,2025-06-01,Male,15 Ponsonby Road,Auckland,1021,Word of mouth,2026-07-08,890.00,620,Liam Patel,None
+CUS-00503,Aroha,Ngata,aroha.ngata@hotmail.com,+64 27 889 4421,1985-07-22,Gold,Wellington CBD,true,true,2023-11-10,Female,8 Lambton Quay,Wellington,6011,Referral,2026-07-12,3100.00,2450,Sophie Adams,Tea tree oil
+CUS-00504,Ben,Thompson,ben.thompson@icloud.com,+64 21 776 3390,1990-05-03,Bronze,Auckland CBD,false,false,2026-02-14,Male,22 Karangahape Road,Auckland,1010,Google Search,2026-06-28,320.00,180,Emma Wilson,None
+CUS-00505,Mei,Lin,mei.lin88@gmail.com,+64 22 445 9012,1988-09-17,Gold,Christchurch,true,true,2024-08-05,Female,5 Riccarton Road,Christchurch,8041,Facebook,2026-07-15,2780.00,2100,Olivia Brown,Eucalyptus
+CUS-00506,David,Patel,d.patel@xtra.co.nz,+64 27 332 1100,1976-12-01,Platinum,Auckland CBD,true,true,2022-03-18,Male,100 Symonds Street,Auckland,1010,Existing customer,2026-07-18,8450.00,6200,Liam Patel,None
+CUS-00507,Emma,Jackson,emma.j@gmail.com,+64 21 998 7654,1995-02-28,Silver,Queenstown,true,false,2025-01-09,Female,34 Shotover Street,Queenstown,9300,TripAdvisor,2026-07-05,640.00,410,Hannah Lee,Almond oil
+CUS-00508,Tane,Morrison,tane.morrison@outlook.co.nz,+64 22 567 8901,1983-08-14,Gold,Wellington CBD,true,true,2024-04-22,Male,71 Cuba Street,Wellington,6011,Instagram Ad,2026-07-14,1920.00,1540,Sophie Adams,None
+CUS-00509,Lisa,Wang,lisa.wang@yahoo.com,+64 27 112 3344,1991-06-30,Bronze,Newmarket,true,false,2026-05-11,Female,9 Broadway,Auckland,1023,Walk-in,2026-07-02,210.00,90,Emma Wilson,Peanut oil
+CUS-00510,Marcus,Kelly,marcus.k@proton.me,+64 21 443 2211,1987-01-19,Silver,Auckland CBD,false,false,2025-09-03,Male,55 Victoria Street,Auckland,1010,Google Search,2026-06-20,980.00,720,Liam Patel,None
+CUS-00511,Priya,Sharma,priya.sharma@gmail.com,+64 22 876 5432,1993-04-11,Gold,Christchurch,true,true,2024-06-15,Female,18 Colombo Street,Christchurch,8011,Referral,2026-07-16,2150.00,1680,Olivia Brown,None
+CUS-00512,Josh,Campbell,josh.campbell@live.com,+64 27 654 9870,1989-10-25,Bronze,Queenstown,true,false,2026-01-20,Male,12 Camp Street,Queenstown,9300,Booking.com,2026-06-30,450.00,280,Hannah Lee,Lavender oil
+CUS-00513,Hana,Suzuki,hana.s@icloud.com,+64 21 223 4455,1996-12-08,Silver,Auckland CBD,true,true,2025-03-28,Female,67 High Street,Auckland,1010,Instagram Ad,2026-07-11,760.00,530,Emma Wilson,None
+CUS-00514,Tom,Richardson,tom.r@gmail.com,+64 22 998 1122,1980-03-27,Platinum,Wellington CBD,true,true,2023-02-14,Male,3 Courtenay Place,Wellington,6011,Existing customer,2026-07-17,7200.00,5800,Sophie Adams,None
+CUS-00515,Nikita,Volkov,nikita.v@outlook.co.nz,+64 27 445 6677,1994-08-05,Bronze,Newmarket,false,false,2026-04-01,Female,28 Remuera Road,Auckland,1050,Walk-in,2026-07-01,180.00,60,Liam Patel,Shellfish allergy
