@@ -8,6 +8,7 @@ function mapRowToAccount(row: any): Account {
     id: row.id,
     name: row.name,
     parentId: row.parent_id ?? null,
+    rootAccountId: row.root_account_id ?? row.id,
     childIds: row.child_ids ?? [],
     region: row.region,
     status: row.status,

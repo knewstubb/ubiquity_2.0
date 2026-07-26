@@ -27,4 +27,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-ubiquity_2.0/
+# Playwright MCP logs
+.playwright-mcp/
+
+# Semantic review output
+semantic-review/

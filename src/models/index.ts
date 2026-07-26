@@ -53,3 +53,10 @@ export type {
   MessagesSourceConfig,
   SourceConfig,
 } from './source-selection';
+
+// Feature flags
+export type { FeatureFlag, AccountFeature } from './featureFlag';
+export { FeatureState, FeatureStatus } from './featureFlag';
+
+// Job engine
+export type { Job, JobMetadata, JobType, JobStatus, JobPriority } from './job';

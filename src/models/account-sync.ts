@@ -37,6 +37,8 @@ export interface SyncRule {
 export interface AccountSchema {
   accountId: string;
   contactColumns: string[];
+  /** Example values for contact columns (keyed by column name) */
+  contactExamples?: Record<string, string>;
   transactionalLists: TransactionalList[];
 }
 
@@ -44,4 +46,6 @@ export interface TransactionalList {
   id: string;
   name: string;
   columns: string[];
+  /** Example values for list columns (keyed by column name) */
+  examples?: Record<string, string>;
 }

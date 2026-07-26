@@ -144,6 +144,7 @@ async function seedAccounts(): Promise<void> {
     id: a.id,
     name: a.name,
     parent_id: a.parentId,
+    root_account_id: a.rootAccountId,
     child_ids: a.childIds,
     region: a.region,
     status: a.status,
@@ -486,6 +487,34 @@ async function seedFeatureFlags(): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
+// 6c. Production-style feature flags (per-account resolution)
+// ---------------------------------------------------------------------------
+
+import { featureFlags as prodFeatureFlags, accountFeatures as prodAccountFeatures } from '../src/data/featureFlags.js';
+
+async function seedProductionFeatureFlags(): Promise<void> {
+  const flagRows = prodFeatureFlags.map((f) => ({
+    id: f.id,
+    name: f.name,
+    description: f.description,
+    state: f.state,
+    rollout_percentage: f.rolloutPercentage,
+    created_at: f.createdAt,
+    updated_at: f.updatedAt,
+  }));
+  await upsertRows('production_feature_flags', flagRows);
+
+  if (prodAccountFeatures.length > 0) {
+    const overrideRows = prodAccountFeatures.map((o) => ({
+      account_id: o.accountId,
+      feature_id: o.featureId,
+      is_enabled: o.isEnabled,
+    }));
+    await upsertRows('production_account_features', overrideRows, 'account_id,feature_id');
+  }
+}
+
+// ---------------------------------------------------------------------------
 // 7. Main — seed in dependency order
 // ---------------------------------------------------------------------------
 
@@ -539,6 +568,7 @@ async function main(): Promise<void> {
   // --- Feature flags ---
   console.log('\n🚩 Seeding feature flags...');
   await seedFeatureFlags();
+  await seedProductionFeatureFlags();
 
   console.log('\n✅ Seed complete!');
 }

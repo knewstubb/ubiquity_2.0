@@ -3,12 +3,15 @@ export type ImportDataType = 'contact' | 'transactional' | 'both';
 export type UpdateType = 'append-update' | 'append' | 'update';
 export type BlankValueHandling = 'preserve' | 'import';
 export type CsvDelimiter = 'comma' | 'tab' | 'pipe' | 'semicolon';
+export type CsvTextQualifier = 'double-quote' | 'single-quote' | 'none';
 export type CsvEncoding = 'utf-8' | 'iso-8859-1' | 'windows-1252';
 
 export interface CsvFormatConfig {
   delimiter: CsvDelimiter;
+  textQualifier: CsvTextQualifier;
   encoding: CsvEncoding;
   hasHeaderRow: boolean;
+  firstRowHasFieldNames: boolean;
 }
 
 export interface DedupeConfig {
@@ -104,8 +107,10 @@ export const DEFAULT_TRANSACTIONAL_CONFIG: TransactionalConfig = {
 
 export const DEFAULT_CSV_FORMAT_CONFIG: CsvFormatConfig = {
   delimiter: 'comma',
+  textQualifier: 'double-quote',
   encoding: 'utf-8',
   hasHeaderRow: true,
+  firstRowHasFieldNames: true,
 };
 
 export const DEFAULT_NOTIFICATION_CONFIG: NotificationConfig = {

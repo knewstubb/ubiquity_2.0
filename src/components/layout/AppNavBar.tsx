@@ -173,14 +173,14 @@ export function AppNavBar() {
   return (
     <nav className="relative top-0 z-50 bg-background border-b border-border h-14" aria-label="Main navigation" ref={navRef}>
       <div className="flex items-center pl-6 pr-4 h-full">
-        {/* Logo — teal rounded square with white U */}
+        {/* Logo — new brand icon (tilted U mark) */}
         <button
           type="button"
-          className="flex items-center justify-center w-8 h-8 bg-primary rounded-lg border-none cursor-pointer shrink-0 transition-opacity duration-150 hover:opacity-90"
+          className="flex items-center justify-center h-8 border-none cursor-pointer shrink-0 transition-opacity duration-150 hover:opacity-90 bg-transparent"
           onClick={() => navigate('/dashboard')}
           aria-label="UbiQuity home"
         >
-          <span className="font-sans text-lg font-bold leading-none text-primary-foreground">U</span>
+          <img src="/Logo.svg" alt="Ubiquity" className="h-7" />
         </button>
 
         <div className="w-px h-5 bg-border shrink-0 mx-3" aria-hidden="true" />

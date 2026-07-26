@@ -5,9 +5,10 @@ import { SegmentedControl } from '@/components/composed/segmented-control';
 import { PrefixInput } from '@/components/composed/prefix-input';
 import { HelpPopover } from '@/components/composed/help-popover';
 import { Input } from '../ui/input';
+import { Checkbox } from '../ui/checkbox';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 import { parse } from '../../utils/csv-parser';
-import type { ImporterConfig, PathMode, ImportDataType, CsvDelimiter, CsvEncoding } from '../../models/importer';
+import type { ImporterConfig, PathMode, ImportDataType, CsvDelimiter, CsvTextQualifier, CsvEncoding } from '../../models/importer';
 
 interface FileSettingsStepProps {
   config: ImporterConfig;
@@ -492,26 +493,54 @@ export function FileSettingsStep({
               </button>
 
               {showAdvanced && detectedFormat && (
-                <div className="border-l-2 border-border pl-4 mt-1">
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Delimiter</p>
-                    <Select
-                      value={config.csvFormat?.delimiter ?? 'comma'}
-                      onValueChange={(v) => onUpdate({ csvFormat: { ...config.csvFormat, delimiter: v as CsvDelimiter } })}
-                    >
-                      <SelectTrigger aria-label="CSV delimiter">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="comma">Comma (,)</SelectItem>
-                        <SelectItem value="tab">Tab</SelectItem>
-                        <SelectItem value="pipe">Pipe (|)</SelectItem>
-                        <SelectItem value="semicolon">Semicolon (;)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <p className="text-[11px] text-muted-foreground mt-1 mb-0">
-                      Auto-detected: {detectedFormat.delimiter}. Override if incorrect.
-                    </p>
+                <div className="border-l-2 border-border pl-5 mt-2">
+                  <div className="grid grid-cols-3 gap-6 items-end">
+                    {/* First row has field names */}
+                    <label className="flex items-center gap-2 cursor-pointer h-9">
+                      <Checkbox
+                        checked={config.csvFormat?.firstRowHasFieldNames ?? true}
+                        onCheckedChange={(checked) => onUpdate({ csvFormat: { ...config.csvFormat, firstRowHasFieldNames: checked === true } })}
+                        aria-label="First row has field names"
+                      />
+                      <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">First row has field names</span>
+                    </label>
+
+                    {/* Delimiter */}
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Delimiter</p>
+                      <Select
+                        value={config.csvFormat?.delimiter ?? 'comma'}
+                        onValueChange={(v) => onUpdate({ csvFormat: { ...config.csvFormat, delimiter: v as CsvDelimiter } })}
+                      >
+                        <SelectTrigger aria-label="CSV delimiter">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="comma">Comma (,)</SelectItem>
+                          <SelectItem value="tab">Tab</SelectItem>
+                          <SelectItem value="pipe">Pipe (|)</SelectItem>
+                          <SelectItem value="semicolon">Semicolon (;)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Text Qualifier */}
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Text Qualifier</p>
+                      <Select
+                        value={config.csvFormat?.textQualifier ?? 'double-quote'}
+                        onValueChange={(v) => onUpdate({ csvFormat: { ...config.csvFormat, textQualifier: v as CsvTextQualifier } })}
+                      >
+                        <SelectTrigger aria-label="Text qualifier">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="double-quote">Double Quote (&quot;)</SelectItem>
+                          <SelectItem value="single-quote">Single Quote (&apos;)</SelectItem>
+                          <SelectItem value="none">None</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
               )}

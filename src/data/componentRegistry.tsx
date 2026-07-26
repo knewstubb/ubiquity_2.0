@@ -3098,6 +3098,42 @@ export const componentRegistry: ComponentEntry[] = [
     ],
   },
   {
+    name: 'SegmentedToggle',
+    slug: 'segmented-toggle',
+    category: 'inputs',
+    description: 'Binary pill toggle with two equally-weighted options rendered inside a rounded container. Active segment is white with teal text; inactive is transparent with muted text.',
+    searchTerms: ['binary toggle', 'pill toggle', 'two option', 'switch selector', 'either or', 'create skip'],
+    component: lazy(() => import('../pages/component-demos/SegmentedToggleDemo')),
+    propControls: [
+      { name: 'label-left', label: 'Left Label', controlType: 'text', defaultValue: 'Create new' },
+      { name: 'label-right', label: 'Right Label', controlType: 'text', defaultValue: 'Skip missing' },
+      { name: 'max-width', label: 'Max Width', controlType: 'range', defaultValue: 100, min: 30, max: 100, step: 5 },
+      { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
+    ],
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Binary form choices where both options are equally weighted (Create new / Skip missing)',
+        'Inline either/or selectors in wizard steps or configuration panels',
+        'Prefer over Switch when both options need a visible label and neither is dominant',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Three or more options — use SegmentedControl instead',
+        'On/off boolean with a single label — use Switch instead',
+        'Mutually exclusive options that need descriptions — use RadioCard or SelectorCard',
+      ]},
+      { heading: 'States', content: [
+        'Active segment: white background, rounded-md, subtle shadow, teal (primary) text',
+        'Inactive segment: transparent background, muted text, hover brightens text',
+        'Container: bg-secondary with p-1.5, full rounding (rounded-lg)',
+        'Disabled: 50% opacity, pointer-events-none on wrapper',
+      ]},
+      { heading: 'Accessibility', content: [
+        'Each segment is a <button> with type="button" — keyboard focusable',
+        'Controlled only: value + onValueChange — parent manages state',
+      ]},
+    ],
+  },
+  {
     name: 'CheckboxCard',
     slug: 'checkbox-card',
     category: 'inputs',
@@ -3136,6 +3172,47 @@ export const componentRegistry: ComponentEntry[] = [
       ]},
       { heading: 'Motion', content: [
         'All colour/border transitions use 150ms duration per docs/ui/motion.md',
+      ]},
+    ],
+  },
+  {
+    name: 'Legacy Navigation',
+    slug: 'legacy-navigation',
+    category: 'sandboxes',
+    description: 'Interactive replica of the current UbiQuity staging navigation. Toggle between the current look and proposed rebrand variants to compare and plan changes.',
+    searchTerms: ['header', 'navigation', 'nav bar', 'rebrand', 'legacy', 'staging', 'current UI', 'chrome'],
+    demoLayout: 'full-bleed',
+    component: lazy(() => import('../pages/component-demos/LegacyNavDemo')),
+    designGuidance: [
+      { heading: 'Purpose', content: [
+        'This is NOT a production component — it is a design exploration sandbox',
+        'Use it to experiment with rebrand options and understand what CSS/layout changes are needed',
+        'The "current" variant matches staging (stagingengage.ubiquity.nz) as of July 2026',
+      ]},
+      { heading: 'Production architecture', content: [
+        'The real nav exists in TWO implementations: legacy MVC (HTML + bundled CSS) and React (CSS Modules)',
+        'Legacy pages: #header-outer + #nav rendered server-side by ASP.NET MVC layout',
+        'React pages (Connectors): NavBar-module CSS Module component — replicates same structure client-side',
+        'Both must be updated for any rebrand to be consistent across all pages',
+      ]},
+      { heading: 'Quick wins (CSS-only, no code rebuild)', content: [
+        'Background colour of header + nav bars',
+        'Logo text/colour (it is CSS-styled text, not an image on legacy)',
+        'Font family (Montserrat from Google Fonts — changeable via stylesheet)',
+        'Link colours (active/inactive/hover)',
+        'Footer text ("Powered by Ubiquity Software")',
+      ]},
+      { heading: 'Medium effort (needs code change)', content: [
+        'Replacing text logo with SVG/image',
+        'Reorganising nav items (reordering, renaming, grouping)',
+        'Adding/removing nav items',
+        'Changing account switcher styling',
+      ]},
+      { heading: 'Hard (needs architecture work)', content: [
+        'Merging header + nav into a single bar (separate HTML elements today)',
+        'Adding dropdown menus (legacy nav is flat links only)',
+        'Making the nav responsive/collapsible (currently fixed-width)',
+        'Unifying the two implementations (MVC HTML vs React CSS Module)',
       ]},
     ],
   },
