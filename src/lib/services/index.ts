@@ -38,6 +38,10 @@
  * │ journey-service   │ Journey definitions, nodes, edges, execution     │
  * │ (platform-api)    │ Temporal workflows                               │
  * │                   │ gRPC: 100% | Walking skeleton                    │
+ * ├─────────────────────────────────────────────────────────────────────┤
+ * │ account-sync-svc  │ Sync rules, column mappings, reference mappings  │
+ * │ (platform-api)    │ CDC event processing via Kinesis                 │
+ * │                   │ Status: PROPOSED | Depends on DataFlow           │
  * └─────────────────────────────────────────────────────────────────────┘
  *
  * Services NOT yet represented in this prototype:
@@ -63,3 +67,4 @@ export * as mailService from './mail-service';
 export * as connectorsService from './connectors-service';
 export * as journeyService from './journey-service';
 export * as jobService from './job-service';
+export * as accountSyncService from './account-sync-service';

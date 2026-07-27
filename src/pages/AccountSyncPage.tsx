@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Plus, ArrowsClockwise } from '@phosphor-icons/react';
+import { Plus, ArrowsClockwise, Warning } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@/components/ui/combobox';
 import { Label } from '@/components/ui/label';
@@ -9,8 +9,16 @@ import { CreateSyncRuleModal } from '../components/account-sync/CreateSyncRuleMo
 import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed';
 import { useAccount } from '../contexts/AccountContext';
 import { useToast } from '../components/shared/Toast';
-import { syncRules as seedRules } from '../data/account-sync';
 import { cn } from '@/lib/utils';
+
+// Service layer imports — documents production service ownership
+import {
+  syncRules as seedRules,
+  getContactRules,
+  getTransactionRules,
+} from '../lib/services/account-sync-service';
+import { getAccountTree } from '../lib/services/account-hierarchy';
+import { isFeatureEnabled } from '../lib/services/feature-flags';
 import type { SyncRule, SyncTableType } from '../models/account-sync';
 import type { Account } from '../models/account';
 
@@ -36,23 +44,19 @@ export default function AccountSyncPage() {
     [accounts],
   );
 
-  // Get the full tree under the selected customer account (the account + all descendants)
+  // Get the full tree under the selected customer account using account-hierarchy service
   const customerTree = useMemo<Account[]>(() => {
     if (!selectedCustomerAccountId) return [];
-    const tree: Account[] = [];
-    const queue = [selectedCustomerAccountId];
-    while (queue.length > 0) {
-      const id = queue.shift()!;
-      const acc = accounts.find((a) => a.id === id);
-      if (acc) {
-        tree.push(acc);
-        queue.push(...acc.childIds);
-      }
-    }
-    return tree;
+    return getAccountTree(selectedCustomerAccountId, accounts);
   }, [selectedCustomerAccountId, accounts]);
 
   const customerTreeIds = useMemo(() => new Set(customerTree.map((a) => a.id)), [customerTree]);
+
+  // Feature flag check — AccountSync must be enabled for the selected root account
+  const isAccountSyncEnabled = useMemo(() => {
+    if (!selectedCustomerAccountId) return true; // Don't block before selection
+    return isFeatureEnabled('AccountSync', selectedCustomerAccountId);
+  }, [selectedCustomerAccountId]);
 
   // Filter rules to those involving accounts in the selected customer tree
   const visibleRules = useMemo(
@@ -61,8 +65,9 @@ export default function AccountSyncPage() {
   );
 
   // Group: contact rules at top level, transaction rules nested under their parent
-  const contactRules = visibleRules.filter((r) => r.tableType === 'contact');
-  const transactionRules = visibleRules.filter((r) => r.tableType === 'transaction');
+  // Uses service layer functions for consistent filtering logic
+  const contactRules = useMemo(() => getContactRules(visibleRules), [visibleRules]);
+  const transactionRules = useMemo(() => getTransactionRules(visibleRules), [visibleRules]);
 
   function getAccountName(accountId: string): string {
     return accounts.find((a) => a.id === accountId)?.name ?? accountId;
@@ -200,7 +205,7 @@ export default function AccountSyncPage() {
             </p>
           )}
         </div>
-        {selectedCustomerAccountId && (
+        {selectedCustomerAccountId && isAccountSyncEnabled && (
           <Button onClick={openNewContactModal}>
             <Plus size={16} weight="bold" className="mr-1.5" />
             New Contact Sync
@@ -246,14 +251,19 @@ export default function AccountSyncPage() {
             />
           </div>
 
-          {/* Rules list */}
-          {visibleRules.length === 0 ? (
-            <EmptyState onCreateRule={openNewContactModal} />
+          {/* Feature flag gate — show disabled state if AccountSync not enabled */}
+          {!isAccountSyncEnabled ? (
+            <FeatureNotAvailable />
           ) : (
-            <div className="flex flex-col gap-4">
-              {contactRules.map((contactRule) => {
-                const childTransactions = transactionRules.filter((t) => t.parentRuleId === contactRule.id);
-                const isContactPaused = contactRule.status === 'paused';
+            <>
+              {/* Rules list */}
+              {visibleRules.length === 0 ? (
+                <EmptyState onCreateRule={openNewContactModal} />
+              ) : (
+                <div className="flex flex-col gap-4">
+                  {contactRules.map((contactRule) => {
+                    const childTransactions = transactionRules.filter((t) => t.parentRuleId === contactRule.id);
+                    const isContactPaused = contactRule.status === 'paused';
 
                 return (
                   <div
@@ -309,6 +319,8 @@ export default function AccountSyncPage() {
                 );
               })}
             </div>
+          )}
+            </>
           )}
         </>
       )}
@@ -367,6 +379,27 @@ function EmptyState({ onCreateRule }: { onCreateRule: () => void }) {
       <Button size="lg" onClick={onCreateRule}>
         Create Your First Sync
       </Button>
+    </div>
+  );
+}
+
+function FeatureNotAvailable() {
+  return (
+    <div className="flex flex-col items-center pt-[20vh] px-6 text-center">
+      {/* Visual anchor */}
+      <div className="text-amber-400 mb-4">
+        <Warning size={48} weight="light" />
+      </div>
+
+      {/* Headline */}
+      <h2 className="text-xl font-medium text-foreground m-0 mb-2">
+        Account Sync not available
+      </h2>
+
+      {/* Supporting line */}
+      <p className="text-sm text-muted-foreground m-0 max-w-[360px]">
+        This feature is not enabled for the selected account. Contact your administrator to request access.
+      </p>
     </div>
   );
 }

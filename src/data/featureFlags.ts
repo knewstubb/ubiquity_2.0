@@ -75,6 +75,15 @@ export const featureFlags: FeatureFlag[] = [
     createdAt: '2026-06-20T00:00:00Z',
     updatedAt: '2026-06-20T00:00:00Z',
   },
+  {
+    id: 'ff-account-sync',
+    name: 'AccountSync',
+    description: 'Cross-account contact/transaction synchronisation via CDC pipeline',
+    state: FeatureState.Enabled,
+    rolloutPercentage: 0,
+    createdAt: '2026-06-18T00:00:00Z',
+    updatedAt: '2026-06-18T00:00:00Z',
+  },
 ];
 
 /**
@@ -93,6 +102,11 @@ export const accountFeatures: AccountFeature[] = [
   {
     accountId: 'acc-master',
     featureId: 'ff-platform-filter-builder',
+    isEnabled: true,
+  },
+  {
+    accountId: 'acc-master',
+    featureId: 'ff-account-sync',
     isEnabled: true,
   },
 ];
