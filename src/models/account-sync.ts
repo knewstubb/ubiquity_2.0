@@ -39,6 +39,10 @@ export interface AccountSchema {
   contactColumns: string[];
   /** Example values for contact columns (keyed by column name) */
   contactExamples?: Record<string, string>;
+  /** Columns that are required in the target database (must be mapped when syncing TO this account) */
+  requiredColumns?: string[];
+  /** Columns that have a default value and don't need to be mapped (keyed by column name to default value) */
+  defaultColumnValues?: Record<string, string>;
   transactionalLists: TransactionalList[];
 }
 

@@ -109,4 +109,15 @@ export const accountFeatures: AccountFeature[] = [
     featureId: 'ff-account-sync',
     isEnabled: true,
   },
+  // Acme Corp feature flags
+  {
+    accountId: 'acc-acme',
+    featureId: 'ff-account-sync',
+    isEnabled: true,
+  },
+  {
+    accountId: 'acc-acme',
+    featureId: 'ff-journey-builder',
+    isEnabled: true,
+  },
 ];

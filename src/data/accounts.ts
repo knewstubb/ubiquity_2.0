@@ -194,4 +194,42 @@ export const accounts: Account[] = [
     region: 'National',
     status: 'active',
   },
+
+  // --- Acme Corp tree ---
+  {
+    id: 'acc-acme',
+    name: 'Acme Corp',
+    parentId: null,
+    rootAccountId: 'acc-acme',
+    childIds: ['acc-acme-akl', 'acc-acme-wlg', 'acc-acme-chc'],
+    region: 'National',
+    status: 'active',
+  },
+  {
+    id: 'acc-acme-akl',
+    name: 'Acme Auckland',
+    parentId: 'acc-acme',
+    rootAccountId: 'acc-acme',
+    childIds: [],
+    region: 'Auckland',
+    status: 'active',
+  },
+  {
+    id: 'acc-acme-wlg',
+    name: 'Acme Wellington',
+    parentId: 'acc-acme',
+    rootAccountId: 'acc-acme',
+    childIds: [],
+    region: 'Wellington',
+    status: 'active',
+  },
+  {
+    id: 'acc-acme-chc',
+    name: 'Acme Christchurch',
+    parentId: 'acc-acme',
+    rootAccountId: 'acc-acme',
+    childIds: [],
+    region: 'Christchurch',
+    status: 'active',
+  },
 ];

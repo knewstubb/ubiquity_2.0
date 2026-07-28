@@ -341,6 +341,152 @@ export const accountSchemas: AccountSchema[] = [
       },
     ],
   },
+
+  // --- Acme Corp tree ---
+
+  // Acme Corp (root) — uses formal naming: email_address, full_name, customer_id
+  {
+    accountId: 'acc-acme',
+    contactColumns: [
+      'email_address',
+      'full_name',
+      'customer_id',
+      'phone_number',
+      'date_of_birth',
+      'postal_address',
+      'marketing_consent',
+      'registration_date',
+    ],
+    contactExamples: {
+      email_address: 'mike.johnson@acme.co.nz',
+      full_name: 'Mike Johnson',
+      customer_id: 'ACME-001234',
+      phone_number: '+64 21 888 4455',
+      date_of_birth: '1985-07-22',
+      postal_address: '100 Lambton Quay, Wellington 6011',
+      marketing_consent: 'true',
+      registration_date: '2025-03-15',
+    },
+    requiredColumns: ['email_address', 'full_name', 'customer_id'],
+    defaultColumnValues: { registration_date: 'Current date' },
+    transactionalLists: [
+      {
+        id: 'tl-acme-orders',
+        name: 'Orders',
+        columns: ['order_id', 'product_name', 'order_date', 'quantity', 'total_amount', 'status'],
+        examples: {
+          order_id: 'ORD-2026-00891',
+          product_name: 'Widget Pro X',
+          order_date: '2026-07-20',
+          quantity: '5',
+          total_amount: '249.95',
+          status: 'Shipped',
+        },
+      },
+    ],
+  },
+
+  // Acme Auckland — uses first_name/last_name, email, client_ref
+  {
+    accountId: 'acc-acme-akl',
+    contactColumns: [
+      'email',
+      'first_name',
+      'last_name',
+      'client_ref',
+      'mobile',
+      'birth_date',
+      'address',
+      'opt_in',
+    ],
+    contactExamples: {
+      email: 'anna.smith@gmail.com',
+      first_name: 'Anna',
+      last_name: 'Smith',
+      client_ref: 'AKL-7892',
+      mobile: '+64 22 111 2233',
+      birth_date: '1990-01-05',
+      address: '22 Queen St, Auckland CBD',
+      opt_in: 'true',
+    },
+    requiredColumns: ['email', 'first_name', 'last_name', 'client_ref'],
+    defaultColumnValues: { opt_in: 'false' },
+    transactionalLists: [
+      {
+        id: 'tl-acme-akl-sales',
+        name: 'Sales',
+        columns: ['sale_id', 'item', 'sale_date', 'qty', 'price', 'sale_status'],
+      },
+    ],
+  },
+
+  // Acme Wellington — uses contact_email, given_name/surname, member_number
+  {
+    accountId: 'acc-acme-wlg',
+    contactColumns: [
+      'contact_email',
+      'given_name',
+      'surname',
+      'member_number',
+      'contact_phone',
+      'dob',
+      'street_address',
+      'newsletter_subscribed',
+    ],
+    contactExamples: {
+      contact_email: 'tom.brown@xtra.co.nz',
+      given_name: 'Tom',
+      surname: 'Brown',
+      member_number: 'WLG-MEM-0456',
+      contact_phone: '+64 4 555 6677',
+      dob: '1978-12-10',
+      street_address: '88 Willis Street, Wellington',
+      newsletter_subscribed: 'false',
+    },
+    requiredColumns: ['contact_email', 'given_name', 'surname', 'member_number'],
+    defaultColumnValues: { newsletter_subscribed: 'true' },
+    transactionalLists: [
+      {
+        id: 'tl-acme-wlg-transactions',
+        name: 'Transactions',
+        columns: ['txn_id', 'description', 'txn_date', 'units', 'amount', 'txn_status'],
+      },
+    ],
+  },
+
+  // Acme Christchurch — uses EmailAddr, FirstName/Surname, CustNo (legacy system style)
+  {
+    accountId: 'acc-acme-chc',
+    contactColumns: [
+      'EmailAddr',
+      'FirstName',
+      'Surname',
+      'CustNo',
+      'PhoneNo',
+      'DOB',
+      'StreetAddr',
+      'EmailOptIn',
+    ],
+    contactExamples: {
+      EmailAddr: 'lisa.w@outlook.com',
+      FirstName: 'Lisa',
+      Surname: 'Williams',
+      CustNo: 'CHC00789',
+      PhoneNo: '+64 3 222 8899',
+      DOB: '1995-06-30',
+      StreetAddr: '45 Riccarton Road, Christchurch',
+      EmailOptIn: 'true',
+    },
+    requiredColumns: ['EmailAddr', 'FirstName', 'Surname', 'CustNo'],
+    defaultColumnValues: { EmailOptIn: 'true' },
+    transactionalLists: [
+      {
+        id: 'tl-acme-chc-purchases',
+        name: 'Purchases',
+        columns: ['PurchaseID', 'ProductDesc', 'PurchaseDate', 'Qty', 'Value', 'PurchaseStatus'],
+      },
+    ],
+  },
 ];
 
 /**
