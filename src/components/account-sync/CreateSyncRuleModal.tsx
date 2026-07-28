@@ -540,7 +540,7 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
                 </div>
 
                 {/* Table header — same for both views: Source → Target */}
-                <div className="grid grid-cols-[1fr_40px_1fr_40px_120px] items-center px-6 py-3 bg-secondary border-b border-border">
+                <div className="grid grid-cols-[1fr_56px_1fr_56px_1fr] items-center px-6 py-3 bg-secondary border-b border-border">
                   <span className="text-sm font-semibold text-muted-foreground">Source Column</span>
                   <span />
                   <span className="text-sm font-semibold text-muted-foreground">Target Column</span>
@@ -563,7 +563,7 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
                         <div
                           key={row.sourceColumn}
                           className={cn(
-                            'grid grid-cols-[1fr_40px_1fr_40px_120px] items-center px-6 py-2 border-b border-border/50',
+                            'grid grid-cols-[1fr_56px_1fr_56px_1fr] items-center px-6 py-2 border-b border-border/50',
                             isMatchKeyRow && 'bg-primary/5 border-b-border',
                           )}
                         >
@@ -659,7 +659,7 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
                         <div
                           key={row.targetColumn}
                           className={cn(
-                            'grid grid-cols-[1fr_40px_1fr_40px_120px] items-center px-6 py-2 border-b border-border/50',
+                            'grid grid-cols-[1fr_56px_1fr_56px_1fr] items-center px-6 py-2 border-b border-border/50',
                             isMatchKeyRow && 'bg-primary/5 border-b-border',
                           )}
                         >
