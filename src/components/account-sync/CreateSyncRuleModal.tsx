@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { ArrowRight, ArrowsLeftRight, WarningCircle, Key, Asterisk } from '@phosphor-icons/react';
+import { ArrowRight, ArrowsLeftRight, WarningCircle, Key, Asterisk, Plus, Trash } from '@phosphor-icons/react';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@/components/ui/combobox';
@@ -12,8 +12,6 @@ import { accountSchemas } from '../../data/account-sync';
 import { SectionDivider } from '@/components/composed/section-divider';
 import type { SyncRule, ColumnMapping, SyncTableType, OnMissingBehaviour } from '../../models/account-sync';
 import { cn } from '@/lib/utils';
-
-type MappingViewMode = 'source-first' | 'target-first';
 
 interface CreateSyncRuleModalProps {
   open: boolean;
@@ -58,11 +56,9 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
   const [onMissing, setOnMissing] = useState<OnMissingBehaviour>(rule?.onMissing ?? 'create');
   const [triggerOnMappedOnly, setTriggerOnMappedOnly] = useState(rule?.triggerOnMappedOnly ?? false);
 
-  // Mapping rows — one per source column, target starts empty or auto-matched
-  const [mappingRows, setMappingRows] = useState<{ sourceColumn: string; targetColumn: string }[]>([]);
-  
-  // Mapping view mode — target-first (default, "map by source") or source-first
-  const [mappingViewMode, setMappingViewMode] = useState<MappingViewMode>('target-first');
+  // Mapping rows — starts with required fields pre-populated, additional rows added via "Add mapping" button
+  // Each row: { sourceColumn, targetColumn, isRequired } where isRequired rows have fixed target
+  const [mappingRows, setMappingRows] = useState<{ sourceColumn: string; targetColumn: string; isRequired: boolean }[]>([]);
 
   // Account options — use provided availableAccounts (from customer tree) or fall back to active tree
   const accountPool = availableAccounts ?? accountsInActiveTree;
@@ -130,26 +126,19 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
     return list?.examples ?? {};
   }, [sourceSchema, isTransaction, sourceListName]);
 
+  // Example values for target columns
+  const targetExamples = useMemo<Record<string, string>>(() => {
+    if (!targetSchema) return {};
+    if (!isTransaction) return targetSchema.contactExamples ?? {};
+    const list = targetSchema.transactionalLists.find((l) => l.name === targetListName);
+    return list?.examples ?? {};
+  }, [targetSchema, isTransaction, targetListName]);
+
   // Required columns in the target (from target schema)
   const targetRequiredColumns = useMemo<Set<string>>(() => {
     if (!targetSchema || isTransaction) return new Set();
     return new Set(targetSchema.requiredColumns ?? []);
   }, [targetSchema, isTransaction]);
-
-  // Default columns in the target (from target schema) — these have default values and show "— Default —"
-  const targetDefaultColumns = useMemo<Set<string>>(() => {
-    if (!targetSchema || isTransaction) return new Set();
-    return new Set(Object.keys(targetSchema.defaultColumnValues ?? {}));
-  }, [targetSchema, isTransaction]);
-
-  // Default column values (keyed by column name)
-  const targetDefaultValues = useMemo<Record<string, string>>(() => {
-    if (!targetSchema || isTransaction) return {};
-    return targetSchema.defaultColumnValues ?? {};
-  }, [targetSchema, isTransaction]);
-
-  // Special marker for "default" mapping (no source, uses system default)
-  const DEFAULT_MARKER = '__DEFAULT__';
 
   // Unmapped required columns — target required columns that have no source mapped to them
   const unmappedRequiredColumns = useMemo<Set<string>>(() => {
@@ -161,15 +150,6 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
     });
     return unmapped;
   }, [targetRequiredColumns, mappingRows]);
-
-  // Target options with "— Do not sync —" at top
-  const targetColumnOptions = useMemo(
-    () => [
-      { value: '', label: '— Do not sync —' },
-      ...targetColumns.map((c) => ({ value: c, label: c })),
-    ],
-    [targetColumns],
-  );
 
   // Transactional list options
   const sourceListOptions = useMemo(() => {
@@ -191,119 +171,104 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
     [targetColumns],
   );
 
-  // Build mapping rows when source/target columns change
+  // Build mapping rows when source/target columns change — only required fields are pre-populated
   useEffect(() => {
-    if (sourceColumns.length === 0) {
+    if (targetColumns.length === 0) {
       setMappingRows([]);
       return;
     }
 
     // If editing, populate from existing mappings
     if (isEditing && rule) {
-      const existingMap = new Map(rule.columnMappings.map((m) => [m.sourceColumn, m.targetColumn]));
-      setMappingRows(
-        sourceColumns.map((sc) => ({
-          sourceColumn: sc,
-          targetColumn: existingMap.get(sc) ?? '',
-        })),
-      );
+      const existingMappings = rule.columnMappings.map((m) => ({
+        sourceColumn: m.sourceColumn,
+        targetColumn: m.targetColumn,
+        isRequired: targetRequiredColumns.has(m.targetColumn),
+      }));
+      // Add any unmapped required columns at the top
+      const mappedTargets = new Set(existingMappings.map((m) => m.targetColumn));
+      const unmappedRequired = Array.from(targetRequiredColumns)
+        .filter((col) => !mappedTargets.has(col))
+        .map((col) => ({
+          sourceColumn: autoMatchColumn(col, sourceColumns),
+          targetColumn: col,
+          isRequired: true,
+        }));
+      // Sort: required fields first, then non-required
+      const sortedMappings = [
+        ...existingMappings.filter((m) => m.isRequired),
+        ...unmappedRequired,
+        ...existingMappings.filter((m) => !m.isRequired),
+      ];
+      setMappingRows(sortedMappings);
     } else {
-      // Auto-match where possible
-      setMappingRows(
-        sourceColumns.map((sc) => ({
-          sourceColumn: sc,
-          targetColumn: autoMatchColumn(sc, targetColumns),
-        })),
-      );
+      // New rule: only pre-populate required fields with auto-matched sources
+      const requiredRows = Array.from(targetRequiredColumns).map((targetCol) => ({
+        sourceColumn: autoMatchColumn(targetCol, sourceColumns),
+        targetColumn: targetCol,
+        isRequired: true,
+      }));
+      setMappingRows(requiredRows);
     }
-  }, [sourceColumns, targetColumns, isEditing]);
+  }, [sourceColumns, targetColumns, isEditing, targetRequiredColumns]);
 
-  // Sync match key selection into the mapping row (lock it)
+  // Sync match key selection into the mapping row (lock it) — also add as required if not present
   useEffect(() => {
     if (!matchColumnSource || !matchColumnTarget) return;
-    setMappingRows((prev) =>
-      prev.map((row) =>
-        row.sourceColumn === matchColumnSource ? { ...row, targetColumn: matchColumnTarget } : row,
-      ),
-    );
+    setMappingRows((prev) => {
+      // Check if match key target is already in the list
+      const hasMatchKeyRow = prev.some((row) => row.targetColumn === matchColumnTarget);
+      if (hasMatchKeyRow) {
+        // Update the existing row with the match key source
+        return prev.map((row) =>
+          row.targetColumn === matchColumnTarget 
+            ? { ...row, sourceColumn: matchColumnSource, isRequired: true } 
+            : row
+        );
+      } else {
+        // Add match key row at the top as required
+        return [
+          { sourceColumn: matchColumnSource, targetColumn: matchColumnTarget, isRequired: true },
+          ...prev,
+        ];
+      }
+    });
   }, [matchColumnSource, matchColumnTarget]);
 
-  // Handle target column change for a mapping row
+  // Handle source column change for a mapping row
+  const handleMappingSourceChange = useCallback((index: number, newSource: string) => {
+    setMappingRows((prev) => prev.map((row, i) => i === index ? { ...row, sourceColumn: newSource } : row));
+  }, []);
+
+  // Handle target column change for a non-required mapping row
   const handleMappingTargetChange = useCallback((index: number, newTarget: string) => {
     setMappingRows((prev) => prev.map((row, i) => i === index ? { ...row, targetColumn: newTarget } : row));
+  }, []);
+
+  // Add a new mapping row (both source and target are selectable)
+  const handleAddMappingRow = useCallback(() => {
+    setMappingRows((prev) => [...prev, { sourceColumn: '', targetColumn: '', isRequired: false }]);
+  }, []);
+
+  // Remove a non-required mapping row
+  const handleRemoveMappingRow = useCallback((index: number) => {
+    setMappingRows((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
   // Derived: how many are mapped
   const mappedCount = mappingRows.filter((r) => r.targetColumn !== '').length;
 
-  // Sort rows: match key row first (as soon as source is selected), then the rest in original order
+  // Sort rows: match key row first, then required fields, then additional mappings
   const sortedMappingRows = useMemo(() => {
-    if (!matchColumnSource) return mappingRows;
-    const matchRow = mappingRows.find((r) => r.sourceColumn === matchColumnSource);
-    const rest = mappingRows.filter((r) => r.sourceColumn !== matchColumnSource);
-    return matchRow ? [matchRow, ...rest] : mappingRows;
-  }, [mappingRows, matchColumnSource]);
-
-  // Target-first mapping rows — one row per target column, with source selection
-  const targetFirstRows = useMemo(() => {
-    if (targetColumns.length === 0) return [];
-    // Build a map from target column to source column (reverse of mappingRows)
-    const targetToSource = new Map<string, string>();
-    mappingRows.forEach((row) => {
-      if (row.targetColumn) {
-        targetToSource.set(row.targetColumn, row.sourceColumn);
-      }
-    });
-    // Create rows for each target column, pre-populating default columns with DEFAULT_MARKER
-    return targetColumns.map((tc) => {
-      const existingSource = targetToSource.get(tc);
-      // If no existing mapping and this is a default column, use DEFAULT_MARKER
-      const sourceValue = existingSource ?? (targetDefaultColumns.has(tc) ? DEFAULT_MARKER : '');
-      return {
-        targetColumn: tc,
-        sourceColumn: sourceValue,
-      };
-    });
-  }, [targetColumns, mappingRows, targetDefaultColumns]);
-
-  // Sorted target-first rows: match key row first, then required fields, then the rest
-  const sortedTargetFirstRows = useMemo(() => {
-    if (!matchColumnTarget) return targetFirstRows;
-    const matchRow = targetFirstRows.find((r) => r.targetColumn === matchColumnTarget);
-    const requiredRows = targetFirstRows.filter(
-      (r) => r.targetColumn !== matchColumnTarget && targetRequiredColumns.has(r.targetColumn)
-    );
-    const rest = targetFirstRows.filter(
-      (r) => r.targetColumn !== matchColumnTarget && !targetRequiredColumns.has(r.targetColumn)
-    );
-    return matchRow ? [matchRow, ...requiredRows, ...rest] : [...requiredRows, ...rest];
-  }, [targetFirstRows, matchColumnTarget, targetRequiredColumns]);
-
-  // Handle source column change in target-first view
-  const handleTargetFirstSourceChange = useCallback((targetCol: string, newSource: string) => {
-    setMappingRows((prev) => {
-      // Remove any existing mapping to this target
-      const withoutOldTarget = prev.map((row) =>
-        row.targetColumn === targetCol ? { ...row, targetColumn: '' } : row
-      );
-      // If newSource is empty or DEFAULT_MARKER, just clear the target mapping (default columns don't need a source row)
-      if (!newSource || newSource === DEFAULT_MARKER) return withoutOldTarget;
-      // Set the new source to map to this target
-      return withoutOldTarget.map((row) =>
-        row.sourceColumn === newSource ? { ...row, targetColumn: targetCol } : row
-      );
-    });
-  }, []);
-
-  // Source column options for target-first view (with "— None —" and "— Default —" options)
-  const sourceColumnOptionsWithEmpty = useMemo(
-    () => [
-      { value: '', label: '— None —' },
-      { value: DEFAULT_MARKER, label: '— Default —' },
-      ...sourceColumns.map((c) => ({ value: c, label: c })),
-    ],
-    [sourceColumns],
-  );
+    const matchRow = mappingRows.find((r) => r.targetColumn === matchColumnTarget);
+    const requiredRows = mappingRows.filter((r) => r.isRequired && r.targetColumn !== matchColumnTarget);
+    const additionalRows = mappingRows.filter((r) => !r.isRequired);
+    return [
+      ...(matchRow ? [matchRow] : []),
+      ...requiredRows,
+      ...additionalRows,
+    ];
+  }, [mappingRows, matchColumnTarget]);
 
   const hasDuplicateTargets = useMemo(() => {
     const targets = mappingRows.filter((r) => r.targetColumn).map((r) => r.targetColumn);
@@ -383,7 +348,7 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
               ) : (
                 <>
                   <div className="space-y-1.5">
-                    <Label htmlFor="source-account">Source Account</Label>
+                    <Label htmlFor="source-account">Source account</Label>
                     <Combobox
                       value={sourceAccountId}
                       onValueChange={setSourceAccountId}
@@ -394,7 +359,7 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="target-account">Target Account</Label>
+                    <Label htmlFor="target-account">Target account</Label>
                     <Combobox
                       value={targetAccountId}
                       onValueChange={setTargetAccountId}
@@ -425,11 +390,11 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
                 </div>
                 <div className="mt-3 flex flex-col gap-3">
                   <div className="space-y-1.5">
-                    <Label>Source List</Label>
+                    <Label>Source list</Label>
                     <Combobox value={sourceListName} onValueChange={setSourceListName} options={sourceListOptions} placeholder="Select..." disabled={isEditing} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>Target List</Label>
+                    <Label>Target list</Label>
                     <Combobox value={targetListName} onValueChange={setTargetListName} options={targetListOptions} placeholder="Select..." disabled={isEditing} />
                   </div>
                 </div>
@@ -448,7 +413,7 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
             </p>
             <div className="mt-3 flex flex-col gap-3">
               <div className="space-y-1.5">
-                <Label>Source Column</Label>
+                <Label>Source column</Label>
                 <Combobox
                   value={matchColumnSource}
                   onValueChange={setMatchColumnSource}
@@ -534,199 +499,145 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
                       </span>
                     )}
                     <Badge variant={mappedCount > 0 ? 'default-subtle' : 'neutral-subtle'} className="text-[10px]">
-                      {mappedCount} of {mappingViewMode === 'source-first' ? sourceColumns.length : targetColumns.length} mapped
+                      {mappedCount} mapped
                     </Badge>
                   </div>
                 </div>
 
-                {/* Table header — same for both views: Source → Target */}
-                <div className="grid grid-cols-[1fr_56px_1fr_56px_1fr] items-center px-6 py-3 bg-secondary border-b border-border">
+                {/* Table header */}
+                <div className="grid grid-cols-[1fr_40px_1fr_40px_1fr_40px] items-center px-6 py-3 bg-secondary border-b border-border">
                   <span className="text-sm font-semibold text-muted-foreground">Source Column</span>
                   <span />
                   <span className="text-sm font-semibold text-muted-foreground">Target Column</span>
                   <span />
                   <span className="text-sm font-semibold text-muted-foreground">Example Values</span>
+                  <span />
                 </div>
 
-                {/* Mapping rows — source-first view */}
-                {mappingViewMode === 'source-first' && (
-                  <div className="flex-1 overflow-y-auto">
-                    {sortedMappingRows.map((row) => {
-                      const idx = mappingRows.findIndex((r) => r.sourceColumn === row.sourceColumn);
-                      const isDuplicate = row.targetColumn !== '' &&
-                        mappingRows.some((r, i) => i !== idx && r.targetColumn === row.targetColumn);
-                      const exampleValue = sourceExamples[row.sourceColumn] ?? '';
-                      const isMatchKeyRow = row.sourceColumn === matchColumnSource;
-                      const isTargetRequired = row.targetColumn && targetRequiredColumns.has(row.targetColumn);
+                {/* Mapping rows */}
+                <div className="flex-1 overflow-y-auto">
+                  {sortedMappingRows.map((row, displayIndex) => {
+                    const actualIndex = mappingRows.findIndex(
+                      (r) => r.sourceColumn === row.sourceColumn && r.targetColumn === row.targetColumn
+                    );
+                    const isDuplicate = row.targetColumn !== '' &&
+                      mappingRows.filter((r) => r.targetColumn === row.targetColumn).length > 1;
+                    const exampleValue = targetExamples[row.targetColumn] ?? '';
+                    // Match key row: must have both a target and match the selected match key target
+                    const isMatchKeyRow = row.targetColumn !== '' && row.targetColumn === matchColumnTarget;
 
-                      return (
-                        <div
-                          key={row.sourceColumn}
-                          className={cn(
-                            'grid grid-cols-[1fr_56px_1fr_56px_1fr] items-center px-6 py-2 border-b border-border/50',
-                            isMatchKeyRow && 'bg-primary/5 border-b-border',
+                    return (
+                      <div
+                        key={`${row.targetColumn}-${displayIndex}`}
+                        className={cn(
+                          'grid grid-cols-[1fr_40px_1fr_40px_1fr_40px] items-center px-6 py-2 border-b border-border/50',
+                          isMatchKeyRow && 'bg-primary/5 border-b-border',
+                        )}
+                      >
+                        {/* Source — combobox for all rows */}
+                        <div className="flex items-center gap-2 h-9">
+                          {isMatchKeyRow ? (
+                            <span className="text-sm font-semibold text-primary truncate flex items-center gap-1.5">
+                              <Key size={14} weight="fill" className="shrink-0" />
+                              {row.sourceColumn}
+                            </span>
+                          ) : (
+                            <Combobox
+                              value={row.sourceColumn}
+                              onValueChange={(val) => handleMappingSourceChange(actualIndex, val)}
+                              options={[
+                                { value: '', label: '— Select source —' },
+                                ...sourceColumns.map((c) => ({ value: c, label: c })),
+                              ]}
+                              placeholder="— Select source —"
+                            />
                           )}
-                        >
-                          {/* Source (read-only) */}
-                          <span className={cn(
-                            'text-sm font-normal text-foreground truncate flex items-center gap-1.5',
-                            isDuplicate && 'text-destructive font-medium',
-                            isMatchKeyRow && 'font-semibold text-primary',
-                          )}>
-                            {isMatchKeyRow && <Key size={14} weight="fill" className="shrink-0" />}
-                            {row.sourceColumn}
-                          </span>
-
-                          {/* Arrow */}
-                          <span className={cn(
-                            'text-sm text-center select-none',
-                            isDuplicate ? 'text-destructive' : row.targetColumn ? 'text-primary' : 'text-tertiary-foreground',
-                          )} aria-hidden="true">→</span>
-
-                          {/* Target — plain text when match key, combobox otherwise */}
-                          <div className="flex items-center gap-2">
-                            {isMatchKeyRow ? (
-                              <span className="text-sm font-semibold text-primary truncate px-3 h-9 flex items-center gap-1.5">
-                                {row.targetColumn}
-                                {isTargetRequired && (
-                                  <Asterisk size={12} weight="bold" className="shrink-0 text-amber-600" />
-                                )}
-                              </span>
-                            ) : (
-                              <div className="flex items-center gap-1.5 flex-1">
-                                <Combobox
-                                  value={row.targetColumn}
-                                  onValueChange={(val) => handleMappingTargetChange(idx, val)}
-                                  options={targetColumnOptions.map((opt) => ({
-                                    ...opt,
-                                    label: targetRequiredColumns.has(opt.value) 
-                                      ? `${opt.label} *`
-                                      : opt.label,
-                                  }))}
-                                  placeholder="— Do not sync —"
-                                  status={isDuplicate ? 'error' : 'normal'}
-                                />
-                                {isTargetRequired && (
-                                  <Asterisk size={12} weight="bold" className="shrink-0 text-amber-600" />
-                                )}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Equals */}
-                          <span className={cn(
-                            'text-sm text-center select-none',
-                            isMatchKeyRow ? 'text-primary' : 'text-tertiary-foreground',
-                          )} aria-hidden="true">{row.targetColumn ? '=' : ''}</span>
-
-                          {/* Example value or status label */}
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            {isDuplicate ? (
-                              <>
-                                <WarningCircle size={16} weight="regular" className="shrink-0 text-destructive" />
-                                <span className="text-xs text-destructive">Duplicate mapping</span>
-                              </>
-                            ) : (
-                              <span className={cn(
-                                'text-sm truncate',
-                                isMatchKeyRow ? 'text-primary' : 'text-tertiary-foreground',
-                              )} title={row.targetColumn ? exampleValue : ''}>
-                                {row.targetColumn ? (exampleValue || '—') : ''}
-                              </span>
-                            )}
-                          </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                )}
 
-                {/* Mapping rows — target-first view: one row per target, source is selectable */}
-                {mappingViewMode === 'target-first' && (
-                  <div className="flex-1 overflow-y-auto">
-                    {sortedTargetFirstRows.map((row) => {
-                      const isMatchKeyRow = row.targetColumn === matchColumnTarget;
-                      const isRequired = targetRequiredColumns.has(row.targetColumn);
-                      const isDefaultValue = row.sourceColumn === DEFAULT_MARKER;
-                      const exampleValue = isDefaultValue 
-                        ? targetDefaultValues[row.targetColumn] ?? ''
-                        : (row.sourceColumn ? (sourceExamples[row.sourceColumn] ?? '') : '');
-                      // Check for duplicate source mappings (same source mapped to multiple targets) — exclude DEFAULT_MARKER
-                      const isDuplicateSource = row.sourceColumn !== '' && row.sourceColumn !== DEFAULT_MARKER &&
-                        sortedTargetFirstRows.filter((r) => r.sourceColumn === row.sourceColumn).length > 1;
+                        {/* Arrow */}
+                        <span className={cn(
+                          'text-sm text-center select-none',
+                          isDuplicate ? 'text-destructive' : row.sourceColumn ? 'text-primary' : 'text-tertiary-foreground',
+                        )} aria-hidden="true">→</span>
 
-                      return (
-                        <div
-                          key={row.targetColumn}
-                          className={cn(
-                            'grid grid-cols-[1fr_56px_1fr_56px_1fr] items-center px-6 py-2 border-b border-border/50',
-                            isMatchKeyRow && 'bg-primary/5 border-b-border',
-                          )}
-                        >
-                          {/* Source — plain text when match key, combobox otherwise */}
-                          <div className="flex items-center gap-2 h-9">
-                            {isMatchKeyRow ? (
-                              <span className={cn(
-                                'text-sm font-semibold text-primary truncate flex items-center gap-1.5',
-                              )}>
-                                <Key size={14} weight="fill" className="shrink-0" />
-                                {row.sourceColumn}
-                              </span>
-                            ) : (
-                              <Combobox
-                                value={row.sourceColumn}
-                                onValueChange={(val) => handleTargetFirstSourceChange(row.targetColumn, val)}
-                                options={sourceColumnOptionsWithEmpty}
-                                placeholder="— None —"
-                                status={isDuplicateSource ? 'error' : 'normal'}
-                              />
-                            )}
-                          </div>
-
-                          {/* Arrow */}
-                          <span className={cn(
-                            'text-sm text-center select-none',
-                            isDuplicateSource ? 'text-destructive' : row.sourceColumn ? 'text-primary' : 'text-tertiary-foreground',
-                          )} aria-hidden="true">→</span>
-
-                          {/* Target (read-only, with required indicator) */}
-                          <span className={cn(
-                            'text-sm font-normal text-foreground truncate flex items-center gap-1.5',
-                            isMatchKeyRow && 'font-semibold text-primary',
-                          )}>
-                            {row.targetColumn}
-                            {isRequired && (
+                        {/* Target — fixed text for required rows, combobox for added rows */}
+                        <div className="flex items-center gap-2 h-9">
+                          {row.isRequired ? (
+                            <span className={cn(
+                              'text-sm font-normal text-foreground truncate flex items-center gap-1.5',
+                              isMatchKeyRow && 'font-semibold text-primary',
+                            )}>
+                              {row.targetColumn}
                               <Asterisk size={12} weight="bold" className="shrink-0 text-amber-600" />
-                            )}
-                          </span>
-
-                          {/* Equals */}
-                          <span className={cn(
-                            'text-sm text-center select-none',
-                            isMatchKeyRow ? 'text-primary' : 'text-tertiary-foreground',
-                          )} aria-hidden="true">{row.sourceColumn ? '=' : ''}</span>
-
-                          {/* Example value or status label */}
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            {isDuplicateSource ? (
-                              <>
-                                <WarningCircle size={16} weight="regular" className="shrink-0 text-destructive" />
-                                <span className="text-xs text-destructive">Duplicate source</span>
-                              </>
-                            ) : (
-                              <span className={cn(
-                                'text-sm truncate',
-                                isMatchKeyRow ? 'text-primary' : 'text-tertiary-foreground',
-                              )} title={row.sourceColumn ? exampleValue : ''}>
-                                {row.sourceColumn ? (exampleValue || '—') : ''}
-                              </span>
-                            )}
-                          </div>
+                            </span>
+                          ) : (
+                            <Combobox
+                              value={row.targetColumn}
+                              onValueChange={(val) => handleMappingTargetChange(actualIndex, val)}
+                              options={[
+                                { value: '', label: '— Select target —' },
+                                ...targetColumns
+                                  .filter((c) => !targetRequiredColumns.has(c)) // Exclude required columns from dropdown
+                                  .map((c) => ({ value: c, label: c })),
+                              ]}
+                              placeholder="— Select target —"
+                              status={isDuplicate ? 'error' : 'normal'}
+                            />
+                          )}
                         </div>
-                      );
-                    })}
+
+                        {/* Equals */}
+                        <span className={cn(
+                          'text-sm text-center select-none',
+                          isMatchKeyRow ? 'text-primary' : 'text-tertiary-foreground',
+                        )} aria-hidden="true">{row.sourceColumn && row.targetColumn ? '=' : ''}</span>
+
+                        {/* Example value or status label */}
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          {isDuplicate ? (
+                            <>
+                              <WarningCircle size={16} weight="regular" className="shrink-0 text-destructive" />
+                              <span className="text-xs text-destructive">Duplicate</span>
+                            </>
+                          ) : (
+                            <span className={cn(
+                              'text-sm truncate',
+                              isMatchKeyRow ? 'text-primary' : 'text-tertiary-foreground',
+                            )} title={exampleValue}>
+                              {exampleValue || '—'}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Delete button — only for non-required rows */}
+                        <div className="flex items-center justify-center">
+                          {!row.isRequired && (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveMappingRow(actualIndex)}
+                              className="p-1.5 text-muted-foreground hover:text-destructive transition-colors rounded hover:bg-destructive/10"
+                              title="Remove mapping"
+                            >
+                              <Trash size={16} weight="regular" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {/* Add mapping button */}
+                  <div className="px-6 py-3 border-b border-border/50">
+                    <button
+                      type="button"
+                      onClick={handleAddMappingRow}
+                      className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+                    >
+                      <Plus size={16} weight="bold" />
+                      Add mapping
+                    </button>
                   </div>
-                )}
+                </div>
               </>
             ) : (
               /* Placeholder when schemas not ready */
@@ -741,7 +652,7 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
                         : 'No columns available for the selected accounts'
                     }
                   </p>
-                  <p className="text-xs text-tertiary-foreground mt-1 m-0">
+                  <p className="text-2xs text-tertiary-foreground mt-1 m-0">
                     Column mapping will appear here once both sides are configured.
                   </p>
                 </div>
@@ -750,20 +661,7 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
           </div>
         </div>
 
-        <DialogFooter className="border-t border-border justify-between">
-          {/* Left side — subtle view mode toggle */}
-          <div className="flex items-center">
-            {schemasReady && (
-              <button
-                type="button"
-                onClick={() => setMappingViewMode(mappingViewMode === 'source-first' ? 'target-first' : 'source-first')}
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {mappingViewMode === 'target-first' ? 'Map by target' : 'Map by source'}
-              </button>
-            )}
-          </div>
-          {/* Right side — actions */}
+        <DialogFooter className="border-t border-border justify-end">
           <div className="flex items-center gap-3">
             <Button variant="secondaryGhost" onClick={onClose}>Cancel</Button>
             <Button onClick={handleSave} disabled={!isValid}>
