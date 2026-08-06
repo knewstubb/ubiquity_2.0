@@ -260,7 +260,10 @@ export function CreateSyncRuleModal({ open, tableType, parentRule, rule, onSave,
 
   // Sort rows: match key row first, then required fields, then additional mappings
   const sortedMappingRows = useMemo(() => {
-    const matchRow = mappingRows.find((r) => r.targetColumn === matchColumnTarget);
+    // Only find a match row if matchColumnTarget is actually set
+    const matchRow = matchColumnTarget 
+      ? mappingRows.find((r) => r.targetColumn === matchColumnTarget)
+      : undefined;
     const requiredRows = mappingRows.filter((r) => r.isRequired && r.targetColumn !== matchColumnTarget);
     const additionalRows = mappingRows.filter((r) => !r.isRequired);
     return [
