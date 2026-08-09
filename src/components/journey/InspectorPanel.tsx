@@ -17,21 +17,27 @@ import {
   ArrowSquareRight,
   ArrowsIn,
   GearSix,
+  Play,
 } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
 import { CloseButton } from '../ui/close-button';
 import { useJourneys } from '../../contexts/JourneysContext';
 import type { JourneyNode, NodeType } from '../../models/journey';
+import { FIXED_START_ID } from '../../models/journey';
 import { TriggerConfig } from './config/TriggerConfig';
+import { StartConfig } from './config/StartConfig';
 import { ActionConfig } from './config/ActionConfig';
 import { WaitConfig } from './config/WaitConfig';
 import { BranchConfig } from './config/BranchConfig';
 import { EndConfig } from './config/EndConfig';
+import { JoinConfig } from './config/JoinConfig';
 import { JourneySettingsForm } from './config/JourneySettingsForm';
 
 export interface InspectorPanelProps {
   journeyId: string;
   selectedNodeId: string | null;
+  /** Node data from the canvas (for nodes not yet in context) */
+  selectedCanvasNode?: JourneyNode | null;
   settingsMode: boolean;
   onClose: () => void;
   onDeleteNode: (nodeId: string) => void;
@@ -41,6 +47,8 @@ export interface InspectorPanelProps {
 /* ── Icon lookup by node type + subType ── */
 
 const nodeTypeIcons: Record<string, React.ComponentType<{ size?: number; weight?: string }>> = {
+  // Start
+  'start': Play,
   // Triggers
   'segment-entry': Users,
   'event-based': Lightning,
@@ -67,6 +75,7 @@ const nodeTypeIcons: Record<string, React.ComponentType<{ size?: number; weight?
 };
 
 const headerIconClasses: Record<string, string> = {
+  start: 'text-mint-500 bg-[color-mix(in_srgb,var(--mint-500)_10%,transparent)]',
   trigger: 'text-mint-500 bg-[color-mix(in_srgb,var(--mint-500)_10%,transparent)]',
   action: 'text-blue-500 bg-[color-mix(in_srgb,var(--color-blue-500)_10%,transparent)]',
   wait: 'text-amber-500 bg-[color-mix(in_srgb,var(--color-amber-500)_10%,transparent)]',
@@ -87,6 +96,8 @@ function getConfigForm(
   onEditContent?: (contentType: 'email' | 'form' | 'survey') => void,
 ): React.ReactNode {
   switch (nodeType) {
+    case 'start':
+      return <StartConfig journeyId={journeyId} node={node} />;
     case 'trigger':
       return <TriggerConfig journeyId={journeyId} node={node} />;
     case 'action':
@@ -98,7 +109,7 @@ function getConfigForm(
     case 'end':
       return <EndConfig journeyId={journeyId} node={node} />;
     case 'join':
-      return null; // Join nodes have no configuration
+      return <JoinConfig journeyId={journeyId} node={node} />;
     default:
       return null;
   }
@@ -109,6 +120,7 @@ function getConfigForm(
 export function InspectorPanel({
   journeyId,
   selectedNodeId,
+  selectedCanvasNode,
   settingsMode,
   onClose,
   onDeleteNode,
@@ -119,20 +131,15 @@ export function InspectorPanel({
   // Find the journey
   const journey = journeys.find((j) => j.id === journeyId);
 
-  // Find the selected node
+  // Find the selected node - prefer canvas node, then fall back to context
   const selectedNode = selectedNodeId
-    ? journey?.nodes.find((n) => n.id === selectedNodeId) ?? null
+    ? (selectedCanvasNode ?? journey?.nodes.find((n) => n.id === selectedNodeId) ?? null)
     : null;
 
-  // Panel is hidden when no node is selected and not in settings mode
-  if (!settingsMode && !selectedNode) {
-    return null;
-  }
-
-  // Settings mode
-  if (settingsMode) {
+  // When no node is selected, show Journey Settings (panel always visible)
+  if (!selectedNode) {
     return (
-      <aside className="relative w-[300px] min-w-[300px] h-full bg-background border-l border-border font-sans flex flex-col animate-in slide-in-from-right duration-150">
+      <aside className="relative w-[360px] min-w-[360px] h-full bg-background border-l border-border font-sans flex flex-col animate-in slide-in-from-right duration-150">
         <div className="flex items-center gap-2 p-4 border-b border-border min-h-[52px]">
           <div className={cn('flex items-center justify-center shrink-0 w-7 h-7 rounded-sm', headerIconClasses.settings)}>
             <GearSix size={18} weight="duotone" />
@@ -140,7 +147,6 @@ export function InspectorPanel({
           <span className="flex-1 text-sm font-semibold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
             Journey Settings
           </span>
-          <CloseButton onClick={onClose} aria-label="Close inspector" className="shrink-0" />
         </div>
         <div className="flex-1 overflow-y-auto p-4">
           <JourneySettingsForm journeyId={journeyId} />
@@ -156,7 +162,7 @@ export function InspectorPanel({
   const nodeType = selectedNode.type;
 
   return (
-    <aside className="relative w-[300px] min-w-[300px] h-full bg-background border-l border-border font-sans flex flex-col animate-in slide-in-from-right duration-150">
+    <aside className="relative w-[360px] min-w-[360px] h-full bg-background border-l border-border font-sans flex flex-col animate-in slide-in-from-right duration-150">
       <div className="flex items-center gap-2 p-4 border-b border-border min-h-[52px]">
         <div className={cn('flex items-center justify-center shrink-0 w-7 h-7 rounded-sm', headerIconClasses[nodeType] ?? '')}>
           <Icon size={18} weight="duotone" />
@@ -169,15 +175,18 @@ export function InspectorPanel({
       <div className="flex-1 overflow-y-auto p-4">
         {getConfigForm(nodeType, journeyId, selectedNode, onEditContent)}
       </div>
-      <div className="p-4 border-t border-border">
-        <button
-          className="flex items-center justify-center gap-1 w-full px-4 py-2 border border-red-500 rounded-sm bg-transparent text-red-500 font-sans text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-red-500 hover:text-primary-foreground"
-          onClick={() => onDeleteNode(selectedNode.id)}
-        >
-          <Trash size={16} weight="bold" />
-          Delete Node
-        </button>
-      </div>
+      {/* Don't show delete button for fixed Start node */}
+      {selectedNode.id !== FIXED_START_ID && (
+        <div className="p-4 border-t border-border">
+          <button
+            className="flex items-center justify-center gap-1 w-full px-4 py-2 border border-red-500 rounded-sm bg-transparent text-red-500 font-sans text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-red-500 hover:text-primary-foreground"
+            onClick={() => onDeleteNode(selectedNode.id)}
+          >
+            <Trash size={16} weight="bold" />
+            Delete Node
+          </button>
+        </div>
+      )}
     </aside>
   );
 }
