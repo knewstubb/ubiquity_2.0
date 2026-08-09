@@ -440,6 +440,8 @@ export function JourneyCanvas(_props: JourneyCanvasProps) {
   const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Extract journey nodes from React Flow nodes and sync to context
+  // NOTE: This only syncs structural changes (node additions/removals, edges, positions).
+  // Config changes are handled by the inspector panel directly via updateNode.
   useEffect(() => {
     if (!_props.onCanvasChange) return;
 
@@ -473,14 +475,15 @@ export function JourneyCanvas(_props: JourneyCanvasProps) {
         sourceHandle: e.sourceHandle ?? 'default',
       }));
 
-      // Create a signature to detect actual changes
+      // Create a signature based on structural changes only (not config)
+      // Config changes are handled separately by the inspector via updateNode
       const signature = JSON.stringify({ 
         nodeIds: journeyNodes.map(n => n.id).sort(),
         edgeIds: journeyEdges.map(e => e.id).sort(),
-        nodeConfigs: journeyNodes.map(n => ({ id: n.id, config: n.config })),
+        positions: journeyNodes.map(n => ({ id: n.id, x: Math.round(n.position.x), y: Math.round(n.position.y) })).sort((a, b) => a.id.localeCompare(b.id)),
       });
 
-      // Only sync if there are actual changes
+      // Only sync if there are structural changes
       if (signature !== lastSyncRef.current) {
         lastSyncRef.current = signature;
         _props.onCanvasChange(journeyNodes, journeyEdges);

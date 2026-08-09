@@ -131,9 +131,11 @@ export function InspectorPanel({
   // Find the journey
   const journey = journeys.find((j) => j.id === journeyId);
 
-  // Find the selected node - prefer canvas node, then fall back to context
+  // Find the selected node from context (this has the latest config from updateNode calls)
+  // Fall back to canvas node if not in context yet (newly added nodes before first sync)
+  const contextNode = selectedNodeId ? journey?.nodes.find((n) => n.id === selectedNodeId) : null;
   const selectedNode = selectedNodeId
-    ? (selectedCanvasNode ?? journey?.nodes.find((n) => n.id === selectedNodeId) ?? null)
+    ? (contextNode ?? selectedCanvasNode ?? null)
     : null;
 
   // When no node is selected, show Journey Settings (panel always visible)
