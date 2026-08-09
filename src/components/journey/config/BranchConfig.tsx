@@ -4,13 +4,14 @@ import { createDefaultConfig } from '../../../models/journey';
 import type {
   JourneyNode,
   BranchSubType,
+  BranchFilterSource,
   IfElseConfig,
   AbSplitConfig,
   MultiWayConfig,
   MultiWayCondition,
 } from '../../../models/journey';
 import type { FilterGroup } from '../../../models/segment';
-import { CONTACT_FIELDS } from '../../../data/fieldRegistry';
+import { CONTACT_FIELDS, TREATMENT_FIELDS, PRODUCT_FIELDS } from '../../../data/fieldRegistry';
 import { FilterBuilder } from '../../shared/FilterBuilder';
 
 export interface BranchConfigProps {
@@ -23,6 +24,25 @@ const BRANCH_OPTIONS: { value: BranchSubType; label: string }[] = [
   { value: 'ab-split', label: 'A/B Split' },
   { value: 'multi-way', label: 'Multi-way Split' },
 ];
+
+const DATA_SOURCE_OPTIONS: { value: BranchFilterSource; label: string }[] = [
+  { value: 'contact', label: 'Contact attributes' },
+  { value: 'treatments', label: 'Treatment history' },
+  { value: 'products', label: 'Product purchases' },
+];
+
+/** Get the field definitions for a given filter source */
+function getFieldsForSource(source: BranchFilterSource | undefined) {
+  switch (source) {
+    case 'treatments':
+      return TREATMENT_FIELDS;
+    case 'products':
+      return PRODUCT_FIELDS;
+    case 'contact':
+    default:
+      return CONTACT_FIELDS;
+  }
+}
 
 const emptyFilterGroup: FilterGroup = {
   combinator: 'AND',
@@ -58,6 +78,21 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
     (group: FilterGroup) => {
       updateNode(journeyId, node.id, {
         config: { ...config, condition: group } as IfElseConfig,
+      });
+    },
+    [journeyId, node.id, config, updateNode],
+  );
+
+  const handleIfElseSourceChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const newSource = e.target.value as BranchFilterSource;
+      // Reset the condition when changing data source since fields are different
+      updateNode(journeyId, node.id, {
+        config: { 
+          ...config, 
+          filterSource: newSource,
+          condition: { ...emptyFilterGroup },
+        } as IfElseConfig,
       });
     },
     [journeyId, node.id, config, updateNode],
@@ -136,6 +171,24 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
     [journeyId, node.id, config, updateNode],
   );
 
+  const handleConditionSourceChange = useCallback(
+    (conditionId: string, source: BranchFilterSource) => {
+      const multiConfig = config as MultiWayConfig;
+      // Reset the condition when changing data source since fields are different
+      updateNode(journeyId, node.id, {
+        config: {
+          ...multiConfig,
+          conditions: multiConfig.conditions.map((c) =>
+            c.id === conditionId 
+              ? { ...c, filterSource: source, condition: { ...emptyFilterGroup } } 
+              : c,
+          ),
+        } as MultiWayConfig,
+      });
+    },
+    [journeyId, node.id, config, updateNode],
+  );
+
   return (
     <div>
       {/* Branch type selector */}
@@ -159,17 +212,39 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
 
       {/* If/Else: FilterBuilder for condition */}
       {config.subType === 'if-else' && (
-        <div className="flex flex-col gap-1 mb-4 last:mb-0">
-          <label className="text-xs font-semibold text-muted-foreground leading-tight">Condition</label>
-          <p className="text-xs text-muted-foreground mb-2">
-            Contacts matching this condition follow the "True" path
-          </p>
-          <FilterBuilder
-            value={(config as IfElseConfig).condition}
-            onChange={handleIfElseConditionChange}
-            fields={CONTACT_FIELDS}
-          />
-        </div>
+        <>
+          {/* Data source selector */}
+          <div className="flex flex-col gap-1 mb-4">
+            <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="if-else-source">
+              Filter on
+            </label>
+            <select
+              id="if-else-source"
+              className={selectClasses}
+              value={(config as IfElseConfig).filterSource ?? 'contact'}
+              onChange={handleIfElseSourceChange}
+            >
+              {DATA_SOURCE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Condition */}
+          <div className="flex flex-col gap-1 mb-4 last:mb-0">
+            <label className="text-xs font-semibold text-muted-foreground leading-tight">Condition</label>
+            <p className="text-xs text-muted-foreground mb-2">
+              Contacts matching this condition follow the "True" path
+            </p>
+            <FilterBuilder
+              value={(config as IfElseConfig).condition}
+              onChange={handleIfElseConditionChange}
+              fields={getFieldsForSource((config as IfElseConfig).filterSource)}
+            />
+          </div>
+        </>
       )}
 
       {/* A/B Split: percentage inputs */}
@@ -209,7 +284,7 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
       {config.subType === 'multi-way' && (
         <>
           {(config as MultiWayConfig).conditions.map((cond, idx) => (
-            <div key={cond.id} className="flex flex-col gap-1 mb-4 last:mb-0">
+            <div key={cond.id} className="flex flex-col gap-2 mb-4 pb-4 border-b border-border last:border-b-0 last:pb-0 last:mb-0">
               <div className="flex items-center gap-2">
                 <label className="text-xs font-semibold text-muted-foreground leading-tight flex-1">
                   Path {idx + 1}
@@ -229,10 +304,22 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
                 onChange={(e) => handleConditionLabelChange(cond.id, e.target.value)}
                 placeholder="Path label…"
               />
+              {/* Data source for this path */}
+              <select
+                className={selectClasses}
+                value={cond.filterSource ?? 'contact'}
+                onChange={(e) => handleConditionSourceChange(cond.id, e.target.value as BranchFilterSource)}
+              >
+                {DATA_SOURCE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
               <FilterBuilder
                 value={cond.condition}
                 onChange={(group) => handleConditionFilterChange(cond.id, group)}
-                fields={CONTACT_FIELDS}
+                fields={getFieldsForSource(cond.filterSource)}
               />
             </div>
           ))}

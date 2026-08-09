@@ -104,9 +104,14 @@ export type WaitConfig =
   | WaitForEventConfig
   | WaitUntilDateConfig;
 
+/** Data source for branch condition filters */
+export type BranchFilterSource = 'contact' | 'treatments' | 'products';
+
 export interface IfElseConfig {
   subType: 'if-else';
   condition: FilterGroup;
+  /** Data source for the filter fields (default: 'contact') */
+  filterSource?: BranchFilterSource;
 }
 
 export interface AbSplitConfig {
@@ -118,6 +123,8 @@ export interface MultiWayCondition {
   id: string;
   label: string;
   condition: FilterGroup;
+  /** Data source for this condition's filter fields (default: 'contact') */
+  filterSource?: BranchFilterSource;
 }
 
 export interface MultiWayConfig {
