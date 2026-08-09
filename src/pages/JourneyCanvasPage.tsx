@@ -8,9 +8,8 @@ import { autoHeal } from '../utils/journeyGraph';
 import { validateJourney, type ValidationError } from '../utils/journeyValidation';
 import type { JourneyNode, JourneyEdge } from '../models/journey';
 import { JourneyCanvas } from '../components/journey/JourneyCanvas';
-import { NodePalette } from '../components/journey/NodePalette';
 import { InspectorPanel } from '../components/journey/InspectorPanel';
-import { CanvasToolbar } from '../components/journey/CanvasToolbar';
+import { CanvasToolbar, type SaveStatus } from '../components/journey/CanvasToolbar';
 import { ValidationSummary } from '../components/journey/ValidationSummary';
 import { ContentModal } from '../components/journey/ContentModal';
 
@@ -40,18 +39,49 @@ function JourneyCanvasInner() {
 
   /* ---- Local UI state ---- */
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [selectedCanvasNode, setSelectedCanvasNode] = useState<JourneyNode | null>(null);
   const [settingsMode, setSettingsMode] = useState(false);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
   const [showValidationSummary, setShowValidationSummary] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
   const [contentModal, setContentModal] = useState<{
     nodeId: string;
     nodeLabel: string;
     contentType: 'email' | 'form' | 'survey';
   } | null>(null);
 
+  /* ---- Canvas undo/redo state (exposed from JourneyCanvas) ---- */
+  const [canvasUndoRedo, setCanvasUndoRedo] = useState<{
+    canUndo: boolean;
+    canRedo: boolean;
+    undo: () => void;
+    redo: () => void;
+  } | null>(null);
+
   /* ---- Undo / Redo stacks (useRef to avoid re-renders) ---- */
   const undoStack = useRef<CanvasSnapshot[]>([]);
   const redoStack = useRef<CanvasSnapshot[]>([]);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /* ---- Auto-save indicator: show "Saving..." briefly, then "Saved" ---- */
+  const triggerSaveIndicator = useCallback(() => {
+    setSaveStatus('saving');
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    saveTimeoutRef.current = setTimeout(() => {
+      setSaveStatus('saved');
+    }, 500);
+  }, []);
+
+  /* Clean up timeout on unmount */
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   /** Push the current journey state onto the undo stack and clear redo. */
   const pushSnapshot = useCallback(() => {
@@ -76,7 +106,8 @@ function JourneyCanvasInner() {
       edges: snapshot.edges,
       nodeCount: snapshot.nodes.length,
     });
-  }, [journey, updateJourney]);
+    triggerSaveIndicator();
+  }, [journey, updateJourney, triggerSaveIndicator]);
 
   /** Redo: pop from redo stack, push current state to undo, restore. */
   const handleRedo = useCallback(() => {
@@ -91,7 +122,28 @@ function JourneyCanvasInner() {
       edges: snapshot.edges,
       nodeCount: snapshot.nodes.length,
     });
-  }, [journey, updateJourney]);
+    triggerSaveIndicator();
+  }, [journey, updateJourney, triggerSaveIndicator]);
+
+  /* ---- Inspector callbacks (defined before keyboard shortcuts that use them) ---- */
+
+  const handleDeleteNode = useCallback(
+    (nodeId: string) => {
+      if (!journey) return;
+      pushSnapshot();
+      const result = autoHeal(journey.nodes, journey.edges, nodeId);
+      updateJourney(journey.id, {
+        nodes: result.nodes,
+        edges: result.edges,
+        nodeCount: result.nodes.length,
+      });
+      setSelectedNodeId(null);
+      setSelectedCanvasNode(null);
+      setSettingsMode(false);
+      triggerSaveIndicator();
+    },
+    [journey, updateJourney, pushSnapshot, triggerSaveIndicator],
+  );
 
   /* ---- Keyboard shortcuts ---- */
 
@@ -105,6 +157,13 @@ function JourneyCanvasInner() {
       if (e.key === 'Escape') {
         setSelectedNodeId(null);
         setSettingsMode(false);
+        return;
+      }
+
+      /* Delete or Backspace → delete selected node */
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedNodeId) {
+        e.preventDefault();
+        handleDeleteNode(selectedNodeId);
         return;
       }
 
@@ -127,7 +186,7 @@ function JourneyCanvasInner() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo]);
+  }, [handleUndo, handleRedo, selectedNodeId, handleDeleteNode]);
 
   /* ---- Toolbar callbacks ---- */
 
@@ -157,30 +216,13 @@ function JourneyCanvasInner() {
 
   /* ---- Node selection ---- */
 
-  const handleNodeSelect = useCallback((nodeId: string | null) => {
+  const handleNodeSelect = useCallback((nodeId: string | null, canvasNode?: JourneyNode | null) => {
     setSelectedNodeId(nodeId);
+    setSelectedCanvasNode(canvasNode ?? null);
     if (nodeId) {
       setSettingsMode(false);
     }
   }, []);
-
-  /* ---- Inspector callbacks ---- */
-
-  const handleDeleteNode = useCallback(
-    (nodeId: string) => {
-      if (!journey) return;
-      pushSnapshot();
-      const result = autoHeal(journey.nodes, journey.edges, nodeId);
-      updateJourney(journey.id, {
-        nodes: result.nodes,
-        edges: result.edges,
-        nodeCount: result.nodes.length,
-      });
-      setSelectedNodeId(null);
-      setSettingsMode(false);
-    },
-    [journey, updateJourney, pushSnapshot],
-  );
 
   const handleInspectorClose = useCallback(() => {
     setSelectedNodeId(null);
@@ -259,7 +301,7 @@ function JourneyCanvasInner() {
   }
 
   /* ---- Derived state ---- */
-  const hasTrigger = journey.nodes.some((n) => n.type === 'trigger');
+  // Fixed nodes are always present, no need to check for hasTrigger
 
   return (
     <div className="flex flex-col h-[calc(100vh-56px)] overflow-hidden relative">
@@ -267,12 +309,17 @@ function JourneyCanvasInner() {
       <CanvasToolbar
         journeyName={journey.name}
         journeyStatus={journey.status}
+        saveStatus={saveStatus}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
         onFitView={handleFitView}
         onValidate={handleValidate}
         onSettings={handleSettings}
         validationErrors={validationErrors}
+        canUndo={canvasUndoRedo?.canUndo ?? false}
+        canRedo={canvasUndoRedo?.canRedo ?? false}
+        onUndo={canvasUndoRedo?.undo}
+        onRedo={canvasUndoRedo?.redo}
       />
 
       {/* Validation summary dropdown */}
@@ -286,22 +333,22 @@ function JourneyCanvasInner() {
         </div>
       )}
 
-      {/* Main canvas area: palette + canvas + inspector */}
+      {/* Main canvas area: canvas + inspector */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
-        <NodePalette hasTrigger={hasTrigger} />
-
         <div className="flex-1 min-w-0 relative">
           <JourneyCanvas
             journey={journey}
             onNodeSelect={handleNodeSelect}
             validationErrors={validationErrors}
             onBeforeMutation={pushSnapshot}
+            onUndoRedoChange={setCanvasUndoRedo}
           />
         </div>
 
         <InspectorPanel
           journeyId={journey.id}
           selectedNodeId={selectedNodeId}
+          selectedCanvasNode={selectedCanvasNode}
           settingsMode={settingsMode}
           onClose={handleInspectorClose}
           onDeleteNode={handleDeleteNode}
