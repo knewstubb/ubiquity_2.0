@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
-import { Info } from '@phosphor-icons/react';
+import { Info, Users, Lightning, Hand, CalendarBlank } from '@phosphor-icons/react';
 import { useJourneys } from '../../../contexts/JourneysContext';
-import { createDefaultConfig } from '../../../models/journey';
-import type { JourneyNode, TriggerSubType, SegmentEntryConfig, EventBasedConfig } from '../../../models/journey';
+import type { JourneyNode, TriggerSubType } from '../../../models/journey';
 import type { FilterGroup } from '../../../models/segment';
 import { segments } from '../../../data/segments';
 import { CONTACT_FIELDS } from '../../../data/fieldRegistry';
@@ -17,8 +16,9 @@ import {
 } from '../../ui/select';
 import { Input } from '../../ui/input';
 import { Textarea } from '../../ui/textarea';
+import { cn } from '../../../lib/utils';
 
-export interface TriggerConfigProps {
+export interface StartConfigProps {
   journeyId: string;
   node: JourneyNode;
 }
@@ -27,33 +27,38 @@ interface TriggerOption {
   value: TriggerSubType;
   label: string;
   description: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
   enabled: boolean;
 }
 
-// Walking Skeleton: Only Manual is enabled for now
+// Walking Skeleton: Manual, Segment Entry, and Event-Based enabled
 const TRIGGER_OPTIONS: TriggerOption[] = [
   {
     value: 'manual',
     label: 'Manual',
     description: 'Manually add contacts to this journey',
+    icon: Hand,
     enabled: true,
   },
   {
     value: 'segment-entry',
     label: 'Segment Entry',
     description: 'Contacts enter when they join a segment',
-    enabled: false,
+    icon: Users,
+    enabled: true,
   },
   {
     value: 'event-based',
     label: 'Event-Based',
     description: 'Trigger when a specific event occurs',
-    enabled: false,
+    icon: Lightning,
+    enabled: true,
   },
   {
     value: 'scheduled',
     label: 'Scheduled',
     description: 'Run on a schedule',
+    icon: CalendarBlank,
     enabled: false,
   },
 ];
@@ -71,64 +76,85 @@ const RECURRENCE_OPTIONS = [
   { value: 'monthly', label: 'Monthly' },
 ];
 
-export function TriggerConfig({ journeyId, node }: TriggerConfigProps) {
-  const { updateNode } = useJourneys();
-  const config = node.config;
+export function StartConfig({ journeyId, node }: StartConfigProps) {
+  const { journeys, updateJourney } = useJourneys();
+  
+  // Get the journey's trigger configuration from settings
+  const journey = journeys.find((j) => j.id === journeyId);
+  const triggerType = (journey?.settings as Record<string, unknown>)?.triggerType as TriggerSubType | undefined ?? 'manual';
+  const triggerConfig = (journey?.settings as Record<string, unknown>)?.triggerConfig as Record<string, unknown> | undefined ?? {};
 
-  const handleSubTypeChange = useCallback(
+  const handleTriggerTypeChange = useCallback(
     (value: string) => {
-      const newSubType = value as TriggerSubType;
-      const newConfig = createDefaultConfig(newSubType);
-      updateNode(journeyId, node.id, { subType: newSubType, config: newConfig });
+      const newTriggerType = value as TriggerSubType;
+      // Reset trigger config when changing type
+      const defaultConfig = getDefaultTriggerConfig(newTriggerType);
+      updateJourney(journeyId, {
+        settings: {
+          ...journey?.settings,
+          triggerType: newTriggerType,
+          triggerConfig: defaultConfig,
+        },
+      });
     },
-    [journeyId, node.id, updateNode],
+    [journeyId, journey?.settings, updateJourney],
   );
 
   const handleConfigChange = useCallback(
     (updates: Record<string, unknown>) => {
-      updateNode(journeyId, node.id, {
-        config: { ...config, ...updates },
+      updateJourney(journeyId, {
+        settings: {
+          ...journey?.settings,
+          triggerConfig: { ...triggerConfig, ...updates },
+        },
       });
     },
-    [journeyId, node.id, config, updateNode],
+    [journeyId, journey?.settings, triggerConfig, updateJourney],
   );
 
   const handleFiltersChange = useCallback(
     (filters: FilterGroup) => {
-      updateNode(journeyId, node.id, {
-        config: { ...config, filters },
+      updateJourney(journeyId, {
+        settings: {
+          ...journey?.settings,
+          triggerConfig: { ...triggerConfig, filters },
+        },
       });
     },
-    [journeyId, node.id, config, updateNode],
+    [journeyId, journey?.settings, triggerConfig, updateJourney],
   );
 
-  const currentTrigger = TRIGGER_OPTIONS.find((opt) => opt.value === node.subType);
+  const currentTrigger = TRIGGER_OPTIONS.find((opt) => opt.value === triggerType);
 
   return (
     <div className="space-y-4">
       {/* Trigger type selector */}
       <div className="space-y-2">
         <Label htmlFor="trigger-type">Trigger Type</Label>
-        <Select value={node.subType} onValueChange={handleSubTypeChange}>
+        <Select value={triggerType} onValueChange={handleTriggerTypeChange}>
           <SelectTrigger id="trigger-type">
-            <SelectValue placeholder="Select a trigger type" />
+            <SelectValue placeholder="Select how contacts enter" />
           </SelectTrigger>
           <SelectContent>
-            {TRIGGER_OPTIONS.map((opt) => (
-              <SelectItem
-                key={opt.value}
-                value={opt.value}
-                disabled={!opt.enabled}
-                className={!opt.enabled ? 'opacity-50' : ''}
-              >
-                <span className="flex items-center gap-2">
-                  {opt.label}
-                  {!opt.enabled && (
-                    <span className="text-xs text-muted-foreground">(Coming soon)</span>
-                  )}
-                </span>
-              </SelectItem>
-            ))}
+            {TRIGGER_OPTIONS.map((opt) => {
+              const Icon = opt.icon;
+              return (
+                <SelectItem
+                  key={opt.value}
+                  value={opt.value}
+                  disabled={!opt.enabled}
+                  className={cn(!opt.enabled && 'opacity-50')}
+                >
+                  <span className="flex items-center gap-2">
+                    <Icon size={16} className="text-muted-foreground" />
+                    {opt.label}
+                    {!opt.enabled && (
+                      <span className="text-xs text-muted-foreground">(Coming soon)</span>
+                    )}
+                  </span>
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
         {currentTrigger && (
@@ -136,13 +162,13 @@ export function TriggerConfig({ journeyId, node }: TriggerConfigProps) {
         )}
       </div>
 
-      {/* Sub-type specific fields */}
-      {config.subType === 'segment-entry' && (
+      {/* Trigger-specific configuration */}
+      {triggerType === 'segment-entry' && (
         <>
           <div className="space-y-2">
             <Label htmlFor="segment-picker">Segment</Label>
             <Select
-              value={(config as SegmentEntryConfig).segmentId}
+              value={(triggerConfig.segmentId as string) ?? ''}
               onValueChange={(value) => handleConfigChange({ segmentId: value })}
             >
               <SelectTrigger id="segment-picker">
@@ -156,7 +182,7 @@ export function TriggerConfig({ journeyId, node }: TriggerConfigProps) {
                 ))}
               </SelectContent>
             </Select>
-            {(config as SegmentEntryConfig).segmentId && (
+            {triggerConfig.segmentId && (
               <p className="text-xs text-muted-foreground">
                 Contacts will enter this journey when they join the selected segment.
               </p>
@@ -170,7 +196,7 @@ export function TriggerConfig({ journeyId, node }: TriggerConfigProps) {
               Further narrow which contacts can enter this journey
             </p>
             <FilterBuilder
-              value={(config as SegmentEntryConfig).filters ?? { combinator: 'AND', rules: [], groups: [] }}
+              value={(triggerConfig.filters as FilterGroup) ?? { combinator: 'AND', rules: [], groups: [] }}
               onChange={handleFiltersChange}
               fields={CONTACT_FIELDS}
             />
@@ -178,12 +204,12 @@ export function TriggerConfig({ journeyId, node }: TriggerConfigProps) {
         </>
       )}
 
-      {config.subType === 'event-based' && (
+      {triggerType === 'event-based' && (
         <>
           <div className="space-y-2">
             <Label htmlFor="event-type">Event Type</Label>
             <Select
-              value={(config as EventBasedConfig).eventType}
+              value={(triggerConfig.eventType as string) ?? ''}
               onValueChange={(value) => handleConfigChange({ eventType: value })}
             >
               <SelectTrigger id="event-type">
@@ -197,7 +223,7 @@ export function TriggerConfig({ journeyId, node }: TriggerConfigProps) {
                 ))}
               </SelectContent>
             </Select>
-            {(config as EventBasedConfig).eventType && (
+            {triggerConfig.eventType && (
               <p className="text-xs text-muted-foreground">
                 Contacts will enter when this event is triggered.
               </p>
@@ -211,7 +237,7 @@ export function TriggerConfig({ journeyId, node }: TriggerConfigProps) {
               Further narrow which contacts can enter this journey
             </p>
             <FilterBuilder
-              value={(config as EventBasedConfig).filters ?? { combinator: 'AND', rules: [], groups: [] }}
+              value={(triggerConfig.filters as FilterGroup) ?? { combinator: 'AND', rules: [], groups: [] }}
               onChange={handleFiltersChange}
               fields={CONTACT_FIELDS}
             />
@@ -219,21 +245,21 @@ export function TriggerConfig({ journeyId, node }: TriggerConfigProps) {
         </>
       )}
 
-      {config.subType === 'scheduled' && (
+      {triggerType === 'scheduled' && (
         <>
           <div className="space-y-2">
             <Label htmlFor="schedule-date">Date</Label>
             <Input
               id="schedule-date"
               type="date"
-              value={config.date}
+              value={(triggerConfig.date as string) ?? ''}
               onChange={(e) => handleConfigChange({ date: e.target.value })}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="recurrence">Recurrence</Label>
             <Select
-              value={config.recurrence}
+              value={(triggerConfig.recurrence as string) ?? 'once'}
               onValueChange={(value) => handleConfigChange({ recurrence: value })}
             >
               <SelectTrigger id="recurrence">
@@ -247,23 +273,23 @@ export function TriggerConfig({ journeyId, node }: TriggerConfigProps) {
                 ))}
               </SelectContent>
             </Select>
-            {config.date && (
+            {triggerConfig.date && (
               <p className="text-xs text-muted-foreground">
-                Journey will run {config.recurrence === 'once' ? 'once' : config.recurrence} starting{' '}
-                {config.date}.
+                Journey will run {triggerConfig.recurrence === 'once' ? 'once' : triggerConfig.recurrence as string} starting{' '}
+                {triggerConfig.date as string}.
               </p>
             )}
           </div>
         </>
       )}
 
-      {config.subType === 'manual' && (
+      {triggerType === 'manual' && (
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="manual-description">Description (optional)</Label>
             <Textarea
               id="manual-description"
-              value={config.description}
+              value={(triggerConfig.description as string) ?? ''}
               onChange={(e) => handleConfigChange({ description: e.target.value })}
               placeholder="Describe when contacts should be added..."
               className="min-h-[72px] resize-y"
@@ -280,4 +306,19 @@ export function TriggerConfig({ journeyId, node }: TriggerConfigProps) {
       )}
     </div>
   );
+}
+
+function getDefaultTriggerConfig(triggerType: TriggerSubType): Record<string, unknown> {
+  const emptyFilters: FilterGroup = { combinator: 'AND', rules: [], groups: [] };
+  switch (triggerType) {
+    case 'segment-entry':
+      return { segmentId: '', filters: emptyFilters };
+    case 'event-based':
+      return { eventType: '', filters: emptyFilters };
+    case 'scheduled':
+      return { date: '', recurrence: 'once' };
+    case 'manual':
+    default:
+      return { description: '' };
+  }
 }
