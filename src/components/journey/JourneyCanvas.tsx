@@ -36,7 +36,7 @@ import { ConditionNode } from './nodes/ConditionNode';
 import { BranchLabelNode } from './nodes/BranchLabelNode';
 import { JourneyNodeCardWrapper, type JourneyNodeCardData } from './nodes/JourneyNodeCard';
 import { FIXED_START_ID, FIXED_END_ID, createDefaultConfig } from '../../models/journey';
-import type { NodeType, JourneyNode as JourneyNodeModel, BranchLabelConfig, IfElseConfig, FilterGroup } from '../../models/journey';
+import type { NodeType, JourneyNode as JourneyNodeModel, JourneyEdge, BranchLabelConfig, IfElseConfig, FilterGroup } from '../../models/journey';
 import { cn } from '../../lib/utils';
 
 /* ------------------------------------------------------------------ */
@@ -173,6 +173,8 @@ export interface JourneyCanvasProps {
   validationErrors?: unknown[];
   onBeforeMutation?: () => void;
   onNodeAdded?: (node: JourneyNodeModel) => void;
+  /** Callback to sync canvas state back to the context */
+  onCanvasChange?: (nodes: JourneyNodeModel[], edges: JourneyEdge[]) => void;
   /** Callback to expose undo/redo state and actions to parent */
   onUndoRedoChange?: (state: {
     canUndo: boolean;
@@ -426,6 +428,71 @@ export function JourneyCanvas(_props: JourneyCanvasProps) {
       redo: stableRedo,
     });
   }, [historyState.canUndo, historyState.canRedo, stableUndo, stableRedo, _props.onUndoRedoChange]);
+
+  /* ------------------------------------------------------------------ */
+  /*  Sync canvas state back to context                                  */
+  /* ------------------------------------------------------------------ */
+
+  // Track previous sync to avoid duplicate updates
+  const lastSyncRef = useRef<string>('');
+  
+  // Debounce timer for canvas sync
+  const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Extract journey nodes from React Flow nodes and sync to context
+  useEffect(() => {
+    if (!_props.onCanvasChange) return;
+
+    // Clear any pending sync
+    if (syncTimerRef.current) {
+      clearTimeout(syncTimerRef.current);
+    }
+
+    // Debounce the sync to avoid excessive updates during drag operations
+    syncTimerRef.current = setTimeout(() => {
+      // Extract JourneyNode data from React Flow nodes
+      const journeyNodes: JourneyNodeModel[] = nodes
+        .map((n) => {
+          const data = n.data as JourneyNodeCardData | undefined;
+          if (data?.journeyNode) {
+            // Update position from React Flow node
+            return {
+              ...data.journeyNode,
+              position: { x: n.position.x, y: n.position.y },
+            };
+          }
+          return null;
+        })
+        .filter((n): n is JourneyNodeModel => n !== null);
+
+      // Extract journey edges from React Flow edges
+      const journeyEdges: JourneyEdge[] = edges.map((e) => ({
+        id: e.id,
+        sourceNodeId: e.source,
+        targetNodeId: e.target,
+        sourceHandle: e.sourceHandle ?? 'default',
+      }));
+
+      // Create a signature to detect actual changes
+      const signature = JSON.stringify({ 
+        nodeIds: journeyNodes.map(n => n.id).sort(),
+        edgeIds: journeyEdges.map(e => e.id).sort(),
+        nodeConfigs: journeyNodes.map(n => ({ id: n.id, config: n.config })),
+      });
+
+      // Only sync if there are actual changes
+      if (signature !== lastSyncRef.current) {
+        lastSyncRef.current = signature;
+        _props.onCanvasChange(journeyNodes, journeyEdges);
+      }
+    }, 100); // 100ms debounce
+
+    return () => {
+      if (syncTimerRef.current) {
+        clearTimeout(syncTimerRef.current);
+      }
+    };
+  }, [nodes, edges, _props.onCanvasChange]);
 
   /* ------------------------------------------------------------------ */
 

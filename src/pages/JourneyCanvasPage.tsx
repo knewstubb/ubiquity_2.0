@@ -229,6 +229,21 @@ function JourneyCanvasInner() {
     setSettingsMode(false);
   }, []);
 
+  /* ---- Canvas state sync ---- */
+
+  const handleCanvasChange = useCallback(
+    (nodes: JourneyNode[], edges: JourneyEdge[]) => {
+      if (!journey) return;
+      updateJourney(journey.id, {
+        nodes,
+        edges,
+        nodeCount: nodes.length,
+      });
+      triggerSaveIndicator();
+    },
+    [journey, updateJourney, triggerSaveIndicator],
+  );
+
   /* ---- Content modal callbacks ---- */
 
   const handleEditContent = useCallback(
@@ -342,6 +357,7 @@ function JourneyCanvasInner() {
             validationErrors={validationErrors}
             onBeforeMutation={pushSnapshot}
             onUndoRedoChange={setCanvasUndoRedo}
+            onCanvasChange={handleCanvasChange}
           />
         </div>
 
