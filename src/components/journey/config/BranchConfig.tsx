@@ -10,6 +10,7 @@ import type {
   MultiWayCondition,
 } from '../../../models/journey';
 import type { FilterGroup } from '../../../models/segment';
+import { CONTACT_FIELDS } from '../../../data/fieldRegistry';
 import { FilterBuilder } from '../../shared/FilterBuilder';
 
 export interface BranchConfigProps {
@@ -160,9 +161,13 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
       {config.subType === 'if-else' && (
         <div className="flex flex-col gap-1 mb-4 last:mb-0">
           <label className="text-xs font-semibold text-muted-foreground leading-tight">Condition</label>
+          <p className="text-xs text-muted-foreground mb-2">
+            Contacts matching this condition follow the "True" path
+          </p>
           <FilterBuilder
             value={(config as IfElseConfig).condition}
             onChange={handleIfElseConditionChange}
+            fields={CONTACT_FIELDS}
           />
         </div>
       )}
@@ -227,6 +232,7 @@ export function BranchConfig({ journeyId, node }: BranchConfigProps) {
               <FilterBuilder
                 value={cond.condition}
                 onChange={(group) => handleConditionFilterChange(cond.id, group)}
+                fields={CONTACT_FIELDS}
               />
             </div>
           ))}
