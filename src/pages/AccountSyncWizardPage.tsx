@@ -222,27 +222,33 @@ export default function AccountSyncWizardPage() {
     handleClose();
   }
 
-  const modalTitle = isEditing ? (isTransaction ? 'Edit Transaction Sync' : 'Edit Contact Sync') : (isTransaction ? 'New Transaction Sync' : 'New Contact Sync');
+  const modalTitle = isEditing 
+    ? (isTransaction ? "Edit 'Transaction Sync'" : "Edit 'Contact Sync'") 
+    : (isTransaction ? 'New Transaction Sync' : 'New Contact Sync');
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background" data-testid="account-sync-wizard-page">
       {/* Top Bar with Back Button */}
-      <div className="shrink-0 h-14 border-b border-border bg-card flex items-center px-4 gap-4">
+      <div className="shrink-0 h-14 border-b border-border bg-card flex items-center px-6">
+        {/* Left: Back link */}
         <button
           type="button"
           onClick={handleCloseClick}
-          className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
         >
           <ArrowLeft size={18} weight="bold" />
           <span>Back</span>
         </button>
-        <div className="h-5 w-px bg-border" />
-        <h1 className="text-sm font-semibold text-foreground m-0">{modalTitle}</h1>
-        {isTransaction && parentRule && (
-          <span className="text-xs text-muted-foreground">
-            {availableAccounts.find((a) => a.id === parentRule.sourceAccountId)?.name} → {availableAccounts.find((a) => a.id === parentRule.targetAccountId)?.name}
-          </span>
-        )}
+
+        {/* Center: Title */}
+        <h1 className="flex-1 text-center text-lg font-semibold text-foreground m-0">{modalTitle}</h1>
+
+        {/* Right: Account context */}
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span className="truncate max-w-[200px]">{sourceAccountName || '—'}</span>
+          <ArrowRight size={14} weight="regular" className="shrink-0" />
+          <span className="truncate max-w-[200px]">{targetAccountName || '—'}</span>
+        </div>
       </div>
 
       {/* Main Content */}
