@@ -234,20 +234,20 @@ export default function AccountSyncWizardPage() {
         <button
           type="button"
           onClick={handleCloseClick}
-          className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+          className="flex items-center gap-2.5 text-base font-semibold text-primary hover:text-primary/80 transition-colors shrink-0"
         >
-          <ArrowLeft size={18} weight="bold" />
+          <ArrowLeft size={20} weight="bold" />
           <span>Back</span>
         </button>
 
         {/* Center: Title */}
-        <h1 className="flex-1 text-center text-lg font-semibold text-foreground m-0">{modalTitle}</h1>
+        <h1 className="flex-1 text-center text-xl font-semibold text-foreground m-0 px-8">{modalTitle}</h1>
 
         {/* Right: Account context */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span className="truncate max-w-[200px]">{sourceAccountName || '—'}</span>
-          <ArrowRight size={14} weight="regular" className="shrink-0" />
-          <span className="truncate max-w-[200px]">{targetAccountName || '—'}</span>
+        <div className="flex items-center gap-2.5 text-base text-muted-foreground shrink-0">
+          <span className="truncate max-w-[180px]">{sourceAccountName || '—'}</span>
+          <ArrowRight size={16} weight="regular" className="shrink-0" />
+          <span className="truncate max-w-[180px]">{targetAccountName || '—'}</span>
         </div>
       </div>
 
