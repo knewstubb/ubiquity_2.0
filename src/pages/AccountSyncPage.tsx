@@ -1,8 +1,7 @@
-import { useState, useMemo } from 'react';
-import { Plus, ArrowsClockwise, Warning } from '@phosphor-icons/react';
+import { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, ArrowsClockwise, Warning, SquaresFour, Browsers } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { Combobox } from '@/components/ui/combobox';
-import { Label } from '@/components/ui/label';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { SyncRuleCard } from '../components/account-sync/SyncRuleCard';
 import { CreateSyncRuleModal } from '../components/account-sync/CreateSyncRuleModal';
@@ -10,6 +9,9 @@ import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed
 import { useAccount } from '../contexts/AccountContext';
 import { useToast } from '../components/shared/Toast';
 import { cn } from '@/lib/utils';
+
+type UiMode = 'modal' | 'page';
+const UI_MODE_STORAGE_KEY = 'account-sync-ui-mode';
 
 // Service layer imports — documents production service ownership
 import {
@@ -31,32 +33,49 @@ interface ModalContext {
 }
 
 export default function AccountSyncPage() {
-  const { accounts } = useAccount();
+  const { accounts, selectedAccount, selectedAccountId } = useAccount();
   const { showToast } = useToast();
+  const navigate = useNavigate();
   const [rules, setRules] = useState<SyncRule[]>(seedRules);
   const [modalContext, setModalContext] = useState<ModalContext | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-  const [selectedCustomerAccountId, setSelectedCustomerAccountId] = useState<string>('');
 
-  // Customer account options — root accounts only (parentId === null)
-  const customerAccountOptions = useMemo(
-    () => accounts.filter((a) => a.parentId === null).map((a) => ({ value: a.id, label: a.name })),
-    [accounts],
-  );
+  // UI mode toggle: modal (current behaviour) or page (wizard-style)
+  const [uiMode, setUiMode] = useState<UiMode>(() => {
+    const stored = localStorage.getItem(UI_MODE_STORAGE_KEY);
+    return (stored === 'page' || stored === 'modal') ? stored : 'modal';
+  });
 
-  // Get the full tree under the selected customer account using account-hierarchy service
+  // Persist UI mode preference
+  useEffect(() => {
+    localStorage.setItem(UI_MODE_STORAGE_KEY, uiMode);
+  }, [uiMode]);
+
+  // Get the root account for the selected account (walk up the tree)
+  const rootAccountId = useMemo(() => {
+    if (!selectedAccount) return '';
+    let current = selectedAccount;
+    while (current.parentId) {
+      const parent = accounts.find((a) => a.id === current.parentId);
+      if (!parent) break;
+      current = parent;
+    }
+    return current.id;
+  }, [selectedAccount, accounts]);
+
+  // Get the full tree under the root account using account-hierarchy service
   const customerTree = useMemo<Account[]>(() => {
-    if (!selectedCustomerAccountId) return [];
-    return getAccountTree(selectedCustomerAccountId, accounts);
-  }, [selectedCustomerAccountId, accounts]);
+    if (!rootAccountId) return [];
+    return getAccountTree(rootAccountId, accounts);
+  }, [rootAccountId, accounts]);
 
   const customerTreeIds = useMemo(() => new Set(customerTree.map((a) => a.id)), [customerTree]);
 
-  // Feature flag check — AccountSync must be enabled for the selected root account
+  // Feature flag check — AccountSync must be enabled for the root account
   const isAccountSyncEnabled = useMemo(() => {
-    if (!selectedCustomerAccountId) return true; // Don't block before selection
-    return isFeatureEnabled('AccountSync', selectedCustomerAccountId);
-  }, [selectedCustomerAccountId]);
+    if (!rootAccountId) return false;
+    return isFeatureEnabled('AccountSync', rootAccountId);
+  }, [rootAccountId]);
 
   // Filter rules to those involving accounts in the selected customer tree
   const visibleRules = useMemo(
@@ -159,20 +178,56 @@ export default function AccountSyncPage() {
     }
   }
 
-  // Open modal for new contact sync rule
+  // Open modal or navigate to page for new contact sync rule
   function openNewContactModal() {
-    setModalContext({ tableType: 'contact' });
+    if (uiMode === 'page') {
+      navigate('/account-sync/new', {
+        state: {
+          tableType: 'contact',
+          customerAccountId: rootAccountId,
+          existingRules: rules,
+          availableAccounts: customerTree,
+        },
+      });
+    } else {
+      setModalContext({ tableType: 'contact' });
+    }
   }
 
-  // Open modal for new transaction sync rule (contextual to a contact rule)
+  // Open modal or navigate to page for new transaction sync rule (contextual to a contact rule)
   function openNewTransactionModal(parentRule: SyncRule) {
-    setModalContext({ tableType: 'transaction', parentRule });
+    if (uiMode === 'page') {
+      navigate(`/account-sync/new/${parentRule.id}`, {
+        state: {
+          tableType: 'transaction',
+          parentRule,
+          customerAccountId: rootAccountId,
+          existingRules: rules,
+          availableAccounts: customerTree,
+        },
+      });
+    } else {
+      setModalContext({ tableType: 'transaction', parentRule });
+    }
   }
 
-  // Open modal to edit any rule
+  // Open modal or navigate to page to edit any rule
   function openEditModal(rule: SyncRule) {
     const parentRule = rule.parentRuleId ? rules.find((r) => r.id === rule.parentRuleId) : undefined;
-    setModalContext({ tableType: rule.tableType, editRule: rule, parentRule });
+    if (uiMode === 'page') {
+      navigate(`/account-sync/edit/${rule.id}`, {
+        state: {
+          tableType: rule.tableType,
+          editRule: rule,
+          parentRule,
+          customerAccountId: rootAccountId,
+          existingRules: rules,
+          availableAccounts: customerTree,
+        },
+      });
+    } else {
+      setModalContext({ tableType: rule.tableType, editRule: rule, parentRule });
+    }
   }
 
   const activeCount = visibleRules.filter((r) => r.status === 'active').length;
@@ -199,13 +254,11 @@ export default function AccountSyncPage() {
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-semibold text-foreground m-0">Account Sync</h1>
           </div>
-          {selectedCustomerAccountId && (
-            <p className="text-sm text-tertiary-foreground mt-1 mb-0 font-normal">
-              {visibleRules.length} sync rule{visibleRules.length !== 1 ? 's' : ''} · {activeCount} active
-            </p>
-          )}
+          <p className="text-sm text-tertiary-foreground mt-1 mb-0 font-normal">
+            {visibleRules.length} sync rule{visibleRules.length !== 1 ? 's' : ''} · {activeCount} active
+          </p>
         </div>
-        {selectedCustomerAccountId && isAccountSyncEnabled && (
+        {isAccountSyncEnabled && (
           <Button onClick={openNewContactModal}>
             <Plus size={16} weight="bold" className="mr-1.5" />
             New Contact Sync
@@ -213,57 +266,19 @@ export default function AccountSyncPage() {
         )}
       </div>
 
-      {/* Account selector step */}
-      {!selectedCustomerAccountId ? (
-        <div className="flex flex-col items-center pt-[15vh] px-6 text-center">
-          <div className="text-primary mb-4">
-            <ArrowsClockwise size={48} weight="light" />
-          </div>
-          <h2 className="text-xl font-medium text-foreground m-0 mb-2">
-            Select a customer account
-          </h2>
-          <p className="text-sm text-muted-foreground m-0 mb-6 max-w-[280px]">
-            Choose the customer account to manage sync rules for.
-          </p>
-          <div className="w-[280px]">
-            <Combobox
-              value={selectedCustomerAccountId}
-              onValueChange={setSelectedCustomerAccountId}
-              options={customerAccountOptions}
-              placeholder="Select customer account..."
-              searchPlaceholder="Search accounts..."
-              className="bg-white"
-            />
-          </div>
-        </div>
+      {/* Feature flag gate — show disabled state if AccountSync not enabled */}
+      {!isAccountSyncEnabled ? (
+        <FeatureNotAvailable />
       ) : (
         <>
-          {/* Account context bar */}
-          <div className="flex items-center gap-3 mb-5">
-            <Label className="text-sm text-muted-foreground font-normal">Customer:</Label>
-            <Combobox
-              value={selectedCustomerAccountId}
-              onValueChange={setSelectedCustomerAccountId}
-              options={customerAccountOptions}
-              placeholder="Select customer account..."
-              searchPlaceholder="Search accounts..."
-              className="bg-white"
-            />
-          </div>
-
-          {/* Feature flag gate — show disabled state if AccountSync not enabled */}
-          {!isAccountSyncEnabled ? (
-            <FeatureNotAvailable />
+          {/* Rules list */}
+          {visibleRules.length === 0 ? (
+            <EmptyState onCreateRule={openNewContactModal} />
           ) : (
-            <>
-              {/* Rules list */}
-              {visibleRules.length === 0 ? (
-                <EmptyState onCreateRule={openNewContactModal} />
-              ) : (
-                <div className="flex flex-col gap-4">
-                  {contactRules.map((contactRule) => {
-                    const childTransactions = transactionRules.filter((t) => t.parentRuleId === contactRule.id);
-                    const isContactPaused = contactRule.status === 'paused';
+            <div className="flex flex-col gap-4">
+              {contactRules.map((contactRule) => {
+                const childTransactions = transactionRules.filter((t) => t.parentRuleId === contactRule.id);
+                const isContactPaused = contactRule.status === 'paused';
 
                 return (
                   <div
@@ -320,13 +335,11 @@ export default function AccountSyncPage() {
               })}
             </div>
           )}
-            </>
-          )}
         </>
       )}
 
-      {/* Create/Edit Modal */}
-      {modalContext && (
+      {/* Create/Edit Modal — only used in modal mode */}
+      {modalContext && uiMode === 'modal' && (
         <CreateSyncRuleModal
           open
           tableType={modalContext.tableType}
@@ -353,6 +366,40 @@ export default function AccountSyncPage() {
           : 'This will permanently remove the sync rule and stop data propagation for this table between these accounts.'
         }
       </AlertDialogComposed>
+
+      {/* UI Mode Toggle — fixed bottom left corner */}
+      <div className="fixed bottom-6 left-6 z-50">
+        <div className="flex items-center gap-1 p-1 bg-card border border-border rounded-lg shadow-md">
+          <button
+            type="button"
+            onClick={() => setUiMode('modal')}
+            className={cn(
+              'flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-all duration-150',
+              uiMode === 'modal'
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-secondary',
+            )}
+            title="Open sync rules in a modal dialog"
+          >
+            <Browsers size={14} weight={uiMode === 'modal' ? 'fill' : 'regular'} />
+            Modal
+          </button>
+          <button
+            type="button"
+            onClick={() => setUiMode('page')}
+            className={cn(
+              'flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-all duration-150',
+              uiMode === 'page'
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-secondary',
+            )}
+            title="Open sync rules in a full page wizard"
+          >
+            <SquaresFour size={14} weight={uiMode === 'page' ? 'fill' : 'regular'} />
+            Page
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
