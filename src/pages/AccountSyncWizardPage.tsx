@@ -126,9 +126,10 @@ export default function AccountSyncWizardPage() {
 
   const unmappedRequiredColumns = useMemo<Set<string>>(() => {
     if (targetRequiredColumns.size === 0) return new Set();
-    const mappedTargets = new Set(mappingRows.filter((r) => r.targetColumn).map((r) => r.targetColumn));
+    // A required column is "mapped" only if it has BOTH a target column AND a source column
+    const fullyMappedTargets = new Set(mappingRows.filter((r) => r.targetColumn && r.sourceColumn).map((r) => r.targetColumn));
     const unmapped = new Set<string>();
-    targetRequiredColumns.forEach((col) => { if (!mappedTargets.has(col)) unmapped.add(col); });
+    targetRequiredColumns.forEach((col) => { if (!fullyMappedTargets.has(col)) unmapped.add(col); });
     return unmapped;
   }, [targetRequiredColumns, mappingRows]);
 
