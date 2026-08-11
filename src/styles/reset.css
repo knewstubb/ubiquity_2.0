@@ -37,6 +37,12 @@ svg {
   max-width: 100%;
 }
 
+/* React Flow edges require unrestricted SVG sizing */
+.react-flow svg,
+.react-flow__edges svg {
+  max-width: none;
+}
+
 button,
 input,
 select,
