@@ -230,21 +230,21 @@ export default function AccountSyncWizardPage() {
     <div className="h-screen flex flex-col overflow-hidden bg-background" data-testid="account-sync-wizard-page">
       {/* Top Bar with Back Button */}
       <div className="shrink-0 h-14 border-b border-border bg-card flex items-center px-6">
-        {/* Left: Back link — Base/Semi-bold (16px) */}
+        {/* Left: Back link — Base/Semi-bold (14px) */}
         <button
           type="button"
           onClick={handleCloseClick}
-          className="flex items-center gap-2.5 text-lg font-semibold text-primary hover:text-primary/80 transition-colors shrink-0"
+          className="flex items-center gap-2.5 text-base font-semibold text-primary hover:text-primary/80 transition-colors shrink-0"
         >
           <ArrowLeft size={20} weight="bold" />
           <span>Back</span>
         </button>
 
-        {/* Center: Title — Base/Semi-bold (16px) */}
-        <h1 className="flex-1 text-center text-lg font-semibold text-foreground m-0 px-8">{modalTitle}</h1>
+        {/* Center: Title — Base/Semi-bold (14px) */}
+        <h1 className="flex-1 text-center text-base font-semibold text-foreground m-0 px-8">{modalTitle}</h1>
 
-        {/* Right: Account context — Small/Semi-bold (14px) */}
-        <div className="flex items-center gap-2 text-base font-semibold text-muted-foreground shrink-0">
+        {/* Right: Account context — Small/Semi-bold (12px) */}
+        <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground shrink-0">
           <span className="truncate max-w-[180px]">{sourceAccountName || '—'}</span>
           <ArrowRight size={14} weight="regular" className="shrink-0" />
           <span className="truncate max-w-[180px]">{targetAccountName || '—'}</span>
