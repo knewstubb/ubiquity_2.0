@@ -1,17 +1,13 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, ArrowsClockwise, Warning, SquaresFour, Browsers } from '@phosphor-icons/react';
+import { Plus, ArrowsClockwise, Warning } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { SyncRuleCard } from '../components/account-sync/SyncRuleCard';
-import { CreateSyncRuleModal } from '../components/account-sync/CreateSyncRuleModal';
 import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed';
 import { useAccount } from '../contexts/AccountContext';
 import { useToast } from '../components/shared/Toast';
 import { cn } from '@/lib/utils';
-
-type UiMode = 'modal' | 'page';
-const UI_MODE_STORAGE_KEY = 'account-sync-ui-mode';
 
 // Service layer imports — documents production service ownership
 import {
@@ -21,36 +17,16 @@ import {
 } from '../lib/services/account-sync-service';
 import { getAccountTree } from '../lib/services/account-hierarchy';
 import { isFeatureEnabled } from '../lib/services/feature-flags';
-import type { SyncRule, SyncTableType } from '../models/account-sync';
+import type { SyncRule } from '../models/account-sync';
 import type { Account } from '../models/account';
-
-interface ModalContext {
-  tableType: SyncTableType;
-  /** For transaction modals, the parent contact rule provides source/target context */
-  parentRule?: SyncRule;
-  /** Editing an existing rule */
-  editRule?: SyncRule;
-}
 
 export default function AccountSyncPage() {
   const { accounts, selectedAccount, selectedAccountId } = useAccount();
   const { showToast } = useToast();
   const navigate = useNavigate();
   const [rules, setRules] = useState<SyncRule[]>(seedRules);
-  const [modalContext, setModalContext] = useState<ModalContext | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [pendingToggleId, setPendingToggleId] = useState<string | null>(null);
-
-  // UI mode toggle: modal (current behaviour) or page (wizard-style)
-  const [uiMode, setUiMode] = useState<UiMode>(() => {
-    const stored = localStorage.getItem(UI_MODE_STORAGE_KEY);
-    return (stored === 'page' || stored === 'modal') ? stored : 'modal';
-  });
-
-  // Persist UI mode preference
-  useEffect(() => {
-    localStorage.setItem(UI_MODE_STORAGE_KEY, uiMode);
-  }, [uiMode]);
 
   // Check for saved rule from wizard on mount
   useEffect(() => {
@@ -197,89 +173,44 @@ export default function AccountSyncPage() {
     setPendingDeleteId(null);
   }
 
-  function handleSaveRule(rule: SyncRule) {
-    // Check for duplicate source/target combo (same tableType, same direction)
-    const isDuplicate = rules.some((r) =>
-      r.id !== rule.id &&
-      r.tableType === rule.tableType &&
-      r.sourceAccountId === rule.sourceAccountId &&
-      r.targetAccountId === rule.targetAccountId,
-    );
-    if (isDuplicate) {
-      showToast('A sync rule with this source/target combination already exists', 'error');
-      return;
-    }
-
-    const isEditing = rules.some((r) => r.id === rule.id);
-    setRules((prev) => {
-      const existing = prev.findIndex((r) => r.id === rule.id);
-      if (existing >= 0) {
-        const updated = [...prev];
-        updated[existing] = rule;
-        return updated;
-      }
-      return [...prev, rule];
-    });
-    setModalContext(null);
-
-    if (isEditing) {
-      showToast('Sync rule updated', 'success');
-    } else {
-      const label = rule.tableType === 'contact' ? 'Contact' : 'Transaction';
-      showToast(`${label} sync rule created`, 'success');
-    }
-  }
-
-  // Open modal or navigate to page for new contact sync rule
+  // Navigate to page for new contact sync rule
   function openNewContactModal() {
-    if (uiMode === 'page') {
-      navigate('/account-sync/new', {
-        state: {
-          tableType: 'contact',
-          customerAccountId: rootAccountId,
-          existingRules: rules,
-          availableAccounts: customerTree,
-        },
-      });
-    } else {
-      setModalContext({ tableType: 'contact' });
-    }
+    navigate('/account-sync/new', {
+      state: {
+        tableType: 'contact',
+        customerAccountId: rootAccountId,
+        existingRules: rules,
+        availableAccounts: customerTree,
+      },
+    });
   }
 
-  // Open modal or navigate to page for new transaction sync rule (contextual to a contact rule)
+  // Navigate to page for new transaction sync rule (contextual to a contact rule)
   function openNewTransactionModal(parentRule: SyncRule) {
-    if (uiMode === 'page') {
-      navigate(`/account-sync/new/${parentRule.id}`, {
-        state: {
-          tableType: 'transaction',
-          parentRule,
-          customerAccountId: rootAccountId,
-          existingRules: rules,
-          availableAccounts: customerTree,
-        },
-      });
-    } else {
-      setModalContext({ tableType: 'transaction', parentRule });
-    }
+    navigate(`/account-sync/new/${parentRule.id}`, {
+      state: {
+        tableType: 'transaction',
+        parentRule,
+        customerAccountId: rootAccountId,
+        existingRules: rules,
+        availableAccounts: customerTree,
+      },
+    });
   }
 
-  // Open modal or navigate to page to edit any rule
+  // Navigate to page to edit any rule
   function openEditModal(rule: SyncRule) {
     const parentRule = rule.parentRuleId ? rules.find((r) => r.id === rule.parentRuleId) : undefined;
-    if (uiMode === 'page') {
-      navigate(`/account-sync/edit/${rule.id}`, {
-        state: {
-          tableType: rule.tableType,
-          editRule: rule,
-          parentRule,
-          customerAccountId: rootAccountId,
-          existingRules: rules,
-          availableAccounts: customerTree,
-        },
-      });
-    } else {
-      setModalContext({ tableType: rule.tableType, editRule: rule, parentRule });
-    }
+    navigate(`/account-sync/edit/${rule.id}`, {
+      state: {
+        tableType: rule.tableType,
+        editRule: rule,
+        parentRule,
+        customerAccountId: rootAccountId,
+        existingRules: rules,
+        availableAccounts: customerTree,
+      },
+    });
   }
 
   const activeCount = visibleRules.filter((r) => r.status === 'active').length;
@@ -394,20 +325,6 @@ export default function AccountSyncPage() {
         </>
       )}
 
-      {/* Create/Edit Modal — only used in modal mode */}
-      {modalContext && uiMode === 'modal' && (
-        <CreateSyncRuleModal
-          open
-          tableType={modalContext.tableType}
-          parentRule={modalContext.parentRule}
-          rule={modalContext.editRule}
-          onSave={handleSaveRule}
-          onClose={() => setModalContext(null)}
-          existingRules={rules}
-          availableAccounts={customerTree}
-        />
-      )}
-
       {/* Delete confirmation */}
       <AlertDialogComposed
         open={!!pendingDeleteId}
@@ -444,40 +361,6 @@ export default function AccountSyncPage() {
             : 'Disabling this sync rule will stop data propagation between accounts. Changes made in the source account will not be reflected in the target.'
         }
       </AlertDialogComposed>
-
-      {/* UI Mode Toggle — fixed bottom left corner */}
-      <div className="fixed bottom-6 left-6 z-50">
-        <div className="flex items-center gap-1 p-1 bg-card border border-border rounded-lg shadow-md">
-          <button
-            type="button"
-            onClick={() => setUiMode('modal')}
-            className={cn(
-              'flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-all duration-150',
-              uiMode === 'modal'
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-secondary',
-            )}
-            title="Open sync rules in a modal dialog"
-          >
-            <Browsers size={14} weight={uiMode === 'modal' ? 'fill' : 'regular'} />
-            Modal
-          </button>
-          <button
-            type="button"
-            onClick={() => setUiMode('page')}
-            className={cn(
-              'flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-all duration-150',
-              uiMode === 'page'
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-secondary',
-            )}
-            title="Open sync rules in a full page wizard"
-          >
-            <SquaresFour size={14} weight={uiMode === 'page' ? 'fill' : 'regular'} />
-            Page
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
