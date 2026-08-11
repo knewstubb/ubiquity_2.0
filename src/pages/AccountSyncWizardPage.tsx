@@ -240,8 +240,20 @@ export default function AccountSyncWizardPage() {
           <span>Back</span>
         </button>
 
+        {/* Spacer: 24px between Back and Title */}
+        <div className="w-6 shrink-0" />
+
         {/* Center: Title — Base/Semi-bold (14px) */}
-        <h1 className="flex-1 text-center text-base font-semibold text-foreground m-0 px-8">{modalTitle}</h1>
+        <h1 className="text-base font-semibold text-foreground m-0">{modalTitle}</h1>
+
+        {/* Flexible spacer to push account context right */}
+        <div className="flex-1" />
+
+        {/* Vertical separator */}
+        <div className="h-5 w-px bg-border shrink-0" />
+
+        {/* Spacer: 24px after separator */}
+        <div className="w-6 shrink-0" />
 
         {/* Right: Account context — Small/Semi-bold (12px) */}
         <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground shrink-0">
