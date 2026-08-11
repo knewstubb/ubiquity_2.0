@@ -85,7 +85,7 @@ export function BranchNode({ data, selected }: NodeProps & { data: BranchNodeDat
           <WarningCircle size={10} weight="fill" />
         </div>
       )}
-      <Handle type="target" position={Position.Top} />
+      <Handle type="target" position={Position.Top} id="target" />
       <div className="px-4 py-2">
         <div className="flex items-center gap-2">
           <div className="flex items-center justify-center shrink-0 w-6 h-6 text-purple-500">

@@ -1,20 +1,38 @@
 # Design Tokens
 
+> **Last updated:** 2026-07-28
+> **Token source:** `src/styles/globals.css`
+
 ## Colours
 
-### Core Surfaces
+### Surfaces
+
+The layered canvas system — page backgrounds and elevated containers.
 
 | Token | Purpose | Light | Dark |
 |---|---|---|---|
-| `--background` | Main app background, body | zinc-50 `#FAFAFA` | zinc-900 `#18181B` |
+| `--background` | Page-level canvas, modal backdrops | zinc-50 `#FAFAFA` | zinc-900 `#18181B` |
+| `--background-subtle` | Sidebars, wizard panels, nav areas | zinc-100 `#F4F4F5` | zinc-800 `#27272A` |
 | `--foreground` | Body text, headings, labels | zinc-800 `#27272A` | zinc-50 `#FAFAFA` |
-| `--card` | Card backgrounds, elevated panels | white `#FFFFFF` | zinc-800 `#27272A` |
+| `--card` | Elevated cards, panels, modals | white `#FFFFFF` | zinc-800 `#27272A` |
 | `--card-foreground` | Text inside card components | zinc-800 `#27272A` | zinc-50 `#FAFAFA` |
-| `--surface` | Flat content areas, list items, table rows, inline panels | white `#FFFFFF` | black `#000000` |
-| `--popover` | Dropdown menus, tooltips, popovers | white `#FFFFFF` | zinc-900 `#18181B` |
-| `--popover-foreground` | Text inside dropdown menus and tooltips | zinc-800 `#27272A` | zinc-50 `#FAFAFA` |
+| `--card-nested` | Cards inside cards, nested panels | zinc-50 `#FAFAFA` | zinc-900 `#18181B` |
+| `--card-nested-foreground` | Text inside nested cards | zinc-800 `#27272A` | zinc-50 `#FAFAFA` |
+
+### Overlays
+
+Floating UI elements that appear above the page.
+
+| Token | Purpose | Light | Dark |
+|---|---|---|---|
+| `--popover` | Dropdown menus, select content, popovers | white `#FFFFFF` | zinc-900 `#18181B` |
+| `--popover-foreground` | Text inside popover elements | zinc-800 `#27272A` | zinc-50 `#FAFAFA` |
+| `--tooltip` | Tooltip backgrounds | zinc-800 `#27272A` | zinc-50 `#FAFAFA` |
+| `--tooltip-foreground` | Tooltip text | white `#FFFFFF` | zinc-900 `#18181B` |
 
 ### Primary
+
+The brand action colour — primary buttons, active states, links.
 
 | Token | Purpose | Light | Dark |
 |---|---|---|---|
@@ -23,6 +41,8 @@
 
 ### Secondary
 
+De-emphasised interactive elements — secondary buttons, toggles.
+
 | Token | Purpose | Light | Dark |
 |---|---|---|---|
 | `--secondary` | Secondary buttons, toggle backgrounds | zinc-100 `#F4F4F5` | zinc-800 `#27272A` |
@@ -30,13 +50,19 @@
 
 ### Muted
 
+Subdued surfaces and text — placeholders, disabled states, metadata.
+
 | Token | Purpose | Light | Dark |
 |---|---|---|---|
-| `--muted` | Disabled backgrounds, subtle fills | zinc-100 `#F4F4F5` | zinc-800 `#27272A` |
+| `--muted` | Disabled backgrounds, subtle fills, input backgrounds on card surfaces | zinc-100 `#F4F4F5` | zinc-800 `#27272A` |
 | `--muted-foreground` | Placeholder text, helper text, timestamps | zinc-500 `#71717A` | zinc-400 `#A1A1AA` |
 | `--tertiary-foreground` | Least prominent text, metadata | zinc-400 `#A1A1AA` | zinc-500 `#71717A` |
+| `--disabled` | Disabled button/input backgrounds | zinc-200 `#E4E4E7` | zinc-700 `#3F3F46` |
+| `--disabled-foreground` | Greyed-out labels on disabled controls | zinc-400 `#A1A1AA` | zinc-500 `#71717A` |
 
 ### Accent
+
+Brand highlighting — selected items, info callouts, hover emphasis.
 
 | Token | Purpose | Light | Dark |
 |---|---|---|---|
@@ -44,7 +70,9 @@
 | `--accent-foreground` | Text in highlighted/selected items | mint-600 `#10A078` | mint-500 `#14B88A` |
 | `--accent-hover` | Primary button hover, link hover | mint-700 `#0D8866` | mint-400 `#26C79D` |
 
-### Destructive
+### Status
+
+Semantic feedback states — errors, warnings, success, information.
 
 | Token | Purpose | Light | Dark |
 |---|---|---|---|
@@ -52,83 +80,52 @@
 | `--destructive-foreground` | Labels on delete buttons | white `#FFFFFF` | white `#FFFFFF` |
 | `--destructive-subtle` | Error banners, validation backgrounds | red-50 `#FEF2F2` | red-950 `#450A0A` |
 | `--destructive-border` | Error input borders, alert borders | red-500 `#EF4444` | red-400 `#F87171` |
-
-### Warning
-
-| Token | Purpose | Light | Dark |
-|---|---|---|---|
 | `--warning` | Warning badges, caution indicators | amber-500 `#F59E0B` | amber-500 `#F59E0B` |
 | `--warning-foreground` | Warning banner text | amber-800 `#92400E` | amber-200 `#FDE68A` |
 | `--warning-subtle` | Warning banner backgrounds | amber-50 `#FFFBEB` | amber-950 `#451A03` |
 | `--warning-border` | Warning alert borders | amber-500 `#F59E0B` | amber-400 `#FBBF24` |
-
-### Success
-
-| Token | Purpose | Light | Dark |
-|---|---|---|---|
-| `--success` | Success badges, confirmation indicators | mint-500 `#14B88A` | mint-500 `#14B88A` |
-| `--success-foreground` | Success message text | mint-700 `#0D8866` | mint-300 `#4DD4B6` |
-| `--success-subtle` | Success banner backgrounds | mint-50 `#E6F9F5` | mint-950 `#043D2E` |
-| `--success-border` | Success alert borders | mint-500 `#14B88A` | mint-400 `#26C79D` |
-
-### Info
-
-| Token | Purpose | Light | Dark |
-|---|---|---|---|
+| `--success` | Success badges, confirmation indicators | green-500 `#22C55E` | green-500 `#22C55E` |
+| `--success-foreground` | Success message text | green-600 `#16A34A` | green-300 `#86EFAC` |
+| `--success-subtle` | Success banner backgrounds | green-50 `#F0FDF4` | green-950 `#052E16` |
+| `--success-border` | Success alert borders | green-500 `#22C55E` | green-400 `#4ADE80` |
 | `--info` | Info badges, help indicators | sky-500 `#0EA5E9` | sky-400 `#38BDF8` |
 | `--info-foreground` | Info banner text | sky-700 `#0369A1` | sky-300 `#7DD3FC` |
 | `--info-subtle` | Info banner backgrounds | sky-50 `#F0F9FF` | sky-900 `#0C4A6E` |
 | `--info-border` | Info alert borders | sky-500 `#0EA5E9` | sky-400 `#38BDF8` |
 
-### Border
+### Borders
+
+Dividers, input borders, focus indicators.
 
 | Token | Purpose | Light | Dark |
 |---|---|---|---|
 | `--border` | Card borders, dividers, table lines | zinc-200 `#E4E4E7` | zinc-700 `#3F3F46` |
-| `--input` | Text inputs, selects, textareas | zinc-300 `#D4D4D8` | zinc-600 `#52525B` |
+| `--border-strong` | Active borders, stronger dividers | zinc-300 `#D4D4D8` | zinc-600 `#52525B` |
+| `--input` | Text inputs, selects, textareas | zinc-200 `#E4E4E7` | zinc-600 `#52525B` |
 | `--ring` | Focus outline on interactive elements | mint-500 `#14B88A` | mint-500 `#14B88A` |
-| `--border-strong` | Active borders, stronger dividers between sections | zinc-300 `#D4D4D8` | zinc-600 `#52525B` |
 
-### Disabled
+### Neutral
 
-| Token | Purpose | Light | Dark |
-|---|---|---|---|
-| `--disabled` | Disabled button/input backgrounds | zinc-200 `#E4E4E7` | zinc-700 `#3F3F46` |
-| `--disabled-foreground` | Greyed-out labels on disabled controls | zinc-400 `#A1A1AA` | zinc-500 `#71717A` |
-
-### Extended
+Utility tokens for edge cases — inverted text, sunken/elevated surfaces.
 
 | Token | Purpose | Light | Dark |
 |---|---|---|---|
 | `--background-sunken` | Inset panels, code blocks, well areas | zinc-200 `#E4E4E7` | zinc-950 `#09090B` |
-| `--background-elevated` | Raised surfaces above subtle, skeleton loaders | zinc-300 `#D4D4D8` | zinc-700 `#3F3F46` |
-| `--text-inverse` | White text on dark surfaces, tooltips | white `#FFFFFF` | zinc-900 `#18181B` |
-| `--danger-hover` | Delete button hover, error link hover | red-600 `#DC2626` | red-500 `#EF4444` |
-| `--danger-text` | Error messages, validation text | red-700 `#B91C1C` | red-300 `#FCA5A5` |
+| `--background-elevated` | Raised surfaces, skeleton loaders | zinc-300 `#D4D4D8` | zinc-700 `#3F3F46` |
+| `--text-inverse` | White text on dark surfaces | white `#FFFFFF` | zinc-900 `#18181B` |
 | `--neutral-hover` | Neutral button hover state | zinc-600 `#52525B` | zinc-500 `#71717A` |
 | `--neutral-subtle` | Neutral badge backgrounds, chip fills | zinc-50 `#FAFAFA` | zinc-950 `#09090B` |
-| `--neutral-text` | Neutral badge labels, secondary button text | zinc-600 `#52525B` | zinc-400 `#A1A1AA` |
+| `--neutral-text` | Neutral badge labels, secondary text | zinc-600 `#52525B` | zinc-400 `#A1A1AA` |
 | `--neutral-border` | Neutral badge borders, chip outlines | zinc-400 `#A1A1AA` | zinc-600 `#52525B` |
-
-### Sidebar
-
-| Token | Purpose | Light | Dark |
-|---|---|---|---|
-| `--sidebar` | Navigation sidebar surface | zinc-100 `#F4F4F5` | zinc-900 `#18181B` |
-| `--sidebar-foreground` | Nav item labels in sidebar | zinc-800 `#27272A` | zinc-50 `#FAFAFA` |
-| `--sidebar-primary` | Active nav item indicator in sidebar | mint-500 `#14B88A` | mint-500 `#14B88A` |
-| `--sidebar-primary-foreground` | Active nav item text | white `#FFFFFF` | white `#FFFFFF` |
-| `--sidebar-accent` | Hovered nav item background | mint-50 `#E6F9F5` | mint-950 `#043D2E` |
-| `--sidebar-accent-foreground` | Hovered nav item text | mint-700 `#0D8866` | mint-300 `#4DD4B6` |
-| `--sidebar-border` | Sidebar edge border, section dividers | zinc-200 `#E4E4E7` | zinc-700 `#3F3F46` |
-| `--sidebar-ring` | Focus state on sidebar items | mint-500 `#14B88A` | mint-500 `#14B88A` |
 
 ### Charts
 
+Data visualisation colour sequence.
+
 | Token | Purpose | Light | Dark |
 |---|---|---|---|
-| `--chart-1` | First data series in charts | mint-500 `#14B88A` | mint-500 `#14B88A` |
-| `--chart-2` | Second data series in charts | blue-500 `#3B82F6` | blue-400 `#60A5FA` |
-| `--chart-3` | Third data series in charts | amber-500 `#F59E0B` | amber-400 `#FBBF24` |
-| `--chart-4` | Fourth data series in charts | purple-500 `#A855F7` | purple-400 `#C084FC` |
-| `--chart-5` | Fifth data series in charts | sky-500 `#0EA5E9` | sky-400 `#38BDF8` |
+| `--chart-1` | First data series | mint-500 `#14B88A` | mint-500 `#14B88A` |
+| `--chart-2` | Second data series | blue-500 `#3B82F6` | blue-400 `#60A5FA` |
+| `--chart-3` | Third data series | amber-500 `#F59E0B` | amber-400 `#FBBF24` |
+| `--chart-4` | Fourth data series | purple-500 `#A855F7` | purple-400 `#C084FC` |
+| `--chart-5` | Fifth data series | sky-500 `#0EA5E9` | sky-400 `#38BDF8` |

@@ -78,8 +78,8 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
       {/* Row 0: Name */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
-          <p className="text-sm font-semibold text-foreground m-0">Name <span className="text-destructive">*</span></p>
-          <p className="text-xs text-tertiary-foreground mt-1 m-0">A unique name for this automation</p>
+          <p className="text-md font-semibold text-foreground m-0">Name <span className="text-destructive">*</span></p>
+          <p className="text-2xs text-tertiary-foreground mt-1 m-0">A unique name for this automation</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
           <Input
@@ -95,9 +95,9 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">Exporting From</p>
+            <p className="text-md font-semibold text-foreground m-0">Exporting from</p>
           </div>
-          <p className="text-xs text-tertiary-foreground mt-1 m-0">Select one or more data sources</p>
+          <p className="text-2xs text-tertiary-foreground mt-1 m-0">Select one or more data sources</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
           <div className="flex flex-col gap-2">
@@ -115,10 +115,10 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
           {/* Transactional database selector — grey background under cards */}
           {showTransactionalSource && (
             <div className="bg-muted rounded-lg p-4">
-              <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Transactional Database</p>
+              <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Transactional database</p>
               <Select onValueChange={(v) => handleTransactionalSourceSelect(v as TransactionalSource)} value={draft.transactionalSource ?? undefined}>
                 <SelectTrigger aria-label="Select transactional database">
-                  <SelectValue placeholder="Select Database" />
+                  <SelectValue placeholder="Select database" />
                 </SelectTrigger>
                 <SelectContent>
                   {TRANSACTIONAL_SOURCE_OPTIONS.map((opt) => (
@@ -145,9 +145,9 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
         <div className="flex items-start gap-14">
           <div className="w-40 shrink-0">
             <div className="flex items-center gap-1.5">
-              <p className="text-sm font-semibold text-foreground m-0">Filters</p>
+              <p className="text-md font-semibold text-foreground m-0">Filters</p>
             </div>
-            <p className="text-xs text-tertiary-foreground mt-1 m-0">Narrow down the records to export</p>
+            <p className="text-2xs text-tertiary-foreground mt-1 m-0">Narrow down the records to export</p>
           </div>
           <div className="w-[552px] flex flex-col gap-3">
             <FilterBuilder

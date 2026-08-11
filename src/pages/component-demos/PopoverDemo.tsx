@@ -17,17 +17,17 @@ interface PopoverDemoProps {
 }
 
 const detailsStyles = {
-  default: 'bg-emerald-50 p-3 rounded-md text-emerald-800',
-  destructive: 'bg-red-50 p-3 rounded-md text-red-800',
-  info: 'bg-sky-50 p-3 rounded-md text-sky-800',
-  caution: 'bg-amber-50 p-3 rounded-md text-amber-800',
+  default: 'bg-accent p-3 rounded-md text-accent-foreground',
+  destructive: 'bg-destructive-subtle p-3 rounded-md text-destructive',
+  info: 'bg-info-subtle p-3 rounded-md text-info-foreground',
+  caution: 'bg-warning-subtle p-3 rounded-md text-warning-foreground',
 }
 
 const detailsIcons = {
   default: null,
   destructive: <WarningCircle weight="fill" className="size-4 shrink-0 mt-0.5 text-destructive" />,
-  info: <Info weight="fill" className="size-4 shrink-0 mt-0.5 text-sky-500" />,
-  caution: <Warning weight="fill" className="size-4 shrink-0 mt-0.5 text-amber-500" />,
+  info: <Info weight="fill" className="size-4 shrink-0 mt-0.5 text-info" />,
+  caution: <Warning weight="fill" className="size-4 shrink-0 mt-0.5 text-warning" />,
 }
 
 const detailsText = {

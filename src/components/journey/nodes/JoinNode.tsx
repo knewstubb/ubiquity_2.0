@@ -19,8 +19,8 @@ export function JoinNode({ data, selected }: NodeProps & { data: JoinNodeData })
       )}
     >
       <Handle type="target" position={Position.Top} id="input-0" />
-      <Handle type="target" position={Position.Top} id="input-1" />
-      <Handle type="target" position={Position.Top} id="input-2" />
+      <Handle type="target" position={Position.Top} id="input-1" style={{ left: '30%' }} />
+      <Handle type="target" position={Position.Top} id="input-2" style={{ left: '70%' }} />
       <div className="px-4 py-2">
         <div className="flex items-center gap-2">
           <div className="flex items-center justify-center shrink-0 w-6 h-6 text-border-strong">
@@ -31,7 +31,7 @@ export function JoinNode({ data, selected }: NodeProps & { data: JoinNodeData })
           </div>
         </div>
       </div>
-      <Handle type="source" position={Position.Bottom} />
+      <Handle type="source" position={Position.Bottom} id="default" />
     </div>
   );
 }

@@ -380,13 +380,13 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
   const conditionCountColour = totalConditions >= MAX_CONDITIONS
     ? "text-destructive"
     : conditionsNearLimit
-      ? "text-amber-600"
+      ? "text-warning"
       : "text-foreground"
 
   const groupCountColour = totalGroups >= MAX_GROUPS
     ? "text-destructive"
     : groupsNearLimit
-      ? "text-amber-600"
+      ? "text-warning"
       : "text-foreground"
 
   // Clear all handler
@@ -413,8 +413,8 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
             /* Phase 1: Contacts or Transactional table — option card list */
             <div className="flex items-start gap-14 w-full">
               <div className="w-40 shrink-0">
-                <div className="flex items-center gap-1.5"><p className="text-sm font-semibold text-foreground m-0">Source</p><HelpPopover title="Primary Source" body="Choose the base table your export is built around. Each export run will include records from this source that have changed since the last run. You can add fields from other sources on the next step." width="default" /></div>
-                <p className="text-xs text-tertiary-foreground mt-1 m-0">What data to export</p>
+                <div className="flex items-center gap-1.5"><p className="text-md font-semibold text-foreground m-0">Source</p><HelpPopover title="Primary Source" body="Choose the base table your export is built around. Each export run will include records from this source that have changed since the last run. You can add fields from other sources on the next step." width="default" /></div>
+                <p className="text-2xs text-tertiary-foreground mt-1 m-0">What data to export</p>
               </div>
               <div className="w-[552px] flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
@@ -451,8 +451,8 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
             /* Phase 2: Contacts + Messaging + Transactional */
             <div className="flex items-start gap-14 w-full">
               <div className="w-40 shrink-0">
-                <div className="flex items-center gap-1.5"><p className="text-sm font-semibold text-foreground m-0">Source</p><HelpPopover title="Primary Source" body="Choose the base table your export is built around. Each export run will include records from this source that have changed since the last run. You can add fields from other sources on the next step." width="default" /></div>
-                <p className="text-xs text-tertiary-foreground mt-1 m-0">What data to export</p>
+                <div className="flex items-center gap-1.5"><p className="text-md font-semibold text-foreground m-0">Source</p><HelpPopover title="Primary Source" body="Choose the base table your export is built around. Each export run will include records from this source that have changed since the last run. You can add fields from other sources on the next step." width="default" /></div>
+                <p className="text-2xs text-tertiary-foreground mt-1 m-0">What data to export</p>
               </div>
               <div className="w-[552px] flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
@@ -500,8 +500,8 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
             /* Phase 3: Contacts + Transactional + Mailout + Surveys, Forms, SMS */
             <div className="flex items-start gap-14 w-full">
               <div className="w-40 shrink-0">
-                <div className="flex items-center gap-1.5"><p className="text-sm font-semibold text-foreground m-0">Source</p><HelpPopover title="Primary Source" body="Choose the base table your export is built around. Each export run will include records from this source that have changed since the last run. You can add fields from other sources on the next step." width="default" /></div>
-                <p className="text-xs text-tertiary-foreground mt-1 m-0">What data to export</p>
+                <div className="flex items-center gap-1.5"><p className="text-md font-semibold text-foreground m-0">Source</p><HelpPopover title="Primary Source" body="Choose the base table your export is built around. Each export run will include records from this source that have changed since the last run. You can add fields from other sources on the next step." width="default" /></div>
+                <p className="text-2xs text-tertiary-foreground mt-1 m-0">What data to export</p>
               </div>
               <div className="w-[552px] flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
@@ -610,7 +610,7 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
           {/* Content — empty state or filter builder */}
           {exporterPhase >= 3 ? (
             /* Phase 3: full filter builder with custom empty state */
-            <div className="flex-1 overflow-y-auto min-h-0 scrollbar-gutter-stable px-4 bg-surface flex flex-col">
+            <div className="flex-1 overflow-y-auto min-h-0 scrollbar-gutter-stable px-4 bg-card flex flex-col">
               <ModalFilterBuilder
                 value={filterValue}
                 onChange={handleFilterChange}
@@ -632,7 +632,7 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
             </div>
           ) : (
             /* Phase 1–2: informational — delta export, no filter editing */
-            <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 bg-surface">
+            <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 bg-card">
               <div className="flex flex-col items-center gap-3 text-center max-w-sm">
                 <CheckCircle size={32} weight="regular" className="text-primary" />
                 <p className="text-base font-semibold text-foreground m-0">All changed records will be exported</p>

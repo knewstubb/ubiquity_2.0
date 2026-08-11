@@ -170,7 +170,7 @@ export default function DashboardPage() {
                     {showButtons && (
                       <button
                         type="button"
-                        className="flex items-center gap-2.5 px-4 py-1.5 min-h-[38px] border border-solid border-primary/30 rounded-lg bg-surface text-primary text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary"
+                        className="flex items-center gap-2.5 px-4 py-1.5 min-h-[38px] border border-solid border-primary/30 rounded-lg bg-card text-primary text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary"
                         onClick={() => navigate(`/importers/new/${connection.id}`, { state: { connectorName: '' } })}
                       >
                         <Plus size={16} weight="bold" className="shrink-0" />
@@ -202,7 +202,7 @@ export default function DashboardPage() {
                     {showButtons && (
                       <button
                         type="button"
-                        className="flex items-center gap-2.5 px-4 py-1.5 min-h-[38px] border border-solid border-primary/30 rounded-lg bg-surface text-primary text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary"
+                        className="flex items-center gap-2.5 px-4 py-1.5 min-h-[38px] border border-solid border-primary/30 rounded-lg bg-card text-primary text-sm font-semibold cursor-pointer transition-colors duration-150 hover:bg-accent/40 hover:border-primary"
                         onClick={() => navigate(`/exporters/new/${connection.id}`, { state: { connectorName: '' } })}
                       >
                         <Plus size={16} weight="bold" className="shrink-0" />
@@ -389,7 +389,7 @@ function EmptyConnectionState({ onCreateConnection }: { onCreateConnection: () =
   return (
     <div className="flex flex-col items-center pt-[20vh] px-6 text-center">
       {/* Visual anchor */}
-      <div className="text-zinc-300 dark:text-zinc-600 mb-4">
+      <div className="text-border dark:text-zinc-600 mb-4">
         <PlugsConnected size={48} weight="light" />
       </div>
 
@@ -432,7 +432,7 @@ function EmptyConnectionState({ onCreateConnection }: { onCreateConnection: () =
                 <li className="text-sm text-muted-foreground leading-relaxed">A sample file in the expected format (CSV, JSON, or delimited text)</li>
                 <li className="text-sm text-muted-foreground leading-relaxed">Knowledge of the file naming pattern used by your system</li>
               </ul>
-              <div className="bg-emerald-50 rounded-md p-3 text-sm text-emerald-800">
+              <div className="bg-accent rounded-md p-3 text-sm text-accent-foreground">
                 Your technical admin or IT team can provide these details. Each protocol (SFTP, AWS S3, Azure Blob) has specific requirements.
               </div>
               <div className="flex justify-end">

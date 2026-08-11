@@ -1,6 +1,35 @@
 // src/data/journeySeeds.ts
 
 import type { JourneyDefinition } from '../models/journey';
+import { createFixedNodes } from '../models/journey';
+
+/**
+ * Empty Journey — uses the new fixed Start/End pattern
+ * This is the default state for new journeys.
+ */
+const emptyJourney: JourneyDefinition = (() => {
+  const { nodes, edges } = createFixedNodes();
+  return {
+    id: 'jrn-empty-demo',
+    name: 'New Journey (Demo)',
+    campaignId: '',
+    accountId: 'acc-master',
+    status: 'draft',
+    nodeCount: 2,
+    entryCount: 0,
+    type: 'promotional',
+    nodes,
+    edges,
+    settings: {
+      name: 'New Journey (Demo)',
+      description: 'A blank journey to demonstrate the new Start/End UX pattern',
+      journeyType: 'promotional',
+      entryCriteria: { segmentId: '' },
+      reEntryRule: 'block',
+      status: 'draft',
+    },
+  };
+})();
 
 /**
  * Welcome Journey — 8 nodes
@@ -211,11 +240,11 @@ const reEngagementJourney: JourneyDefinition = {
  */
 const postPurchaseJourney: JourneyDefinition = {
   id: 'jrn-promo-summer',
-  name: 'Summer Specials Promo',
+  name: 'Post-Purchase Follow-up',
   campaignId: 'cmp-summer-glow',
   accountId: 'acc-master',
   status: 'active',
-  nodeCount: 8,
+  nodeCount: 9,
   entryCount: 34,
   type: 'promotional',
 
@@ -284,6 +313,14 @@ const postPurchaseJourney: JourneyDefinition = {
       label: 'Send Survey',
       config: { subType: 'send-email', emailRef: 'Customer Survey', emailContent: '' },
     },
+    {
+      id: 'p-n9',
+      type: 'end',
+      subType: 'exit',
+      position: { x: 300, y: 1100 },
+      label: 'Exit Journey',
+      config: { subType: 'exit', label: 'Journey Complete', reason: 'completed' },
+    },
   ],
 
   edges: [
@@ -294,10 +331,12 @@ const postPurchaseJourney: JourneyDefinition = {
     { id: 'p-e5', sourceNodeId: 'p-n5', targetNodeId: 'p-n6', sourceHandle: 'default' },
     { id: 'p-e6', sourceNodeId: 'p-n6', targetNodeId: 'p-n7', sourceHandle: 'variant-a', label: 'Variant A' },
     { id: 'p-e7', sourceNodeId: 'p-n6', targetNodeId: 'p-n8', sourceHandle: 'variant-b', label: 'Variant B' },
+    { id: 'p-e8', sourceNodeId: 'p-n7', targetNodeId: 'p-n9', sourceHandle: 'default' },
+    { id: 'p-e9', sourceNodeId: 'p-n8', targetNodeId: 'p-n9', sourceHandle: 'default' },
   ],
 
   settings: {
-    name: 'Summer Specials Promo',
+    name: 'Post-Purchase Follow-up',
     description: 'Post-purchase follow-up with thank you, review request, and A/B tested upsell',
     journeyType: 'promotional',
     entryCriteria: { segmentId: 'seg-gold' },
@@ -308,6 +347,7 @@ const postPurchaseJourney: JourneyDefinition = {
 
 /** All sample journey definitions */
 export const journeyDefinitions: JourneyDefinition[] = [
+  emptyJourney,
   welcomeJourney,
   reEngagementJourney,
   postPurchaseJourney,

@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { JourneyDefinition, JourneyNode, JourneyEdge } from '../models/journey';
+import { FIXED_START_ID, FIXED_END_ID } from '../models/journey';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { useDataLayer } from '../providers/DataLayerProvider';
 import { useToast } from '../components/shared/Toast';
@@ -44,6 +45,138 @@ function loadJourneysFromStorage(): JourneyDefinition[] | null {
   }
 }
 
+/**
+ * Ensures a journey has properly connected fixed Start/End nodes.
+ * Also repairs journeys where Start/End exist but aren't wired.
+ */
+function ensureFixedNodes(journey: JourneyDefinition): JourneyDefinition {
+  const hasStart = journey.nodes.some((n) => n.id === FIXED_START_ID);
+  const hasEnd = journey.nodes.some((n) => n.id === FIXED_END_ID);
+
+  // Find bounds of existing content nodes to position Start/End
+  const contentNodes = journey.nodes.filter(
+    (n) => n.id !== FIXED_START_ID && n.id !== FIXED_END_ID,
+  );
+  
+  const minY = contentNodes.length > 0
+    ? Math.min(...contentNodes.map((n) => n.position.y))
+    : 100;
+  const maxY = contentNodes.length > 0
+    ? Math.max(...contentNodes.map((n) => n.position.y))
+    : 100;
+  const avgX = contentNodes.length > 0
+    ? contentNodes.reduce((sum, n) => sum + n.position.x, 0) / contentNodes.length
+    : 300;
+
+  let migratedNodes = [...journey.nodes];
+  let migratedEdges = [...journey.edges];
+
+  // Add Start node if missing — position above all existing nodes
+  if (!hasStart) {
+    const startNode: JourneyNode = {
+      id: FIXED_START_ID,
+      type: 'start',
+      subType: 'start',
+      label: 'Start',
+      position: { x: avgX, y: minY - 120 },
+      config: { subType: 'start' },
+    };
+    migratedNodes = [startNode, ...migratedNodes];
+  }
+
+  // Add End node if missing — position below all existing nodes
+  if (!hasEnd) {
+    const endNode: JourneyNode = {
+      id: FIXED_END_ID,
+      type: 'fixed-end',
+      subType: 'fixed-end',
+      label: 'End',
+      position: { x: avgX, y: maxY + 120 },
+      config: { subType: 'fixed-end' },
+    };
+    migratedNodes = [...migratedNodes, endNode];
+  }
+
+  // Determine which nodes have edges
+  const nodesWithIncoming = new Set(migratedEdges.map((e) => e.targetNodeId));
+  const nodesWithOutgoing = new Set(migratedEdges.map((e) => e.sourceNodeId));
+
+  // Check if Start has any outgoing edges
+  const startHasOutgoing = nodesWithOutgoing.has(FIXED_START_ID);
+  
+  // Check if End has any incoming edges
+  const endHasIncoming = nodesWithIncoming.has(FIXED_END_ID);
+
+  // Find entry nodes (no incoming edges, excluding fixed nodes)
+  const entryNodes = migratedNodes.filter(
+    (n) => n.id !== FIXED_START_ID && n.id !== FIXED_END_ID && !nodesWithIncoming.has(n.id),
+  );
+
+  // Find exit nodes (no outgoing edges, excluding fixed nodes)
+  const exitNodes = migratedNodes.filter(
+    (n) => n.id !== FIXED_START_ID && n.id !== FIXED_END_ID && !nodesWithOutgoing.has(n.id),
+  );
+
+  // Connect Start → entry nodes if Start has no outgoing edges
+  if (!startHasOutgoing && entryNodes.length > 0) {
+    for (const entryNode of entryNodes) {
+      const edgeId = `e-${FIXED_START_ID}-${entryNode.id}`;
+      // Avoid duplicates
+      if (!migratedEdges.some((e) => e.id === edgeId)) {
+        migratedEdges.push({
+          id: edgeId,
+          sourceNodeId: FIXED_START_ID,
+          targetNodeId: entryNode.id,
+          sourceHandle: 'default',
+        });
+      }
+    }
+  }
+
+  // Connect exit nodes → End if End has no incoming edges
+  if (!endHasIncoming && exitNodes.length > 0) {
+    for (const exitNode of exitNodes) {
+      const edgeId = `e-${exitNode.id}-${FIXED_END_ID}`;
+      // Avoid duplicates
+      if (!migratedEdges.some((e) => e.id === edgeId)) {
+        migratedEdges.push({
+          id: edgeId,
+          sourceNodeId: exitNode.id,
+          targetNodeId: FIXED_END_ID,
+          sourceHandle: 'default',
+        });
+      }
+    }
+  }
+
+  // If no content nodes exist, connect Start → End directly
+  if (contentNodes.length === 0) {
+    const directEdgeId = `e-${FIXED_START_ID}-${FIXED_END_ID}`;
+    if (!migratedEdges.some((e) => e.id === directEdgeId)) {
+      migratedEdges.push({
+        id: directEdgeId,
+        sourceNodeId: FIXED_START_ID,
+        targetNodeId: FIXED_END_ID,
+        sourceHandle: 'default',
+      });
+    }
+  }
+
+  return {
+    ...journey,
+    nodes: migratedNodes,
+    edges: migratedEdges,
+    nodeCount: migratedNodes.length,
+  };
+}
+
+/**
+ * Migrate all journeys to ensure they have fixed Start/End nodes.
+ */
+function migrateJourneys(journeys: JourneyDefinition[]): JourneyDefinition[] {
+  return journeys.map(ensureFixedNodes);
+}
+
 export function JourneysProvider({ children }: { children: ReactNode }) {
   const dataLayer = useDataLayer();
   const { showToast } = useToast();
@@ -52,9 +185,9 @@ export function JourneysProvider({ children }: { children: ReactNode }) {
   const [journeys, setJourneys] = useState<JourneyDefinition[]>(() => {
     if (!supabaseMode) {
       const stored = loadJourneysFromStorage();
-      if (stored !== null) return stored;
+      if (stored !== null) return migrateJourneys(stored);
     }
-    return dataLayer.journeyDefinitions;
+    return migrateJourneys(dataLayer.journeyDefinitions);
   });
 
   useEffect(() => {

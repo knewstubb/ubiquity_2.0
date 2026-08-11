@@ -131,7 +131,7 @@ export function TransactionEnrichmentConfig({
           {/* Fan-out warning */}
           {config.joinStrategy === 'all_records' && (
             <p className="text-xs text-muted-foreground bg-muted/50 border border-border rounded px-2 py-1.5 m-0 flex items-start gap-1.5 max-w-[320px]">
-              <Warning size={14} weight="fill" className="text-amber-500 shrink-0 mt-0.5" />
+              <Warning size={14} weight="fill" className="text-warning shrink-0 mt-0.5" />
               <span>
                 This may produce multiple output rows per primary record (fan-out).
               </span>

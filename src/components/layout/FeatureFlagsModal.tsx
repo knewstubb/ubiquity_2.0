@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { Plus, Trash } from '@phosphor-icons/react';
+import { useState, useCallback, useMemo } from 'react';
+import { Plus, Trash, CaretDown, CaretRight } from '@phosphor-icons/react';
 import { useFeatureFlags } from '../../contexts/FeatureFlagContext';
 import type { FeatureFlag } from '../../contexts/FeatureFlagContext';
 import { cn } from '../../lib/utils';
@@ -9,11 +9,78 @@ interface FeatureFlagsModalProps {
   onClose: () => void;
 }
 
+interface FlagGroup {
+  name: string;
+  displayName: string;
+  flags: FeatureFlag[];
+}
+
+/**
+ * Derive a group category from a flag name.
+ * Groups by prefix pattern:
+ * - journey-* → Journey Builder
+ * - page-* → Pages
+ * - component-* → Components
+ * - Other → Other
+ */
+function getFlagGroup(flagName: string): { key: string; displayName: string } {
+  const lowerName = flagName.toLowerCase();
+  if (lowerName.startsWith('journey-')) {
+    return { key: 'journey', displayName: 'Journey Builder' };
+  }
+  if (lowerName.startsWith('page-')) {
+    return { key: 'page', displayName: 'Pages' };
+  }
+  if (lowerName.startsWith('component-')) {
+    return { key: 'component', displayName: 'Components' };
+  }
+  return { key: 'other', displayName: 'Other' };
+}
+
+/** Group order for display */
+const GROUP_ORDER = ['journey', 'component', 'page', 'other'];
+
 export function FeatureFlagsModal({ onClose }: FeatureFlagsModalProps) {
   const { flags, setFlagEnabled, createFlag, deleteFlag } = useFeatureFlags();
   const [showAddForm, setShowAddForm] = useState(false);
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
-  const flagList = Object.values(flags).sort((a, b) => a.name.localeCompare(b.name));
+  // Group flags by category
+  const groupedFlags = useMemo(() => {
+    const groups: Record<string, FlagGroup> = {};
+    
+    for (const flag of Object.values(flags)) {
+      const { key, displayName } = getFlagGroup(flag.name);
+      if (!groups[key]) {
+        groups[key] = { name: key, displayName, flags: [] };
+      }
+      groups[key].flags.push(flag);
+    }
+
+    // Sort flags within each group
+    for (const group of Object.values(groups)) {
+      group.flags.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    // Return groups in defined order
+    return GROUP_ORDER
+      .filter((key) => groups[key])
+      .map((key) => groups[key]);
+  }, [flags]);
+
+  const toggleGroup = useCallback((groupName: string) => {
+    setCollapsedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(groupName)) {
+        next.delete(groupName);
+      } else {
+        next.add(groupName);
+      }
+      return next;
+    });
+  }, []);
+
+  const totalFlags = Object.keys(flags).length;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[200]" onClick={onClose}>
@@ -31,19 +98,21 @@ export function FeatureFlagsModal({ onClose }: FeatureFlagsModalProps) {
           Control which pages and features are visible to users. Disabled flags hide the associated page or component.
         </p>
 
-        <div className="px-6 py-4 overflow-y-auto flex-1 flex flex-col">
-          {flagList.length === 0 && !showAddForm && (
+        <div className="px-6 py-4 overflow-y-auto flex-1 flex flex-col gap-4">
+          {totalFlags === 0 && !showAddForm && (
             <p className="text-center py-6 text-sm text-tertiary-foreground">
               No feature flags configured. All pages are visible by default.
             </p>
           )}
 
-          {flagList.map((flag) => (
-            <FlagRow
-              key={flag.name}
-              flag={flag}
-              onToggle={(enabled) => setFlagEnabled(flag.name, enabled)}
-              onDelete={() => deleteFlag(flag.name)}
+          {groupedFlags.map((group) => (
+            <FlagGroupSection
+              key={group.name}
+              group={group}
+              isCollapsed={collapsedGroups.has(group.name)}
+              onToggleCollapse={() => toggleGroup(group.name)}
+              onToggleFlag={(flagName, enabled) => setFlagEnabled(flagName, enabled)}
+              onDeleteFlag={deleteFlag}
             />
           ))}
 
@@ -74,6 +143,62 @@ export function FeatureFlagsModal({ onClose }: FeatureFlagsModalProps) {
   );
 }
 
+/* ── Flag Group Section ── */
+
+interface FlagGroupSectionProps {
+  group: FlagGroup;
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
+  onToggleFlag: (flagName: string, enabled: boolean) => void;
+  onDeleteFlag: (flagName: string) => void;
+}
+
+function FlagGroupSection({ group, isCollapsed, onToggleCollapse, onToggleFlag, onDeleteFlag }: FlagGroupSectionProps) {
+  const enabledCount = group.flags.filter((f) => f.enabled).length;
+  
+  return (
+    <div className="border border-border rounded-lg">
+      {/* Group header */}
+      <button
+        type="button"
+        onClick={onToggleCollapse}
+        className="flex items-center justify-between w-full px-4 py-2.5 bg-zinc-50 hover:bg-zinc-100 transition-colors cursor-pointer border-none text-left rounded-t-lg"
+      >
+        <div className="flex items-center gap-2">
+          {isCollapsed ? (
+            <CaretRight size={14} weight="bold" className="text-muted-foreground" />
+          ) : (
+            <CaretDown size={14} weight="bold" className="text-muted-foreground" />
+          )}
+          <span className="text-sm font-semibold text-foreground">{group.displayName}</span>
+          <span className="text-xs text-muted-foreground">
+            ({enabledCount}/{group.flags.length} enabled)
+          </span>
+        </div>
+      </button>
+
+      {/* Flags list */}
+      {!isCollapsed && (
+        <div className="divide-y divide-border bg-background">
+          {group.flags.length === 0 && (
+            <div className="px-4 py-3 text-sm text-muted-foreground italic">
+              No flags in this group
+            </div>
+          )}
+          {group.flags.map((flag) => (
+            <FlagRow
+              key={flag.name}
+              flag={flag}
+              onToggle={(enabled) => onToggleFlag(flag.name, enabled)}
+              onDelete={() => onDeleteFlag(flag.name)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Flag Row ── */
 
 interface FlagRowProps {
@@ -84,7 +209,7 @@ interface FlagRowProps {
 
 function FlagRow({ flag, onToggle, onDelete }: FlagRowProps) {
   return (
-    <div className="flex items-center justify-between gap-4 py-3 border-b border-border last:border-b-0">
+    <div className="flex items-center justify-between gap-4 px-4 py-3">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-foreground">{flag.name}</span>

@@ -69,6 +69,8 @@ interface ConditionCardProps {
   onToggleDisabled?: () => void
   isInvalid?: boolean
   disableClone?: boolean
+  /** Compact mode for narrow panels — smaller text and icon sizes */
+  compact?: boolean
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -77,33 +79,33 @@ interface ConditionCardProps {
  * Resolves the source category icon based on key convention.
  * Falls back to Table icon for transactional/unknown sources.
  */
-function getSourceIcon(sourceCategory: string): React.ReactNode {
+function getSourceIcon(sourceCategory: string, size: number = 24): React.ReactNode {
   const key = sourceCategory.toLowerCase()
   if (key.includes('contact') || key.includes('people') || key.includes('audience')) {
-    return <UsersThree size={24} weight="regular" className="shrink-0 text-muted-foreground" />
+    return <UsersThree size={size} weight="regular" className="shrink-0 text-muted-foreground" />
   }
   if (key.includes('email') || key.includes('mail')) {
-    return <EnvelopeSimple size={24} weight="regular" className="shrink-0 text-muted-foreground" />
+    return <EnvelopeSimple size={size} weight="regular" className="shrink-0 text-muted-foreground" />
   }
   if (key.includes('sms') || key.includes('chat') || key.includes('text')) {
-    return <ChatCentered size={24} weight="regular" className="shrink-0 text-muted-foreground" />
+    return <ChatCentered size={size} weight="regular" className="shrink-0 text-muted-foreground" />
   }
   if (key.includes('event') || key.includes('conference') || key.includes('webinar')) {
-    return <Confetti size={24} weight="regular" className="shrink-0 text-muted-foreground" />
+    return <Confetti size={size} weight="regular" className="shrink-0 text-muted-foreground" />
   }
   if (key.includes('survey') || key.includes('feedback') || key.includes('nps')) {
-    return <ClipboardText size={24} weight="regular" className="shrink-0 text-muted-foreground" />
+    return <ClipboardText size={size} weight="regular" className="shrink-0 text-muted-foreground" />
   }
   if (key.includes('form') || key.includes('signup') || key.includes('submission')) {
-    return <ListChecks size={24} weight="regular" className="shrink-0 text-muted-foreground" />
+    return <ListChecks size={size} weight="regular" className="shrink-0 text-muted-foreground" />
   }
   if (key.includes('push') || key.includes('notification')) {
-    return <Bell size={24} weight="regular" className="shrink-0 text-muted-foreground" />
+    return <Bell size={size} weight="regular" className="shrink-0 text-muted-foreground" />
   }
   if (key.includes('filter') || key.includes('saved')) {
-    return <Funnel size={24} weight="regular" className="shrink-0 text-muted-foreground" />
+    return <Funnel size={size} weight="regular" className="shrink-0 text-muted-foreground" />
   }
-  return <Table size={24} weight="regular" className="shrink-0 text-muted-foreground" />
+  return <Table size={size} weight="regular" className="shrink-0 text-muted-foreground" />
 }
 
 /**
@@ -236,10 +238,14 @@ function buildArrayValueTooltip(values: string[]): React.ReactNode {
 function SummaryLine({
   row,
   sourceCategories,
+  compact = false,
 }: {
   row: CardFilterRow
   sourceCategories: SourceCategoryConfig[]
+  compact?: boolean
 }) {
+  const textClass = compact ? 'body-s' : 'body-base'
+  
   // Special case: relationship/transactional conditions
   if (row.field === '__relationship__') {
     const relOp = RELATIONSHIP_OPERATORS.find((o) => o.value === row.operator)
@@ -318,7 +324,7 @@ function SummaryLine({
     }
 
     return (
-      <span className="text-base text-foreground leading-snug">
+      <span className={cn(textClass, "text-foreground leading-snug")}>
         {summaryParts}
       </span>
     )
@@ -332,7 +338,7 @@ function SummaryLine({
   const isArrayOp = ARRAY_VALUE_OPERATORS.includes(row.operator) && Array.isArray(row.value)
 
   return (
-    <span className="text-base text-foreground leading-snug">
+    <span className={cn(textClass, "text-foreground leading-snug")}>
       <span className="font-semibold">{fieldLabel}</span>
       {' '}{operatorLabel}
       {valuePortion !== null && (
@@ -371,6 +377,7 @@ export function ConditionCard({
   onToggleDisabled,
   isInvalid = false,
   disableClone = false,
+  compact = false,
 }: ConditionCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const isEmpty = !row.sourceCategory && !row.field && !row.operator
@@ -411,9 +418,9 @@ export function ConditionCard({
       {/* Source type icon */}
       <span className={cn("shrink-0", isDisabled && "opacity-40")}>
         {isInvalid ? (
-          <Warning size={24} weight="fill" className="text-amber-500" />
+          <Warning size={compact ? 16 : 24} weight="fill" className="text-warning" />
         ) : (
-          getSourceIcon(row.sourceCategory)
+          getSourceIcon(row.sourceCategory, compact ? 16 : 24)
         )}
       </span>
 
@@ -429,11 +436,11 @@ export function ConditionCard({
           isDisabled && 'opacity-40'
         )}
       >
-        {/* Line 1: summary — Body/Base */}
-        <SummaryLine row={row} sourceCategories={sourceCategories} />
+        {/* Line 1: summary */}
+        <SummaryLine row={row} sourceCategories={sourceCategories} compact={compact} />
 
-        {/* Line 2: source path — Body/S */}
-        <span className="text-sm text-muted-foreground break-words">
+        {/* Line 2: source path */}
+        <span className={cn("text-muted-foreground break-words", compact ? "body-xs" : "body-s")}>
           {sourcePath}
         </span>
       </button>
@@ -486,7 +493,7 @@ export function ConditionCard({
                   <button
                     type="button"
                     onClick={onToggleDisabled}
-                    className="p-1 rounded border border-border text-muted-foreground hover:text-amber-600 hover:border-amber-400/40 hover:bg-amber-50 transition-colors"
+                    className="p-1 rounded border border-border text-muted-foreground hover:text-warning hover:border-warning/40 hover:bg-warning-subtle transition-colors"
                     aria-label={isDisabled ? 'Enable condition' : 'Disable condition'}
                   >
                     {isDisabled ? <EyeSlash size={14} weight="regular" /> : <Eye size={14} weight="regular" />}

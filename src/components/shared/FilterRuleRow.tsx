@@ -115,7 +115,7 @@ export function FilterRuleRow({
         type="button"
         className={cn(
           "flex items-center justify-center w-7 h-7 border-none bg-transparent text-tertiary-foreground rounded-sm cursor-pointer transition-colors duration-150 shrink-0",
-          "hover:text-destructive hover:bg-red-50",
+          "hover:text-destructive hover:bg-destructive-subtle",
           "disabled:opacity-0 disabled:cursor-default disabled:pointer-events-none"
         )}
         onClick={onRemove}

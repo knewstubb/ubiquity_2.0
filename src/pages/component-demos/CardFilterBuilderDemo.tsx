@@ -544,13 +544,13 @@ export default function CardFilterBuilderDemo(props: Record<string, unknown>) {
   const conditionCountColour = totalConditions >= MAX_CONDITIONS
     ? "text-destructive"
     : conditionsNearLimit
-      ? "text-amber-600"
+      ? "text-warning"
       : "text-foreground"
 
   const groupCountColour = totalGroups >= MAX_GROUPS
     ? "text-destructive"
     : groupsNearLimit
-      ? "text-amber-600"
+      ? "text-warning"
       : "text-foreground"
 
   return (
@@ -579,7 +579,7 @@ export default function CardFilterBuilderDemo(props: Record<string, unknown>) {
       </div>
 
       {/* Filter Builder — scrollable, surface background, vertically centres empty state */}
-      <div className="flex-1 overflow-y-auto min-h-0 scrollbar-gutter-stable px-4 bg-surface flex flex-col">
+      <div className="flex-1 overflow-y-auto min-h-0 scrollbar-gutter-stable px-4 bg-card flex flex-col">
         <ModalFilterBuilder
           value={value}
           onChange={setValue}

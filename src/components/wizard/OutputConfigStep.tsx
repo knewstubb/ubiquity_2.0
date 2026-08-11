@@ -75,10 +75,10 @@ export function OutputConfigStep({ draft, onUpdate, connectionBasePath = '' }: O
       {/* Exporter Name */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
-          <p className="text-sm font-semibold text-foreground m-0">
+          <p className="text-md font-semibold text-foreground m-0">
             Exporter Name <span className="text-destructive">*</span>
           </p>
-          <p className="text-xs text-tertiary-foreground mt-1 m-0">A unique name for this exporter</p>
+          <p className="text-2xs text-tertiary-foreground mt-1 m-0">A unique name for this exporter</p>
         </div>
         <div className="w-[552px]">
           <Input
@@ -95,14 +95,14 @@ export function OutputConfigStep({ draft, onUpdate, connectionBasePath = '' }: O
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">File Name</p>
+            <p className="text-md font-semibold text-foreground m-0">File name</p>
             <HelpPopover
               title="File Name"
               body="Only letters, numbers, hyphens (-) and underscores (_) are allowed. A timestamp and .csv extension are appended automatically. If you type .csv it will be removed."
               width="narrow"
             />
           </div>
-          <p className="text-xs text-tertiary-foreground mt-1 m-0">System filename prefix</p>
+          <p className="text-2xs text-tertiary-foreground mt-1 m-0">System filename prefix</p>
         </div>
         <div className="w-[552px] flex flex-col gap-2">
           <div className={cn(
@@ -172,7 +172,7 @@ export function OutputConfigStep({ draft, onUpdate, connectionBasePath = '' }: O
 
               {/* Header Row */}
               <div className="flex-1">
-                <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Header Row</p>
+                <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Header row</p>
                 <div className="flex items-center gap-2 h-9">
                   <Switch
                     id="header-row-toggle"
@@ -193,14 +193,14 @@ export function OutputConfigStep({ draft, onUpdate, connectionBasePath = '' }: O
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">Destination</p>
+            <p className="text-md font-semibold text-foreground m-0">Destination</p>
             <HelpPopover
               title="Destination Path"
               body="The folder on your connected storage where export files will be written. Use forward slashes to create nested folders. The folder will be created automatically on the first export if it doesn't exist."
               width="default"
             />
           </div>
-          <p className="text-xs text-tertiary-foreground mt-1 m-0">Folder path on the connection where files will be written</p>
+          <p className="text-2xs text-tertiary-foreground mt-1 m-0">Folder path on the connection where files will be written</p>
         </div>
         <div className="w-[552px] flex flex-col gap-2">
           <div className="flex items-center gap-2">
@@ -228,8 +228,8 @@ export function OutputConfigStep({ draft, onUpdate, connectionBasePath = '' }: O
       {/* Preview */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
-          <p className="text-sm font-semibold text-foreground m-0">Preview</p>
-          <p className="text-xs text-tertiary-foreground mt-1 m-0">Generated filename</p>
+          <p className="text-md font-semibold text-foreground m-0">Preview</p>
+          <p className="text-2xs text-tertiary-foreground mt-1 m-0">Generated filename</p>
         </div>
         <div className="w-[552px]">
           <div className="bg-accent rounded-lg py-3 px-4">

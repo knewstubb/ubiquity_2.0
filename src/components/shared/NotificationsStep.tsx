@@ -131,14 +131,14 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails, 
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">Failure notification <span className="text-destructive">*</span></p>
+            <p className="text-md font-semibold text-foreground m-0">Failure notification <span className="text-destructive">*</span></p>
           </div>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
           <ChipInput
             values={failureEmails}
             onChange={setFailureEmails}
-            label="Email Address"
+            label="Email address"
             type="email"
             placeholder="Add email…"
             aria-label="Add email address"
@@ -151,7 +151,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails, 
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">Success notification</p>
+            <p className="text-md font-semibold text-foreground m-0">Success notification</p>
           </div>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
@@ -168,7 +168,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails, 
               <ChipInput
                 values={successEmails}
                 onChange={setSuccessEmails}
-                label="Email Address"
+                label="Email address"
                 copyLabel="copy from above"
                 onCopy={() => copyFromFailure(setSuccessEmails)}
                 type="email"
@@ -186,7 +186,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails, 
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">No File</p>
+            <p className="text-md font-semibold text-foreground m-0">No file</p>
             <HelpPopover
               title="What are no file notifications?"
               body="If you expect files to arrive on a regular schedule, you can set up alerts for when they don't. When enabled, UbiQuity will check on your chosen schedule and send an email if no new file has been found."
@@ -363,7 +363,7 @@ export function NotificationsStep({ value, onUpdate, onValidChange, teamEmails, 
               <ChipInput
                 values={noFileEmails}
                 onChange={setNoFileEmails}
-                label="Email Address"
+                label="Email address"
                 copyLabel="copy from above"
                 onCopy={() => copyFromFailure(setNoFileEmails)}
                 type="email"

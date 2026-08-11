@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
-import { Info, Users, Lightning, Hand, CalendarBlank } from '@phosphor-icons/react';
+import { Info, Users, Lightning, Hand, CalendarBlank, UsersThree, Package } from '@phosphor-icons/react';
 import { useJourneys } from '../../../contexts/JourneysContext';
 import type { JourneyNode, TriggerSubType } from '../../../models/journey';
-import type { FilterGroup } from '../../../models/segment';
+import type { FilterGroup as SegmentFilterGroup } from '../../../models/segment';
 import { segments } from '../../../data/segments';
-import { CONTACT_FIELDS } from '../../../data/fieldRegistry';
-import { FilterBuilder } from '../../shared/FilterBuilder';
+import { CONTACT_FIELDS, TREATMENT_FIELDS, PRODUCT_FIELDS } from '../../../data/fieldRegistry';
+import { ModalFilterBuilder } from '../../composed/filter-builder';
+import type { FilterGroup as ModalFilterGroup, SourceCategoryConfig, CardFilterRow } from '../../composed/filter-builder';
 import { Label } from '../../ui/label';
 import {
   Select,
@@ -17,6 +18,122 @@ import {
 import { Input } from '../../ui/input';
 import { Textarea } from '../../ui/textarea';
 import { cn } from '../../../lib/utils';
+
+/** Map field registry dataType to ModalFilterBuilder dataType */
+function mapDataType(dataType: string): 'text' | 'number' | 'date' | 'boolean' | 'enum' {
+  if (dataType === 'string') return 'text';
+  return dataType as 'text' | 'number' | 'date' | 'boolean' | 'enum';
+}
+
+/** Source categories for entry conditions filter */
+const SOURCE_CATEGORIES: SourceCategoryConfig[] = [
+  {
+    id: 'contacts',
+    label: 'Contacts',
+    icon: UsersThree,
+    subSources: [
+      {
+        id: 'contact-fields',
+        label: 'Contact Fields',
+        sourceType: 'field',
+        fields: CONTACT_FIELDS.map((f) => ({
+          key: f.key,
+          label: f.label,
+          dataType: mapDataType(f.dataType),
+          enumValues: f.enumValues,
+        })),
+      },
+    ],
+  },
+  {
+    id: 'transactional',
+    label: 'Transactional',
+    icon: Package,
+    subSources: [
+      {
+        id: 'treatments',
+        label: 'Treatments',
+        sourceType: 'transactional',
+        fields: TREATMENT_FIELDS.map((f) => ({
+          key: f.key,
+          label: f.label,
+          dataType: mapDataType(f.dataType),
+          enumValues: f.enumValues,
+        })),
+      },
+      {
+        id: 'products',
+        label: 'Products',
+        sourceType: 'transactional',
+        fields: PRODUCT_FIELDS.map((f) => ({
+          key: f.key,
+          label: f.label,
+          dataType: mapDataType(f.dataType),
+          enumValues: f.enumValues,
+        })),
+      },
+    ],
+  },
+];
+
+/** Convert segment FilterGroup to ModalFilterBuilder FilterGroup */
+function segmentToModalFilterGroup(segmentGroup: SegmentFilterGroup): ModalFilterGroup {
+  const conditions: ModalFilterGroup['conditions'] = [];
+  
+  for (const rule of segmentGroup.rules) {
+    if (rule.field && rule.operator) {
+      conditions.push({
+        type: 'row',
+        row: {
+          sourceCategory: 'contacts',
+          subSourcePath: ['contact-fields'],
+          field: rule.field,
+          operator: rule.operator,
+          value: rule.value as string | number | boolean | null | [string, string] | string[],
+          dateMode: null,
+          subFilters: null,
+          aggregate: null,
+        },
+      });
+    }
+  }
+  
+  for (const nestedGroup of segmentGroup.groups) {
+    conditions.push({
+      type: 'group',
+      group: segmentToModalFilterGroup(nestedGroup),
+    });
+  }
+  
+  return {
+    logic: segmentGroup.combinator.toLowerCase() as 'and' | 'or',
+    conditions,
+  };
+}
+
+/** Convert ModalFilterBuilder FilterGroup to segment FilterGroup */
+function modalToSegmentFilterGroup(modalGroup: ModalFilterGroup): SegmentFilterGroup {
+  const rules: SegmentFilterGroup['rules'] = [];
+  const groups: SegmentFilterGroup['groups'] = [];
+  
+  for (const condition of modalGroup.conditions) {
+    if (condition.type === 'row') {
+      rules.push({
+        field: condition.row.field ?? '',
+        operator: condition.row.operator ?? '',
+        value: condition.row.value as string | string[] | number,
+      });
+    } else if (condition.type === 'group') {
+      groups.push(modalToSegmentFilterGroup(condition.group));
+    }
+  }
+  
+  return {
+    combinator: modalGroup.logic.toUpperCase() as 'AND' | 'OR',
+    rules,
+    groups,
+  };
+}
 
 export interface StartConfigProps {
   journeyId: string;
@@ -113,7 +230,9 @@ export function StartConfig({ journeyId, node }: StartConfigProps) {
   );
 
   const handleFiltersChange = useCallback(
-    (filters: FilterGroup) => {
+    (modalFilters: ModalFilterGroup) => {
+      // Convert modal format back to segment format for storage
+      const filters = modalToSegmentFilterGroup(modalFilters);
       updateJourney(journeyId, {
         settings: {
           ...journey?.settings,
@@ -149,7 +268,7 @@ export function StartConfig({ journeyId, node }: StartConfigProps) {
                     <Icon size={16} className="text-muted-foreground" />
                     {opt.label}
                     {!opt.enabled && (
-                      <span className="text-xs text-muted-foreground">(Coming soon)</span>
+                      <span className="body-xs text-muted-foreground">(Coming soon)</span>
                     )}
                   </span>
                 </SelectItem>
@@ -158,7 +277,7 @@ export function StartConfig({ journeyId, node }: StartConfigProps) {
           </SelectContent>
         </Select>
         {currentTrigger && (
-          <p className="text-xs text-muted-foreground">{currentTrigger.description}</p>
+          <p className="body-xs text-muted-foreground">{currentTrigger.description}</p>
         )}
       </div>
 
@@ -183,7 +302,7 @@ export function StartConfig({ journeyId, node }: StartConfigProps) {
               </SelectContent>
             </Select>
             {triggerConfig.segmentId && (
-              <p className="text-xs text-muted-foreground">
+              <p className="body-xs text-muted-foreground">
                 Contacts will enter this journey when they join the selected segment.
               </p>
             )}
@@ -192,13 +311,16 @@ export function StartConfig({ journeyId, node }: StartConfigProps) {
           {/* Entry Conditions */}
           <div className="space-y-2 pt-4 border-t border-border">
             <Label>Entry Conditions (optional)</Label>
-            <p className="text-xs text-muted-foreground mb-3">
+            <p className="body-xs text-muted-foreground mb-3">
               Further narrow which contacts can enter this journey
             </p>
-            <FilterBuilder
-              value={(triggerConfig.filters as FilterGroup) ?? { combinator: 'AND', rules: [], groups: [] }}
+            <ModalFilterBuilder
+              value={segmentToModalFilterGroup((triggerConfig.filters as SegmentFilterGroup) ?? { combinator: 'AND', rules: [], groups: [] })}
               onChange={handleFiltersChange}
-              fields={CONTACT_FIELDS}
+              sourceCategories={SOURCE_CATEGORIES}
+              allowNesting={false}
+              maxDepth={1}
+              compact
             />
           </div>
         </>
@@ -224,7 +346,7 @@ export function StartConfig({ journeyId, node }: StartConfigProps) {
               </SelectContent>
             </Select>
             {triggerConfig.eventType && (
-              <p className="text-xs text-muted-foreground">
+              <p className="body-xs text-muted-foreground">
                 Contacts will enter when this event is triggered.
               </p>
             )}
@@ -233,13 +355,16 @@ export function StartConfig({ journeyId, node }: StartConfigProps) {
           {/* Entry Conditions */}
           <div className="space-y-2 pt-4 border-t border-border">
             <Label>Entry Conditions (optional)</Label>
-            <p className="text-xs text-muted-foreground mb-3">
+            <p className="body-xs text-muted-foreground mb-3">
               Further narrow which contacts can enter this journey
             </p>
-            <FilterBuilder
-              value={(triggerConfig.filters as FilterGroup) ?? { combinator: 'AND', rules: [], groups: [] }}
+            <ModalFilterBuilder
+              value={segmentToModalFilterGroup((triggerConfig.filters as SegmentFilterGroup) ?? { combinator: 'AND', rules: [], groups: [] })}
               onChange={handleFiltersChange}
-              fields={CONTACT_FIELDS}
+              sourceCategories={SOURCE_CATEGORIES}
+              allowNesting={false}
+              maxDepth={1}
+              compact
             />
           </div>
         </>
@@ -274,7 +399,7 @@ export function StartConfig({ journeyId, node }: StartConfigProps) {
               </SelectContent>
             </Select>
             {triggerConfig.date && (
-              <p className="text-xs text-muted-foreground">
+              <p className="body-xs text-muted-foreground">
                 Journey will run {triggerConfig.recurrence === 'once' ? 'once' : triggerConfig.recurrence as string} starting{' '}
                 {triggerConfig.date as string}.
               </p>
@@ -309,7 +434,7 @@ export function StartConfig({ journeyId, node }: StartConfigProps) {
 }
 
 function getDefaultTriggerConfig(triggerType: TriggerSubType): Record<string, unknown> {
-  const emptyFilters: FilterGroup = { combinator: 'AND', rules: [], groups: [] };
+  const emptyFilters: SegmentFilterGroup = { combinator: 'AND', rules: [], groups: [] };
   switch (triggerType) {
     case 'segment-entry':
       return { segmentId: '', filters: emptyFilters };

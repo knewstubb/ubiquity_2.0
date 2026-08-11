@@ -60,7 +60,7 @@ export function ActionNode({ data, selected }: NodeProps & { data: ActionNodeDat
           <WarningCircle size={10} weight="fill" />
         </div>
       )}
-      <Handle type="target" position={Position.Top} />
+      <Handle type="target" position={Position.Top} id="target" />
       <div className="px-4 py-2">
         <div className="flex items-center gap-2">
           <div className="flex items-center justify-center shrink-0 w-6 h-6 text-blue-500">
@@ -74,7 +74,7 @@ export function ActionNode({ data, selected }: NodeProps & { data: ActionNodeDat
           {summary}
         </div>
       </div>
-      <Handle type="source" position={Position.Bottom} />
+      <Handle type="source" position={Position.Bottom} id="default" />
     </div>
   );
 }

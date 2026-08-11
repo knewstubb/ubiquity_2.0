@@ -314,7 +314,7 @@ export function UserPermissionsTab({ onRegisterSave }: { onRegisterSave?: (handl
           <div className="mt-2">
             {/* System Administrator toggle — only visible to system admins */}
             {isCurrentUserSystemAdmin && selectedUser && (
-              <div className="flex items-center justify-between py-3 px-4 mb-4 border border-border rounded bg-surface">
+              <div className="flex items-center justify-between py-3 px-4 mb-4 border border-border rounded bg-card">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-sm font-semibold text-foreground">System Administrator</span>
                   <span className="text-xs text-muted-foreground">Full unrestricted access to all accounts and settings</span>

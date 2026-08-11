@@ -149,6 +149,8 @@ export interface InlineConditionCardProps {
   editRow?: CardFilterRow | null
   onConfirm: (row: CardFilterRow) => void
   onCancel: () => void
+  /** Compact mode — stacks operator and value vertically for narrow panels */
+  compact?: boolean
 }
 
 // ─── Internal State ──────────────────────────────────────────────────────────
@@ -630,6 +632,7 @@ export function InlineConditionCard({
   editRow,
   onConfirm,
   onCancel,
+  compact = false,
 }: InlineConditionCardProps) {
   const [state, setState] = useState<InlineCardState>(() => createInitialState(mode, editRow))
   const [chipExpanded, setChipExpanded] = useState(false)
@@ -1034,7 +1037,7 @@ export function InlineConditionCard({
   // ─── Render ────────────────────────────────────────────────────────────
 
   return (
-    <div ref={cardRef} className="rounded-lg border border-primary bg-card p-4 shadow-md overflow-visible">
+    <div ref={cardRef} className={cn("rounded-lg border border-primary bg-card shadow-md overflow-visible", compact ? "p-2" : "p-4")}>
       {/* Header row — hidden during drilldown phases (navigator has its own breadcrumb) */}
       {state.phase === 'operator-value' && (
       <div className="flex items-center justify-between mb-2 h-7" style={{ animation: "drillForward 450ms ease both" }}>
@@ -1096,9 +1099,9 @@ export function InlineConditionCard({
 
         {/* Phase 4: Operator/Value configuration — all inline, progressive reveal */}
         {state.phase === 'operator-value' && selectedField && (
-          <div key="phase-operator" className="flex items-start gap-2" style={{ animation: "drillForward 450ms ease both" }}>
-            {/* Operator select — always 1/3 width, animates expansion */}
-            <div className="relative flex-1 min-w-0 basis-1/3 transition-all duration-300 ease-out">
+          <div key="phase-operator" className={cn("flex gap-2", compact ? "flex-col" : "items-start")} style={{ animation: "drillForward 450ms ease both" }}>
+            {/* Operator select — full width in compact, 1/3 width otherwise */}
+            <div className={cn("relative min-w-0 transition-all duration-300 ease-out", compact ? "w-full" : "flex-1 basis-1/3")}>
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
                 <Funnel size={14} />
               </span>
@@ -1116,7 +1119,7 @@ export function InlineConditionCard({
 
             {/* Date mode — appears inline between operator and value when applicable */}
             {showDateMode && (
-              <div key={`datemode-${state.operator}`} className="relative flex-1 min-w-0 basis-1/3" style={{ animation: "slideInRight 250ms ease-out both" }}>
+              <div key={`datemode-${state.operator}`} className={cn("relative min-w-0", compact ? "w-full" : "flex-1 basis-1/3")} style={{ animation: "slideInRight 250ms ease-out both" }}>
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
                   <CalendarBlank size={14} />
                 </span>
@@ -1135,7 +1138,7 @@ export function InlineConditionCard({
 
             {/* Value input — slides in after operator (and date mode if present) */}
             {state.operator && !NO_VALUE_OPERATORS.includes(state.operator) && (
-              <div key={`value-${state.operator}`} className="flex-1 min-w-0 basis-1/3" style={{ animation: "slideInRight 250ms ease-out both" }}>
+              <div key={`value-${state.operator}`} className={cn("min-w-0", compact ? "w-full" : "flex-1 basis-1/3")} style={{ animation: "slideInRight 250ms ease-out both" }}>
                 {ARRAY_VALUE_OPERATORS.includes(state.operator) ? (
                   <FilterChipInput
                     value={Array.isArray(state.value) ? state.value as string[] : []}

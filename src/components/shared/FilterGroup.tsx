@@ -168,7 +168,7 @@ export function FilterGroupComponent({
         <div className="flex items-center justify-between py-1">
           <button
             type="button"
-            className="flex items-center justify-center w-6 h-6 border-none bg-transparent text-tertiary-foreground rounded-sm cursor-pointer transition-colors duration-150 hover:text-destructive hover:bg-red-50"
+            className="flex items-center justify-center w-6 h-6 border-none bg-transparent text-tertiary-foreground rounded-sm cursor-pointer transition-colors duration-150 hover:text-destructive hover:bg-destructive-subtle"
             onClick={onRemove}
             aria-label="Remove group"
           >

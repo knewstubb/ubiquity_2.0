@@ -28,8 +28,8 @@
  * - insertable: Token insertion chip — light mint when available, grey when used, teal on hover
  *
  * @sizes
- * - sm (24px height, text-xs): Compact contexts like inside inputs or dense filter bars
- * - default (28px height, text-sm): Standard usage in filter bars, tag lists, form fields
+ * - sm (24px height, text-2xs): Compact contexts like inside inputs or dense filter bars
+ * - default (28px height, text-2xs): Standard usage in filter bars, tag lists, form fields
  *
  * @examples
  * - Basic tag: <Chip label="Marketing" />
@@ -68,8 +68,8 @@ export function Chip({
   className,
 }: ChipProps) {
   const sizes = {
-    sm: 'h-6 text-xs px-2 gap-1',
-    default: 'h-7 text-sm px-2.5 gap-1.5',
+    sm: 'h-6 text-2xs px-2 gap-1',
+    default: 'h-7 text-2xs px-2.5 gap-1.5',
   }
 
   const isInsertable = variant === 'insertable'
@@ -82,8 +82,8 @@ export function Chip({
     variant === 'default' && selected && 'bg-primary text-white border border-primary',
     variant === 'outline' && !selected && 'bg-transparent text-foreground border border-border',
     variant === 'outline' && selected && 'bg-primary text-white border border-primary',
-    variant === 'mint' && !selected && 'bg-success-subtle text-success-foreground border border-success-border',
-    variant === 'mint' && selected && 'bg-success text-white border border-success',
+    variant === 'mint' && !selected && 'bg-accent text-accent-foreground border border-primary/30',
+    variant === 'mint' && selected && 'bg-primary text-white border border-primary',
     variant === 'red' && !selected && 'bg-destructive-subtle text-destructive border border-destructive-border',
     variant === 'red' && selected && 'bg-destructive text-white border border-destructive',
     // Insertable variant

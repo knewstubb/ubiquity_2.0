@@ -12,6 +12,7 @@ import { useCampaigns } from '../contexts/CampaignsContext';
 import { useJourneys } from '../contexts/JourneysContext';
 import type { JourneyType } from '../models/campaign';
 import type { JourneyDefinition } from '../models/journey';
+import { createFixedNodes } from '../models/journey';
 
 export default function CampaignDetailPage() {
   const { campaignId } = useParams<{ campaignId: string }>();
@@ -103,17 +104,18 @@ export default function CampaignDetailPage() {
       });
 
       // Add journey definition to JourneysContext
+      const { nodes, edges } = createFixedNodes();
       const journeyDef: JourneyDefinition = {
         id: newId,
         name,
         campaignId: campaign.id,
         accountId,
         status: 'draft',
-        nodeCount: 0,
+        nodeCount: nodes.length,
         entryCount: 0,
         type,
-        nodes: [],
-        edges: [],
+        nodes,
+        edges,
         settings: {
           name,
           description: '',

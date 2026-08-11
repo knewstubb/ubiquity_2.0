@@ -232,8 +232,8 @@ export function FileSettingsStep({
       {/* Name */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
-          <p className="text-sm font-semibold text-foreground m-0">Importer Name <span className="text-destructive">*</span></p>
-          <p className="text-xs text-tertiary-foreground mt-1 mb-0">A unique name for this importer</p>
+          <p className="text-md font-semibold text-foreground m-0">Importer name <span className="text-destructive">*</span></p>
+          <p className="text-2xs text-tertiary-foreground mt-1 mb-0">A unique name for this importer</p>
         </div>
         <div className="flex-1 min-w-0 flex flex-col gap-3">
           <Input
@@ -249,7 +249,7 @@ export function FileSettingsStep({
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">File Path</p>
+            <p className="text-md font-semibold text-foreground m-0">File path</p>
             <HelpPopover
               title="How do files move through the system?"
               body={
@@ -264,7 +264,7 @@ export function FileSettingsStep({
               }
             />
           </div>
-          <p className="text-xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
+          <p className="text-2xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
         </div>
         <div className="flex-1 min-w-0 flex flex-col gap-3">
           <SegmentedControl
@@ -284,7 +284,7 @@ export function FileSettingsStep({
           {pathMode === 'automatic' && (
             <>
               <div>
-                <p className="text-xs font-medium text-muted-foreground m-0">Folder Name</p>
+                <p className="text-sm font-medium text-muted-foreground m-0">Folder name</p>
                 <Input
                   value={folderName}
                   onChange={(e) => updatePath({ folderName: e.target.value })}
@@ -304,7 +304,7 @@ export function FileSettingsStep({
           {pathMode === 'base' && (
             <>
               <div>
-                <p className="text-xs font-medium text-muted-foreground m-0">Read Path</p>
+                <p className="text-sm font-medium text-muted-foreground m-0">Read path</p>
                 <Input
                   value={effectiveBasePath}
                   disabled
@@ -317,7 +317,7 @@ export function FileSettingsStep({
           {pathMode === 'custom' && (
             <>
               <div>
-                <p className="text-xs font-medium text-muted-foreground m-0">Read Path</p>
+                <p className="text-sm font-medium text-muted-foreground m-0">Read path</p>
                 <div className="flex items-center h-9 rounded-md border border-input bg-background not-focus-within:hover:border-border-strong focus-within:border-ring focus-within:shadow-ring overflow-hidden">
                   <span className="shrink-0 h-full flex items-center px-3 text-sm text-muted-foreground bg-muted border-r border-input select-none">{effectiveBasePath}</span>
                   <input
@@ -339,7 +339,7 @@ export function FileSettingsStep({
                 </div>
               </div>
               <div>
-                <p className="text-xs font-medium text-muted-foreground m-0">Error Folder Path</p>
+                <p className="text-sm font-medium text-muted-foreground m-0">Error folder path</p>
                 <div className={cn("flex items-center h-9 rounded-md border bg-background not-focus-within:hover:border-border-strong focus-within:border-ring focus-within:shadow-ring overflow-hidden", !errorFolderPath ? "border-destructive" : "border-input")}>
                   <span className="shrink-0 h-full flex items-center px-3 text-sm text-muted-foreground bg-muted border-r border-input select-none">{effectiveBasePath}</span>
                   <input
@@ -352,7 +352,7 @@ export function FileSettingsStep({
                 {!errorFolderPath && <p className="text-xs text-destructive mt-1 m-0">Error folder path is required</p>}
               </div>
               <div>
-                <p className="text-xs font-medium text-muted-foreground m-0">Archive Folder Path</p>
+                <p className="text-sm font-medium text-muted-foreground m-0">Archive folder path</p>
                 <div className={cn("flex items-center h-9 rounded-md border bg-background not-focus-within:hover:border-border-strong focus-within:border-ring focus-within:shadow-ring overflow-hidden", !archiveFolderPath ? "border-destructive" : "border-input")}>
                   <span className="shrink-0 h-full flex items-center px-3 text-sm text-muted-foreground bg-muted border-r border-input select-none">{effectiveBasePath}</span>
                   <input
@@ -373,7 +373,7 @@ export function FileSettingsStep({
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">Sample CSV {!isEditing && <span className="text-destructive">*</span>}</p>
+            <p className="text-md font-semibold text-foreground m-0">Sample CSV {!isEditing && <span className="text-destructive">*</span>}</p>
             <HelpPopover
               title="Why does the sample file matter?"
               body={
@@ -391,7 +391,7 @@ export function FileSettingsStep({
               }
             />
           </div>
-          <p className="text-xs text-tertiary-foreground mt-1 mb-0">
+          <p className="text-2xs text-tertiary-foreground mt-1 mb-0">
             This file will define all the fields available for mapping
           </p>
         </div>
@@ -526,7 +526,7 @@ export function FileSettingsStep({
 
                     {/* Text Qualifier */}
                     <div>
-                      <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Text Qualifier</p>
+                      <p className="text-xs font-medium text-muted-foreground m-0 mb-1.5">Text qualifier</p>
                       <Select
                         value={config.csvFormat?.textQualifier ?? 'double-quote'}
                         onValueChange={(v) => onUpdate({ csvFormat: { ...config.csvFormat, textQualifier: v as CsvTextQualifier } })}
@@ -558,7 +558,7 @@ export function FileSettingsStep({
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">File Pattern</p>
+            <p className="text-md font-semibold text-foreground m-0">File pattern</p>
             <HelpPopover
               title="How does UbiQuity know which files to import?"
               width="wide"
@@ -577,7 +577,7 @@ export function FileSettingsStep({
               detailsVariant="caution"
             />
           </div>
-          <p className="text-xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
+          <p className="text-2xs text-tertiary-foreground mt-1 mb-0">This must be unique</p>
         </div>
         <div className="flex-1 min-w-0 flex flex-col gap-3">
           <div className={cn(
@@ -609,7 +609,7 @@ export function FileSettingsStep({
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0 pt-0 relative">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground m-0">Importing To</p>
+            <p className="text-md font-semibold text-foreground m-0">Importing to</p>
             <HelpPopover
               title="What's the difference?"
               body={
@@ -623,7 +623,7 @@ export function FileSettingsStep({
               }
             />
           </div>
-          <p className="text-xs text-tertiary-foreground mt-1 mb-0">Select the database you want to update</p>
+          <p className="text-2xs text-tertiary-foreground mt-1 mb-0">Select the database you want to update</p>
         </div>
         <div className="flex-1 min-w-0 flex flex-col gap-3">
           <SegmentedControl
@@ -635,7 +635,7 @@ export function FileSettingsStep({
           {/* Contacts Database — shown for contact and both */}
           {(dataType === 'contact' || dataType === 'both') && (
             <div>
-              <p className="text-xs font-medium text-muted-foreground m-0">Contacts Database</p>
+              <p className="text-sm font-medium text-muted-foreground m-0">Contacts database</p>
               <Input value="Customer Contacts" disabled />
             </div>
           )}
@@ -643,7 +643,7 @@ export function FileSettingsStep({
           {/* Transactional Database — shown for transactional and both */}
           {(dataType === 'transactional' || dataType === 'both') && (
             <div>
-              <p className="text-xs font-medium text-muted-foreground m-0">Transactional Database</p>
+              <p className="text-sm font-medium text-muted-foreground m-0">Transactional database</p>
               <Select
                 value={transactionalTable || undefined}
                 onValueChange={(v) => {
@@ -652,7 +652,7 @@ export function FileSettingsStep({
                 }}
               >
                 <SelectTrigger aria-label="Select transactional table" title="The table where imported records will be stored.">
-                  <SelectValue placeholder="Select Database" />
+                  <SelectValue placeholder="Select database" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="treatments">Treatments</SelectItem>

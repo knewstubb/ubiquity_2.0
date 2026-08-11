@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 import { Chip } from '@/components/composed/chip'
 import { MagnifyingGlass, EnvelopeSimple, WarningCircle, CheckCircle } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
@@ -148,6 +149,33 @@ export default function InputDemo(props: InputDemoProps) {
   // Full showcase when no controls are active
   return (
     <div className="flex flex-col gap-8 w-full max-w-lg">
+      {/* Surface Variants */}
+      <section className="flex flex-col gap-4">
+        <h3 className="text-base font-semibold text-foreground">Surface Variants</h3>
+        <p className="text-sm text-muted-foreground">
+          Use <code className="bg-secondary px-1 rounded">surface="onBackground"</code> on zinc-50 pages/modals (default), 
+          and <code className="bg-secondary px-1 rounded">surface="onCard"</code> on white cards/panels.
+        </p>
+        <div className="flex gap-6">
+          {/* On Background (zinc-50) */}
+          <div className="flex-1 bg-background p-4 rounded-lg border border-border">
+            <p className="text-xs text-muted-foreground mb-2">On Background (zinc-50)</p>
+            <div className="space-y-1.5">
+              <Label htmlFor="demo-on-bg">Email</Label>
+              <Input id="demo-on-bg" surface="onBackground" placeholder="White field on grey..." />
+            </div>
+          </div>
+          {/* On Card (white) */}
+          <div className="flex-1 bg-card p-4 rounded-lg border border-border">
+            <p className="text-xs text-muted-foreground mb-2">On Card (white)</p>
+            <div className="space-y-1.5">
+              <Label htmlFor="demo-on-card">Email</Label>
+              <Input id="demo-on-card" surface="onCard" placeholder="Grey field on white..." />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Default */}
       <section className="flex flex-col gap-2">
         <h3 className="text-base font-semibold text-foreground">Default</h3>

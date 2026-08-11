@@ -26,6 +26,7 @@ const TokenSubPage = React.lazy(() => import('./pages/component-demos/TokenSubPa
 // Wizard pages (full-page, no nav bar)
 const ExporterWizardPage = React.lazy(() => import('./pages/ExporterWizardPage'));
 const ImporterWizardPage = React.lazy(() => import('./pages/ImporterWizardPage'));
+const AccountSyncWizardPage = React.lazy(() => import('./pages/AccountSyncWizardPage'));
 
 // Lazy-loaded page imports for code splitting
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
@@ -118,6 +119,46 @@ function App() {
                     <AppProviders>
                       <Suspense fallback={<div className="flex items-center justify-center h-screen"><p className="text-sm text-muted-foreground">Loading…</p></div>}>
                         <ImporterWizardPage />
+                      </Suspense>
+                      <Toaster />
+                    </AppProviders>
+                  </ProtectedRoute>
+                }
+              />
+              {/* Account Sync wizard routes */}
+              <Route
+                path="/account-sync/new"
+                element={
+                  <ProtectedRoute>
+                    <AppProviders>
+                      <Suspense fallback={<div className="flex items-center justify-center h-screen"><p className="text-sm text-muted-foreground">Loading…</p></div>}>
+                        <AccountSyncWizardPage />
+                      </Suspense>
+                      <Toaster />
+                    </AppProviders>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/account-sync/new/:parentRuleId"
+                element={
+                  <ProtectedRoute>
+                    <AppProviders>
+                      <Suspense fallback={<div className="flex items-center justify-center h-screen"><p className="text-sm text-muted-foreground">Loading…</p></div>}>
+                        <AccountSyncWizardPage />
+                      </Suspense>
+                      <Toaster />
+                    </AppProviders>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/account-sync/edit/:ruleId"
+                element={
+                  <ProtectedRoute>
+                    <AppProviders>
+                      <Suspense fallback={<div className="flex items-center justify-center h-screen"><p className="text-sm text-muted-foreground">Loading…</p></div>}>
+                        <AccountSyncWizardPage />
                       </Suspense>
                       <Toaster />
                     </AppProviders>

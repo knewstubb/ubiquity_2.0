@@ -33,7 +33,7 @@ export function ConnectionRow({ connection, connectors, onAddConnector, onEditCo
 
   return (
     <Collapsible open={expanded} onOpenChange={setExpanded}>
-      <div className="border border-border rounded-lg p-4 mb-6 bg-surface/50 transition-all">
+      <div className="border border-border rounded-lg p-4 mb-6 bg-card/50 transition-all">
         <CollapsibleTrigger asChild>
           <div className="flex items-center justify-between gap-3 min-h-8 cursor-pointer select-none relative focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 rounded-md">
             {/* Left: Chevron + Connection info */}

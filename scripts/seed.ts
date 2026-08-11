@@ -469,6 +469,12 @@ const DEFAULT_FEATURE_FLAGS = [
   { name: 'component-journey-builder', enabled: true, description: 'Journey Builder canvas', scope: 'component', target: 'journey-builder' },
   { name: 'component-importer-wizard', enabled: true, description: 'Import Automation wizard', scope: 'component', target: 'importer-wizard' },
   { name: 'component-segment-builder', enabled: true, description: 'Segment rule builder', scope: 'component', target: 'segment-builder' },
+
+  // --- Journey Builder Phases ---
+  // Each phase enables all features in that phase. Phases are independent — you can enable MLP without MVP for prototyping.
+  { name: 'journey-mvp', enabled: false, description: 'MVP: triggers, SMS, lifecycle, multiple exits, reporting', scope: 'component', target: 'journey-mvp' },
+  { name: 'journey-mlp', enabled: false, description: 'MLP: If/Else branching, A/B splits, join nodes, wait for event', scope: 'component', target: 'journey-mlp' },
+  { name: 'journey-v2', enabled: false, description: 'V2: multi-way splits, webhooks, advanced reporting, templates', scope: 'component', target: 'journey-v2' },
 ];
 
 async function seedFeatureFlags(): Promise<void> {

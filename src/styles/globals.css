@@ -18,112 +18,121 @@
 
 /* ── Light Mode Tokens ── */
 :root {
-  /* Core surfaces */
+  /* ─── Surfaces ───────────────────────────────────────────────────────────────
+     The layered canvas system — page backgrounds and elevated containers
+     background       → Page-level canvas (zinc-50)
+     background-subtle → Sidebars, wizard panels, nav areas (zinc-100)
+     card             → Primary elevated cards, modals, dialogs (white)
+     card-nested      → Cards inside cards, nested panels (zinc-50)
+  */
   --background: #FAFAFA;
+  --background-subtle: #F4F4F5;
   --foreground: #27272A;
   --card: #FFFFFF;
   --card-foreground: #27272A;
-  --surface: #FFFFFF;
+  --card-nested: #FAFAFA;
+  --card-nested-foreground: #27272A;
+
+  /* ─── Overlays ───────────────────────────────────────────────────────────────
+     Floating UI elements that appear above the page
+  */
   --popover: #FFFFFF;
   --popover-foreground: #27272A;
-
-  /* Tooltip */
   --tooltip: #27272A;
   --tooltip-foreground: #FFFFFF;
 
-  /* Primary */
+  /* ─── Primary ────────────────────────────────────────────────────────────────
+     The brand action colour — primary buttons, active states, links
+  */
   --primary: #14B88A;
   --primary-foreground: #FFFFFF;
 
-  /* Secondary */
+  /* ─── Secondary ──────────────────────────────────────────────────────────────
+     De-emphasised interactive elements — secondary buttons, toggles
+  */
   --secondary: #F4F4F5;
   --secondary-foreground: #27272A;
 
-  /* Muted */
+  /* ─── Muted ──────────────────────────────────────────────────────────────────
+     Subdued surfaces and text — placeholders, disabled states, metadata
+  */
   --muted: #F4F4F5;
   --muted-foreground: #71717A;
   --tertiary-foreground: #A1A1AA;
+  --disabled: #E4E4E7;
+  --disabled-foreground: #A1A1AA;
 
-  /* Accent */
+  /* ─── Accent ─────────────────────────────────────────────────────────────────
+     Brand highlighting — selected items, info callouts, hover emphasis
+  */
   --accent: #E6F9F5;
   --accent-foreground: #0D8866;
   --accent-hover: #10A078;
 
-  /* Destructive */
+  /* ─── Status ─────────────────────────────────────────────────────────────────
+     Semantic feedback states — errors, warnings, success, information
+  */
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
   --destructive-subtle: #FEF2F2;
   --destructive-border: #EF4444;
 
-  /* Warning */
   --warning: #F59E0B;
   --warning-foreground: #92400E;
   --warning-subtle: #FFFBEB;
   --warning-border: #F59E0B;
 
-  /* Success */
   --success: #22C55E;
   --success-foreground: #16A34A;
   --success-subtle: #F0FDF4;
   --success-border: #22C55E;
 
-  /* Info */
   --info: #0EA5E9;
   --info-foreground: #0369A1;
   --info-subtle: #F0F9FF;
   --info-border: #0EA5E9;
 
-  /* Border & Input */
+  /* ─── Borders ─────────────────────────────────────────────────────────────────
+     Dividers, input borders, focus indicators
+  */
   --border: #E4E4E7;
+  --border-strong: #D4D4D8;
   --input: #E4E4E7;
   --ring: #14B88A;
   --ring-shadow: 0 0 0 3px rgba(20, 184, 138, 0.15);
   --ring-shadow-destructive: 0 0 0 3px rgba(239, 68, 68, 0.15);
   --ring-shadow-warning: 0 0 0 3px rgba(245, 158, 11, 0.15);
-  --border-strong: #D4D4D8;
 
-  /* Disabled */
-  --disabled: #E4E4E7;
-  --disabled-foreground: #A1A1AA;
-
-  /* Extended surfaces */
+  /* ─── Neutral ────────────────────────────────────────────────────────────────
+     Utility tokens for edge cases — inverted text, sunken/elevated surfaces
+  */
   --background-sunken: #E4E4E7;
   --background-elevated: #D4D4D8;
-
-  /* Extended text */
   --text-inverse: #FFFFFF;
-
-  /* Hover states */
-  --danger-hover: #DC2626;
-  --danger-text: #B91C1C;
-
-  /* Neutral */
   --neutral-hover: #52525B;
   --neutral-subtle: #FAFAFA;
   --neutral-text: #52525B;
   --neutral-border: #A1A1AA;
 
-  /* Radius */
+  /* Legacy hover states (consider migrating to semantic tokens) */
+  --danger-hover: #DC2626;
+  --danger-text: #B91C1C;
+
+  /* ─── Radius ─────────────────────────────────────────────────────────────────*/
   --radius: 8px;
 
-  /* Charts */
+  /* ─── Charts ─────────────────────────────────────────────────────────────────
+     Data visualisation colour sequence
+  */
   --chart-1: #14B88A;
   --chart-2: #3B82F6;
   --chart-3: #F59E0B;
   --chart-4: #A855F7;
   --chart-5: #0EA5E9;
 
-  /* Sidebar */
-  --sidebar: #F4F4F5;
-  --sidebar-foreground: #27272A;
-  --sidebar-primary: #14B88A;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #E6F9F5;
-  --sidebar-accent-foreground: #0D8866;
-  --sidebar-border: #E4E4E7;
-  --sidebar-ring: #14B88A;
-
-  /* Mint palette (brand colour — no Tailwind built-in) */
+  /* ─── Mint Palette ───────────────────────────────────────────────────────────
+     Brand colour — no Tailwind built-in
+  */
   --mint-50: #E6F9F5;
   --mint-100: #B3EDE0;
   --mint-200: #80E0CB;
@@ -139,109 +148,92 @@
 
 /* ── Dark Mode Tokens ── */
 [data-theme="dark"] {
-  /* Core surfaces */
+  /* ─── Surfaces ───────────────────────────────────────────────────────────────*/
   --background: #09090B;
+  --background-subtle: #18181B;
   --foreground: #FAFAFA;
   --card: #09090B;
   --card-foreground: #FAFAFA;
-  --surface: #000000;
+  --card-nested: #18181B;
+  --card-nested-foreground: #FAFAFA;
+
+  /* ─── Overlays ───────────────────────────────────────────────────────────────*/
   --popover: #09090B;
   --popover-foreground: #FAFAFA;
-
-  /* Tooltip */
   --tooltip: #FAFAFA;
   --tooltip-foreground: #18181B;
 
-  /* Primary */
+  /* ─── Primary ────────────────────────────────────────────────────────────────*/
   --primary: #14B88A;
   --primary-foreground: #FFFFFF;
 
-  /* Secondary */
+  /* ─── Secondary ──────────────────────────────────────────────────────────────*/
   --secondary: #18181B;
   --secondary-foreground: #FAFAFA;
 
-  /* Muted */
+  /* ─── Muted ──────────────────────────────────────────────────────────────────*/
   --muted: #18181B;
   --muted-foreground: #71717A;
   --tertiary-foreground: #52525B;
+  --disabled: #27272A;
+  --disabled-foreground: #52525B;
 
-  /* Accent */
+  /* ─── Accent ─────────────────────────────────────────────────────────────────*/
   --accent: #043D2E;
   --accent-foreground: #4DD4B6;
   --accent-hover: #0D8866;
 
-  /* Destructive */
+  /* ─── Status ─────────────────────────────────────────────────────────────────*/
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
   --destructive-subtle: #450A0A;
   --destructive-border: #F87171;
 
-  /* Warning */
   --warning: #F59E0B;
   --warning-foreground: #FDE68A;
   --warning-subtle: #451A03;
   --warning-border: #FBBF24;
 
-  /* Success */
   --success: #4ADE80;
   --success-foreground: #86EFAC;
   --success-subtle: #052E16;
   --success-border: #4ADE80;
 
-  /* Info */
   --info: #38BDF8;
   --info-foreground: #7DD3FC;
   --info-subtle: #0C4A6E;
   --info-border: #38BDF8;
 
-  /* Border & Input */
+  /* ─── Borders ────────────────────────────────────────────────────────────────*/
   --border: #27272A;
+  --border-strong: #3F3F46;
   --input: #27272A;
   --ring: #14B88A;
   --ring-shadow: 0 0 0 3px rgba(20, 184, 138, 0.15);
   --ring-shadow-destructive: 0 0 0 3px rgba(239, 68, 68, 0.15);
   --ring-shadow-warning: 0 0 0 3px rgba(245, 158, 11, 0.15);
-  --border-strong: #3F3F46;
 
-  /* Disabled */
-  --disabled: #27272A;
-  --disabled-foreground: #52525B;
-
-  /* Extended surfaces */
+  /* ─── Neutral ────────────────────────────────────────────────────────────────*/
   --background-sunken: #000000;
   --background-elevated: #18181B;
-
-  /* Extended text */
   --text-inverse: #09090B;
-
-  /* Hover states */
-  --danger-hover: #F87171;
-  --danger-text: #FCA5A5;
-
-  /* Neutral */
   --neutral-hover: #71717A;
   --neutral-subtle: #18181B;
   --neutral-text: #71717A;
   --neutral-border: #3F3F46;
 
-  /* Charts */
+  /* Legacy hover states */
+  --danger-hover: #F87171;
+  --danger-text: #FCA5A5;
+
+  /* ─── Charts ─────────────────────────────────────────────────────────────────*/
   --chart-1: #14B88A;
   --chart-2: #60A5FA;
   --chart-3: #FBBF24;
   --chart-4: #C084FC;
   --chart-5: #38BDF8;
 
-  /* Sidebar */
-  --sidebar: #09090B;
-  --sidebar-foreground: #FAFAFA;
-  --sidebar-primary: #14B88A;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #043D2E;
-  --sidebar-accent-foreground: #4DD4B6;
-  --sidebar-border: #27272A;
-  --sidebar-ring: #14B88A;
-
-  /* Mint palette */
+  /* ─── Mint Palette ───────────────────────────────────────────────────────────*/
   --mint-50: #043D2E;
   --mint-100: #075842;
   --mint-200: #0A7054;
@@ -262,35 +254,42 @@
    Use @theme inline so Tailwind reads from the :root vars above.
    ══════════════════════════════════════════════════════════════════════════════ */
 @theme inline {
-  /* ── Colours (semantic tokens → Tailwind utilities) ── */
+  /* ─── Surfaces ───────────────────────────────────────────────────────────────*/
   --color-background: var(--background);
+  --color-background-subtle: var(--background-subtle);
   --color-foreground: var(--foreground);
-
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-  --color-surface: var(--surface);
+  --color-card-nested: var(--card-nested);
+  --color-card-nested-foreground: var(--card-nested-foreground);
 
+  /* ─── Overlays ───────────────────────────────────────────────────────────────*/
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-
   --color-tooltip: var(--tooltip);
   --color-tooltip-foreground: var(--tooltip-foreground);
 
+  /* ─── Primary ────────────────────────────────────────────────────────────────*/
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
 
+  /* ─── Secondary ──────────────────────────────────────────────────────────────*/
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
 
+  /* ─── Muted ──────────────────────────────────────────────────────────────────*/
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-
   --color-tertiary-foreground: var(--tertiary-foreground);
+  --color-disabled: var(--disabled);
+  --color-disabled-foreground: var(--disabled-foreground);
 
+  /* ─── Accent ─────────────────────────────────────────────────────────────────*/
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-hover: var(--accent-hover);
 
+  /* ─── Status ─────────────────────────────────────────────────────────────────*/
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-destructive-subtle: var(--destructive-subtle);
@@ -311,41 +310,31 @@
   --color-info-subtle: var(--info-subtle);
   --color-info-border: var(--info-border);
 
+  /* ─── Borders ────────────────────────────────────────────────────────────────*/
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-border-strong: var(--border-strong);
 
-  --color-disabled: var(--disabled);
-  --color-disabled-foreground: var(--disabled-foreground);
-
+  /* ─── Neutral ────────────────────────────────────────────────────────────────*/
   --color-background-sunken: var(--background-sunken);
   --color-background-elevated: var(--background-elevated);
-
   --color-text-inverse: var(--text-inverse);
-
-  --color-danger-hover: var(--danger-hover);
-  --color-danger-text: var(--danger-text);
-
   --color-neutral-hover: var(--neutral-hover);
   --color-neutral-subtle: var(--neutral-subtle);
   --color-neutral-text: var(--neutral-text);
   --color-neutral-border: var(--neutral-border);
 
+  /* Legacy hover states */
+  --color-danger-hover: var(--danger-hover);
+  --color-danger-text: var(--danger-text);
+
+  /* ─── Charts ─────────────────────────────────────────────────────────────────*/
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
 
   /* ── Mint palette ── */
   --color-mint-50: var(--mint-50);
@@ -375,7 +364,9 @@
 
   /* ── Font Size (overridden so text-base = 14px, matching UDS) ── */
   --text-xs: 10px;
+  --text-2xs: 11px;
   --text-sm: 12px;
+  --text-md: 13px;
   --text-base: 14px;
   --text-lg: 16px;
   --text-xl: 18px;
@@ -392,6 +383,38 @@
   --shadow-ring-warning: var(--ring-shadow-warning);
   --shadow-ring-destructive: var(--ring-shadow-destructive);
 }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   SEMANTIC TYPOGRAPHY CLASSES
+   Matches Figma text styles — use these instead of raw text-* utilities
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Body ── */
+.body-base { font-size: 14px; line-height: 1.4; font-weight: 400; }
+.body-base-semibold { font-size: 14px; line-height: 1.4; font-weight: 600; }
+.body-l { font-size: 16px; line-height: 1.4; font-weight: 400; }
+.body-l-semibold { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.body-s { font-size: 12px; line-height: 1.17; font-weight: 400; } /* 12/14 */
+.body-s-semibold { font-size: 12px; line-height: 1.17; font-weight: 600; }
+.body-xs { font-size: 10px; line-height: 1.4; font-weight: 400; }
+.body-xs-semibold { font-size: 10px; line-height: 1.4; font-weight: 600; }
+.body-xxs { font-size: 8px; line-height: 1.4; font-weight: 500; }
+.body-xxs-semibold { font-size: 8px; line-height: 1.4; font-weight: 600; }
+
+/* ── Heading ── */
+.heading-h1 { font-size: 30px; line-height: 1.2; font-weight: 600; }
+.heading-h2 { font-size: 24px; line-height: 1.2; font-weight: 600; }
+.heading-h3 { font-size: 20px; line-height: 1.2; font-weight: 600; }
+.heading-h4 { font-size: 18px; line-height: 1.2; font-weight: 600; }
+.heading-h5 { font-size: 16px; line-height: 1.2; font-weight: 600; }
+
+/* ── Display ── */
+.display-l { font-size: 48px; line-height: 1.2; font-weight: 700; }
+.display-m { font-size: 36px; line-height: 1.2; font-weight: 700; }
+
+/* ── Button ── */
+.button-standard { font-size: 16px; line-height: 1; font-weight: 600; }
+.button-small { font-size: 14px; line-height: 1; font-weight: 700; }
 
 /* ══════════════════════════════════════════════════════════════════════════════
    CUSTOM KEYFRAMES
@@ -570,4 +593,33 @@
    ══════════════════════════════════════════════════════════════════════════════ */
 @utility scrollbar-gutter-stable {
   scrollbar-gutter: stable;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ReactFlow Canvas Overrides — Miro-style interactions
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Default arrow cursor on canvas pane */
+.react-flow__pane {
+  cursor: default !important;
+}
+
+/* Pan mode cursor (when space is held) */
+.react-flow__pane.pan-mode {
+  cursor: grab !important;
+}
+
+.react-flow__pane.pan-mode:active {
+  cursor: grabbing !important;
+}
+
+/* Nodes should have default cursor, not grab */
+.react-flow__node {
+  cursor: default !important;
+}
+
+/* Selection box uses crosshair */
+.react-flow__selectionpane {
+  cursor: crosshair !important;
 }

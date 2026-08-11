@@ -77,7 +77,7 @@ export function AutomationCard({ connector, connectionError, onToggleStatus, onV
     <div
       className={cn(
         "grid grid-cols-[1fr_1fr_1fr_auto] items-center px-4 py-2",
-        "bg-surface border border-border rounded-lg shadow-sm",
+        "bg-card border border-border rounded-lg shadow-sm",
         "cursor-pointer select-none",
         "transition-[box-shadow,border-color,transform] duration-200",
         "focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2",

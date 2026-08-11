@@ -31,14 +31,14 @@ export function ImporterReviewStep({ config }: ImporterReviewStepProps) {
       {/* File Settings */}
       <div className="border-l-2 border-primary pl-4">
         <div className="flex items-center justify-between mb-2">
-          <h4 className="text-sm font-semibold text-foreground m-0">File Settings</h4>
+          <h4 className="text-md font-semibold text-foreground m-0">File settings</h4>
         </div>
         <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
-          <span className="text-sm text-muted-foreground">Path Mode</span>
+          <span className="text-sm text-muted-foreground">Path mode</span>
           <span className="text-sm text-foreground font-medium">{formatPathMode(config.filePathConfig.pathMode)}</span>
           {config.filePathConfig.folderName && (
             <>
-              <span className="text-sm text-muted-foreground">Folder Name</span>
+              <span className="text-sm text-muted-foreground">Folder name</span>
               <span className="text-sm text-foreground font-medium">{config.filePathConfig.folderName}</span>
             </>
           )}
@@ -50,19 +50,19 @@ export function ImporterReviewStep({ config }: ImporterReviewStepProps) {
           )}
           {config.filePathConfig.errorFolderPath && (
             <>
-              <span className="text-sm text-muted-foreground">Error Folder</span>
+              <span className="text-sm text-muted-foreground">Error folder</span>
               <span className="text-sm text-foreground font-medium">{config.filePathConfig.errorFolderPath}</span>
             </>
           )}
           {config.filePathConfig.archiveFolderPath && (
             <>
-              <span className="text-sm text-muted-foreground">Archive Folder</span>
+              <span className="text-sm text-muted-foreground">Archive folder</span>
               <span className="text-sm text-foreground font-medium">{config.filePathConfig.archiveFolderPath}</span>
             </>
           )}
           {config.filePathConfig.fileNamePattern && (
             <>
-              <span className="text-sm text-muted-foreground">File Pattern</span>
+              <span className="text-sm text-muted-foreground">File pattern</span>
               <span className="text-sm text-foreground font-medium">{config.filePathConfig.fileNamePattern}</span>
             </>
           )}
@@ -79,14 +79,14 @@ export function ImporterReviewStep({ config }: ImporterReviewStepProps) {
       {showContact && (
         <div className="border-l-2 border-primary pl-4">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-semibold text-foreground m-0">Contact Configuration</h4>
+            <h4 className="text-md font-semibold text-foreground m-0">Contact configuration</h4>
           </div>
           <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
-            <span className="text-sm text-muted-foreground">Update Type</span>
+            <span className="text-sm text-muted-foreground">Update type</span>
             <span className="text-sm text-foreground font-medium">{UPDATE_TYPE_LABELS[config.contactConfig.updateType]}</span>
-            <span className="text-sm text-muted-foreground">Blank Values</span>
+            <span className="text-sm text-muted-foreground">Blank values</span>
             <span className="text-sm text-foreground font-medium">{BLANK_VALUE_LABELS[config.contactConfig.blankValueHandling]}</span>
-            <span className="text-sm text-muted-foreground">Matching Fields</span>
+            <span className="text-sm text-muted-foreground">Matching fields</span>
             <span className="text-sm text-foreground font-medium">{config.contactConfig.matchingFields.length > 0 ? config.contactConfig.matchingFields.join(', ') : 'None'}</span>
           </div>
         </div>
@@ -96,7 +96,7 @@ export function ImporterReviewStep({ config }: ImporterReviewStepProps) {
       {showContact && config.contactMapping.length > 0 && (
         <div className="border-l-2 border-primary pl-4">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-semibold text-foreground m-0">Contact Mapping</h4>
+            <h4 className="text-md font-semibold text-foreground m-0">Contact mapping</h4>
           </div>
           <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
             {config.contactMapping.map((mapping, index) => (
@@ -117,14 +117,14 @@ export function ImporterReviewStep({ config }: ImporterReviewStepProps) {
       {showTransactional && (
         <div className="border-l-2 border-primary pl-4">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-semibold text-foreground m-0">Transactional Configuration</h4>
+            <h4 className="text-md font-semibold text-foreground m-0">Transactional configuration</h4>
           </div>
           <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
-            <span className="text-sm text-muted-foreground">Update Type</span>
+            <span className="text-sm text-muted-foreground">Update type</span>
             <span className="text-sm text-foreground font-medium">{UPDATE_TYPE_LABELS[config.transactionalConfig.updateType]}</span>
-            <span className="text-sm text-muted-foreground">Blank Values</span>
+            <span className="text-sm text-muted-foreground">Blank values</span>
             <span className="text-sm text-foreground font-medium">{BLANK_VALUE_LABELS[config.transactionalConfig.blankValueHandling]}</span>
-            <span className="text-sm text-muted-foreground">Matching Fields</span>
+            <span className="text-sm text-muted-foreground">Matching fields</span>
             <span className="text-sm text-foreground font-medium">{config.transactionalConfig.matchingFields.length > 0 ? config.transactionalConfig.matchingFields.join(', ') : 'None'}</span>
           </div>
         </div>
@@ -134,7 +134,7 @@ export function ImporterReviewStep({ config }: ImporterReviewStepProps) {
       {showTransactional && config.transactionalMapping.length > 0 && (
         <div className="border-l-2 border-primary pl-4">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-semibold text-foreground m-0">Transactional Mapping</h4>
+            <h4 className="text-md font-semibold text-foreground m-0">Transactional mapping</h4>
           </div>
           <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
             {config.transactionalMapping.map((mapping, index) => (

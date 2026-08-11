@@ -1,5 +1,5 @@
-import { ArrowRight, DotsThree, PencilSimple, Trash, UsersThree, NewspaperClipping } from '@phosphor-icons/react';
-import { Switch } from '@/components/ui/switch';
+import { ArrowRight, DotsThree, PencilSimple, Trash, UsersThree, NewspaperClipping, Play, Pause } from '@phosphor-icons/react';
+import { Chip } from '@/components/composed/chip';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -94,26 +94,27 @@ export function SyncRuleCard({
         </span>
       </div>
 
-      {/* Toggle — always full opacity */}
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div onClick={(e) => e.stopPropagation()} className="shrink-0 ml-4">
-              <Switch
-                size="sm"
-                checked={rule.status === 'active'}
-                onCheckedChange={() => onToggleStatus()}
-                disabled={!canToggle}
-              />
-            </div>
-          </TooltipTrigger>
-          {!canToggle && (
-            <TooltipContent side="top">
-              <p className="text-xs m-0">Resume the parent contact sync first</p>
-            </TooltipContent>
-          )}
-        </Tooltip>
-      </TooltipProvider>
+      {/* Status chip — Enabled/Disabled */}
+      <div onClick={(e) => e.stopPropagation()} className="shrink-0 ml-4">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <Chip
+                  label={isPaused ? 'Disabled' : 'Enabled'}
+                  variant={isPaused ? 'default' : 'mint'}
+                  size="sm"
+                />
+              </div>
+            </TooltipTrigger>
+            {!canToggle && (
+              <TooltipContent side="top">
+                <p className="text-xs m-0">Resume the parent contact sync first</p>
+              </TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
+      </div>
 
       {/* Three-dot menu */}
       <div onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
@@ -128,6 +129,26 @@ export function SyncRuleCard({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-[200px] p-1.5">
+            {/* Enable/Disable toggle */}
+            {isPaused ? (
+              <DropdownMenuItem
+                className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md"
+                onSelect={() => onToggleStatus()}
+                disabled={!canToggle}
+              >
+                <Play size={16} weight="regular" />
+                Enable Sync
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md"
+                onSelect={() => onToggleStatus()}
+              >
+                <Pause size={16} weight="regular" />
+                Disable Sync
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2.5 px-2.5 py-2 text-[13px] font-medium rounded-md" onSelect={() => onEdit()}>
               <PencilSimple size={16} weight="regular" />
               Edit Rule
@@ -138,7 +159,7 @@ export function SyncRuleCard({
               onSelect={() => onDelete()}
             >
               <Trash size={16} weight="regular" />
-              Delete Rule
+              Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

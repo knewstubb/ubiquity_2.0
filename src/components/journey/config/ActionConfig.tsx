@@ -1,6 +1,21 @@
 import { useCallback } from 'react';
+import { EnvelopeSimple, DeviceMobile, UserCircle, WebhooksLogo } from '@phosphor-icons/react';
 import { useJourneys } from '../../../contexts/JourneysContext';
 import { createDefaultConfig } from '../../../models/journey';
+import { emailTemplates } from '../../../data/emailTemplates';
+import { Label } from '../../ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '../../ui/select';
+import { Input } from '../../ui/input';
+import { Textarea } from '../../ui/textarea';
+import { Button } from '../../ui/button';
 import type { JourneyNode, ActionSubType } from '../../../models/journey';
 
 export interface ActionConfigProps {
@@ -9,29 +24,40 @@ export interface ActionConfigProps {
   onEditContent?: (contentType: 'email' | 'form' | 'survey') => void;
 }
 
-const ACTION_OPTIONS: { value: ActionSubType; label: string }[] = [
-  { value: 'send-email', label: 'Send Email' },
-  { value: 'send-sms', label: 'Send SMS' },
-  { value: 'update-contact', label: 'Update Contact' },
-  { value: 'webhook', label: 'Webhook' },
+interface ActionOption {
+  value: ActionSubType;
+  label: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+}
+
+const ACTION_OPTIONS: ActionOption[] = [
+  { value: 'send-email', label: 'Send Email', icon: EnvelopeSimple },
+  { value: 'send-sms', label: 'Send SMS', icon: DeviceMobile },
+  { value: 'update-contact', label: 'Update Contact', icon: UserCircle },
+  { value: 'webhook', label: 'Webhook', icon: WebhooksLogo },
 ];
 
-const METHOD_OPTIONS: { value: 'GET' | 'POST'; label: string }[] = [
+const METHOD_OPTIONS = [
   { value: 'GET', label: 'GET' },
   { value: 'POST', label: 'POST' },
 ];
 
-const inputClasses = "w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15";
-const selectClasses = `${inputClasses} appearance-none bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20d%3D%22M3%204.5L6%207.5L9%204.5%22%20fill%3D%22none%22%20stroke%3D%22%2371717A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7 cursor-pointer`;
-const textareaClasses = `${inputClasses} resize-y min-h-[72px]`;
+// Group templates by category
+const TEMPLATE_CATEGORIES = [
+  { key: 'welcome', label: 'Welcome' },
+  { key: 'promotional', label: 'Promotional' },
+  { key: 'transactional', label: 'Transactional' },
+  { key: 'nurture', label: 'Nurture' },
+  { key: 're-engagement', label: 'Re-engagement' },
+] as const;
 
 export function ActionConfig({ journeyId, node, onEditContent }: ActionConfigProps) {
   const { updateNode } = useJourneys();
   const config = node.config;
 
   const handleSubTypeChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const newSubType = e.target.value as ActionSubType;
+    (value: string) => {
+      const newSubType = value as ActionSubType;
       const newConfig = createDefaultConfig(newSubType);
       updateNode(journeyId, node.id, { subType: newSubType, config: newConfig });
     },
@@ -47,85 +73,125 @@ export function ActionConfig({ journeyId, node, onEditContent }: ActionConfigPro
     [journeyId, node.id, config, updateNode],
   );
 
+  const currentAction = ACTION_OPTIONS.find((opt) => opt.value === node.subType);
+
+  // Filter templates: global (null accountId) or matching account
+  // For now, show all global templates
+  const availableTemplates = emailTemplates.filter((t) => t.accountId === null);
+
   return (
-    <div>
+    <div className="space-y-4">
       {/* Action type selector */}
-      <div className="flex flex-col gap-1 mb-4 last:mb-0">
-        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="action-type">
-          Action Type
-        </label>
-        <select
-          id="action-type"
-          className={selectClasses}
-          value={node.subType}
-          onChange={handleSubTypeChange}
-        >
-          {ACTION_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+      <div className="space-y-2">
+        <Label htmlFor="action-type">Action Type</Label>
+        <Select value={node.subType} onValueChange={handleSubTypeChange}>
+          <SelectTrigger id="action-type">
+            <SelectValue placeholder="Select an action" />
+          </SelectTrigger>
+          <SelectContent>
+            {ACTION_OPTIONS.map((opt) => {
+              const Icon = opt.icon;
+              return (
+                <SelectItem key={opt.value} value={opt.value}>
+                  <span className="flex items-center gap-2">
+                    <Icon size={16} className="text-muted-foreground" />
+                    {opt.label}
+                  </span>
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Send Email fields */}
       {config.subType === 'send-email' && (
         <>
-          <div className="flex flex-col gap-1 mb-4 last:mb-0">
-            <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="email-ref">
-              Email Reference
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="email-template">Email Template</Label>
+            <Select
+              value={(config.templateId as string) ?? ''}
+              onValueChange={(value) => handleConfigChange({ templateId: value })}
+            >
+              <SelectTrigger id="email-template">
+                <SelectValue placeholder="Select a template" />
+              </SelectTrigger>
+              <SelectContent>
+                {TEMPLATE_CATEGORIES.map((category) => {
+                  const categoryTemplates = availableTemplates.filter(
+                    (t) => t.category === category.key
+                  );
+                  if (categoryTemplates.length === 0) return null;
+                  return (
+                    <SelectGroup key={category.key}>
+                      <SelectLabel>{category.label}</SelectLabel>
+                      {categoryTemplates.map((template) => (
+                        <SelectItem key={template.id} value={template.id}>
+                          {template.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+            {config.templateId && (
+              <p className="body-xs text-muted-foreground">
+                Subject: {availableTemplates.find((t) => t.id === config.templateId)?.subject}
+              </p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email-ref">Reference Name (optional)</Label>
+            <Input
               id="email-ref"
-              type="text"
-              className={inputClasses}
-              value={config.emailRef}
+              value={(config.emailRef as string) ?? ''}
               onChange={(e) => handleConfigChange({ emailRef: e.target.value })}
               placeholder="e.g. Welcome Email"
             />
+            <p className="body-xs text-muted-foreground">
+              A name to identify this email step in reports.
+            </p>
           </div>
-          <div className="flex flex-col gap-1 mb-4 last:mb-0">
-            <button
-              type="button"
-              className={`${inputClasses} cursor-pointer text-left text-primary font-semibold`}
-              onClick={() => onEditContent?.('email')}
-            >
-              Edit Email…
-            </button>
-            <span className="text-xs text-muted-foreground leading-tight">
-              Opens the email content editor.
-            </span>
-          </div>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => onEditContent?.('email')}
+          >
+            <EnvelopeSimple size={16} className="mr-2" />
+            Edit Email Content
+          </Button>
         </>
       )}
 
       {/* Send SMS fields */}
       {config.subType === 'send-sms' && (
         <>
-          <div className="flex flex-col gap-1 mb-4 last:mb-0">
-            <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="sms-message">
-              Message Text
-            </label>
-            <textarea
+          <div className="space-y-2">
+            <Label htmlFor="sms-message">Message Text</Label>
+            <Textarea
               id="sms-message"
-              className={textareaClasses}
-              value={config.messageText}
+              value={(config.messageText as string) ?? ''}
               onChange={(e) => handleConfigChange({ messageText: e.target.value })}
-              placeholder="Enter SMS message…"
+              placeholder="Enter SMS message..."
+              className="min-h-[72px] resize-y"
             />
+            <p className="body-xs text-muted-foreground">
+              {((config.messageText as string) ?? '').length}/160 characters
+            </p>
           </div>
-          <div className="flex flex-col gap-1 mb-4 last:mb-0">
-            <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="sms-sender">
-              Sender Name
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="sms-sender">Sender Name</Label>
+            <Input
               id="sms-sender"
-              type="text"
-              className={inputClasses}
-              value={config.senderName}
+              value={(config.senderName as string) ?? ''}
               onChange={(e) => handleConfigChange({ senderName: e.target.value })}
               placeholder="e.g. UbiQuity"
+              maxLength={11}
             />
+            <p className="body-xs text-muted-foreground">
+              Max 11 characters. Shown as the sender on the recipient's phone.
+            </p>
           </div>
         </>
       )}
@@ -133,31 +199,23 @@ export function ActionConfig({ journeyId, node, onEditContent }: ActionConfigPro
       {/* Update Contact fields */}
       {config.subType === 'update-contact' && (
         <>
-          <div className="flex flex-col gap-1 mb-4 last:mb-0">
-            <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="contact-field-key">
-              Field Key
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="contact-field-key">Field Key</Label>
+            <Input
               id="contact-field-key"
-              type="text"
-              className={inputClasses}
-              value={config.fieldKey}
+              value={(config.fieldKey as string) ?? ''}
               onChange={(e) => handleConfigChange({ fieldKey: e.target.value })}
               placeholder="e.g. loyalty_tier"
             />
-            <span className="text-xs text-muted-foreground leading-tight">
+            <p className="body-xs text-muted-foreground">
               The contact field to update.
-            </span>
+            </p>
           </div>
-          <div className="flex flex-col gap-1 mb-4 last:mb-0">
-            <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="contact-field-value">
-              Value
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="contact-field-value">Value</Label>
+            <Input
               id="contact-field-value"
-              type="text"
-              className={inputClasses}
-              value={config.value}
+              value={(config.value as string) ?? ''}
               onChange={(e) => handleConfigChange({ value: e.target.value })}
               placeholder="New value for the field"
             />
@@ -168,35 +226,33 @@ export function ActionConfig({ journeyId, node, onEditContent }: ActionConfigPro
       {/* Webhook fields */}
       {config.subType === 'webhook' && (
         <>
-          <div className="flex flex-col gap-1 mb-4 last:mb-0">
-            <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="webhook-url">
-              URL
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="webhook-url">URL</Label>
+            <Input
               id="webhook-url"
               type="url"
-              className={inputClasses}
-              value={config.url}
+              value={(config.url as string) ?? ''}
               onChange={(e) => handleConfigChange({ url: e.target.value })}
               placeholder="https://example.com/webhook"
             />
           </div>
-          <div className="flex flex-col gap-1 mb-4 last:mb-0">
-            <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="webhook-method">
-              Method
-            </label>
-            <select
-              id="webhook-method"
-              className={selectClasses}
-              value={config.method}
-              onChange={(e) => handleConfigChange({ method: e.target.value })}
+          <div className="space-y-2">
+            <Label htmlFor="webhook-method">Method</Label>
+            <Select
+              value={(config.method as string) ?? 'POST'}
+              onValueChange={(value) => handleConfigChange({ method: value })}
             >
-              {METHOD_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger id="webhook-method">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {METHOD_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </>
       )}

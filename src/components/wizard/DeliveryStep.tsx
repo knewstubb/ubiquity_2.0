@@ -59,8 +59,8 @@ export function DeliveryStep({ draft, onUpdate }: DeliveryStepProps) {
       {/* ── Schedule Section ── */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
-          <p className="text-sm font-semibold text-foreground m-0">Schedule</p>
-          <p className="text-xs text-tertiary-foreground mt-1 m-0">Configure export frequency and timing</p>
+          <p className="text-md font-semibold text-foreground m-0">Schedule</p>
+          <p className="text-2xs text-tertiary-foreground mt-1 m-0">Configure export frequency and timing</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
           <SegmentedControl
@@ -189,14 +189,14 @@ export function DeliveryStep({ draft, onUpdate }: DeliveryStepProps) {
       {/* ── Notifications Section ── */}
       <div className="flex items-start gap-14">
         <div className="w-40 shrink-0">
-          <p className="text-sm font-semibold text-foreground m-0">Notifications</p>
-          <p className="text-xs text-tertiary-foreground mt-1 m-0">Email alerts for export events</p>
+          <p className="text-md font-semibold text-foreground m-0">Notifications</p>
+          <p className="text-2xs text-tertiary-foreground mt-1 m-0">Email alerts for export events</p>
         </div>
         <div className="w-[552px] flex flex-col gap-3">
           <ChipInput
             values={notif.emails}
             onChange={(emails) => updateNotifications({ emails })}
-            label="Email Address"
+            label="Email address"
             type="email"
             placeholder="Add email…"
             aria-label="Add email address"

@@ -1,6 +1,6 @@
 # Form Rhythm Pattern
 
-> **Last updated:** 2026-05-21
+> **Last updated:** 2026-07-28
 > **Applies to:** All modals, sheets, and panels with sectioned forms
 
 ## The Three-Tier System
@@ -88,3 +88,44 @@ The outer container has padding but no `space-y`. Each section manages its own i
 4. **Grey background boxes for credentials** — authentication/sensitive sections use `bg-muted rounded-lg p-4` to visually group related fields and signal "this is different."
 
 5. **Consistent across all modals** — whether it's CreateConnectionModal, ImporterWizard, or AutomationSettings, the rhythm is identical. Users build spatial memory.
+
+## Input Surface Variants
+
+Input fields (`Input`, `SelectTrigger`, `Textarea`) have a `surface` prop that controls their background colour to ensure proper contrast against their containing surface.
+
+| Surface Variant | Background | Use When |
+|-----------------|------------|----------|
+| `onBackground` (default) | `bg-card` (white) | Field is on a zinc-50 page or modal |
+| `onCard` | `bg-muted` (zinc-100) | Field is on a white card or panel |
+
+### The Problem
+
+Our page backgrounds are zinc-50 (`--background`) and cards are white (`--card`). If inputs are always white, they blend into white cards. If inputs are always grey, they blend into zinc-50 pages.
+
+### The Solution
+
+```tsx
+// On a zinc-50 page or modal (background is grey, field is white)
+<Input placeholder="Email..." />
+
+// On a white card or panel (background is white, field is grey)
+<Input surface="onCard" placeholder="Email..." />
+
+// Select triggers work the same way
+<SelectTrigger surface="onCard">
+  <SelectValue placeholder="Choose..." />
+</SelectTrigger>
+```
+
+### When to Use Each
+
+| Context | Surface Prop | Result |
+|---------|--------------|--------|
+| Page-level forms (zinc-50 background) | default / `onBackground` | White field |
+| Modal forms (zinc-50 background with blur overlay) | default / `onBackground` | White field |
+| Card-embedded forms (white card surface) | `onCard` | Grey field |
+| Nested panels inside cards | `onCard` | Grey field |
+
+### Demo
+
+The Input demo page at `/admin/components/inputs/input` shows both variants side-by-side with their appropriate background contexts.

@@ -7,6 +7,7 @@ import { AccountProvider } from '../contexts/AccountContext';
 import { PricingProvider } from '../contexts/PricingContext';
 import { CampaignsProvider } from '../contexts/CampaignsContext';
 import { JourneysProvider } from '../contexts/JourneysContext';
+import { JourneyPhaseProvider } from '../contexts/JourneyPhaseContext';
 import { PermissionsProvider } from '../contexts/PermissionsContext';
 import { AssetsProvider } from '../contexts/AssetsContext';
 import { ConnectionsProvider } from '../contexts/ConnectionsContext';
@@ -30,8 +31,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
               <PricingProvider>
                 {/* Domain data providers */}
                 <CampaignsProvider>
-                  <JourneysProvider>
-                    <PermissionsProvider>
+                  <JourneyPhaseProvider>
+                    <JourneysProvider>
+                      <PermissionsProvider>
                       <AssetsProvider>
                         <ConnectionsProvider>
                           <AutomationsProvider>
@@ -41,8 +43,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
                           </AutomationsProvider>
                         </ConnectionsProvider>
                       </AssetsProvider>
-                    </PermissionsProvider>
-                  </JourneysProvider>
+                      </PermissionsProvider>
+                    </JourneysProvider>
+                  </JourneyPhaseProvider>
                 </CampaignsProvider>
               </PricingProvider>
             </AccountProvider>

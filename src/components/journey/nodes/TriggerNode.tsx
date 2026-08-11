@@ -73,7 +73,13 @@ export function TriggerNode({ data, selected }: NodeProps & { data: TriggerNodeD
           {summary}
         </div>
       </div>
-      <Handle type="source" position={Position.Bottom} />
+      <Handle
+        type="target"
+        position={Position.Top}
+        id="target"
+        className="!w-2 !h-2 !bg-zinc-400 !border-0"
+      />
+      <Handle type="source" position={Position.Bottom} id="default" className="!w-2 !h-2 !bg-zinc-400 !border-0" />
     </div>
   );
 }

@@ -213,11 +213,11 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
         {/* General fields */}
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label htmlFor="conn-name-input">Connection Name</Label>
+            <Label htmlFor="conn-name-input">Connection name</Label>
             <Input id="conn-name-input" type="text" placeholder="Enter connection name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="conn-base-path">Base Path <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
+            <Label htmlFor="conn-base-path">Base path <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
             <Input id="conn-base-path" type="text" placeholder="Leave blank for bucket root" value={basePath} onChange={(e) => setBasePath(e.target.value)} />
           </div>
           <ChipInput values={alertEmails} onChange={setAlertEmails} label="Alert Email(s)" type="email" placeholder="Add email…" aria-label="Alert email addresses" />
@@ -228,10 +228,10 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
         {/* Connection Settings section */}
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label htmlFor="aws-region">AWS Region</Label>
+            <Label htmlFor="aws-region">AWS region</Label>
             <Select value={awsRegion} onValueChange={setAwsRegion}>
               <SelectTrigger id="aws-region">
-                <SelectValue placeholder="Select Region" />
+                <SelectValue placeholder="Select region" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="us-east-1">us-east-1</SelectItem>
@@ -242,7 +242,7 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="bucket-name">Bucket Name</Label>
+            <Label htmlFor="bucket-name">Bucket name</Label>
             <Input id="bucket-name" type="text" placeholder="Add bucket" value={bucketName} onChange={(e) => setBucketName(e.target.value)} />
           </div>
           <div className="space-y-2">
@@ -256,7 +256,7 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
         {/* Authentication section */}
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label htmlFor="aws-auth-method">Authentication Method</Label>
+            <Label htmlFor="aws-auth-method">Authentication method</Label>
             <Select value={awsAuthMethod} onValueChange={(v) => setAwsAuthMethod(v as AwsAuthMethod)}>
               <SelectTrigger id="aws-auth-method">
                 <SelectValue />
@@ -305,11 +305,11 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
         {/* General fields */}
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label htmlFor="conn-name-input">Connection Name</Label>
+            <Label htmlFor="conn-name-input">Connection name</Label>
             <Input id="conn-name-input" type="text" placeholder="Enter connection name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="conn-base-path">Base Path <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
+            <Label htmlFor="conn-base-path">Base path <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
             <Input id="conn-base-path" type="text" placeholder="Leave blank for container root" value={basePath} onChange={(e) => setBasePath(e.target.value)} />
           </div>
           <ChipInput values={alertEmails} onChange={setAlertEmails} label="Alert Email(s)" type="email" placeholder="Add email…" aria-label="Alert email addresses" />
@@ -351,7 +351,7 @@ export function CreateConnectionModal({ onClose, onCreate, editConnection }: Cre
         {/* General fields */}
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label htmlFor="conn-name-input">Connection Name</Label>
+            <Label htmlFor="conn-name-input">Connection name</Label>
             <Input id="conn-name-input" type="text" placeholder="Enter connection name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div className="space-y-2">

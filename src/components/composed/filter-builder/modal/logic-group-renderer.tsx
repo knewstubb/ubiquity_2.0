@@ -72,6 +72,8 @@ export interface LogicGroupRendererProps {
   onConfirmInProgress?: (row: CardFilterRow) => void
   disableAddCondition?: boolean
   disableAddGroup?: boolean
+  /** Compact mode for narrow panels */
+  compact?: boolean
 }
 
 // ─── Logic Divider ───────────────────────────────────────────────────────────
@@ -221,6 +223,7 @@ export function LogicGroupRenderer({
   onConfirmInProgress,
   disableAddCondition,
   disableAddGroup,
+  compact = false,
 }: LogicGroupRendererProps) {
   const canAddGroup = allowNesting && depth < maxDepth && !disableAddCondition && !disableAddGroup
   const [dragIndex, setDragIndex] = useState<number | null>(null)
@@ -390,6 +393,7 @@ export function LogicGroupRenderer({
                     editRow={editRow}
                     onConfirm={onConfirmInProgress}
                     onCancel={onCancelInProgress}
+                    compact={compact}
                   />
                 ) : condition.type === 'row' ? (
                   <ConditionCard
@@ -400,6 +404,7 @@ export function LogicGroupRenderer({
                     onClone={() => handleCloneCondition(index)}
                     onToggleDisabled={() => handleToggleDisabled(index)}
                     disableClone={disableAddCondition}
+                    compact={compact}
                   />
                 ) : (
                   /* Nested group card */
@@ -448,6 +453,7 @@ export function LogicGroupRenderer({
             editRow={null}
             onConfirm={onConfirmInProgress}
             onCancel={onCancelInProgress}
+            compact={compact}
           />
         </>
       )}
@@ -468,6 +474,7 @@ export function LogicGroupRenderer({
               editRow={null}
               onConfirm={onConfirmInProgress}
               onCancel={onCancelInProgress}
+              compact={compact}
             />
           </div>
         </>

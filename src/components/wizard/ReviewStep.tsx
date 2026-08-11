@@ -53,7 +53,7 @@ export function ReviewStep({ draft }: ReviewStepProps) {
 
       {/* File Settings */}
       <div className="border-l-2 border-primary pl-4">
-        <h4 className="text-sm font-semibold text-foreground m-0 mb-2">File Settings</h4>
+        <h4 className="text-md font-semibold text-foreground m-0 mb-2">File Settings</h4>
         <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
           <span className="text-sm text-muted-foreground">Exporter Name</span>
           <span className="text-sm text-foreground font-medium">{draft.name || '(none)'}</span>
@@ -76,7 +76,7 @@ export function ReviewStep({ draft }: ReviewStepProps) {
 
       {/* Data Source */}
       <div className="border-l-2 border-primary pl-4">
-        <h4 className="text-sm font-semibold text-foreground m-0 mb-2">Data Source</h4>
+        <h4 className="text-md font-semibold text-foreground m-0 mb-2">Data Source</h4>
         <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
           <span className="text-sm text-muted-foreground">Source</span>
           <span className="text-sm text-foreground font-medium">
@@ -87,7 +87,7 @@ export function ReviewStep({ draft }: ReviewStepProps) {
 
       {/* Filter */}
       <div className="border-l-2 border-primary pl-4">
-        <h4 className="text-sm font-semibold text-foreground m-0 mb-2">Filter</h4>
+        <h4 className="text-md font-semibold text-foreground m-0 mb-2">Filter</h4>
         <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
           <span className="text-sm text-muted-foreground">Conditions</span>
           <span className="text-sm text-foreground font-medium">
@@ -100,7 +100,7 @@ export function ReviewStep({ draft }: ReviewStepProps) {
 
       {/* Export Fields */}
       <div className="border-l-2 border-primary pl-4">
-        <h4 className="text-sm font-semibold text-foreground m-0 mb-2">Export Fields</h4>
+        <h4 className="text-md font-semibold text-foreground m-0 mb-2">Export Fields</h4>
         {draft.selectedFields.length > 0 ? (
           <>
             <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
@@ -124,7 +124,7 @@ export function ReviewStep({ draft }: ReviewStepProps) {
 
       {/* Schedule */}
       <div className="border-l-2 border-primary pl-4">
-        <h4 className="text-sm font-semibold text-foreground m-0 mb-2">Schedule</h4>
+        <h4 className="text-md font-semibold text-foreground m-0 mb-2">Schedule</h4>
         <div className="grid grid-cols-[160px_1fr] gap-x-10 gap-y-1">
           <span className="text-sm text-muted-foreground">Frequency</span>
           <span className="text-sm text-foreground font-medium">{formatScheduleSummary(draft.schedule)}</span>

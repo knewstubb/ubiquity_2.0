@@ -79,22 +79,22 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
               {connector.importerConfig ? (
                 <>
                   {/* Importer: File Settings */}
-                  <Section title="File Settings">
-                    <Row label="Path Mode" value={PATH_MODE_LABELS[connector.importerConfig.filePathConfig.pathMode] ?? connector.importerConfig.filePathConfig.pathMode} />
-                    <Row label="Folder Name" value={connector.importerConfig.filePathConfig.folderName || toKebabCase(connector.name)} />
+                  <Section title="File settings">
+                    <Row label="Path mode" value={PATH_MODE_LABELS[connector.importerConfig.filePathConfig.pathMode] ?? connector.importerConfig.filePathConfig.pathMode} />
+                    <Row label="Folder name" value={connector.importerConfig.filePathConfig.folderName || toKebabCase(connector.name)} />
                     {connector.importerConfig.filePathConfig.readPath && (
-                      <Row label="Read Path" value={connector.importerConfig.filePathConfig.readPath} />
+                      <Row label="Read path" value={connector.importerConfig.filePathConfig.readPath} />
                     )}
                     {connector.importerConfig.filePathConfig.errorFolderPath && (
-                      <Row label="Error Folder" value={connector.importerConfig.filePathConfig.errorFolderPath} />
+                      <Row label="Error folder" value={connector.importerConfig.filePathConfig.errorFolderPath} />
                     )}
                     {connector.importerConfig.filePathConfig.archiveFolderPath && (
-                      <Row label="Archive Folder" value={connector.importerConfig.filePathConfig.archiveFolderPath} />
+                      <Row label="Archive folder" value={connector.importerConfig.filePathConfig.archiveFolderPath} />
                     )}
                     {connector.importerConfig.filePathConfig.fileNamePattern && (
-                      <Row label="File Pattern" value={connector.importerConfig.filePathConfig.fileNamePattern} />
+                      <Row label="File pattern" value={connector.importerConfig.filePathConfig.fileNamePattern} />
                     )}
-                    <Row label="Importing To" value={(() => {
+                    <Row label="Importing to" value={(() => {
                       const dt = connector.importerConfig.dataType;
                       const txTable = connector.importerConfig.transactionalTable ?? connector.transactionalSource;
                       const txName = txTable ? txTable.charAt(0).toUpperCase() + txTable.slice(1) : 'Transactional';
@@ -106,24 +106,24 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
                   </Section>
 
                   {/* Importer: Contact Configuration */}
-                  <Section title="Contact Configuration">
-                    <Row label="Update Type" value={UPDATE_TYPE_LABELS[connector.importerConfig.contactConfig.updateType]} />
-                    <Row label="Blank Values" value={BLANK_VALUE_LABELS[connector.importerConfig.contactConfig.blankValueHandling]} />
-                    <Row label="Matching Fields" value={connector.importerConfig.contactConfig.matchingFields.join(', ') || 'None'} />
+                  <Section title="Contact configuration">
+                    <Row label="Update type" value={UPDATE_TYPE_LABELS[connector.importerConfig.contactConfig.updateType]} />
+                    <Row label="Blank values" value={BLANK_VALUE_LABELS[connector.importerConfig.contactConfig.blankValueHandling]} />
+                    <Row label="Matching fields" value={connector.importerConfig.contactConfig.matchingFields.join(', ') || 'None'} />
                   </Section>
 
                   {/* Importer: Transactional Configuration (if applicable) */}
                   {connector.importerConfig.transactionalMapping.length > 0 && (
-                    <Section title="Transactional Configuration">
-                      <Row label="Update Type" value={UPDATE_TYPE_LABELS[connector.importerConfig.transactionalConfig.updateType]} />
-                      <Row label="Blank Values" value={BLANK_VALUE_LABELS[connector.importerConfig.transactionalConfig.blankValueHandling]} />
-                      <Row label="Matching Fields" value={connector.importerConfig.transactionalConfig.matchingFields.join(', ') || 'None'} />
+                    <Section title="Transactional configuration">
+                      <Row label="Update type" value={UPDATE_TYPE_LABELS[connector.importerConfig.transactionalConfig.updateType]} />
+                      <Row label="Blank values" value={BLANK_VALUE_LABELS[connector.importerConfig.transactionalConfig.blankValueHandling]} />
+                      <Row label="Matching fields" value={connector.importerConfig.transactionalConfig.matchingFields.join(', ') || 'None'} />
                     </Section>
                   )}
 
                   {/* Importer: Contact Mapping */}
                   {connector.importerConfig.contactMapping.length > 0 && (
-                    <Section title="Contact Mapping">
+                    <Section title="Contact mapping">
                       <div className="grid grid-cols-[1fr_auto_1fr] gap-x-3 gap-y-0.5">
                         {connector.importerConfig.contactMapping.map((mapping) => (
                           <React.Fragment key={`${mapping.sourceField}-${mapping.targetField}`}>
@@ -139,7 +139,7 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
 
                   {/* Importer: Transactional Mapping */}
                   {connector.importerConfig.transactionalMapping.length > 0 && (
-                    <Section title="Transactional Mapping">
+                    <Section title="Transactional mapping">
                       <div className="grid grid-cols-[1fr_auto_1fr] gap-x-3 gap-y-0.5">
                         {connector.importerConfig.transactionalMapping.map((mapping) => (
                           <React.Fragment key={`${mapping.sourceField}-${mapping.targetField}`}>
@@ -169,7 +169,7 @@ export function AutomationSettingsModal({ connector, connection, onClose, onEdit
           ) : (
             <>
               {/* Exporter: File Settings */}
-              <Section title="File Settings">
+              <Section title="File settings">
                 <Row label="Exporter Name" value={connector.name} />
                 <Row label="File Type" value={connector.fileType.toUpperCase()} />
                 {connector.fileType === 'csv' && (

@@ -13,8 +13,13 @@ export function ColourSection({ config, onUpdateColour }: ColourSectionProps) {
     <div className="flex flex-col gap-8">
       {COLOUR_TOKEN_GROUPS.map((group) => (
         <div key={group.name} className="flex flex-col gap-0">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide py-2 border-b border-border mb-1">
-            {group.name}
+          <div className="py-2 border-b border-border mb-1">
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              {group.name}
+            </div>
+            <div className="text-[11px] text-muted-foreground mt-0.5">
+              {group.description}
+            </div>
           </div>
           <div className="grid grid-cols-[240px_1fr_1fr] gap-4 py-1 pb-2">
             <span />

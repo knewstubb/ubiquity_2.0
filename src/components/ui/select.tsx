@@ -1,6 +1,7 @@
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, CaretDown, CaretUp } from "@phosphor-icons/react"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
@@ -10,16 +11,34 @@ const SelectGroup = SelectPrimitive.Group
 
 const SelectValue = SelectPrimitive.Value
 
+const selectTriggerVariants = cva(
+  "flex h-9 w-full items-center justify-between rounded-md border border-input px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:border-ring focus:shadow-ring aria-[invalid=true]:border-destructive aria-[invalid=true]:shadow-ring-destructive disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+  {
+    variants: {
+      surface: {
+        /** Use on zinc-50 backgrounds (pages, modals) — white trigger for contrast */
+        onBackground: "bg-card",
+        /** Use on white surfaces (cards, panels) — subtle grey for contrast */
+        onCard: "bg-muted",
+      },
+    },
+    defaultVariants: {
+      surface: "onBackground",
+    },
+  }
+)
+
+export interface SelectTriggerProps
+  extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>,
+    VariantProps<typeof selectTriggerVariants> {}
+
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
+  SelectTriggerProps
+>(({ className, children, surface, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
-    className={cn(
-      "flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:border-ring focus:shadow-ring aria-[invalid=true]:border-destructive aria-[invalid=true]:shadow-ring-destructive disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-      className
-    )}
+    className={cn(selectTriggerVariants({ surface }), className)}
     {...props}
   >
     {children}
@@ -155,4 +174,5 @@ export {
   SelectSeparator,
   SelectScrollUpButton,
   SelectScrollDownButton,
+  selectTriggerVariants,
 }

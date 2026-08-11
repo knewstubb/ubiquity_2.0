@@ -147,8 +147,8 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
       {/* Beat 1: Primary Source Type + Sub-Source — always visible */}
       <div className="flex items-start gap-10 pb-8 border-b border-border">
         <div className="w-40 shrink-0 pt-0">
-          <p className="text-sm font-semibold text-foreground m-0">Primary Source</p>
-          <p className="text-xs text-tertiary-foreground mt-1 mb-0">
+          <p className="text-md font-semibold text-foreground m-0">Primary source</p>
+          <p className="text-2xs text-tertiary-foreground mt-1 mb-0">
             Choose the primary source that determines what each row represents.
           </p>
         </div>
@@ -199,8 +199,8 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
       {beat2Complete && (
         <div className="flex items-start gap-10 pb-8 border-b border-border">
           <div className="w-40 shrink-0 pt-0">
-            <p className="text-sm font-semibold text-foreground m-0">{filterLabel}</p>
-            <p className="text-xs text-tertiary-foreground mt-1 mb-0">{filterDescription}</p>
+            <p className="text-md font-semibold text-foreground m-0">{filterLabel}</p>
+            <p className="text-2xs text-tertiary-foreground mt-1 mb-0">{filterDescription}</p>
           </div>
           <div className="flex-1 min-w-0 flex flex-col gap-3">
             {sourceConfig!.primarySource === 'contacts' && (
@@ -242,8 +242,8 @@ export function SourceSelectionStep({ draft, onUpdate }: SourceSelectionStepProp
       {beat3Complete && (
         <div className="flex items-start gap-10">
           <div className="w-40 shrink-0 pt-0">
-            <p className="text-sm font-semibold text-foreground m-0">Add Context</p>
-            <p className="text-xs text-tertiary-foreground mt-1 mb-0">
+            <p className="text-md font-semibold text-foreground m-0">Add context</p>
+            <p className="text-2xs text-tertiary-foreground mt-1 mb-0">
               Enrich your export with columns from related entities.
             </p>
           </div>

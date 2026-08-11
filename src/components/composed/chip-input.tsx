@@ -136,9 +136,9 @@ export function ChipInput({
   };
 
   const chipSizeClasses = {
-    sm: 'py-0.5 px-1.5 text-[10px]',
-    default: 'py-1 px-2 text-xs',
-    lg: 'py-1.5 px-2.5 text-sm',
+    sm: 'py-0.5 px-1.5 text-2xs',
+    default: 'py-1 px-2 text-2xs',
+    lg: 'py-1.5 px-2.5 text-2xs',
   };
 
   return (

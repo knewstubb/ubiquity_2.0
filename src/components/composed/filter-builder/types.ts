@@ -115,4 +115,6 @@ export interface ModalFilterBuilderProps {
   maxGroups?: number
   /** Custom empty state content — replaces the default "No filter applied" view */
   emptyState?: React.ReactNode
+  /** Compact mode — removes internal padding for use in tight spaces like inspector panels */
+  compact?: boolean
 }

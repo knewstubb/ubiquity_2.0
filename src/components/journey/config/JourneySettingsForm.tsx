@@ -3,6 +3,16 @@ import { useJourneys } from '../../../contexts/JourneysContext';
 import { segments } from '../../../data/segments';
 import type { JourneySettings, ReEntryRule } from '../../../models/journey';
 import type { CampaignStatus, JourneyType } from '../../../models/campaign';
+import { Label } from '../../ui/label';
+import { Input } from '../../ui/input';
+import { Textarea } from '../../ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../ui/select';
 
 export interface JourneySettingsFormProps {
   journeyId: string;
@@ -51,16 +61,13 @@ export function JourneySettingsForm({ journeyId }: JourneySettingsFormProps) {
   if (!journey || !settings) return null;
 
   return (
-    <div>
+    <div className="space-y-4">
       {/* Name */}
-      <div className="flex flex-col gap-1 mb-4 last:mb-0">
-        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="journey-name">
-          Name
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="journey-name">Name</Label>
+        <Input
           id="journey-name"
           type="text"
-          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15"
           value={settings.name}
           onChange={(e) => handleSettingsChange({ name: e.target.value })}
           placeholder="Journey name…"
@@ -68,13 +75,10 @@ export function JourneySettingsForm({ journeyId }: JourneySettingsFormProps) {
       </div>
 
       {/* Description */}
-      <div className="flex flex-col gap-1 mb-4 last:mb-0">
-        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="journey-description">
-          Description
-        </label>
-        <textarea
+      <div className="space-y-2">
+        <Label htmlFor="journey-description">Description</Label>
+        <Textarea
           id="journey-description"
-          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 resize-y min-h-[72px]"
           value={settings.description}
           onChange={(e) => handleSettingsChange({ description: e.target.value })}
           placeholder="Describe this journey…"
@@ -82,94 +86,87 @@ export function JourneySettingsForm({ journeyId }: JourneySettingsFormProps) {
       </div>
 
       {/* Journey Type */}
-      <div className="flex flex-col gap-1 mb-4 last:mb-0">
-        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="journey-type">
-          Journey Type
-        </label>
-        <select
-          id="journey-type"
-          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20d%3D%22M3%204.5L6%207.5L9%204.5%22%20fill%3D%22none%22%20stroke%3D%22%2371717A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7 cursor-pointer"
+      <div className="space-y-2">
+        <Label htmlFor="journey-type">Journey Type</Label>
+        <Select
           value={settings.journeyType}
-          onChange={(e) =>
-            handleSettingsChange({ journeyType: e.target.value as JourneyType })
-          }
+          onValueChange={(value) => handleSettingsChange({ journeyType: value as JourneyType })}
         >
-          {JOURNEY_TYPE_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger id="journey-type">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {JOURNEY_TYPE_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Entry Criteria — Segment Picker */}
-      <div className="flex flex-col gap-1 mb-4 last:mb-0">
-        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="entry-segment">
-          Entry Segment
-        </label>
-        <select
-          id="entry-segment"
-          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20d%3D%22M3%204.5L6%207.5L9%204.5%22%20fill%3D%22none%22%20stroke%3D%22%2371717A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7 cursor-pointer"
+      <div className="space-y-2">
+        <Label htmlFor="entry-segment">Entry Segment</Label>
+        <Select
           value={settings.entryCriteria?.segmentId ?? ''}
-          onChange={(e) =>
-            handleSettingsChange({
-              entryCriteria: { segmentId: e.target.value },
-            })
-          }
+          onValueChange={(value) => handleSettingsChange({ entryCriteria: { segmentId: value } })}
         >
-          <option value="">Select a segment…</option>
-          {segments.map((seg) => (
-            <option key={seg.id} value={seg.id}>
-              {seg.name} ({seg.memberCount} members)
-            </option>
-          ))}
-        </select>
-        <span className="text-xs text-muted-foreground leading-tight">
+          <SelectTrigger id="entry-segment">
+            <SelectValue placeholder="Select a segment…" />
+          </SelectTrigger>
+          <SelectContent>
+            {segments.map((seg) => (
+              <SelectItem key={seg.id} value={seg.id}>
+                {seg.name} ({seg.memberCount} members)
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <span className="body-xs text-muted-foreground block">
           Contacts matching this segment are eligible to enter the journey.
         </span>
       </div>
 
       {/* Re-entry Rule */}
-      <div className="flex flex-col gap-1 mb-4 last:mb-0">
-        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="reentry-rule">
-          Re-entry Rule
-        </label>
-        <select
-          id="reentry-rule"
-          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20d%3D%22M3%204.5L6%207.5L9%204.5%22%20fill%3D%22none%22%20stroke%3D%22%2371717A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7 cursor-pointer"
+      <div className="space-y-2">
+        <Label htmlFor="reentry-rule">Re-entry Rule</Label>
+        <Select
           value={settings.reEntryRule}
-          onChange={(e) =>
-            handleSettingsChange({ reEntryRule: e.target.value as ReEntryRule })
-          }
+          onValueChange={(value) => handleSettingsChange({ reEntryRule: value as ReEntryRule })}
         >
-          {RE_ENTRY_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger id="reentry-rule">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {RE_ENTRY_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Status */}
-      <div className="flex flex-col gap-1 mb-4 last:mb-0">
-        <label className="text-xs font-semibold text-muted-foreground leading-tight" htmlFor="journey-status">
-          Status
-        </label>
-        <select
-          id="journey-status"
-          className="w-full px-2 py-2 border border-border rounded-md bg-background font-sans text-sm text-foreground leading-normal transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 appearance-none bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20d%3D%22M3%204.5L6%207.5L9%204.5%22%20fill%3D%22none%22%20stroke%3D%22%2371717A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7 cursor-pointer"
+      <div className="space-y-2">
+        <Label htmlFor="journey-status">Status</Label>
+        <Select
           value={settings.status}
-          onChange={(e) =>
-            handleSettingsChange({ status: e.target.value as CampaignStatus })
-          }
+          onValueChange={(value) => handleSettingsChange({ status: value as CampaignStatus })}
         >
-          {STATUS_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-        <span className="text-xs text-muted-foreground leading-tight">
+          <SelectTrigger id="journey-status">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STATUS_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <span className="body-xs text-muted-foreground block">
           Changing status updates the badge in the canvas header.
         </span>
       </div>

@@ -190,13 +190,13 @@ export default function HeaderPlaygroundPage() {
           <h4 className="text-[11px] font-semibold text-tertiary-foreground uppercase tracking-wide mb-2">Toggle Elements</h4>
           <ToggleRow label="Breadcrumbs" checked={showBreadcrumbs} onChange={setShowBreadcrumbs} />
           <ToggleRow label="Subtitle" checked={showSubtitle} onChange={setShowSubtitle} />
-          <ToggleRow label="Status Badge" checked={showStatusBadge} onChange={setShowStatusBadge} />
-          <ToggleRow label="Primary Action" checked={showPrimaryAction} onChange={setShowPrimaryAction} />
-          <ToggleRow label="Secondary Action" checked={showSecondaryAction} onChange={setShowSecondaryAction} />
+          <ToggleRow label="Status badge" checked={showStatusBadge} onChange={setShowStatusBadge} />
+          <ToggleRow label="Primary action" checked={showPrimaryAction} onChange={setShowPrimaryAction} />
+          <ToggleRow label="Secondary action" checked={showSecondaryAction} onChange={setShowSecondaryAction} />
           <ToggleRow label="Tabs" checked={showTabs} onChange={setShowTabs} />
           <ToggleRow label="Filters" checked={showFilters} onChange={setShowFilters} />
           <ToggleRow label="Search" checked={showSearch} onChange={setShowSearch} />
-          <ToggleRow label="Bulk Actions" checked={showBulkActions} onChange={setShowBulkActions} />
+          <ToggleRow label="Bulk actions" checked={showBulkActions} onChange={setShowBulkActions} />
         </div>
 
         <div className="mb-4 pb-3 border-b border-secondary">
@@ -204,7 +204,7 @@ export default function HeaderPlaygroundPage() {
           <CountRow label="Tabs" value={tabCount} min={1} max={5} onChange={setTabCount} />
           <CountRow label="Breadcrumbs" value={breadcrumbCount} min={1} max={3} onChange={setBreadcrumbCount} />
           <CountRow label="Filters" value={filterCount} min={1} max={4} onChange={setFilterCount} />
-          <CountRow label="Selected Items" value={selectedCount} min={1} max={50} onChange={setSelectedCount} />
+          <CountRow label="Selected items" value={selectedCount} min={1} max={50} onChange={setSelectedCount} />
         </div>
 
         <div className="mb-4 pb-3 border-b border-secondary">

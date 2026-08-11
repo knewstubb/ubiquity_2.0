@@ -74,6 +74,7 @@ export function ModalFilterBuilder({
   maxConditions,
   maxGroups,
   emptyState,
+  compact = false,
 }: ModalFilterBuilderProps) {
   const [inProgressCard, setInProgressCard] = useState<InProgressCard | null>(null)
 
@@ -160,7 +161,7 @@ export function ModalFilterBuilder({
     return (
       <div className="rounded-md border border-border p-6">
         <div className="flex items-center gap-2 text-muted-foreground">
-          <Warning size={18} weight="fill" className="text-amber-500" />
+          <Warning size={18} weight="fill" className="text-warning" />
           <span className="text-sm">
             No source categories configured. Filter creation is disabled.
           </span>
@@ -201,20 +202,21 @@ export function ModalFilterBuilder({
   // Empty state with in-progress card (first condition being added)
   if (value.conditions.length === 0 && inProgressCard) {
     return (
-      <div className="rounded-lg p-6">
+      <div className={compact ? "" : "rounded-lg p-6"}>
         <InlineConditionCard
           sourceCategories={sourceCategories}
           mode="add"
           editRow={null}
           onConfirm={handleConfirmInProgress}
           onCancel={handleCancelInProgress}
+          compact={compact}
         />
       </div>
     )
   }
 
   return (
-    <div className="rounded-lg p-6">
+    <div className={compact ? "" : "rounded-lg p-6"}>
       <LogicGroupRenderer
         group={value}
         onChange={handleGroupChange}
@@ -228,6 +230,7 @@ export function ModalFilterBuilder({
         onConfirmInProgress={handleConfirmInProgress}
         disableAddCondition={conditionsAtLimit}
         disableAddGroup={groupsAtLimit}
+        compact={compact}
       />
     </div>
   )

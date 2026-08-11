@@ -1068,13 +1068,23 @@ export function JourneyCanvas(_props: JourneyCanvasProps) {
     _props.onNodeSelect?.(null, null);
   }, [_props]);
 
+  /* Blur active element on mousedown to prevent focus-stealing when clicking nodes */
+  const handleCanvasMouseDown = useCallback(() => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }, []);
+
   return (
     <div className="w-full h-full relative">
-      <div className={cn(
-        'w-full h-full transition-all duration-200',
-        selectedNode && 'pr-80',
-        isPanMode && '[&_.react-flow__pane]:!cursor-grab [&_.react-flow__pane:active]:!cursor-grabbing'
-      )}>
+      <div 
+        className={cn(
+          'w-full h-full transition-all duration-200',
+          selectedNode && 'pr-80',
+          isPanMode && '[&_.react-flow__pane]:!cursor-grab [&_.react-flow__pane:active]:!cursor-grabbing'
+        )}
+        onMouseDown={handleCanvasMouseDown}
+      >
         <ReactFlow
           nodes={nodes}
           edges={edgesWithPickerState}
