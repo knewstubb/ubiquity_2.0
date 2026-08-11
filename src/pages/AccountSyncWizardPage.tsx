@@ -236,7 +236,10 @@ export default function AccountSyncWizardPage() {
     handleClose();
   }
 
-  const modalTitle = isTransaction ? 'Transaction Sync' : 'Contact Sync';
+  const modePrefix = isEditing ? 'Edit' : 'New';
+  const syncTypeLabel = isTransaction ? 'Transaction Sync' : 'Contact Sync';
+  const modalTitle = `${modePrefix} ${syncTypeLabel}`;
+  const showAccountContext = sourceAccountName && targetAccountName;
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background" data-testid="account-sync-wizard-page">
@@ -258,12 +261,14 @@ export default function AccountSyncWizardPage() {
         {/* Title — Base/Semi-bold (14px) */}
         <h1 className="text-base font-semibold text-foreground m-0">{modalTitle}</h1>
 
-        {/* Account context — Small/Semi-bold (12px) */}
-        <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground shrink-0">
-          <span className="truncate max-w-[180px]">{sourceAccountName || '—'}</span>
-          <ArrowRight size={14} weight="regular" className="shrink-0" />
-          <span className="truncate max-w-[180px]">{targetAccountName || '—'}</span>
-        </div>
+        {/* Account context — Small/Semi-bold (12px) — only show when accounts are selected */}
+        {showAccountContext && (
+          <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground shrink-0">
+            <span className="truncate max-w-[180px]">{sourceAccountName}</span>
+            <ArrowRight size={14} weight="regular" className="shrink-0" />
+            <span className="truncate max-w-[180px]">{targetAccountName}</span>
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
