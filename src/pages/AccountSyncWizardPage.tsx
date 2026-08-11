@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, ArrowsLeftRight, WarningCircle, Key, Asterisk, Plus, Trash } from '@phosphor-icons/react';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@/components/ui/combobox';
 import { Label } from '@/components/ui/label';
@@ -124,14 +123,28 @@ export default function AccountSyncWizardPage() {
     return new Set(targetSchema.requiredColumns ?? []);
   }, [targetSchema, isTransaction]);
 
+  const targetDefaultColumns = useMemo<Set<string>>(() => {
+    if (!targetSchema || isTransaction) return new Set();
+    return new Set(Object.keys(targetSchema.defaultColumnValues ?? {}));
+  }, [targetSchema, isTransaction]);
+
+  // Required columns that have no default value — these MUST be mapped
+  const targetRequiredWithoutDefaults = useMemo<Set<string>>(() => {
+    const required = new Set<string>();
+    targetRequiredColumns.forEach((col) => {
+      if (!targetDefaultColumns.has(col)) required.add(col);
+    });
+    return required;
+  }, [targetRequiredColumns, targetDefaultColumns]);
+
   const unmappedRequiredColumns = useMemo<Set<string>>(() => {
-    if (targetRequiredColumns.size === 0) return new Set();
+    if (targetRequiredWithoutDefaults.size === 0) return new Set();
     // A required column is "mapped" only if it has BOTH a target column AND a source column
     const fullyMappedTargets = new Set(mappingRows.filter((r) => r.targetColumn && r.sourceColumn).map((r) => r.targetColumn));
     const unmapped = new Set<string>();
-    targetRequiredColumns.forEach((col) => { if (!fullyMappedTargets.has(col)) unmapped.add(col); });
+    targetRequiredWithoutDefaults.forEach((col) => { if (!fullyMappedTargets.has(col)) unmapped.add(col); });
     return unmapped;
-  }, [targetRequiredColumns, mappingRows]);
+  }, [targetRequiredWithoutDefaults, mappingRows]);
 
   const sourceListOptions = useMemo(() => sourceSchema?.transactionalLists.map((l) => ({ value: l.name, label: l.name })) ?? [], [sourceSchema]);
   const targetListOptions = useMemo(() => targetSchema?.transactionalLists.map((l) => ({ value: l.name, label: l.name })) ?? [], [targetSchema]);
@@ -144,20 +157,22 @@ export default function AccountSyncWizardPage() {
     if (isEditing && editRule) {
       const existingMappings = editRule.columnMappings.map((m) => ({
         sourceColumn: m.sourceColumn, targetColumn: m.targetColumn,
-        isRequired: targetRequiredColumns.has(m.targetColumn),
+        isRequired: targetRequiredWithoutDefaults.has(m.targetColumn),
       }));
       const mappedTargets = new Set(existingMappings.map((m) => m.targetColumn));
-      const unmappedRequired = Array.from(targetRequiredColumns)
+      // Only auto-add required columns that don't have defaults
+      const unmappedRequired = Array.from(targetRequiredWithoutDefaults)
         .filter((col) => !mappedTargets.has(col))
         .map((col) => ({ sourceColumn: autoMatchColumn(col, sourceColumns), targetColumn: col, isRequired: true }));
       setMappingRows([...existingMappings.filter((m) => m.isRequired), ...unmappedRequired, ...existingMappings.filter((m) => !m.isRequired)]);
     } else {
-      const requiredRows = Array.from(targetRequiredColumns).map((targetCol) => ({
+      // Only auto-add required columns that don't have defaults
+      const requiredRows = Array.from(targetRequiredWithoutDefaults).map((targetCol) => ({
         sourceColumn: autoMatchColumn(targetCol, sourceColumns), targetColumn: targetCol, isRequired: true,
       }));
       setMappingRows(requiredRows);
     }
-  }, [sourceColumns, targetColumns, isEditing, targetRequiredColumns]);
+  }, [sourceColumns, targetColumns, isEditing, targetRequiredWithoutDefaults]);
 
   useEffect(() => {
     if (!matchColumnSource || !matchColumnTarget) return;
@@ -218,44 +233,32 @@ export default function AccountSyncWizardPage() {
       status: editRule?.status ?? 'paused', createdAt: editRule?.createdAt ?? now, updatedAt: now,
     };
     sessionStorage.setItem('account-sync-saved-rule', JSON.stringify(newRule));
-    toast.success(isEditing ? 'Sync rule updated' : `${tableType === 'contact' ? 'Contact' : 'Transaction'} sync rule created`);
     handleClose();
   }
 
-  const modalTitle = isEditing 
-    ? (isTransaction ? "Edit 'Transaction Sync'" : "Edit 'Contact Sync'") 
-    : (isTransaction ? 'New Transaction Sync' : 'New Contact Sync');
+  const modalTitle = isTransaction ? 'Transaction Sync' : 'Contact Sync';
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background" data-testid="account-sync-wizard-page">
       {/* Top Bar with Back Button */}
-      <div className="shrink-0 h-14 border-b border-border bg-card flex items-center px-6">
+      <div className="shrink-0 h-14 border-b border-border bg-card flex items-center px-6 gap-6">
         {/* Left: Back link — Base/Semi-bold (14px) */}
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           onClick={handleCloseClick}
-          className="flex items-center gap-2.5 text-base font-semibold text-primary hover:text-primary/80 transition-colors shrink-0"
+          className="text-primary hover:text-primary hover:bg-accent shrink-0"
         >
           <ArrowLeft size={20} weight="bold" />
           <span>Back</span>
-        </button>
+        </Button>
 
-        {/* Spacer: 24px between Back and Title */}
-        <div className="w-6 shrink-0" />
+        {/* Vertical separator — after Back button */}
+        <div className="w-px h-5 bg-border-strong shrink-0" />
 
-        {/* Center: Title — Base/Semi-bold (14px) */}
+        {/* Title — Base/Semi-bold (14px) */}
         <h1 className="text-base font-semibold text-foreground m-0">{modalTitle}</h1>
 
-        {/* Flexible spacer to push account context right */}
-        <div className="flex-1" />
-
-        {/* Vertical separator */}
-        <div className="h-5 w-px bg-border shrink-0" />
-
-        {/* Spacer: 24px after separator */}
-        <div className="w-6 shrink-0" />
-
-        {/* Right: Account context — Small/Semi-bold (12px) */}
+        {/* Account context — Small/Semi-bold (12px) */}
         <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground shrink-0">
           <span className="truncate max-w-[180px]">{sourceAccountName || '—'}</span>
           <ArrowRight size={14} weight="regular" className="shrink-0" />
@@ -365,8 +368,8 @@ export default function AccountSyncWizardPage() {
                                 </div>
                                 <span className={cn('text-sm text-center select-none', isDuplicate ? 'text-destructive' : row.sourceColumn ? 'text-primary' : 'text-tertiary-foreground')} aria-hidden="true">→</span>
                                 <div className="flex items-center gap-2 h-9">
-                                  {row.isRequired ? (<span className={cn('text-sm font-normal text-foreground truncate flex items-center gap-1.5', isMatchKeyRow && 'font-semibold text-primary')}>{row.targetColumn}{targetRequiredColumns.has(row.targetColumn) && <Asterisk size={12} weight="bold" className="shrink-0 text-amber-600" />}</span>)
-                                    : (<Combobox value={row.targetColumn} onValueChange={(val) => handleMappingTargetChange(actualIndex, val)} options={[{ value: '', label: '— Select target —' }, ...targetColumns.filter((c) => !targetRequiredColumns.has(c)).map((c) => ({ value: c, label: c }))]} placeholder="— Select target —" status={isDuplicate ? 'error' : 'normal'} />)}
+                                  {row.isRequired ? (<span className={cn('text-sm font-normal text-foreground truncate flex items-center gap-1.5', isMatchKeyRow && 'font-semibold text-primary')}>{row.targetColumn}{targetRequiredWithoutDefaults.has(row.targetColumn) && <Asterisk size={12} weight="bold" className="shrink-0 text-amber-600" />}</span>)
+                                    : (<Combobox value={row.targetColumn} onValueChange={(val) => handleMappingTargetChange(actualIndex, val)} options={[{ value: '', label: '— Select target —' }, ...targetColumns.filter((c) => !targetRequiredWithoutDefaults.has(c)).map((c) => ({ value: c, label: c }))]} placeholder="— Select target —" status={isDuplicate ? 'error' : 'normal'} />)}
                                 </div>
                                 <span className={cn('text-sm text-center select-none', isMatchKeyRow ? 'text-primary' : 'text-tertiary-foreground')} aria-hidden="true">{row.sourceColumn && row.targetColumn ? '=' : ''}</span>
                                 <div className="flex items-center gap-1.5 min-w-0">{isDuplicate ? (<><WarningCircle size={16} weight="regular" className="shrink-0 text-destructive" /><span className="text-xs text-destructive">Duplicate</span></>) : (<span className={cn('text-sm truncate', isMatchKeyRow ? 'text-primary' : 'text-tertiary-foreground')} title={exampleValue}>{exampleValue || '—'}</span>)}</div>

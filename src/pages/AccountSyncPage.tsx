@@ -51,6 +51,42 @@ export default function AccountSyncPage() {
     localStorage.setItem(UI_MODE_STORAGE_KEY, uiMode);
   }, [uiMode]);
 
+  // Check for saved rule from wizard on mount
+  useEffect(() => {
+    const savedRuleJson = sessionStorage.getItem('account-sync-saved-rule');
+    if (!savedRuleJson) return;
+    
+    try {
+      const savedRule = JSON.parse(savedRuleJson) as SyncRule;
+      sessionStorage.removeItem('account-sync-saved-rule');
+      
+      // Validate tableType
+      if (savedRule.tableType !== 'contact' && savedRule.tableType !== 'transaction') {
+        console.error('Invalid tableType in saved rule:', savedRule.tableType);
+        return;
+      }
+      
+      let isUpdate = false;
+      setRules((prev) => {
+        const existingIndex = prev.findIndex((r) => r.id === savedRule.id);
+        if (existingIndex >= 0) {
+          // Update existing rule
+          isUpdate = true;
+          const updated = [...prev];
+          updated[existingIndex] = savedRule;
+          return updated;
+        }
+        // Add new rule
+        return [...prev, savedRule];
+      });
+      
+      const typeLabel = savedRule.tableType === 'contact' ? 'Contact' : 'Transaction';
+      showToast(`${typeLabel} sync rule ${isUpdate ? 'updated' : 'created'}`, 'success');
+    } catch {
+      // Invalid JSON, ignore
+    }
+  }, [showToast]);
+
   // Get the root account for the selected account (walk up the tree)
   const rootAccountId = useMemo(() => {
     if (!selectedAccount) return '';
