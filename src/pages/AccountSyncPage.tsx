@@ -39,6 +39,7 @@ export default function AccountSyncPage() {
   const [rules, setRules] = useState<SyncRule[]>(seedRules);
   const [modalContext, setModalContext] = useState<ModalContext | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [pendingToggleId, setPendingToggleId] = useState<string | null>(null);
 
   // UI mode toggle: modal (current behaviour) or page (wizard-style)
   const [uiMode, setUiMode] = useState<UiMode>(() => {
@@ -130,37 +131,52 @@ export default function AccountSyncPage() {
 
   // Cascade toggle: pausing a contact rule pauses all its transaction children
   // Resuming a contact rule does NOT auto-resume children (user must manually reactivate)
-  function handleToggleContactStatus(ruleId: string) {
+  function handleConfirmToggle() {
+    if (!pendingToggleId) return;
+    
     setRules((prev) => {
-      const contactRule = prev.find((r) => r.id === ruleId);
-      if (!contactRule) return prev;
+      const rule = prev.find((r) => r.id === pendingToggleId);
+      if (!rule) return prev;
 
-      const newStatus = contactRule.status === 'active' ? 'paused' : 'active';
+      const newStatus = rule.status === 'active' ? 'paused' : 'active';
 
-      return prev.map((r) => {
-        if (r.id === ruleId) return { ...r, status: newStatus };
-        // Cascade pause to children (but don't cascade resume)
-        if (r.parentRuleId === ruleId && newStatus === 'paused') {
-          return { ...r, status: 'paused' };
-        }
-        return r;
-      });
-    });
-  }
-
-  function handleToggleTransactionStatus(ruleId: string) {
-    setRules((prev) => {
-      const txRule = prev.find((r) => r.id === ruleId);
-      if (!txRule) return prev;
-
-      // Can't resume a transaction rule if its parent contact rule is paused
-      if (txRule.status === 'paused' && txRule.parentRuleId) {
-        const parentRule = prev.find((r) => r.id === txRule.parentRuleId);
-        if (parentRule && parentRule.status === 'paused') return prev;
+      // For contact rules, cascade pause to children
+      if (rule.tableType === 'contact') {
+        return prev.map((r) => {
+          if (r.id === pendingToggleId) return { ...r, status: newStatus };
+          // Cascade pause to children (but don't cascade resume)
+          if (r.parentRuleId === pendingToggleId && newStatus === 'paused') {
+            return { ...r, status: 'paused' };
+          }
+          return r;
+        });
       }
 
-      return prev.map((r) => (r.id === ruleId ? { ...r, status: r.status === 'active' ? 'paused' : 'active' } : r));
+      // For transaction rules, just toggle the single rule
+      return prev.map((r) => (r.id === pendingToggleId ? { ...r, status: newStatus } : r));
     });
+
+    const rule = rules.find((r) => r.id === pendingToggleId);
+    const newStatus = rule?.status === 'active' ? 'disabled' : 'enabled';
+    const typeLabel = rule?.tableType === 'contact' ? 'Contact' : 'Transaction';
+    showToast(`${typeLabel} sync rule ${newStatus}`, 'success');
+    setPendingToggleId(null);
+  }
+
+  function requestToggleStatus(ruleId: string) {
+    const rule = rules.find((r) => r.id === ruleId);
+    if (!rule) return;
+
+    // For transaction rules, can't enable if parent is paused
+    if (rule.tableType === 'transaction' && rule.status === 'paused' && rule.parentRuleId) {
+      const parentRule = rules.find((r) => r.id === rule.parentRuleId);
+      if (parentRule && parentRule.status === 'paused') {
+        showToast('Enable the parent contact sync first', 'error');
+        return;
+      }
+    }
+
+    setPendingToggleId(ruleId);
   }
 
   // Cascade delete: deleting a contact rule deletes all its transaction children
@@ -270,6 +286,10 @@ export default function AccountSyncPage() {
   const pendingDeleteRule = pendingDeleteId ? rules.find((r) => r.id === pendingDeleteId) : null;
   const deleteHasChildren = pendingDeleteRule?.tableType === 'contact'
     && transactionRules.some((t) => t.parentRuleId === pendingDeleteId);
+  const pendingToggleRule = pendingToggleId ? rules.find((r) => r.id === pendingToggleId) : null;
+  const isEnabling = pendingToggleRule?.status === 'paused';
+  const toggleHasChildren = pendingToggleRule?.tableType === 'contact'
+    && transactionRules.some((t) => t.parentRuleId === pendingToggleId && t.status === 'active');
 
   return (
     <div className="w-full max-w-[1440px] mx-auto min-h-[calc(100vh-85px)] py-7 px-6 bg-background">
@@ -328,7 +348,7 @@ export default function AccountSyncPage() {
                       rule={contactRule}
                       sourceAccountName={getAccountName(contactRule.sourceAccountId)}
                       targetAccountName={getAccountName(contactRule.targetAccountId)}
-                      onToggleStatus={() => handleToggleContactStatus(contactRule.id)}
+                      onToggleStatus={() => requestToggleStatus(contactRule.id)}
                       onEdit={() => openEditModal(contactRule)}
                       onDelete={() => setPendingDeleteId(contactRule.id)}
                     />
@@ -340,7 +360,7 @@ export default function AccountSyncPage() {
                           rule={txRule}
                           sourceAccountName={getAccountName(txRule.sourceAccountId)}
                           targetAccountName={getAccountName(txRule.targetAccountId)}
-                          onToggleStatus={() => handleToggleTransactionStatus(txRule.id)}
+                          onToggleStatus={() => requestToggleStatus(txRule.id)}
                           onEdit={() => openEditModal(txRule)}
                           onDelete={() => setPendingDeleteId(txRule.id)}
                           nested
@@ -400,6 +420,28 @@ export default function AccountSyncPage() {
         {deleteHasChildren
           ? 'This will permanently remove the contact sync rule and all associated transaction sync rules. Data propagation between these accounts will stop immediately.'
           : 'This will permanently remove the sync rule and stop data propagation for this table between these accounts.'
+        }
+      </AlertDialogComposed>
+
+      {/* Enable/Disable confirmation */}
+      <AlertDialogComposed
+        open={!!pendingToggleId}
+        onOpenChange={(open) => { if (!open) setPendingToggleId(null); }}
+        intent="warning"
+        title={isEnabling
+          ? `Enable ${pendingToggleRule?.tableType} sync?`
+          : `Disable ${pendingToggleRule?.tableType} sync?`
+        }
+        confirmLabel={isEnabling ? 'Enable' : 'Disable'}
+        onConfirm={handleConfirmToggle}
+        requiresInput="ACCEPT"
+        inputLabel="Type ACCEPT to confirm"
+      >
+        {isEnabling
+          ? 'Enabling this sync rule will start propagating data changes between accounts immediately. Make sure your field mappings are correct before proceeding.'
+          : toggleHasChildren
+            ? 'Disabling this contact sync will also pause all associated transaction syncs. Data changes will no longer propagate between these accounts.'
+            : 'Disabling this sync rule will stop data propagation between accounts. Changes made in the source account will not be reflected in the target.'
         }
       </AlertDialogComposed>
 
