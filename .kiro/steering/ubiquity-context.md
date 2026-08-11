@@ -27,7 +27,8 @@ The PO and UX/UI designer. This prototype is the bridge between Figma designs an
 ## Tech Stack
 
 - React 19 + TypeScript + Vite
-- CSS Modules (no Tailwind, no CSS-in-JS)
+- Tailwind CSS with design tokens in `src/styles/globals.css`
+- CSS reset in `src/styles/reset.css`
 - React Router for page navigation
 - Supabase for data persistence and auth (seed data via `npx tsx scripts/seed.ts`)
 - Vitest for tests
@@ -113,22 +114,43 @@ UbiQuity is built on three equal pillars:
 
 ### Typography (Inter)
 
-| Token | Size | Line Height | Weight |
+**Tailwind Scale (defined in `globals.css`)**
+
+| Token | Size | Tailwind Class |
+|---|---|---|
+| text-xs | 10px | `text-xs` |
+| text-2xs | 11px | `text-2xs` |
+| text-sm | 12px | `text-sm` |
+| text-md | 13px | `text-md` |
+| text-base | 14px | `text-base` |
+| text-lg | 16px | `text-lg` |
+| text-xl | 18px | `text-xl` |
+| text-2xl | 24px | `text-2xl` |
+| text-3xl | 30px | `text-3xl` |
+| text-4xl | 36px | `text-4xl` |
+| text-5xl | 48px | `text-5xl` |
+
+**Semantic Typography Classes (defined in `globals.css`)**
+
+| Class | Size | Line Height | Weight |
 |---|---|---|---|
-| Display L | 48px | ~58px | Bold |
-| Display M | 36px | ~44px | Bold |
-| Heading H1 | 30px | ~36px | SemiBold |
-| Heading H2 | 24px | ~29px | SemiBold |
-| Heading H3 | 20px | ~24px | SemiBold |
-| Heading H4 | 18px | ~22px | SemiBold |
-| Heading H5 | 16px | ~19px | SemiBold |
-| Body L | 18px | ~22px | Regular |
-| Body Base | 16px | ~19px | Regular |
-| Body S | 14px | ~17px | Regular |
-| Body XS | 12px | ~15px | Regular |
-| Body XXS | 10px | ~12px | Medium |
-| Button Standard | 16px | 16px | SemiBold |
-| Button Small | 14px | 14px | Bold |
+| `.display-l` | 48px | 1.2 | Bold |
+| `.display-m` | 36px | 1.2 | Bold |
+| `.heading-h1` | 30px | 1.2 | SemiBold |
+| `.heading-h2` | 24px | 1.2 | SemiBold |
+| `.heading-h3` | 20px | 1.2 | SemiBold |
+| `.heading-h4` | 18px | 1.2 | SemiBold |
+| `.heading-h5` | 16px | 1.2 | SemiBold |
+| `.body-l` | 16px | 1.4 | Regular |
+| `.body-l-semibold` | 16px | 1.4 | SemiBold |
+| `.body-base` | 14px | 1.4 | Regular |
+| `.body-base-semibold` | 14px | 1.4 | SemiBold |
+| `.body-s` | 12px | 1.17 | Regular |
+| `.body-s-semibold` | 12px | 1.17 | SemiBold |
+| `.body-xs` | 10px | 1.4 | Regular |
+| `.body-xs-semibold` | 10px | 1.4 | SemiBold |
+| `.button-standard` | 16px | 1 | SemiBold |
+| `.button-small` | 14px | 1 | Bold |
 
 ### Colours (from Figma)
 
