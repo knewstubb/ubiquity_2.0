@@ -1,5 +1,15 @@
 # Requirements Document
 
+> **Status:** ✅ SHIPPED — Absorbed into `specs/connectors/`
+> **Completed:** 2026-06-xx
+> **Absorbed into:** `.kiro/specs/connectors/` (canonical Connectors feature spec)
+>
+> This spec addressed exporter wizard enhancements: type selection, column renaming,
+> NZ timezone default, simplified scheduling. All requirements are now implemented
+> and the functionality is documented in the consolidated Connectors spec.
+
+---
+
 ## Introduction
 
 Rework of the existing exporter wizard to support two distinct exporter types — Contact/Transactional and Event-based — with simplified configuration, predefined join keys, column renaming, system-controlled scheduling, and notification parity with the importer wizard.

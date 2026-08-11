@@ -1,5 +1,14 @@
 # Requirements Document
 
+> **Status:** ✅ SHIPPED — Absorbed into `specs/connectors/`
+> **Completed:** 2026-05-xx
+> **Absorbed into:** `.kiro/specs/connectors/` (canonical Connectors feature spec)
+>
+> This spec addressed importer persistence gaps. All requirements are now implemented
+> and the functionality is documented in the consolidated Connectors spec.
+
+---
+
 ## Introduction
 
 The Connectors feature in UbiQuity allows users to configure import and export automations against external storage endpoints (S3, SFTP, Azure Blob). Currently, exporter configuration is fully persisted to Supabase, but importer wizard steps manage local-only state — contact configuration, field mappings, and notification settings are lost after creation. The AutomationSettingsModal also displays hardcoded values for importer sections rather than reading from the database.
