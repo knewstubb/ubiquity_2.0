@@ -173,8 +173,7 @@ export default function AccountSyncPage() {
     setPendingDeleteId(null);
   }
 
-  // Navigate to page for new contact sync rule
-  function openNewContactModal() {
+  function openNewContactSync() {
     navigate('/account-sync/new', {
       state: {
         tableType: 'contact',
@@ -185,8 +184,7 @@ export default function AccountSyncPage() {
     });
   }
 
-  // Navigate to page for new transaction sync rule (contextual to a contact rule)
-  function openNewTransactionModal(parentRule: SyncRule) {
+  function openNewTransactionSync(parentRule: SyncRule) {
     navigate(`/account-sync/new/${parentRule.id}`, {
       state: {
         tableType: 'transaction',
@@ -198,8 +196,7 @@ export default function AccountSyncPage() {
     });
   }
 
-  // Navigate to page to edit any rule
-  function openEditModal(rule: SyncRule) {
+  function openEditSync(rule: SyncRule) {
     const parentRule = rule.parentRuleId ? rules.find((r) => r.id === rule.parentRuleId) : undefined;
     navigate(`/account-sync/edit/${rule.id}`, {
       state: {
@@ -246,7 +243,7 @@ export default function AccountSyncPage() {
           </p>
         </div>
         {isAccountSyncEnabled && (
-          <Button onClick={openNewContactModal}>
+          <Button onClick={openNewContactSync}>
             <Plus size={16} weight="bold" className="mr-1.5" />
             New Contact Sync
           </Button>
@@ -260,7 +257,7 @@ export default function AccountSyncPage() {
         <>
           {/* Rules list */}
           {visibleRules.length === 0 ? (
-            <EmptyState onCreateRule={openNewContactModal} />
+            <EmptyState onCreateRule={openNewContactSync} />
           ) : (
             <div className="flex flex-col gap-4">
               {contactRules.map((contactRule) => {
@@ -280,7 +277,7 @@ export default function AccountSyncPage() {
                       sourceAccountName={getAccountName(contactRule.sourceAccountId)}
                       targetAccountName={getAccountName(contactRule.targetAccountId)}
                       onToggleStatus={() => requestToggleStatus(contactRule.id)}
-                      onEdit={() => openEditModal(contactRule)}
+                      onEdit={() => openEditSync(contactRule)}
                       onDelete={() => setPendingDeleteId(contactRule.id)}
                     />
 
@@ -292,7 +289,7 @@ export default function AccountSyncPage() {
                           sourceAccountName={getAccountName(txRule.sourceAccountId)}
                           targetAccountName={getAccountName(txRule.targetAccountId)}
                           onToggleStatus={() => requestToggleStatus(txRule.id)}
-                          onEdit={() => openEditModal(txRule)}
+                          onEdit={() => openEditSync(txRule)}
                           onDelete={() => setPendingDeleteId(txRule.id)}
                           nested
                           parentPaused={isContactPaused}
@@ -308,8 +305,8 @@ export default function AccountSyncPage() {
                       )}
                       role="button"
                       tabIndex={0}
-                      onClick={() => { if (!isContactPaused) openNewTransactionModal(contactRule); }}
-                      onKeyDown={(e) => { if (!isContactPaused && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openNewTransactionModal(contactRule); } }}
+                      onClick={() => { if (!isContactPaused) openNewTransactionSync(contactRule); }}
+                      onKeyDown={(e) => { if (!isContactPaused && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openNewTransactionSync(contactRule); } }}
                       title={isContactPaused ? 'Resume the contact sync before adding transaction syncs' : undefined}
                     >
                       <span className="flex items-center gap-3 text-sm font-semibold text-primary">
