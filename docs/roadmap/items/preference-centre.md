@@ -3,7 +3,7 @@
 > **Status:** Discovery
 > **Last updated:** 2026-08-11
 > **Priority:** Medium-term (per Architecture Roadmap)
-> **Pre-requisite infrastructure:** AccountSync (in development), Consent Tracking (planned)
+> **Pre-requisite infrastructure:** Multi-account sync infrastructure (scope TBD), Consent Tracking (planned)
 
 ---
 
@@ -21,31 +21,30 @@ This is table-stakes for GDPR/CCPA compliance and expected by customers who've u
 
 ---
 
-## Why AccountSync Makes This Easier
+## Multi-Account Propagation Challenge
 
 The hard problem with preference centres in multi-location setups is **propagation**: when a contact updates their preferences via Head Office's preference centre, those changes need to flow to every branch account.
 
-**AccountSync solves this.** The infrastructure is already designed for near-real-time contact data propagation with:
+**Information gap:** The production multi-account sync infrastructure for preferences is not yet documented. Key questions:
 
-| AccountSync Capability | Preference Centre Benefit |
-|------------------------|---------------------------|
-| **CDC via Kinesis** | Preference changes flow through existing change stream |
-| **Column mapping** | Preference fields map across different account schemas |
-| **CallerType tagging** | Loop prevention — preference updates don't bounce back |
-| **Reference mapping** | Contact-to-contact linking already exists |
-| **Audit trail** | ServiceHistory records where changes came from |
+| Question | Status |
+|----------|--------|
+| How do contact changes propagate across accounts today? | ❓ Unknown — needs production audit |
+| Is there CDC infrastructure for near-real-time sync? | ❓ Unknown — needs production audit |
+| What loop prevention exists for bi-directional changes? | ❓ Unknown — needs production audit |
+| How are contacts linked across accounts? | ❓ Unknown — needs production audit |
 
-**Without AccountSync**, we'd need to build a separate preference sync mechanism. With it, preference propagation is a configuration problem, not an engineering problem.
+**Without multi-account sync**, we'd need to build a separate preference sync mechanism. This is a significant architecture decision that needs production system audit.
 
-### What AccountSync Doesn't Do
+### What Multi-Account Sync Doesn't Solve (Regardless)
 
-| Still Needed | AccountSync Helps? |
-|--------------|-------------------|
-| Hosted preference page (UI) | ❌ No — new Forms-adjacent work |
-| Preference data model (topics, purposes) | ❌ No — schema extension |
-| Unsubscribe link generation | ❌ No — email/SMS integration |
-| Topic/purpose-based consent model | ❌ No — new data model |
-| Regional compliance rules | ❌ No — new logic |
+| Still Needed | Notes |
+|--------------|-------|
+| Hosted preference page (UI) | New Forms-adjacent work |
+| Preference data model (topics, purposes) | Schema extension |
+| Unsubscribe link generation | email/SMS integration |
+| Topic/purpose-based consent model | New data model |
+| Regional compliance rules | New logic |
 
 ---
 
@@ -99,14 +98,14 @@ The preference centre (this item) is **Phase 3** — depends on Phases 1 and 2 b
 | How do preferences integrate with filter builder? | ⚠️ Partial | Phase 5 of consent roadmap |
 | How do unsubscribe links work? | ⚠️ Partial | Needs email/SMS integration |
 
-### Multi-Account Complexity (Answered by AccountSync)
+### Multi-Account Complexity (Unknown)
 
 | Question | Status | What We Know |
 |----------|--------|--------------|
-| How do preferences sync across accounts? | ✅ Solved | AccountSync CDC pipeline |
-| What happens if branches have different schemas? | ✅ Solved | AccountSync column mapping |
-| How do we prevent sync loops? | ✅ Solved | AccountSync CallerType tagging |
-| How do we audit where a preference change came from? | ✅ Solved | ServiceHistory records source |
+| How do preferences sync across accounts? | ❓ Unknown | Need production audit |
+| What happens if branches have different schemas? | ❓ Unknown | Need production audit |
+| How do we prevent sync loops? | ❓ Unknown | Need production audit |
+| How do we audit where a preference change came from? | ❓ Unknown | Need production audit |
 
 ### UX Design (Unknown)
 
@@ -208,19 +207,19 @@ If we were to build this after resolving information gaps:
 
 ### Phase 4: Multi-Account Propagation
 
-**Goal:** Preferences sync across account tree via AccountSync.
+**Goal:** Preferences sync across account tree.
 
-**Effort:** Low (1 sprint) — configuration, not engineering
+**Effort:** Unknown — depends on what sync infrastructure exists in production
 
-**Depends on:** Phase 1 (data model), AccountSync (in development)
+**Depends on:** Phase 1 (data model), production multi-account sync infrastructure (unknown status)
 
 | Capability | Notes |
 |------------|-------|
-| Preference columns in sync rules | Column mapping |
-| Cascade to branches | Standard AccountSync flow |
-| Audit trail | ServiceHistory records source |
+| Preference columns in sync rules | Requires column mapping capability |
+| Cascade to branches | Requires multi-account sync flow |
+| Audit trail | Requires change source tracking |
 
-**This is where AccountSync delivers value.** Without it, Phase 4 would be Medium-High effort.
+**Information gap:** This phase's effort estimate depends entirely on what multi-account sync infrastructure exists in production. Could be Low (configuration) or Medium-High (new build).
 
 ### Phase 5: Consent in Filters
 
@@ -244,7 +243,7 @@ If we were to build this after resolving information gaps:
 
 | Dependency | Status | Notes |
 |------------|--------|-------|
-| AccountSync | In development | Solves multi-account propagation |
+| Multi-account sync infrastructure | Unknown | Need production audit |
 | Forms infrastructure | Unknown | Hosting for preference page |
 | Filter Builder | Exists | Needs consent field support |
 | u3_mail integration | Exists | Needs unsubscribe link generation |
@@ -259,7 +258,7 @@ If we were to build this after resolving information gaps:
 |------|--------|------------|
 | Compliance requirements unclear | Build wrong thing | Legal review in Phase 0 |
 | Existing contacts lack explicit consent | Migration problem | Define "grandfathering" policy |
-| Multi-account complexity | Scope creep | AccountSync handles propagation |
+| Multi-account complexity | Scope creep | Depends on production sync infrastructure |
 | Security of preference URLs | Privacy breach | Token-based access, expiry, audit |
 | Integration with legacy email system | Delivery complexity | Spike u3_mail integration early |
 
@@ -282,18 +281,19 @@ If we were to build this after resolving information gaps:
 
 ## Recommendation
 
-**AccountSync infrastructure is a significant accelerant** — it solves the hardest part (multi-account propagation) through configuration rather than engineering.
+**Multi-account sync is a critical dependency** — it could either solve the hardest part (multi-account propagation) through configuration, or require significant engineering.
 
-However, there are still significant gaps to fill before scoping:
-1. Customer requirements (what preferences do they actually need?)
-2. Compliance requirements (what's legally required?)
-3. Competitor baseline (what's the expected feature set?)
+Significant gaps to fill before scoping:
+1. **Production audit** — what multi-account sync infrastructure exists today?
+2. Customer requirements (what preferences do they actually need?)
+3. Compliance requirements (what's legally required?)
+4. Competitor baseline (what's the expected feature set?)
 
 **Recommended sequence:**
-1. Complete AccountSync (in progress)
+1. Audit production multi-account sync capabilities
 2. Run Phase 0 Discovery (1–2 sprints)
 3. Build Phases 1–3 as a unit (consent model + page + unsubscribe)
-4. Phase 4 is configuration, not engineering
+4. Phase 4 effort depends on sync infrastructure audit results
 5. Phase 5 follows naturally once data model exists
 
 ---
@@ -302,8 +302,6 @@ However, there are still significant gaps to fill before scoping:
 
 - **Architecture Roadmap:** `docs/roadmap/architecture-informed-roadmap.md` Section 2.13 (Consent Management)
 - **Discovery Canvas:** `docs/roadmap/discovery-canvas-framework.md` — listed as idea
-- **AccountSync Spec:** `.kiro/specs/account-sync/`
-- **AccountSync Overview:** `docs/architecture/account-sync-overview.md`
 - **Priority Matrix:** Medium-term, Planned status
 
 ---

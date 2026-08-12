@@ -41,7 +41,7 @@ Customers need to:
 | Is there a soft-delete mechanism today? | ❓ Unknown | Need backend audit |
 | What cascade behaviours exist on contact delete? | ❓ Unknown | Transactions? Mail history? Form responses? |
 | Is deletion auditable? | ⚠️ Partial | ServiceHistory exists but may not cover deletions |
-| How does deletion interact with AccountSync? | ✅ Known | **AccountSync v1 does NOT propagate deletes** |
+| How does deletion interact with multi-account sync? | ⚠️ Partial | **Need production audit — delete propagation unknown** |
 | What's the job queue impact of bulk deletions? | ⚠️ Partial | Bulk operations go through job engine |
 | Is there a "recycle bin" or undo period? | ❓ Unknown | Need backend audit |
 
@@ -66,13 +66,13 @@ Customers need to:
 | Do they want soft-delete with recovery period? | ❓ Unknown | Customer interviews |
 | What data do they want to preserve vs delete? | ❓ Unknown | Aggregate stats? Audit logs? |
 
-### Multi-Account Complexity (Known Gap)
+### Multi-Account Complexity (Unknown)
 
 | Question | Status | What We Know |
 |----------|--------|--------------|
-| How does deletion work in multi-account setups? | ⚠️ Gap | AccountSync v1 does NOT propagate deletes |
-| If HQ deletes a contact, what happens in branches? | ❓ Unknown | Currently nothing |
-| Should deletion cascade via AccountSync? | ❓ Unknown | Architecture decision |
+| How does deletion work in multi-account setups? | ❓ Unknown | Need production audit |
+| If HQ deletes a contact, what happens in branches? | ❓ Unknown | Need production audit |
+| Should deletion cascade via multi-account sync? | ❓ Unknown | Architecture decision |
 | What if branches have the contact but HQ doesn't? | ❓ Unknown | Orphan handling |
 
 ---
@@ -140,20 +140,20 @@ Based on common patterns in the space:
 
 **Effort:** Medium-High (new data model for soft-delete state)
 
-### Layer 5: AccountSync Delete Propagation
+### Layer 5: Multi-Account Delete Propagation
 
 **Use case:** "When HQ deletes a contact, branches should too"
 
 | Capability | Notes |
 |------------|-------|
-| Delete events in CDC stream | Currently not captured |
-| Sync rule option: propagate deletes | Off by default |
+| Delete events in change stream | Need to understand current CDC capabilities |
+| Sync rule option: propagate deletes | Opt-in behaviour |
 | Cascading behaviour definition | What happens in target account |
 | Audit trail | Which delete came from which account |
 
-**Effort:** High (requires AccountSync v2 design)
+**Effort:** Unknown — depends on production sync infrastructure audit
 
-**Note:** AccountSync v1 explicitly does NOT support delete propagation. This would be a significant scope extension.
+**Note:** Multi-account delete propagation capabilities are unknown. This would need a production audit before scoping.
 
 ---
 
@@ -161,11 +161,11 @@ Based on common patterns in the space:
 
 ### Current Backend Constraints
 
-From `.kiro/steering/backend-constraints.md`:
+Based on production system knowledge:
 
 - **Job queue:** Bulk operations must go through job engine (single-threaded across all accounts)
 - **Data isolation:** Each account has separate tables in legacy system
-- **AccountSync:** Delete propagation NOT supported in v1
+- **Multi-account sync:** Delete propagation capabilities unknown — needs production audit
 - **Audit:** ServiceHistory records changes but may not cover deletions
 - **Cascade:** Unknown what currently happens when a contact is deleted
 
@@ -260,15 +260,15 @@ From `.kiro/steering/backend-constraints.md`:
 | Recycle bin UI | List + restore + purge |
 | Retention period | Auto-purge after N days |
 
-### Phase 5: AccountSync Delete Propagation
+### Phase 5: Multi-Account Delete Propagation
 
 **Goal:** Consistent deletion across account tree.
 
-**Effort:** High (requires AccountSync v2 scope)
+**Effort:** Unknown — needs production audit
 
 | Capability | Notes |
 |------------|-------|
-| Delete events in CDC | New event type |
+| Delete events in change stream | Audit current CDC capabilities |
 | Propagation rule option | Opt-in per sync rule |
 | Cascade behaviour | Configurable per target |
 
@@ -281,7 +281,7 @@ From `.kiro/steering/backend-constraints.md`:
 | Backend deletion audit | Not started | Need to understand current state |
 | Filter Builder | Exists | For bulk deletion criteria |
 | Job Queue | Exists | For async bulk operations |
-| AccountSync | In development | v1 doesn't support deletes |
+| Multi-account sync | Unknown | Need production audit for delete propagation |
 | Legal/compliance review | Not started | Required before Phase 1 |
 
 ---
@@ -293,7 +293,7 @@ From `.kiro/steering/backend-constraints.md`:
 | Irreversible data loss | Customer trust, compliance | Soft-delete + recovery period (Phase 4) |
 | Performance impact of bulk deletes | Job queue starvation | Rate limiting, off-peak scheduling |
 | Cascade behaviour surprises | "I didn't mean to delete all their transactions" | Clear impact preview, configurable cascades |
-| AccountSync gap | Branches out of sync with HQ | Documented limitation until v2 |
+| Multi-account gap | Branches out of sync with HQ | Document limitation; audit production sync capabilities |
 | Compliance timing | GDPR requires action "without undue delay" | Priority queue for erasure requests |
 
 ---
@@ -306,7 +306,7 @@ From `.kiro/steering/backend-constraints.md`:
 | 2 | What volume of deletion requests does our team handle? | Prioritisation — is this really a pain point? | Support |
 | 3 | What's the legal minimum for "right to erasure" timing? | SLA — may need priority queue | Legal |
 | 4 | Do customers want scheduled retention or is ad-hoc sufficient? | Scope — Phase 3 may not be needed | PM |
-| 5 | Should AccountSync propagate deletes in v2? | Architecture — significant scope | PM + Dev |
+| 5 | Should multi-account sync propagate deletes? | Architecture — significant scope | PM + Dev |
 | 6 | What happens to aggregate reporting when contacts are deleted? | Data integrity — may need anonymisation path | PM |
 | 7 | Is soft-delete legally sufficient, or must data be purged? | Compliance — affects architecture | Legal |
 | 8 | How do we handle deletion of contacts who are mid-journey? | Edge case — journey execution | Dev |
@@ -322,7 +322,7 @@ From `.kiro/steering/backend-constraints.md`:
 2. Build Phase 1 (Right to Erasure) as quickly as possible — compliance value
 3. Decide on Phase 2–5 based on customer demand data from Phase 0
 4. Consider Phase 4 (Soft Delete) earlier if risk of user error is high
-5. Phase 5 (AccountSync delete propagation) is a v2 scope decision
+5. Phase 5 (multi-account delete propagation) requires production sync audit
 
 **Key insight:** The hardest part isn't the deletion itself — it's the cascade behaviour, audit trail, and multi-account consistency. Start with single-contact deletion, learn from that, then expand.
 
@@ -332,8 +332,6 @@ From `.kiro/steering/backend-constraints.md`:
 
 - **Discovery Canvas:** `docs/roadmap/discovery-canvas-framework.md` — "Configurable data deletion / soft delete"
 - **Pain Themes:** `docs/roadmap/pain-themes.md` — "I can't automate my data retention policy"
-- **Backend Constraints:** `.kiro/steering/backend-constraints.md` — AccountSync limitations
-- **AccountSync Spec:** `.kiro/specs/account-sync/` — delete propagation NOT in v1
 
 ---
 

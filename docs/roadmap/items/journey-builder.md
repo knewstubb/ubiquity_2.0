@@ -3,7 +3,6 @@
 > **Status:** Validating (in U.Lab)
 > **Last updated:** 2026-08-11
 > **U.Lab:** [Journey Builder Feature Roadmap Outline](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12671156493/Journey+Builder+Feature+Roadmap+Outline)
-> **Prototype:** This repo (`src/pages/JourneyBuilderPage.tsx`, `src/components/journey/`)
 > **Foundation:** [Campaign Hub](./campaign-hub.md) (dependency awareness, unified campaigns)
 
 ---
@@ -213,21 +212,6 @@ From [State of Journey Builder](https://sparknz.atlassian.net/wiki/spaces/UB/pag
 
 ---
 
-## Prototype Status (This Repo)
-
-The UbiQuity 2.0 prototype includes a Journey Builder canvas implementation:
-
-| Component | Location | Status |
-|-----------|----------|--------|
-| Page | `src/pages/JourneyBuilderPage.tsx` | Built |
-| Canvas | `src/components/journey/JourneyCanvas.tsx` | Built |
-| Node types | `src/components/journey/nodes/` | Partial |
-| Data model | `src/models/journey.ts` | Built |
-
-The prototype validates UX patterns before production implementation. It is not connected to the production Journey Builder API.
-
----
-
 ## Risks & Mitigations
 
 | Risk | Mitigation |
@@ -273,7 +257,6 @@ The prototype validates UX patterns before production implementation. It is not 
 - **Infrastructure:** [Modern .NET & Journey Builder Infrastructure](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12632031452/Modern+.NET+Journey+Builder+Infrastructure)
 - **Research:** [Campaign Visibility Gap Analysis](../../audits/campaign-visibility-gap-analysis.md)
 - **Related:** [Reporting Infrastructure](./reporting-infrastructure.md) (for journey analytics)
-- **Prototype:** `src/pages/JourneyBuilderPage.tsx`
 
 ---
 
@@ -281,5 +264,5 @@ The prototype validates UX patterns before production implementation. It is not 
 
 - **Authored:** 2026-08-11
 - **Updated:** 2026-08-11 (split dependency awareness to Campaign Hub; Journey Builder now focuses on automation only)
-- **Based on:** Confluence documentation, prototype implementation, Discovery Canvas analysis
+- **Based on:** Confluence documentation, Discovery Canvas analysis
 - **Key insight:** Campaign Hub provides structure (dependency awareness, unified campaigns); Journey Builder provides automation (triggers, orchestration). Journeys are children of campaigns.

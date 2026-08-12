@@ -393,7 +393,6 @@ Campaign Hub and Journey Builder are **complementary but separate initiatives**:
 - **Planning:** `docs/roadmap/plans/dependency-awareness-plan.md`
 - **Architecture:** `docs/roadmap/architecture-informed-roadmap.md`
 - **Related:** `docs/roadmap/items/journey-builder.md` (automation layer)
-- **Prototype:** Campaign folder view in this repo
 
 ---
 
