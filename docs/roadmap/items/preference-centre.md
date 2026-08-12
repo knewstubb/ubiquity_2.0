@@ -1,9 +1,9 @@
 # Preference Centre
 
 > **Status:** Discovery
-> **Last updated:** 2026-08-11 (admin account sync approach added)
+> **Last updated:** 2026-08-11 (account sync capabilities confirmed from Confluence)
 > **Priority:** Medium-term (per Architecture Roadmap)
-> **Pre-requisite infrastructure:** Admin Account Sync (✅ exists), Consent Tracking (planned)
+> **Pre-requisite infrastructure:** Admin Account Sync (✅ exists — bidirectional, column mapping, seconds-level propagation), Consent Tracking (planned)
 
 ---
 
@@ -29,24 +29,32 @@ The hard problem with preference centres in multi-location setups is **propagati
 
 **Account sync exists today** — it's an admin-only feature that syncs contact data between accounts. This is a key enabler for preference centres.
 
+**From Confluence (page 13098156033 "Account Sync"):**
+
+| Capability | Status | Notes |
+|------------|--------|-------|
+| Contact sync across accounts | ✅ Exists | CDC-based, propagates within seconds under normal load |
+| Column mapping | ✅ Exists | Admins configure explicit source→target column mappings |
+| Bidirectional sync | ✅ Achievable | Create two one-way rules (A→B and B→A) |
+| Loop prevention | ✅ Built-in | `CallerType=AccountSync` — events with this type are skipped |
+| Near-real-time propagation | ✅ Confirmed | "Under normal conditions changes propagate within seconds" |
+| Global admin only | ✅ Current state | Non-admin self-service is out of scope for v1 |
+
+**Key design details:**
+- Sync rules are one-way; bidirectional requires two rules
+- Last-write-wins for conflict resolution (events processed in CDC order)
+- Column mappings support accounts with different schemas
+- Tree constraint: sync only within same account tree (no cross-tenant)
+
 **Early-phase idea:** Use admin account sync to be **prescriptive** about how customers set up their accounts. If we enforce a consistent schema across the account tree (same preference fields, same naming), a global preference centre becomes much simpler:
 
 | Constraint | Benefit |
 |------------|---------|
 | Require standard preference columns in all accounts | No schema mapping complexity |
-| Enforce bi-directional sync for preference fields | Changes propagate automatically |
+| Configure bidirectional sync for preference fields | Changes propagate automatically via two rules |
 | Prescribe account hierarchy patterns | Predictable routing |
 
 This trades customer flexibility for development simplicity — a reasonable trade-off for an early phase.
-
-### What Admin Account Sync Provides
-
-| Capability | Status | Notes |
-|------------|--------|-------|
-| Contact sync across accounts | ✅ Exists | Admin-configured |
-| Column mapping | ⚠️ Unknown | Need to verify if preference columns can be mapped |
-| Bi-directional sync | ⚠️ Unknown | Need to verify sync direction options |
-| Near-real-time propagation | ⚠️ Unknown | Need to verify latency |
 
 ### Prescriptive Setup Approach (Early Phase)
 
@@ -232,34 +240,40 @@ If we were to build this after resolving information gaps:
 
 **Goal:** Preferences sync across account tree.
 
+**Account Sync capabilities are confirmed** (Confluence 13098156033):
+- Bidirectional sync via two one-way rules
+- Column mapping supports different schemas
+- Propagation within seconds under normal load
+- Loop prevention built-in (`CallerType=AccountSync`)
+
 **Approach A: Prescriptive (Recommended for Early Phase)**
 
 Leverage existing admin account sync with enforced schema consistency:
 
-**Effort:** Low–Medium (1–2 sprints) — mostly configuration and documentation
+**Effort:** Low (0.5–1 sprint) — mostly configuration and documentation
 
 | Capability | Notes |
 |------------|-------|
 | Define standard preference columns | Email opt-in, SMS opt-in, topic prefs |
 | Document "preference-centre-ready" setup | Admin guide for account configuration |
-| Configure sync rules for preference columns | Use existing admin account sync |
-| Verify bi-directional sync behaviour | Test propagation |
+| Configure bidirectional sync rules | Two one-way rules per account pair |
+| Test propagation latency | Verify seconds-level sync |
 
 **Trade-off:** Customers must adopt standard schema. Non-compliant accounts don't get global preference centre until reconfigured.
 
 **Approach B: Flexible (Later Phase)**
 
-Build custom preference sync that handles arbitrary schemas:
+Support arbitrary schemas with custom mapping UI:
 
-**Effort:** Medium-High (3–4 sprints) — requires mapping layer
+**Effort:** Medium (2–3 sprints) — build admin UI for mapping
 
 | Capability | Notes |
 |------------|-------|
-| Preference column mapping UI | Map different field names across accounts |
-| Custom sync rules for preferences | Beyond existing sync capabilities |
-| Audit trail | Requires change source tracking |
+| Preference column mapping UI | Expose existing column mapping to non-global admins |
+| Self-service sync rule creation | Move beyond global-admin-only |
+| Per-account schema validation | Ensure mappings are valid |
 
-**Recommendation:** Start with Approach A. Most customers will accept standard setup if it means faster delivery. Approach B can follow if customer demand for flexibility justifies the complexity.
+**Recommendation:** Start with Approach A. The sync infrastructure exists and works. The only work is defining the standard schema and documenting setup.
 
 ### Phase 5: Consent in Filters
 
@@ -345,6 +359,7 @@ Build custom preference sync that handles arbitrary schemas:
 - **Architecture Roadmap:** `docs/roadmap/architecture-informed-roadmap.md` Section 2.13 (Consent Management)
 - **Discovery Canvas:** `docs/roadmap/discovery-canvas-framework.md` — listed as idea
 - **Priority Matrix:** Medium-term, Planned status
+- **Confluence:** "Account Sync" (13098156033) — bidirectional sync, column mapping, propagation latency, loop prevention
 
 ---
 
