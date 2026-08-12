@@ -3,6 +3,21 @@
 > Researched: 2026-08-13
 > Purpose: Identify best-in-class email campaign reporting features for UbiQuity 2.0 mailout reports
 
+## Screenshots
+
+Screenshots of competitor marketing pages captured for reference:
+
+| Competitor | Screenshot |
+|------------|------------|
+| Klaviyo | [klaviyo-analytics.png](screenshots/klaviyo-analytics.png) |
+| Mailchimp | [mailchimp-reports.png](screenshots/mailchimp-reports.png) |
+| Brevo | [brevo-email-marketing.png](screenshots/brevo-email-marketing.png) |
+| ActiveCampaign | [activecampaign-email.png](screenshots/activecampaign-email.png) |
+| Campaign Monitor | [campaignmonitor-features.png](screenshots/campaignmonitor-features.png) |
+| HubSpot | [hubspot-email-marketing.png](screenshots/hubspot-email-marketing.png) |
+
+---
+
 ## Summary
 
 This document captures email campaign reporting features from six major ESPs (Email Service Providers) to inform our mailout report design. Key themes:
