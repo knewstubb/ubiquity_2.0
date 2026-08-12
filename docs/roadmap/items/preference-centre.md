@@ -1,9 +1,9 @@
 # Preference Centre
 
 > **Status:** Discovery
-> **Last updated:** 2026-08-11 (account sync capabilities confirmed from Confluence)
+> **Last updated:** 2026-08-11 (account sync + forms infrastructure confirmed from Confluence)
 > **Priority:** Medium-term (per Architecture Roadmap)
-> **Pre-requisite infrastructure:** Admin Account Sync (✅ exists — bidirectional, column mapping, seconds-level propagation), Consent Tracking (planned)
+> **Pre-requisite infrastructure:** Admin Account Sync (✅ exists — bidirectional, column mapping, seconds-level propagation), Forms Infrastructure (✅ exists — see below), Consent Tracking (planned)
 
 ---
 
@@ -118,16 +118,42 @@ The preference centre (this item) is **Phase 3** — depends on Phases 1 and 2 b
 | Are "soft opt-outs" (unsubscribe from topic but not globally) compliant? | ❓ Unknown | Legal review needed |
 | How do we handle existing contacts without explicit consent? | ❓ Unknown | Migration/compliance question |
 
-### Technical Architecture (Partially Known)
+### Technical Architecture (Mostly Known)
 
 | Question | Status | What We Know |
 |----------|--------|--------------|
-| Where does the hosted page live? | ⚠️ Partial | Architecture suggests "new or extend u3_forms" |
-| How does the page authenticate the contact? | ❓ Unknown | Token in URL? Login? |
+| Where does the hosted page live? | ✅ Known | Forms infrastructure exists — see Forms Infrastructure section below |
+| How does the page authenticate the contact? | ⚠️ Partial | Update Forms pre-populate from DB; token in URL likely |
 | How do we prevent abuse (someone changing others' prefs)? | ❓ Unknown | Security review needed |
-| Do we need a database for consent records or just attributes? | ❓ Unknown | Architecture decision |
+| Do we need a database for consent records or just attributes? | ⚠️ Partial | u3_forms DB exists; consent may extend contact schema |
 | How do preferences integrate with filter builder? | ⚠️ Partial | Phase 5 of consent roadmap |
 | How do unsubscribe links work? | ⚠️ Partial | Needs email/SMS integration |
+
+### Forms Infrastructure (Confirmed from Confluence)
+
+**Source:** Confluence pages 12146671630 "Product_Forms", 194468708 "UbiQuity Architecture", 12789809413 "5.2 Infrastructure & Hosting", 12871925858 "DNS Requirements"
+
+| Capability | Status | Notes |
+|------------|--------|-------|
+| **u3_forms service** | ✅ Exists | .NET Remoting service for form creation, completion, reporting |
+| **u3_forms database** | ✅ Exists | SQL-1 server — holds metadata for every Form in UbiQuity |
+| **Form types** | ✅ Exists | Subscribe Forms (new contacts), **Update Forms** (pre-populated from DB), Transactional Forms |
+| **Layouts (branding)** | ✅ Exists | Fully branded, mobile-optimized page templates |
+| **API submission** | ✅ Exists | External software can submit to Forms via API |
+| **Hosting** | ✅ Exists | `custom.engage.ubiquity.co.nz` via Host Header CNAME; ALB → WEB1/WEB2 (IIS) or ECS |
+| **Newer microsites** | ✅ Exists | ECS-based with Terraform via QT-WebApp-Infra-Template (preferred for new work) |
+
+**Recommendation for Preference Centre hosting:**
+
+| Option | Pros | Cons | Recommendation |
+|--------|------|------|----------------|
+| **Extend u3_forms (Update Form)** | Infrastructure exists; branding via Layouts; pre-population from DB works | Legacy .NET Remoting; may need significant modification for consent model | ⚠️ Possible for v1 |
+| **New ECS microsite** | Modern stack (React + .NET 8); Terraform IaC; cleaner architecture | Requires new service setup; more upfront work | ✅ Preferred for production |
+| **Hybrid** | Use Forms for branding/hosting; custom logic for consent | Complexity | Consider for v2 |
+
+**Key insight:** Update Forms already pre-populate from the contact database — this is exactly what a preference centre needs. The infrastructure to show a contact their current data and let them update it exists.
+
+**DNS pattern:** Customer preference centres would use Host Header pointing to `custom.engage.ubiquity.co.nz`, same as existing forms/events/surveys.
 
 ### Multi-Account Complexity (Unknown)
 
@@ -298,7 +324,7 @@ Support arbitrary schemas with custom mapping UI:
 | Dependency | Status | Notes |
 |------------|--------|-------|
 | Admin account sync | ✅ Exists | Admin-only feature — can enforce schema consistency |
-| Forms infrastructure | Unknown | Hosting for preference page |
+| Forms infrastructure | ✅ Exists | u3_forms service + DB; Update Forms pre-populate from DB; ECS preferred for new microsites |
 | Filter Builder | Exists | Needs consent field support |
 | u3_mail integration | Exists | Needs unsubscribe link generation |
 | u3_txt integration | Exists | Needs unsubscribe link generation |
@@ -324,12 +350,12 @@ Support arbitrary schemas with custom mapping UI:
 |---|----------|--------|-------|
 | 1 | Do customers actually need topic-based preferences, or is channel opt-in sufficient? | Scope — topic model is significant work | PM |
 | 2 | What's the legal minimum for consent audit trail in NZ/AU? | Compliance — defines data model | Legal |
-| 3 | Where should the preference page be hosted — extend u3_forms or new service? | Architecture — affects infrastructure | Dev |
+| ~~3~~ | ~~Where should the preference page be hosted — extend u3_forms or new service?~~ | ✅ **Resolved** — Forms infrastructure exists; Update Forms can pre-populate; ECS microsite preferred for new production work | Dev |
 | 4 | How do we handle contacts who never gave explicit consent (pre-GDPR)? | Migration — could affect whole database | PM + Legal |
 | 5 | Should contacts be able to update profile data (name, email) via preference page? | Scope — adds complexity | PM |
 | 6 | How long should preference page tokens be valid? | Security vs UX trade-off | Dev |
 | 7 | Do competitors charge extra for preference centre, or is it table-stakes? | Commercial — pricing decision | PM |
-| 8 | Should the preference page be brandable/customisable? | UX — affects effort significantly | Designer |
+| 8 | Should the preference page be brandable/customisable? | UX — Layouts capability exists in Forms; brandable is feasible | Designer |
 
 ---
 
@@ -359,7 +385,11 @@ Support arbitrary schemas with custom mapping UI:
 - **Architecture Roadmap:** `docs/roadmap/architecture-informed-roadmap.md` Section 2.13 (Consent Management)
 - **Discovery Canvas:** `docs/roadmap/discovery-canvas-framework.md` — listed as idea
 - **Priority Matrix:** Medium-term, Planned status
-- **Confluence:** "Account Sync" (13098156033) — bidirectional sync, column mapping, propagation latency, loop prevention
+- **Confluence — Account Sync:** Page 13098156033 — bidirectional sync, column mapping, propagation latency, loop prevention
+- **Confluence — Forms:** Page 12146671630 "Product_Forms" — Subscribe/Update/Transactional forms, API submission, Layouts
+- **Confluence — Architecture:** Page 194468708 "UbiQuity Architecture" — u3_forms service and database
+- **Confluence — Infrastructure:** Page 12789809413 "5.2 Infrastructure & Hosting" — WEB1/WEB2 IIS, ECS for newer microsites
+- **Confluence — DNS:** Page 12871925858 "DNS Requirements" — Host header pattern for forms/events/surveys
 
 ---
 
