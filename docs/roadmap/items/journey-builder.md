@@ -65,9 +65,57 @@ Journey Builder addresses multiple high-pain problems, making it a high-leverage
 
 ---
 
+## Strategic Context: The Journey to Journey Builder
+
+Journey Builder is the destination, but getting there safely requires foundational work. The strategic progression:
+
+| Step | What It Enables | Feasible in Legacy? | Status |
+|------|-----------------|---------------------|--------|
+| **0. Dependency Awareness** | Pre-delete warnings, "Where Used" | Yes | Planning |
+| 1. Centralised Segments | Reusable, referenced filters | Maybe | Future |
+| 2. Unified Campaigns | Cross-channel grouping | Difficult | Future |
+| 3. Triggered Sequences | Event-driven automation | No (greenfield) | Future |
+| 4. Visual Journey Builder | Drag-and-drop orchestration | No (greenfield) | In progress |
+| 5. Journey Analytics | Conversion funnels, A/B testing | No (greenfield) | Future |
+
+**Dependency Awareness is Step 0** — foundation work that enables safe schema changes, surfaces implicit relationships, and informs later steps. See [Dependency Awareness Plan](../plans/dependency-awareness-plan.md).
+
+---
+
 ## Phased Roadmap
 
 Based on [Journey Builder Feature Roadmap Outline](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12671156493/Journey+Builder+Feature+Roadmap+Outline) and [Proposed Phasing & Technical Context](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12681544239/Journey+Builder+Proposed+Phasing+Technical+Context).
+
+### Phase 0: Dependency Awareness (Foundation)
+
+**Goal:** Enable safe changes to database fields and filters by surfacing dependencies.
+
+**Effort:** 5–7 sprints (Phases 1–3 of dependency plan)
+
+**Stack:** Legacy (.NET, SQL Server) — can start immediately
+
+| Sub-phase | Capability | Effort | Value |
+|-----------|------------|--------|-------|
+| **0.1** | Pre-delete warnings for database fields | 1–2 sprints | Prevent accidental breakage |
+| **0.2** | "Where Used" panel on database fields | 1–2 sprints | Proactive dependency visibility |
+| **0.3** | "Where Used" on saved filters + TXT/Push | 2–3 sprints | Cross-module visibility |
+| **0.4** | Object dependencies + clustering | 3–4 sprints | Implicit campaign discovery |
+
+**Why this matters for Journey Builder:**
+- Journey Builder will create complex dependencies between objects
+- Without visibility, users will break journeys by changing upstream objects
+- The dependency data informs the "Unified Campaigns" concept
+- Same patterns apply to journey dependencies later
+
+**Technical approach:**
+1. On-demand scan of filter definitions for field references
+2. Build dependency index for performance (if latency is a problem)
+3. Surface "Where Used" panels on field and filter detail views
+4. Cluster detection for objects sharing the same audience
+
+See [Dependency Awareness Plan](../plans/dependency-awareness-plan.md) for full details.
+
+---
 
 ### Phase 1: Walking Skeleton (MVP)
 
@@ -84,32 +132,93 @@ Based on [Journey Builder Feature Roadmap Outline](https://sparknz.atlassian.net
 
 **Status:** Walking skeleton scope defined. Infrastructure work in progress.
 
+**Dependencies:** None — greenfield service.
+
+---
+
 ### Phase 2: Core Automation
 
-| Capability | Notes |
-|------------|-------|
-| Scheduled triggers | Time-based journey initiation |
-| Wait nodes | Delay between steps |
-| Branching | Simple if/else based on contact fields |
-| SMS node | Leverage existing TXT infrastructure |
+**Goal:** Enable practical automated journeys with timing and logic.
 
-### Phase 3: Intelligence & Content
+| Capability | Notes | Dependencies |
+|------------|-------|--------------|
+| Scheduled triggers | Time-based journey initiation | Temporal workflows |
+| Wait nodes | Delay between steps | Temporal workflows |
+| Branching | Simple if/else based on contact fields | RemotingBridge (field access) |
+| SMS node | Leverage existing TXT infrastructure | RemotingBridge (u3_txt) |
 
-| Capability | Notes |
-|------------|-------|
-| Content creation | Build forms/surveys within Journey Builder |
-| A/B testing | Split paths with performance comparison |
-| Goal tracking | Conversion events within journeys |
-| Reporting | Journey-level performance dashboards |
+**Dependencies:** RemotingBridge expansion for contact field access and TXT integration.
 
-### Phase 4: Advanced Orchestration
+---
 
-| Capability | Notes |
-|------------|-------|
-| Real-time triggers | Instant journey initiation from user events |
-| Multi-channel | Push notifications, WhatsApp |
-| Journey versioning | Edit live journeys safely |
-| Folders/tags | Manage high volumes of journeys |
+### Phase 3: Event Triggers (Unblocked by DataFlow)
+
+**Goal:** React to real-time events with instant journey initiation.
+
+| Capability | Notes | Dependencies |
+|------------|-------|--------------|
+| Event-based triggers | Form submit, email open, page visit | DataFlow CDC ✅ LIVE |
+| Real-time triggers | Sub-second response to events | Kinesis consumer (needs work) |
+| Delay/wait nodes | Wait for event OR timeout | Temporal workflows |
+
+**Status:** DataFlow CDC shipped in 1.179.0. Event triggers are now **unblocked**.
+
+**Key insight:** This was previously blocked by CDC infrastructure. Now that DataFlow is live, this phase can proceed.
+
+---
+
+### Phase 4: Intelligence & Content
+
+**Goal:** Enable content creation and experimentation within journeys.
+
+| Capability | Notes | Dependencies |
+|------------|-------|--------------|
+| Content creation | Build forms/surveys within Journey Builder | Email/Form builder integration |
+| A/B testing | Split paths with performance comparison | Temporal + analytics |
+| Goal tracking | Conversion events within journeys | DataFlow (for event capture) |
+| Reporting | Journey-level performance dashboards | Reporting Infrastructure (R1) |
+
+**Cross-dependency:** Journey reporting ties into the broader Reporting Infrastructure initiative. See [Reporting Infrastructure](./reporting-infrastructure.md).
+
+---
+
+### Phase 5: Advanced Orchestration
+
+**Goal:** Enterprise-grade journey management and multi-channel reach.
+
+| Capability | Notes | Dependencies |
+|------------|-------|--------------|
+| Real-time triggers | Instant journey initiation from user events | DataFlow + Kinesis consumers |
+| Multi-channel | Push notifications, WhatsApp | RemotingBridge (u3_push) + new channels |
+| Journey versioning | Edit live journeys safely | Temporal workflow versioning |
+| Folders/tags | Manage high volumes of journeys | JourneyBuilder.Api extension |
+
+---
+
+### Phase 6: Smart Segments Integration (Paused)
+
+**Goal:** Use ML-powered propensity scores in journey entry and branching.
+
+| Capability | Notes | Dependencies |
+|------------|-------|--------------|
+| Propensity filtering | Enter journey based on ML scores | Smart Segments (⏸️ PAUSED) |
+| Segment triggers | Journey initiates when contact enters segment | DataFlow ✅ + segment membership tracking |
+| Explainability | Show why contact is in segment | Smart Segments UI |
+
+**Status:** Smart Segments is paused (high priority but staged behind JB foundation). The infrastructure dependency (DataFlow) is now resolved. Resume this phase when Smart Segments work restarts.
+
+---
+
+### Future: AI & Collaboration
+
+| Capability | Dependencies | Status |
+|------------|--------------|--------|
+| AI-powered journey creation | LLM infrastructure | ❌ Not designed |
+| Natural language → journey | LLM + journey compiler | ❌ Not designed |
+| Real-time collaboration | OT/CRDT infrastructure | ❌ Not designed |
+| Journey simulation mode | Full journey logic in memory | ❌ Complex |
+
+These require significant infrastructure that doesn't exist. They should be treated as a separate workstream.
 
 ---
 
@@ -176,6 +285,65 @@ The prototype validates UX patterns before production implementation. It is not 
 | 1 | How do we migrate existing automated mailouts to journeys? | User adoption, data migration | PM |
 | 2 | What's the pricing model for Journey Builder? | Commercial viability | Product |
 | 3 | Do we need journey templates for quick starts? | Time to first journey | UX |
+| 4 | Filter serialisation format — how are embedded filters stored? | Dependency awareness implementation | Backend |
+| 5 | Performance on large accounts — how many mailouts exist? | Dependency scan latency | Data |
+
+---
+
+## Dependency Awareness Detail
+
+> Full plan: [Dependency Awareness Plan](../plans/dependency-awareness-plan.md)
+
+Dependency awareness is foundational work that should begin before or alongside Journey Builder Phase 1. It addresses a fundamental platform gap and directly supports journey safety.
+
+### The Problem
+
+When you change or delete something in UbiQuity, there's no way to know what else might break:
+
+- **No reverse lookup** — Deleting a database field doesn't warn which mailouts use it
+- **No "Where Used" panel** — You can see what a filter contains, but not which objects use it
+- **Duplicated logic** — Same targeting criteria copied into dozens of mailouts
+- **Implicit campaigns** — Objects targeting the same audience aren't shown as related
+
+### Why It Matters for Journey Builder
+
+1. **Journey dependencies will be complex** — A journey references triggers, filters, content, and channels. Changing any of these could break the journey.
+2. **Schema changes will break journeys** — Without warnings, users will delete fields used in journey branching conditions.
+3. **"Where Used" patterns apply to journeys** — "Which journeys use this email template?" is the same pattern as "Which mailouts use this field?"
+4. **Implicit campaign discovery informs journey design** — Clusters of objects targeting the same audience suggest journey candidates.
+
+### Sequencing
+
+```
+Dependency Awareness (Phase 0)
+├── 0.1 Pre-delete warnings ─────────────── Can start NOW
+├── 0.2 "Where Used" on fields ───────────── After 0.1
+├── 0.3 "Where Used" on filters + TXT ────── After 0.2
+└── 0.4 Object clustering ────────────────── Decision point (legacy vs greenfield)
+
+Journey Builder
+├── Phase 1: Walking Skeleton ────────────── Parallel with 0.1–0.2
+├── Phase 2: Core Automation ─────────────── After Phase 1
+├── Phase 3: Event Triggers ──────────────── After Phase 2 (DataFlow ✅)
+├── Phase 4: Intelligence & Content ──────── After Phase 3
+├── Phase 5: Advanced Orchestration ──────── After Phase 4
+└── Phase 6: Smart Segments ──────────────── After Smart Segments resumes
+```
+
+**Key insight:** Dependency Awareness 0.1–0.3 is legacy work that can proceed in parallel with Journey Builder Phase 1. The same patterns will later apply to journey dependencies.
+
+### Technical Approach (Summary)
+
+**Filter storage:** Filters are embedded in each mailout as serialised data (XML/JSON). No existing dependency index.
+
+**Options:**
+1. **On-demand scan** — Query and parse filters at delete-time. Slow on large accounts, but simplest.
+2. **Background indexer** — Nightly job builds dependency index. Pre-delete reads from index. Faster, but stale data risk.
+3. **Hybrid** — Index for speed, validate on-demand for accuracy.
+
+**Recommendation:** Start with on-demand scan. Accept slower performance initially. Add indexer if latency becomes a problem.
+
+See [Dependency Awareness Plan](../plans/dependency-awareness-plan.md) for full technical details, UI mockups, and open questions.
 
 ---
 
@@ -187,6 +355,9 @@ The prototype validates UX patterns before production implementation. It is not 
 - **Technical:** [State of Journey Builder](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12671320074/State+of+Journey+builder)
 - **Technical:** [Journey Builder Engine](https://sparknz.atlassian.net/wiki/spaces/UB/pages/11924308123/Journey+Builder+Engine)
 - **Infrastructure:** [Modern .NET & Journey Builder Infrastructure](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12632031452/Modern+.NET+Journey+Builder+Infrastructure)
+- **Foundation:** [Dependency Awareness Plan](../plans/dependency-awareness-plan.md)
+- **Research:** [Campaign Visibility Gap Analysis](../audits/campaign-visibility-gap-analysis.md)
+- **Related:** [Reporting Infrastructure](./reporting-infrastructure.md) (for journey analytics)
 - **Prototype:** `src/pages/JourneyBuilderPage.tsx`
 
 ---
@@ -194,4 +365,5 @@ The prototype validates UX patterns before production implementation. It is not 
 ## Provenance
 
 - **Authored:** 2026-08-11
-- **Based on:** Confluence documentation, prototype implementation, Discovery Canvas analysis
+- **Updated:** 2026-08-11 (added dependency awareness research, expanded phasing)
+- **Based on:** Confluence documentation, prototype implementation, Discovery Canvas analysis, dependency awareness research
