@@ -57,7 +57,7 @@ This pain point is directly addressed by the Aurora replica architecture:
 | Aurora replica latency in production? | ✅ Known | **<1 minute data freshness** under normal conditions per DataFlow design. See Confluence "DataFlow - Data Replication" (13001654502). |
 | Largest account by mail_logs volume? | ❓ Unknown | Performance baseline for R1 queries; noted in Open Questions |
 | Is SMS event data in CDC scope? | ✅ Known | **Yes — Phase 3 of DataFlow delivery.** Phase 1 = Contacts & Transactions, Phase 2 = Mail logs & events, **Phase 3 = SMS, survey responses, event registrations**. See Confluence 13001654502. |
-| Platform Filter service: extend legacy or build new? | ❓ Unknown | Unblocks R3; noted in Open Questions |
+| Platform Filter service: extend legacy or build new? | ✅ Known | **Using updated filter functionality** — new Platform Filter, not legacy |
 | CDC pipeline architecture? | ✅ Known | Debezium Server → Kinesis → Aurora PostgreSQL; uses PostgreSQL RLS for tenant isolation. |
 
 ### Customer Requirements
@@ -187,7 +187,7 @@ Roll-ups across multiple campaigns, folders, or date ranges:
 
 **Effort:** Medium (2–3 sprints)
 
-**Dependencies:** R1 (query patterns), Connectors Exporter (NEXT), Platform Filter (backlog)
+**Dependencies:** R1 (query patterns), Connectors Exporter (NEXT), New Platform Filter (confirmed)
 
 #### R4: Enhanced Export (Aurora-Direct)
 
@@ -217,11 +217,11 @@ Instant segment counts while building filters:
 | Segment overlap | N/A | INTERSECT/EXCEPT queries |
 
 **Technical approach:**
-- Platform Filter AST → Aurora SQL compiler
+- New Platform Filter AST → Aurora SQL compiler
 - Debounced count queries as filter changes
 - Cache recent count results
 
-**Blocker:** Depends on Platform Filter service architecture decision.
+**Dependency:** Uses updated filter functionality (new Platform Filter service).
 
 ---
 
@@ -369,7 +369,6 @@ GROUP BY 1 ORDER BY 1;
 | Risk | Impact | Mitigation |
 |------|--------|------------|
 | Large account query performance | Slow dashboards | Index tuning; query timeouts; pagination |
-| R3 blocked by filter service | Can't deliver audience counts | Sequence R3 after Platform Filter decision |
 | External integration complexity (R6) | Scope creep | Ship internal metrics first; external is Phase 5+ |
 | R5 blocked by CDC Phase 3 timing | SMS metrics delayed | Sequence after DataFlow Phase 3 ships |
 
@@ -415,7 +414,7 @@ R1 + R2 ────────────────────────
    │
    ├──► R6 (internal metrics first) ────────────────► MEDIUM EFFORT
    │
-   ├──► R3 (after Platform Filter) ─────────────────► BLOCKED ON FILTER SVC
+   ├──► R3 (uses new Platform Filter) ──────────────► UNBLOCKED
    │
    └──► R5 (after CDC Phase 3) ─────────────────────► BLOCKED ON CDC PHASE 3
 ```
@@ -431,7 +430,7 @@ R1 + R2 ────────────────────────
 | 1 | ~~Aurora replica latency~~ | ✅ Resolved — <1 min freshness per DataFlow design (Confluence 13001654502) | DevOps |
 | 2 | ~~SMS event data in CDC scope~~ | ✅ Resolved — Phase 3 of DataFlow (Confluence 13001654502) | Backend |
 | 3 | What's the largest account by mail_logs volume? | Performance baseline for R1 queries | Data |
-| 4 | Platform Filter service: extend legacy or build new? | Unblocks R3 | Architect |
+| 4 | ~~Platform Filter service: extend legacy or build new?~~ | ✅ Resolved — using updated filter functionality (new Platform Filter) | Architect |
 | 5 | Do we want external deliverability integrations? | Scope for R6 Phase 2 | PM |
 | 6 | **Should R2 include cross-account (within tree) aggregation?** | Currently R2 is single-account; multi-account rollups have been expensive custom work historically. Requires RLS extension to allow parent accounts to query child data. | PM + Architect |
 
