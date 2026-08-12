@@ -1,24 +1,26 @@
 # Configurable Data Deletion
 
 > **Status:** Discovery
-> **Last updated:** 2026-08-11 (Confluence gaps resolved)
-> **Priority:** High (operational pain — currently requires dev team involvement)
+> **Last updated:** 2026-08-11 (single-contact deletion confirmed)
+> **Priority:** High (operational pain — bulk/automated deletion requires dev team involvement)
 > **Pain source:** User feedback — "I can't automate my data retention policy" (mapped to "reduce dev reliance")
 
 ---
 
 ## Outcome
 
-> Give customers self-service control over data retention and deletion so they don't need to involve our team for routine cleanup.
+> Give customers self-service control over **bulk** data retention and deletion so they don't need to involve our team for routine cleanup.
 
 Customers need to:
-- Delete contacts who haven't engaged in X months
-- Delete old transactional data beyond a retention period
+- Delete contacts who haven't engaged in X months (bulk, criteria-based)
+- Delete old transactional data beyond a retention period (scheduled)
 - Comply with data minimisation requirements (GDPR, Privacy Act)
-- Clean up test data or duplicates
-- Remove contacts at their request (right to erasure)
+- Clean up test data or duplicates (bulk selection)
+- Remove contacts at their request (right to erasure) — **✅ this exists today**
 
-**Currently:** Customers contact our team, we run manual scripts. This doesn't scale and creates compliance risk (delays in responding to erasure requests).
+**Currently:** 
+- **Individual deletion exists** — users can right-click a contact row and select "Delete" to remove a single record
+- **Bulk/automated deletion doesn't exist** — deleting by criteria, scheduled retention, or batch operations requires our team to run manual scripts
 
 ---
 
@@ -84,20 +86,24 @@ Customers need to:
 
 Based on common patterns in the space:
 
-### Layer 1: Right to Erasure (Individual Deletion)
+### Layer 1: Right to Erasure (Individual Deletion) — ✅ EXISTS
 
 **Use case:** A contact requests deletion of their data (GDPR Art. 17)
 
-| Capability | Notes |
-|------------|-------|
-| Delete single contact by ID/email | Immediate action |
-| Cascade to transactions | Configurable per account |
-| Cascade to mail history | Configurable per account |
-| Cascade to form submissions | Configurable per account |
-| Audit trail of deletion | Prove compliance |
-| Confirmation workflow | "Are you sure?" with impact preview |
+**Current state:** Individual contact deletion is available via right-click → Delete on contact rows in the database view.
 
-**Effort:** Medium
+| Capability | Status | Notes |
+|------------|--------|-------|
+| Delete single contact by ID/email | ✅ Exists | Right-click → Delete in contact grid |
+| Cascade to transactions | ⚠️ Unknown | Need to verify cascade behaviour |
+| Cascade to mail history | ⚠️ Unknown | Need to verify cascade behaviour |
+| Cascade to form submissions | ⚠️ Unknown | Need to verify cascade behaviour |
+| Audit trail of deletion | ⚠️ Unknown | Need to verify if logged |
+| Confirmation workflow | ⚠️ Unknown | Need to verify if impact preview shown |
+
+**Gap:** The capability exists but we need to understand cascade behaviour, audit trail, and what exactly gets deleted.
+
+**Effort:** Documentation + possible UX improvements to show impact preview
 
 ### Layer 2: Bulk Deletion (Filter-Based)
 
@@ -210,20 +216,22 @@ Based on production system knowledge:
 | Compliance review | Legal requirements |
 | Competitor audit | Feature parity baseline |
 
-### Phase 1: Right to Erasure (Individual)
+### Phase 1: Right to Erasure (Individual) — ✅ MOSTLY EXISTS
 
 **Goal:** Self-service single-contact deletion for compliance.
 
-**Effort:** Medium (2–3 sprints)
+**Current state:** Individual deletion available via right-click → Delete. 
 
-| Capability | Notes |
-|------------|-------|
-| Delete contact button with confirmation | Exists in legacy? Expose in new UI |
-| Impact preview | Show what will be deleted |
-| Cascade configuration | Account-level settings |
-| Audit trail | Prove deletion happened |
+**Remaining work:** Small (0.5–1 sprint)
 
-**Compliance value:** High — enables GDPR Art. 17 self-service
+| Capability | Status | Notes |
+|------------|--------|-------|
+| Delete contact button with confirmation | ✅ Exists | Right-click → Delete in contact grid |
+| Impact preview | ⚠️ Unknown | Verify if shown before delete |
+| Cascade configuration | ⚠️ Unknown | Verify current behaviour |
+| Audit trail | ⚠️ Unknown | Verify if deletion logged |
+
+**Next step:** Document current behaviour and identify UX gaps (impact preview, confirmation copy).
 
 ### Phase 2: Bulk Deletion
 
@@ -319,16 +327,16 @@ Based on production system knowledge:
 
 ## Recommendation
 
-**This is a real operational pain** — the user explicitly mentioned involving the team for data deletions. Prioritise accordingly.
+**The operational pain is specifically bulk/automated deletion** — individual contact deletion already exists (right-click → Delete).
 
 **Recommended sequence:**
-1. Run Phase 0 Discovery (backend audit + support ticket analysis)
-2. Build Phase 1 (Right to Erasure) as quickly as possible — compliance value
-3. Decide on Phase 2–5 based on customer demand data from Phase 0
+1. Run Phase 0 Discovery (document current single-delete behaviour, support ticket analysis for bulk patterns)
+2. Build Phase 2 (Bulk Deletion) as the primary new capability — this is the actual gap
+3. Decide on Phase 3–5 based on customer demand data from Phase 0
 4. Consider Phase 4 (Soft Delete) earlier if risk of user error is high
 5. Phase 5 (multi-account delete propagation) requires production sync audit
 
-**Key insight:** The hardest part isn't the deletion itself — it's the cascade behaviour, audit trail, and multi-account consistency. Start with single-contact deletion, learn from that, then expand.
+**Key insight:** Individual deletion exists — the pain is "delete 10,000 inactive contacts" not "delete one contact". Focus on bulk operations, criteria-based deletion, and scheduled retention.
 
 ---
 
