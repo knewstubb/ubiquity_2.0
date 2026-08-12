@@ -1,9 +1,9 @@
 # Preference Centre
 
 > **Status:** Discovery
-> **Last updated:** 2026-08-11
+> **Last updated:** 2026-08-11 (admin account sync approach added)
 > **Priority:** Medium-term (per Architecture Roadmap)
-> **Pre-requisite infrastructure:** Multi-account sync infrastructure (scope TBD), Consent Tracking (planned)
+> **Pre-requisite infrastructure:** Admin Account Sync (✅ exists), Consent Tracking (planned)
 
 ---
 
@@ -25,24 +25,47 @@ This is table-stakes for GDPR/CCPA compliance and expected by customers who've u
 
 The hard problem with preference centres in multi-location setups is **propagation**: when a contact updates their preferences via Head Office's preference centre, those changes need to flow to every branch account.
 
-**Information gap:** The production multi-account sync infrastructure for preferences is not yet documented. Key questions:
+### Existing Capability: Admin Account Sync
 
-| Question | Status |
-|----------|--------|
-| How do contact changes propagate across accounts today? | ❓ Unknown — needs production audit |
-| Is there CDC infrastructure for near-real-time sync? | ❓ Unknown — needs production audit |
-| What loop prevention exists for bi-directional changes? | ❓ Unknown — needs production audit |
-| How are contacts linked across accounts? | ❓ Unknown — needs production audit |
+**Account sync exists today** — it's an admin-only feature that syncs contact data between accounts. This is a key enabler for preference centres.
 
-**Without multi-account sync**, we'd need to build a separate preference sync mechanism. This is a significant architecture decision that needs production system audit.
+**Early-phase idea:** Use admin account sync to be **prescriptive** about how customers set up their accounts. If we enforce a consistent schema across the account tree (same preference fields, same naming), a global preference centre becomes much simpler:
 
-### What Multi-Account Sync Doesn't Solve (Regardless)
+| Constraint | Benefit |
+|------------|---------|
+| Require standard preference columns in all accounts | No schema mapping complexity |
+| Enforce bi-directional sync for preference fields | Changes propagate automatically |
+| Prescribe account hierarchy patterns | Predictable routing |
+
+This trades customer flexibility for development simplicity — a reasonable trade-off for an early phase.
+
+### What Admin Account Sync Provides
+
+| Capability | Status | Notes |
+|------------|--------|-------|
+| Contact sync across accounts | ✅ Exists | Admin-configured |
+| Column mapping | ⚠️ Unknown | Need to verify if preference columns can be mapped |
+| Bi-directional sync | ⚠️ Unknown | Need to verify sync direction options |
+| Near-real-time propagation | ⚠️ Unknown | Need to verify latency |
+
+### Prescriptive Setup Approach (Early Phase)
+
+Instead of building for arbitrary multi-account configurations, we could:
+
+1. **Define a "preference-centre-ready" account setup** — standard fields, standard sync rules
+2. **Document the setup as a prerequisite** — "To use global preference centre, your accounts must be configured like X"
+3. **Build the preference centre assuming this setup** — simpler code, fewer edge cases
+4. **Expand flexibility in later phases** — once the core is proven
+
+**Trade-off:** Customers with non-standard setups would need to reconfigure (admin task) or wait for later phases.
+
+### What Admin Account Sync Doesn't Solve (Regardless)
 
 | Still Needed | Notes |
 |--------------|-------|
 | Hosted preference page (UI) | New Forms-adjacent work |
-| Preference data model (topics, purposes) | Schema extension |
-| Unsubscribe link generation | email/SMS integration |
+| Preference data model (topics, purposes) | Schema extension — but can be standard across accounts |
+| Unsubscribe link generation | Email/SMS integration |
 | Topic/purpose-based consent model | New data model |
 | Regional compliance rules | New logic |
 
@@ -209,17 +232,34 @@ If we were to build this after resolving information gaps:
 
 **Goal:** Preferences sync across account tree.
 
-**Effort:** Unknown — depends on what sync infrastructure exists in production
+**Approach A: Prescriptive (Recommended for Early Phase)**
 
-**Depends on:** Phase 1 (data model), production multi-account sync infrastructure (unknown status)
+Leverage existing admin account sync with enforced schema consistency:
+
+**Effort:** Low–Medium (1–2 sprints) — mostly configuration and documentation
 
 | Capability | Notes |
 |------------|-------|
-| Preference columns in sync rules | Requires column mapping capability |
-| Cascade to branches | Requires multi-account sync flow |
+| Define standard preference columns | Email opt-in, SMS opt-in, topic prefs |
+| Document "preference-centre-ready" setup | Admin guide for account configuration |
+| Configure sync rules for preference columns | Use existing admin account sync |
+| Verify bi-directional sync behaviour | Test propagation |
+
+**Trade-off:** Customers must adopt standard schema. Non-compliant accounts don't get global preference centre until reconfigured.
+
+**Approach B: Flexible (Later Phase)**
+
+Build custom preference sync that handles arbitrary schemas:
+
+**Effort:** Medium-High (3–4 sprints) — requires mapping layer
+
+| Capability | Notes |
+|------------|-------|
+| Preference column mapping UI | Map different field names across accounts |
+| Custom sync rules for preferences | Beyond existing sync capabilities |
 | Audit trail | Requires change source tracking |
 
-**Information gap:** This phase's effort estimate depends entirely on what multi-account sync infrastructure exists in production. Could be Low (configuration) or Medium-High (new build).
+**Recommendation:** Start with Approach A. Most customers will accept standard setup if it means faster delivery. Approach B can follow if customer demand for flexibility justifies the complexity.
 
 ### Phase 5: Consent in Filters
 
@@ -243,7 +283,7 @@ If we were to build this after resolving information gaps:
 
 | Dependency | Status | Notes |
 |------------|--------|-------|
-| Multi-account sync infrastructure | Unknown | Need production audit |
+| Admin account sync | ✅ Exists | Admin-only feature — can enforce schema consistency |
 | Forms infrastructure | Unknown | Hosting for preference page |
 | Filter Builder | Exists | Needs consent field support |
 | u3_mail integration | Exists | Needs unsubscribe link generation |
@@ -281,20 +321,22 @@ If we were to build this after resolving information gaps:
 
 ## Recommendation
 
-**Multi-account sync is a critical dependency** — it could either solve the hardest part (multi-account propagation) through configuration, or require significant engineering.
+**Admin account sync exists and can be leveraged** — the prescriptive approach (enforce schema consistency upfront) significantly reduces development complexity for multi-account preference propagation.
 
-Significant gaps to fill before scoping:
-1. **Production audit** — what multi-account sync infrastructure exists today?
-2. Customer requirements (what preferences do they actually need?)
-3. Compliance requirements (what's legally required?)
-4. Competitor baseline (what's the expected feature set?)
+**Early-phase strategy:**
+1. Define standard preference columns (email opt-in, SMS opt-in, topic preferences)
+2. Document "preference-centre-ready" account setup requirements
+3. Use existing admin account sync to propagate preference changes
+4. Build the preference centre assuming standard schema
+
+**Trade-off:** Customers with non-standard setups must reconfigure or wait for later phases. This is acceptable for an early phase — most customers will accept standardisation for faster delivery.
 
 **Recommended sequence:**
-1. Audit production multi-account sync capabilities
-2. Run Phase 0 Discovery (1–2 sprints)
-3. Build Phases 1–3 as a unit (consent model + page + unsubscribe)
-4. Phase 4 effort depends on sync infrastructure audit results
-5. Phase 5 follows naturally once data model exists
+1. Run Phase 0 Discovery (1–2 sprints) — requirements, compliance, competitor baseline
+2. Build Phases 1–3 as a unit (consent model + page + unsubscribe)
+3. Phase 4 uses prescriptive approach (Approach A) — low effort if schema is standardised
+4. Phase 5 follows naturally once data model exists
+5. Flexible multi-account support (Approach B) can follow if customer demand justifies complexity
 
 ---
 
