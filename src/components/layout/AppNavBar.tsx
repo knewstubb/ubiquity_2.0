@@ -45,6 +45,12 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
+    label: 'Channels',
+    subItems: [
+      { label: 'Mailouts', path: '/channels/mailouts' },
+    ],
+  },
+  {
     label: 'Audience',
     subItems: [
       { label: 'Databases', path: '/audiences/databases' },

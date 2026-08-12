@@ -56,6 +56,8 @@ const UserManagementPage = React.lazy(() => import('./pages/UserManagementPage')
 const PageComponentsPage = React.lazy(() => import('./pages/PageComponentsPage'));
 const FilterSandboxPage = React.lazy(() => import('./pages/FilterSandboxPage'));
 const AccountSyncPage = React.lazy(() => import('./pages/AccountSyncPage'));
+const MailoutsPage = React.lazy(() => import('./pages/MailoutsPage'));
+const MailoutReportPage = React.lazy(() => import('./pages/MailoutReportPage'));
 
 /** Redirects non-admin users to /dashboard */
 function AdminRoute({ children }: { children: React.ReactNode }) {
@@ -191,6 +193,8 @@ function App() {
                           <Route path="/content/forms" element={<FormsPage />} />
                           <Route path="/content/sms" element={<SmsPage />} />
                           <Route path="/content/assets" element={<AssetsPage />} />
+                          <Route path="/channels/mailouts" element={<MailoutsPage />} />
+                          <Route path="/channels/mailouts/:mailoutId" element={<MailoutReportPage />} />
                           <Route path="/analytics/dashboards" element={<AnalyticsDashboardsPage />} />
                           <Route path="/analytics/reports" element={<ReportsPage />} />
                           <Route path="/analytics/activity" element={<ActivityPage />} />
