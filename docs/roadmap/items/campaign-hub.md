@@ -389,7 +389,7 @@ Campaign Hub and Journey Builder are **complementary but separate initiatives**:
 
 ## Refs
 
-- **Research:** `docs/audits/campaign-visibility-gap-analysis.md`
+- **Research:** `docs/production/audits/campaign-visibility-gap-analysis.md`
 - **Planning:** `docs/roadmap/plans/dependency-awareness-plan.md`
 - **Architecture:** `docs/roadmap/architecture-informed-roadmap.md`
 - **Related:** `docs/roadmap/items/journey-builder.md` (automation layer)

@@ -255,7 +255,7 @@ From [State of Journey Builder](https://sparknz.atlassian.net/wiki/spaces/UB/pag
 - **Technical:** [State of Journey Builder](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12671320074/State+of+Journey+builder)
 - **Technical:** [Journey Builder Engine](https://sparknz.atlassian.net/wiki/spaces/UB/pages/11924308123/Journey+Builder+Engine)
 - **Infrastructure:** [Modern .NET & Journey Builder Infrastructure](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12632031452/Modern+.NET+Journey+Builder+Infrastructure)
-- **Research:** [Campaign Visibility Gap Analysis](../../audits/campaign-visibility-gap-analysis.md)
+- **Research:** [Campaign Visibility Gap Analysis](../../production/audits/campaign-visibility-gap-analysis.md)
 - **Related:** [Reporting Infrastructure](./reporting-infrastructure.md) (for journey analytics)
 
 ---
