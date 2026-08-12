@@ -56,6 +56,68 @@ Journey Builder addresses multiple high-pain problems, making it a high-leverage
 
 ---
 
+## Information Gaps
+
+> **Status key:** ❓ Unknown | ⚠️ Partial | ✅ Known
+>
+> Journey Builder is in **Validating** status — most technical gaps resolved through prototype work. Some product/commercial gaps remain.
+
+### Technical Architecture
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Filter serialisation format — how are embedded filters stored? | ⚠️ Partial | Noted in Open Questions; affects dependency awareness |
+| RemotingBridge capabilities for contact field access? | ✅ Known | Proven; expansion needed for TXT integration |
+| Temporal workflow patterns? | ✅ Known | Infrastructure in place; patterns documented |
+| Event trigger latency (Kinesis consumer)? | ⚠️ Partial | DataFlow CDC live; Kinesis consumer needs work |
+
+### Customer Requirements
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| What journey complexity do customers actually need? | ✅ Known | Multi-touch drip sequences, birthday journeys, re-engagement |
+| Do customers need journey templates? | ❓ Unknown | Noted in Open Questions; affects time-to-first-journey |
+| Migration path for existing automated mailouts? | ❓ Unknown | Noted in Open Questions; affects adoption |
+
+### Commercial / Product
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Pricing model for Journey Builder? | ❓ Unknown | Noted in Open Questions; commercial viability |
+| Is this an add-on or included feature? | ❓ Unknown | Pricing decision needed |
+
+### Performance
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Performance on large accounts — how many mailouts? | ❓ Unknown | Noted in Open Questions; affects dependency scan |
+| Legacy mailout integration bottleneck? | ⚠️ Partial | Rate limiter planned for Temporal worker |
+
+---
+
+## Competitor Landscape
+
+| Capability | Mailchimp | HubSpot | Klaviyo | UbiQuity (Current) | UbiQuity (Target) |
+|------------|-----------|---------|---------|-------------------|-------------------|
+| Visual journey builder | ✅ Customer Journeys | ✅ Workflows | ✅ Flows | ❌ Manual mailouts | Phase 1 |
+| Drag-and-drop canvas | ✅ | ✅ | ✅ | ❌ | Phase 1 |
+| Email action node | ✅ | ✅ | ✅ | ❌ | Phase 1 |
+| Wait/delay nodes | ✅ | ✅ | ✅ | ❌ | Phase 2 |
+| If/else branching | ✅ | ✅ | ✅ | ❌ | Phase 2 |
+| Time-based triggers | ✅ | ✅ | ✅ | ❌ | Phase 2 |
+| Event triggers (form, email open) | ✅ | ✅ | ✅ | ❌ | Phase 3 |
+| SMS action node | ✅ | ✅ | ✅ | ❌ | Phase 2 |
+| A/B split testing | ✅ | ✅ | ✅ | ❌ | Phase 4 |
+| Goal tracking | ✅ | ✅ | ✅ | ❌ | Phase 4 |
+| Journey analytics | ✅ | ✅ | ✅ | ❌ | Phase 4 |
+| Push notifications | ⚠️ | ✅ | ✅ | ❌ | Phase 5 |
+| WhatsApp | ⚠️ | ✅ | ⚠️ | ❌ | Phase 5+ |
+| AI journey suggestions | ⚠️ | ✅ | ✅ | ❌ | Future |
+
+**Competitive position:** Phase 1–2 achieves feature parity with basic journey capabilities. Phase 3–4 matches mid-market expectations. Phase 5+ addresses enterprise needs.
+
+---
+
 ## Strategic Context: Two Parallel Tracks
 
 Journey Builder and Campaign Hub are **complementary initiatives** that can run in parallel:

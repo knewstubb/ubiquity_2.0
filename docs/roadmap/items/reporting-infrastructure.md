@@ -27,6 +27,39 @@ Reporting is a foundational capability that affects user confidence, decision-ma
 
 ---
 
+## Information Gaps
+
+> **Status key:** ❓ Unknown | ⚠️ Partial | ✅ Known
+>
+> Reporting Infrastructure is in **Planning** status — architecture is clear (Aurora replica), but some operational and scope gaps remain.
+
+### Technical Architecture
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Aurora replica latency in production? | ❓ Unknown | Sets expectations for data freshness; noted in Open Questions |
+| Largest account by mail_logs volume? | ❓ Unknown | Performance baseline for R1 queries; noted in Open Questions |
+| Is SMS event data in CDC scope? | ❓ Unknown | Determines R5 feasibility; noted in Open Questions |
+| Platform Filter service: extend legacy or build new? | ❓ Unknown | Unblocks R3; noted in Open Questions |
+
+### Customer Requirements
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| What report formats do customers expect? | ✅ Known | Dashboard views, CSV exports, time-series charts |
+| Cross-campaign aggregation needed? | ✅ Known | Yes — currently impossible |
+| Real-time vs near-real-time expectations? | ⚠️ Partial | Accept 15-min lag documented; need to confirm |
+
+### Scope Decisions
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Do we want external deliverability integrations? | ❓ Unknown | Affects R6 Phase 2 scope; noted in Open Questions |
+| Revenue attribution in scope? | ✅ Known | No — requires CRM/e-commerce; out of scope |
+| AI-powered insights? | ✅ Known | No — requires LLM infrastructure; future workstream |
+
+---
+
 ## Architecture Context
 
 ### The Problem: ObjectSpace ORM

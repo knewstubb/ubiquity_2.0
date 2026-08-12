@@ -30,6 +30,45 @@ Campaign Hub is foundation work that enables:
 
 ---
 
+## Information Gaps
+
+> **Status key:** ❓ Unknown | ⚠️ Partial | ✅ Known
+>
+> Campaign Hub is in **Planning** status — most gaps have been resolved through the Gap Analysis and Dependency Awareness Plan.
+
+### Technical Architecture
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Filter serialisation format — exact XML/JSON structure? | ⚠️ Partial | Filters are embedded in mailout metadata; exact parsing logic needs spike |
+| How many mailouts on the largest accounts? | ❓ Unknown | Need data query for performance baseline |
+| TXT/Push filter storage — same format as email? | ⚠️ Partial | Likely similar but needs confirmation |
+| Legacy Campaign table — what does it currently hold? | ✅ Known | Email-only; no cross-channel support |
+
+### Customer Requirements
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Do customers need "Where Used" or just deletion warnings? | ✅ Known | Both — Gap Analysis confirmed proactive visibility is needed |
+| How do customers currently track campaign groupings? | ✅ Known | Manually via naming conventions, folders, spreadsheets |
+| Is cross-channel campaign grouping a priority? | ✅ Known | Yes — siloed channels cited as pain point |
+
+### UX Design
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Where does "Where Used" panel appear? Tab, side panel, modal? | ❓ Unknown | UX decision needed |
+| How do we present implicit campaign clusters? | ❓ Unknown | UX decision needed |
+
+### Multi-Account Complexity
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| How do campaigns/segments work across account trees? | ⚠️ Partial | Phase 6 consideration; depends on sync infrastructure |
+| Should HQ campaigns propagate to branches? | ❓ Unknown | Architecture decision deferred to Phase 6 |
+
+---
+
 ## Strategic Context
 
 Campaign Hub is the **foundation layer** that Journey Builder sits on:

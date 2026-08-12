@@ -26,6 +26,45 @@ Users currently export audiences manually, reformat them, hash emails, and uploa
 
 ---
 
+## Information Gaps
+
+> **Status key:** ❓ Unknown | ⚠️ Partial | ✅ Known
+>
+> Social Audience Export is in **Planning** status — Phase 1 (Smart CSV Export) is well-scoped; later phases have gaps.
+
+### Technical Architecture (Phase 1)
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Should Phase 1 use Connectors Exporter or standalone? | ❓ Unknown | Architecture decision; noted in Open Questions |
+| Platform format specifications stable? | ⚠️ Partial | Meta/Google well-documented; TikTok/LinkedIn need verification |
+| Hashing implementation location? | ✅ Known | Compute at export time, not stored |
+
+### Technical Architecture (Phase 2+)
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Do we have Meta Business verification? | ❓ Unknown | Phase 2 blocker; noted in Open Questions |
+| OAuth infrastructure exists? | ⚠️ Partial | Some OAuth patterns exist; may need expansion |
+| Rate limits per platform? | ⚠️ Partial | Documented in platform docs; need to model |
+
+### Customer Requirements
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Expected segment size for ad uploads? | ❓ Unknown | Performance consideration; noted in Open Questions |
+| Which platform should be first for Phase 2? | ❓ Unknown | Resource allocation decision; noted in Open Questions |
+| Do customers want scheduled exports (Phase 1)? | ✅ Known | No — manual sufficient for MVP |
+
+### Compliance
+
+| Question | Status | What We Know |
+|----------|--------|--------------|
+| Do we need consent enforcement before Phase 1? | ❓ Unknown | Compliance question; noted in Open Questions |
+| Platform-specific consent requirements? | ⚠️ Partial | Meta requires explicit consent for EU; others vary |
+
+---
+
 ## Competitor Landscape
 
 | Capability | Mailchimp | HubSpot | Klaviyo | UbiQuity (Current) | UbiQuity (Target) |
