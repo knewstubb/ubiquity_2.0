@@ -51,7 +51,7 @@ Journey Builder addresses multiple high-pain problems, making it a high-leverage
 | Usability | Conditional | New paradigm requires onboarding; canvas UX must be excellent |
 | Feasibility | Pass | Modern .NET service architecture proven; prototype validates UX |
 | Viability | Pass | Strategic priority, differentiator |
-| Effort | Quarters | Multi-phase rollout over 6+ months |
+
 | **Decision** | **Build (phased)** | High value justifies high effort; phased approach manages risk |
 
 ---

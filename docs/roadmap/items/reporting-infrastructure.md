@@ -136,8 +136,6 @@ Research across Mailchimp, HubSpot, and Klaviyo reveals standard expectations:
 
 **Goal:** Replace "awful" reports with accurate, fast campaign performance data.
 
-**Effort:** Medium (3–4 sprints)
-
 **Dependencies:** Aurora read replica population (in progress)
 
 #### R1: Campaign Performance Dashboard
@@ -186,8 +184,6 @@ Roll-ups across multiple campaigns, folders, or date ranges:
 
 **Goal:** Remove job engine bottlenecks for exports and audience counts.
 
-**Effort:** Medium (2–3 sprints)
-
 **Dependencies:** R1 (query patterns), Connectors Exporter (NEXT), New Platform Filter (confirmed)
 
 #### R4: Enhanced Export (Aurora-Direct)
@@ -230,8 +226,6 @@ Instant segment counts while building filters:
 
 **Goal:** Help users understand engagement patterns and inbox health.
 
-**Effort:** Medium (2–3 sprints)
-
 **Dependencies:** R1 (query patterns)
 
 #### R7: Engagement Over Time Reports
@@ -273,8 +267,6 @@ Internal delivery health metrics:
 ### Phase 4: SMS Metrics (R5)
 
 **Goal:** Extend reporting to TXT Programme (SMS).
-
-**Effort:** Medium (2–3 sprints) — data confirmed in CDC scope
 
 **Dependencies:** Phase 3 CDC delivery (SMS in DataFlow Phase 3), R1 query patterns
 

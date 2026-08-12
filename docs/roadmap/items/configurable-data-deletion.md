@@ -103,8 +103,6 @@ Based on common patterns in the space:
 
 **Gap:** The capability exists but we need to understand cascade behaviour, audit trail, and what exactly gets deleted.
 
-**Effort:** Documentation + possible UX improvements to show impact preview
-
 ### Layer 2: Bulk Deletion (Filter-Based)
 
 **Use case:** Delete all contacts matching a filter (e.g., "not engaged in 2 years")
@@ -117,8 +115,6 @@ Based on common patterns in the space:
 | Progress tracking | "Deleted 5,000 of 12,453" |
 | Cancellation | Stop mid-job if needed |
 | Audit trail | Record criteria + result |
-
-**Effort:** Medium-High (job engine integration)
 
 ### Layer 3: Scheduled Retention Policies
 
@@ -133,8 +129,6 @@ Based on common patterns in the space:
 | Notifications | Alert before execution, summary after |
 | Pause/resume policies | Temporarily disable without deleting rule |
 
-**Effort:** High (new scheduling + rules engine)
-
 ### Layer 4: Soft Delete with Recovery
 
 **Use case:** "I deleted contacts by mistake, can I undo?"
@@ -147,8 +141,6 @@ Based on common patterns in the space:
 | Bulk restore | Recover from bad filter |
 | Auto-purge after retention | "Delete permanently after 30 days" |
 
-**Effort:** Medium-High (new data model for soft-delete state)
-
 ### Layer 5: Multi-Account Delete Propagation
 
 **Use case:** "When HQ deletes a contact, branches should too"
@@ -159,8 +151,6 @@ Based on common patterns in the space:
 | Sync rule option: propagate deletes | Opt-in behaviour |
 | Cascading behaviour definition | What happens in target account |
 | Audit trail | Which delete came from which account |
-
-**Effort:** Unknown — depends on production sync infrastructure audit
 
 **Note:** Multi-account delete propagation capabilities are unknown. This would need a production audit before scoping.
 
@@ -206,8 +196,6 @@ Based on production system knowledge:
 
 **Goal:** Fill information gaps, understand current state.
 
-**Effort:** 1–2 sprints
-
 | Activity | Output |
 |----------|--------|
 | Backend audit | Current deletion capabilities |
@@ -222,8 +210,6 @@ Based on production system knowledge:
 
 **Current state:** Individual deletion available via right-click → Delete. 
 
-**Remaining work:** Small (0.5–1 sprint)
-
 | Capability | Status | Notes |
 |------------|--------|-------|
 | Delete contact button with confirmation | ✅ Exists | Right-click → Delete in contact grid |
@@ -237,8 +223,6 @@ Based on production system knowledge:
 
 **Goal:** Delete contacts by filter criteria.
 
-**Effort:** Medium-High (3–4 sprints)
-
 | Capability | Notes |
 |------------|-------|
 | Filter builder integration | Reuse existing UI |
@@ -249,8 +233,6 @@ Based on production system knowledge:
 ### Phase 3: Scheduled Retention
 
 **Goal:** Automate data minimisation.
-
-**Effort:** High (4–5 sprints)
 
 | Capability | Notes |
 |------------|-------|
@@ -263,8 +245,6 @@ Based on production system knowledge:
 
 **Goal:** Safety net for mistakes.
 
-**Effort:** Medium-High (3 sprints)
-
 | Capability | Notes |
 |------------|-------|
 | Soft-delete flag | New data model |
@@ -274,8 +254,6 @@ Based on production system knowledge:
 ### Phase 5: Multi-Account Delete Propagation
 
 **Goal:** Consistent deletion across account tree.
-
-**Effort:** Unknown — needs production audit
 
 | Capability | Notes |
 |------------|-------|

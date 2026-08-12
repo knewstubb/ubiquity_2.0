@@ -194,8 +194,6 @@ If we were to build this after resolving information gaps:
 
 **Goal:** Fill information gaps, define requirements.
 
-**Effort:** 1–2 sprints (research, not code)
-
 | Activity | Output |
 |----------|--------|
 | Customer interviews | Requirements definition |
@@ -209,8 +207,6 @@ If we were to build this after resolving information gaps:
 ### Phase 1: Consent Data Model
 
 **Goal:** Extend contact schema for consent tracking.
-
-**Effort:** Low (1 sprint)
 
 **Depends on:** Phase 0 (requirements)
 
@@ -226,8 +222,6 @@ If we were to build this after resolving information gaps:
 ### Phase 2: Basic Preference Page
 
 **Goal:** Hosted page for contacts to manage preferences.
-
-**Effort:** Medium (2–3 sprints)
 
 **Depends on:** Phase 1 (data model), Forms infrastructure decision
 
@@ -247,8 +241,6 @@ If we were to build this after resolving information gaps:
 ### Phase 3: Unsubscribe Integration
 
 **Goal:** One-click unsubscribe links in emails and SMS.
-
-**Effort:** Medium (2 sprints)
 
 **Depends on:** Phase 2 (preference page)
 
@@ -276,8 +268,6 @@ If we were to build this after resolving information gaps:
 
 Leverage existing admin account sync with enforced schema consistency:
 
-**Effort:** Low (0.5–1 sprint) — mostly configuration and documentation
-
 | Capability | Notes |
 |------------|-------|
 | Define standard preference columns | Email opt-in, SMS opt-in, topic prefs |
@@ -291,8 +281,6 @@ Leverage existing admin account sync with enforced schema consistency:
 
 Support arbitrary schemas with custom mapping UI:
 
-**Effort:** Medium (2–3 sprints) — build admin UI for mapping
-
 | Capability | Notes |
 |------------|-------|
 | Preference column mapping UI | Expose existing column mapping to non-global admins |
@@ -304,8 +292,6 @@ Support arbitrary schemas with custom mapping UI:
 ### Phase 5: Consent in Filters
 
 **Goal:** Filter by consent status in segments and journeys.
-
-**Effort:** Low (1 sprint)
 
 **Depends on:** Phase 1 (data model), Filter Builder
 

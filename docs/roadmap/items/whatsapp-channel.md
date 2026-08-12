@@ -108,8 +108,6 @@ If we were to build this, a phased approach might look like:
 
 **Goal:** Validate demand and build the business case.
 
-**Effort:** 1–2 sprints (research, not code)
-
 | Activity | Output |
 |----------|--------|
 | Customer survey | Demand validation |
@@ -123,8 +121,6 @@ If we were to build this, a phased approach might look like:
 ### Phase 1: Template Messages (MVP)
 
 **Goal:** Send pre-approved marketing templates via WhatsApp.
-
-**Effort:** Unknown (depends on technical approach)
 
 | Capability | Notes |
 |------------|-------|
@@ -143,8 +139,6 @@ If we were to build this, a phased approach might look like:
 
 **Goal:** WhatsApp as a node type in Journey Builder.
 
-**Effort:** Unknown
-
 | Capability | Notes |
 |------------|-------|
 | WhatsApp action node | Select template, personalise |
@@ -156,8 +150,6 @@ If we were to build this, a phased approach might look like:
 ### Phase 3: Conversational (Future)
 
 **Goal:** Two-way WhatsApp conversations.
-
-**Effort:** High (likely requires dedicated product track)
 
 | Capability | Notes |
 |------------|-------|

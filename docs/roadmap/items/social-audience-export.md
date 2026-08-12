@@ -86,8 +86,6 @@ Users currently export audiences manually, reformat them, hash emails, and uploa
 
 **Goal:** Eliminate manual formatting and hashing. User downloads a ready-to-upload file.
 
-**Effort:** Low (1–2 sprints)
-
 **Dependencies:** Saved segments (existing), Connectors Exporter (NEXT)
 
 #### How It Works
@@ -184,8 +182,6 @@ jane@example.com
 
 **Goal:** One-click sync directly to ad platforms via OAuth.
 
-**Effort:** Medium-High (3–4 sprints per platform)
-
 **Dependencies:** Phase 1 (field mapping), OAuth infrastructure, consent model
 
 #### How It Works
@@ -226,8 +222,6 @@ jane@example.com
 
 **Goal:** Keep ad audiences automatically in sync with UbiQuity segments.
 
-**Effort:** Medium (2–3 sprints)
-
 **Dependencies:** Phase 2 (API integration), scheduled jobs infrastructure
 
 #### Capabilities
@@ -244,8 +238,6 @@ jane@example.com
 ### Phase 4: Consent Enforcement
 
 **Goal:** Ensure only consented contacts are synced to ad platforms.
-
-**Effort:** Low (1 sprint)
 
 **Dependencies:** Consent data model (see architecture roadmap)
 

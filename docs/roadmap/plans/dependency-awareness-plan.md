@@ -40,8 +40,6 @@ Dependency awareness is foundation work. It's required for pre-delete safety, an
 
 **Goal:** Warn users before they delete a database field that's referenced elsewhere.
 
-**Effort:** Small (1–2 sprints)
-
 **Stack:** Legacy (.NET, SQL Server)
 
 ### Scope
@@ -94,8 +92,6 @@ Dependency awareness is foundation work. It's required for pre-delete safety, an
 
 **Goal:** Show all objects that reference a database field without requiring a delete attempt.
 
-**Effort:** Small-Medium (1–2 sprints)
-
 **Stack:** Legacy (.NET, SQL Server)
 
 ### Scope
@@ -136,8 +132,6 @@ Dependency awareness is foundation work. It's required for pre-delete safety, an
 
 **Goal:** Extend "Where Used" to saved filters and cover more object types.
 
-**Effort:** Medium (2–3 sprints)
-
 **Stack:** Legacy (.NET, SQL Server)
 
 ### Scope
@@ -175,8 +169,6 @@ Saved filters are used by reference (filter ID), not by embedded copy. This make
 ## Phase 4: Object Relationship View + Clustering
 
 **Goal:** Show dependencies from the object's perspective and detect implicit campaigns.
-
-**Effort:** Medium-High (3–4 sprints)
 
 **Stack:** Legacy or early greenfield (decision point)
 
@@ -232,8 +224,6 @@ By Phase 4, evaluate whether to continue in legacy or pivot to greenfield Campai
 
 **Goal:** Interactive visual canvas showing the dependency network.
 
-**Effort:** High
-
 **Stack:** Likely greenfield (modern frontend)
 
 ### Concept
@@ -262,15 +252,15 @@ This phase aligns with Journey Builder greenfield work.
 
 ## Summary Timeline
 
-| Phase | Focus | Effort | Cumulative Value |
-|-------|-------|--------|------------------|
-| **1** | Pre-delete warnings (email mailouts) | 1–2 sprints | Prevent accidental breakage |
-| **2** | "Where Used" on database fields | 1–2 sprints | Proactive dependency visibility |
-| **3** | "Where Used" on saved filters + TXT/Push | 2–3 sprints | Cross-module visibility |
-| **4** | Object dependencies + clustering | 3–4 sprints | Implicit campaign discovery |
-| **5** | Graph visualisation | TBD (greenfield) | Full relationship map |
+| Phase | Focus | Cumulative Value |
+|-------|-------|------------------|
+| **1** | Pre-delete warnings (email mailouts) | Prevent accidental breakage |
+| **2** | "Where Used" on database fields | Proactive dependency visibility |
+| **3** | "Where Used" on saved filters + TXT/Push | Cross-module visibility |
+| **4** | Object dependencies + clustering | Implicit campaign discovery |
+| **5** | Graph visualisation | Full relationship map |
 
-**Total Phase 1–3:** ~5–7 sprints (feasible in legacy)
+**Phase 1–3:** Feasible in legacy
 **Phase 4:** Decision point — continue legacy or pivot to greenfield
 **Phase 5:** Part of Journey Builder greenfield initiative
 

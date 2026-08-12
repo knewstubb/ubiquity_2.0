@@ -106,8 +106,6 @@ Campaign: "VIP Loyalty Programme"
 
 **Goal:** Warn users before they delete a database field that's referenced elsewhere.
 
-**Effort:** 1–2 sprints
-
 **Stack:** Legacy (.NET, SQL Server) — can start immediately
 
 | Capability | Description |
@@ -133,8 +131,6 @@ Campaign: "VIP Loyalty Programme"
 ### Phase 2: "Where Used" on Database Fields
 
 **Goal:** Show dependencies proactively, not just at delete time.
-
-**Effort:** 1–2 sprints
 
 **Stack:** Legacy (.NET, SQL Server)
 
@@ -166,8 +162,6 @@ Campaign: "VIP Loyalty Programme"
 
 **Goal:** Extend visibility to saved filters and more object types.
 
-**Effort:** 2–3 sprints
-
 **Stack:** Legacy (.NET, SQL Server)
 
 | Capability | Description |
@@ -184,8 +178,6 @@ Campaign: "VIP Loyalty Programme"
 ### Phase 4: Object Dependency View + Clustering
 
 **Goal:** Show dependencies from the object's perspective and detect implicit campaigns.
-
-**Effort:** 3–4 sprints
 
 **Stack:** Decision point — continue legacy or pivot to greenfield
 
@@ -227,8 +219,6 @@ Campaign: "VIP Loyalty Programme"
 
 **Goal:** Unified campaign that holds assets and journeys across channels.
 
-**Effort:** 4–6 sprints
-
 **Stack:** Greenfield (new .NET service, PostgreSQL)
 
 | Capability | Description |
@@ -266,8 +256,6 @@ CampaignJourney
 ### Phase 6: Centralised Segments
 
 **Goal:** Define audience logic once, reference from any object.
-
-**Effort:** 3–4 sprints
 
 **Stack:** Greenfield (or hybrid with legacy sync)
 

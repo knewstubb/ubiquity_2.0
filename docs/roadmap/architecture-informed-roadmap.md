@@ -372,13 +372,13 @@ Based on the analysis above, here's a recommended build sequence that respects d
 
 Status updated 2026-08-11:
 
-| Initiative | Status | Effort | Unblocks |
+| Initiative | Status | Unblocks |
 |------------|--------|--------|----------|
-| **DataFlow CDC Pipeline** | ✅ LIVE | — | Event triggers, real-time, AccountSync, Aurora replica |
-| **Aurora Read Replica Population** | ⚠️ In progress | Medium | Real-time audience counts, reporting performance |
-| **Aurora 18.3 Upgrade** | ✅ DONE | — | Platform stability |
-| **RemotingBridge Expansion** | ⚠️ Ongoing | Medium | Content nodes, filter integration, template access |
-| **Platform Filter Service (decision)** | ⚠️ Designed | Medium | Journey splits, saved segments, cross-object queries |
+| **DataFlow CDC Pipeline** | ✅ LIVE | Event triggers, real-time, AccountSync, Aurora replica |
+| **Aurora Read Replica Population** | ⚠️ In progress | Real-time audience counts, reporting performance |
+| **Aurora 18.3 Upgrade** | ✅ DONE | Platform stability |
+| **RemotingBridge Expansion** | ⚠️ Ongoing | Content nodes, filter integration, template access |
+| **Platform Filter Service (decision)** | ⚠️ Designed | Journey splits, saved segments, cross-object queries |
 
 ### Tier 2: Core Journey Builder Path
 
@@ -606,7 +606,6 @@ Research across Mailchimp, HubSpot, and Klaviyo reveals these standard reporting
 | Device/client breakdown | ⚠️ | ✅ | ✅ | ⚠️ Medium — UA parsing |
 | Geo breakdown | ⚠️ | ✅ | ✅ | ⚠️ Medium — IP geo lookup |
 
-**Effort:** Medium  
 **Impact:** High — addresses primary pain point  
 **Dependencies:** Aurora read replica population (in progress)  
 **Competitive parity:** Can match Mailchimp/HubSpot core metrics; device/geo need additional work
@@ -627,7 +626,6 @@ Research across Mailchimp, HubSpot, and Klaviyo reveals these standard reporting
 | Trend over time (weekly/monthly) | ✅ | ✅ | ✅ | ✅ Medium — time-series buckets |
 | Comparison (A vs B) | ✅ | ✅ | ✅ | ✅ Medium — parallel queries |
 
-**Effort:** Low  
 **Impact:** High — frequently requested, currently impossible  
 **Dependencies:** R1 (Campaign Performance Dashboard) for query patterns  
 **Competitive parity:** Can fully match all competitors
@@ -646,7 +644,6 @@ Research across Mailchimp, HubSpot, and Klaviyo reveals these standard reporting
 | Count while building filter | ✅ | ✅ | ✅ | ⚠️ Medium — same dependency |
 | Segment overlap analysis | ⚠️ | ✅ | ✅ | ⚠️ Medium — INTERSECT/EXCEPT queries |
 
-**Effort:** Medium (depends on Platform Filter work)  
 **Impact:** Medium — improves UX, not currently a blocker  
 **Dependencies:** Platform Filter Builder (in backlog), Aurora replica  
 **Competitive parity:** Can match once filter service exists
@@ -666,7 +663,6 @@ Research across Mailchimp, HubSpot, and Klaviyo reveals these standard reporting
 | Scheduled exports | ✅ | ✅ | ✅ | ✅ Medium — ties to Connectors Exporter |
 | Custom export fields | ✅ | ✅ | ✅ | ⚠️ Medium — needs field picker UI |
 
-**Effort:** Low  
 **Impact:** Medium — removes job engine bottleneck for exports  
 **Dependencies:** Connectors Exporter (NEXT), Aurora replica  
 **Competitive parity:** Can fully match
@@ -686,7 +682,6 @@ Research across Mailchimp, HubSpot, and Klaviyo reveals these standard reporting
 | SMS unsubscribe rate | ⚠️ | ✅ | ✅ | ⚠️ Depends on data model |
 | SMS vs Email comparison | ❌ | ✅ | ✅ | ⚠️ Medium — cross-service query |
 
-**Effort:** Medium (if SMS data is in Aurora), High (if not)  
 **Impact:** Medium — SMS is growing channel  
 **Dependencies:** Confirm SMS events in CDC scope, Aurora replica  
 **Competitive parity:** Can match Mailchimp; Klaviyo/HubSpot are stronger on SMS
@@ -709,7 +704,6 @@ Research across Mailchimp, HubSpot, and Klaviyo reveals these standard reporting
 | Authentication status (SPF/DKIM/DMARC) | ✅ | ✅ | ✅ | ⚠️ Medium — needs DNS checks or header parsing |
 | Actionable recommendations | ✅ | ✅ | ⚠️ | ⚠️ Medium — rules-based suggestions |
 
-**Effort:** Medium (internal data), High (external integrations)  
 **Impact:** High — deliverability directly affects ROI  
 **Dependencies:** Aurora replica; external API integrations for full feature  
 **Competitive parity:** Can match internal metrics; Mailchimp leads on external data
@@ -730,7 +724,6 @@ Research across Mailchimp, HubSpot, and Klaviyo reveals these standard reporting
 | Best send time recommendation | ✅ | ✅ | ✅ | ⚠️ Medium — analysis + ML |
 | Engagement decay curve | ⚠️ | ✅ | ✅ | ⚠️ Medium — time-series analysis |
 
-**Effort:** Low (basic), Medium (recommendations)  
 **Impact:** Medium — actionable insights for users  
 **Dependencies:** R1 (for query patterns), Aurora replica  
 **Competitive parity:** Can match basic features; recommendations need additional work

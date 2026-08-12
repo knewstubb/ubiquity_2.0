@@ -85,8 +85,6 @@ What we need to know before this can move from Discovery → Planning.
 
 **Goal:** Fill information gaps, validate requirements.
 
-**Effort:** 1–2 sprints (research, not code)
-
 | Activity | Output |
 |----------|--------|
 | <activity> | <deliverable> |
@@ -96,8 +94,6 @@ What we need to know before this can move from Discovery → Planning.
 ### Phase 1: <Name>
 
 **Goal:** <What this phase achieves>
-
-**Effort:** <Low/Medium/High (N sprints)>
 
 **Dependencies:** <What must exist first>
 
