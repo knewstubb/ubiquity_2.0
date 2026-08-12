@@ -4,6 +4,7 @@
 > **Last updated:** 2026-08-11
 > **U.Lab:** [Journey Builder Feature Roadmap Outline](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12671156493/Journey+Builder+Feature+Roadmap+Outline)
 > **Prototype:** This repo (`src/pages/JourneyBuilderPage.tsx`, `src/components/journey/`)
+> **Foundation:** [Campaign Hub](./campaign-hub.md) (dependency awareness, unified campaigns)
 
 ---
 
@@ -12,6 +13,8 @@
 > Increase the total number of campaigns sent across our customer base.
 
 Journey Builder enables multi-touch, automated campaign orchestration — replacing manual mailout scheduling with visual, trigger-based journeys. This unlocks campaign complexity that users currently can't manage.
+
+**Journeys are children of campaigns.** The [Campaign Hub](./campaign-hub.md) provides the structure (dependency awareness, unified campaigns, shared segments); Journey Builder provides the automation (triggers, orchestration, branching).
 
 ---
 
@@ -23,17 +26,6 @@ Journey Builder enables multi-touch, automated campaign orchestration — replac
 | "Scheduling and mailout workflows are powerful but difficult to operate at scale" | Time slider complaints, future date scheduling gaps | UTTPMO |
 | "Form and event modules lack logic functionality" | Teams use JS workarounds for conditional flows | UTTPMO |
 | "Email-triggered workflows are an important differentiator" | Cited as key value prop vs competitors | UTTPMO |
-
----
-
-## Proposed Solutions
-
-| Solution | Addresses Problems | Experiment Status |
-|----------|-------------------|-------------------|
-| **Canvas-based Journey Builder** | Multi-touch management, scheduling at scale, logic gaps | Prototype in this repo |
-| **Ability to group and view objects by Campaign** | Multi-touch management | Not started |
-
-This item focuses on the Canvas-based Journey Builder as the primary solution.
 
 ---
 
@@ -65,57 +57,37 @@ Journey Builder addresses multiple high-pain problems, making it a high-leverage
 
 ---
 
-## Strategic Context: The Journey to Journey Builder
+## Strategic Context: Two Parallel Tracks
 
-Journey Builder is the destination, but getting there safely requires foundational work. The strategic progression:
+Journey Builder and Campaign Hub are **complementary initiatives** that can run in parallel:
 
-| Step | What It Enables | Feasible in Legacy? | Status |
-|------|-----------------|---------------------|--------|
-| **0. Dependency Awareness** | Pre-delete warnings, "Where Used" | Yes | Planning |
-| 1. Centralised Segments | Reusable, referenced filters | Maybe | Future |
-| 2. Unified Campaigns | Cross-channel grouping | Difficult | Future |
-| 3. Triggered Sequences | Event-driven automation | No (greenfield) | Future |
-| 4. Visual Journey Builder | Drag-and-drop orchestration | No (greenfield) | In progress |
-| 5. Journey Analytics | Conversion funnels, A/B testing | No (greenfield) | Future |
+| Track | Focus | Stack | Status |
+|-------|-------|-------|--------|
+| **[Campaign Hub](./campaign-hub.md)** | Dependency awareness, unified campaigns, shared segments | Legacy first → Greenfield | Planning |
+| **Journey Builder** | Visual orchestration, triggers, automation | Greenfield only | In progress |
 
-**Dependency Awareness is Step 0** — foundation work that enables safe schema changes, surfaces implicit relationships, and informs later steps. See [Dependency Awareness Plan](../plans/dependency-awareness-plan.md).
+**Convergence point:** Journey Builder Phase 2+ benefits from Campaign Hub infrastructure. Journeys will live inside campaigns once the Campaign Hub container model ships (Campaign Hub Phase 5).
+
+```
+Campaign Hub (structure & visibility)
+├── Phase 1–3: Dependency awareness ─────── Legacy, can start NOW
+├── Phase 4: Object clustering ──────────── Decision point
+├── Phase 5: Campaign container ─────────── Greenfield ◄── convergence
+└── Phase 6: Centralised segments ───────── Greenfield
+
+Journey Builder (automation & orchestration)
+├── Phase 1: Walking Skeleton ───────────── Greenfield, can start NOW
+├── Phase 2: Core Automation ────────────── After Phase 1
+├── Phase 3: Event Triggers ─────────────── After Phase 2 (DataFlow ✅)
+├── Phase 4: Intelligence & Content ─────── After Phase 3 ◄── uses Campaign Hub
+└── Phase 5: Advanced Orchestration ─────── After Phase 4
+```
 
 ---
 
 ## Phased Roadmap
 
 Based on [Journey Builder Feature Roadmap Outline](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12671156493/Journey+Builder+Feature+Roadmap+Outline) and [Proposed Phasing & Technical Context](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12681544239/Journey+Builder+Proposed+Phasing+Technical+Context).
-
-### Phase 0: Dependency Awareness (Foundation)
-
-**Goal:** Enable safe changes to database fields and filters by surfacing dependencies.
-
-**Effort:** 5–7 sprints (Phases 1–3 of dependency plan)
-
-**Stack:** Legacy (.NET, SQL Server) — can start immediately
-
-| Sub-phase | Capability | Effort | Value |
-|-----------|------------|--------|-------|
-| **0.1** | Pre-delete warnings for database fields | 1–2 sprints | Prevent accidental breakage |
-| **0.2** | "Where Used" panel on database fields | 1–2 sprints | Proactive dependency visibility |
-| **0.3** | "Where Used" on saved filters + TXT/Push | 2–3 sprints | Cross-module visibility |
-| **0.4** | Object dependencies + clustering | 3–4 sprints | Implicit campaign discovery |
-
-**Why this matters for Journey Builder:**
-- Journey Builder will create complex dependencies between objects
-- Without visibility, users will break journeys by changing upstream objects
-- The dependency data informs the "Unified Campaigns" concept
-- Same patterns apply to journey dependencies later
-
-**Technical approach:**
-1. On-demand scan of filter definitions for field references
-2. Build dependency index for performance (if latency is a problem)
-3. Surface "Where Used" panels on field and filter detail views
-4. Cluster detection for objects sharing the same audience
-
-See [Dependency Awareness Plan](../plans/dependency-awareness-plan.md) for full details.
-
----
 
 ### Phase 1: Walking Skeleton (MVP)
 
@@ -290,73 +262,16 @@ The prototype validates UX patterns before production implementation. It is not 
 
 ---
 
-## Dependency Awareness Detail
-
-> Full plan: [Dependency Awareness Plan](../plans/dependency-awareness-plan.md)
-
-Dependency awareness is foundational work that should begin before or alongside Journey Builder Phase 1. It addresses a fundamental platform gap and directly supports journey safety.
-
-### The Problem
-
-When you change or delete something in UbiQuity, there's no way to know what else might break:
-
-- **No reverse lookup** — Deleting a database field doesn't warn which mailouts use it
-- **No "Where Used" panel** — You can see what a filter contains, but not which objects use it
-- **Duplicated logic** — Same targeting criteria copied into dozens of mailouts
-- **Implicit campaigns** — Objects targeting the same audience aren't shown as related
-
-### Why It Matters for Journey Builder
-
-1. **Journey dependencies will be complex** — A journey references triggers, filters, content, and channels. Changing any of these could break the journey.
-2. **Schema changes will break journeys** — Without warnings, users will delete fields used in journey branching conditions.
-3. **"Where Used" patterns apply to journeys** — "Which journeys use this email template?" is the same pattern as "Which mailouts use this field?"
-4. **Implicit campaign discovery informs journey design** — Clusters of objects targeting the same audience suggest journey candidates.
-
-### Sequencing
-
-```
-Dependency Awareness (Phase 0)
-├── 0.1 Pre-delete warnings ─────────────── Can start NOW
-├── 0.2 "Where Used" on fields ───────────── After 0.1
-├── 0.3 "Where Used" on filters + TXT ────── After 0.2
-└── 0.4 Object clustering ────────────────── Decision point (legacy vs greenfield)
-
-Journey Builder
-├── Phase 1: Walking Skeleton ────────────── Parallel with 0.1–0.2
-├── Phase 2: Core Automation ─────────────── After Phase 1
-├── Phase 3: Event Triggers ──────────────── After Phase 2 (DataFlow ✅)
-├── Phase 4: Intelligence & Content ──────── After Phase 3
-├── Phase 5: Advanced Orchestration ──────── After Phase 4
-└── Phase 6: Smart Segments ──────────────── After Smart Segments resumes
-```
-
-**Key insight:** Dependency Awareness 0.1–0.3 is legacy work that can proceed in parallel with Journey Builder Phase 1. The same patterns will later apply to journey dependencies.
-
-### Technical Approach (Summary)
-
-**Filter storage:** Filters are embedded in each mailout as serialised data (XML/JSON). No existing dependency index.
-
-**Options:**
-1. **On-demand scan** — Query and parse filters at delete-time. Slow on large accounts, but simplest.
-2. **Background indexer** — Nightly job builds dependency index. Pre-delete reads from index. Faster, but stale data risk.
-3. **Hybrid** — Index for speed, validate on-demand for accuracy.
-
-**Recommendation:** Start with on-demand scan. Accept slower performance initially. Add indexer if latency becomes a problem.
-
-See [Dependency Awareness Plan](../plans/dependency-awareness-plan.md) for full technical details, UI mockups, and open questions.
-
----
-
 ## Refs
 
+- **Foundation:** [Campaign Hub](./campaign-hub.md) (dependency awareness, unified campaigns, shared segments)
 - **U.Lab:** [Journey Builder Feature Roadmap Outline](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12671156493/Journey+Builder+Feature+Roadmap+Outline)
 - **U.Lab:** [Walking Skeleton Scope](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12510200112/Journey+Builder+Walking+Skeleton+Scope)
 - **U.Lab:** [Proposed Phasing & Technical Context](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12681544239/Journey+Builder+Proposed+Phasing+Technical+Context)
 - **Technical:** [State of Journey Builder](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12671320074/State+of+Journey+builder)
 - **Technical:** [Journey Builder Engine](https://sparknz.atlassian.net/wiki/spaces/UB/pages/11924308123/Journey+Builder+Engine)
 - **Infrastructure:** [Modern .NET & Journey Builder Infrastructure](https://sparknz.atlassian.net/wiki/spaces/UB/pages/12632031452/Modern+.NET+Journey+Builder+Infrastructure)
-- **Foundation:** [Dependency Awareness Plan](../plans/dependency-awareness-plan.md)
-- **Research:** [Campaign Visibility Gap Analysis](../audits/campaign-visibility-gap-analysis.md)
+- **Research:** [Campaign Visibility Gap Analysis](../../audits/campaign-visibility-gap-analysis.md)
 - **Related:** [Reporting Infrastructure](./reporting-infrastructure.md) (for journey analytics)
 - **Prototype:** `src/pages/JourneyBuilderPage.tsx`
 
@@ -365,5 +280,6 @@ See [Dependency Awareness Plan](../plans/dependency-awareness-plan.md) for full 
 ## Provenance
 
 - **Authored:** 2026-08-11
-- **Updated:** 2026-08-11 (added dependency awareness research, expanded phasing)
-- **Based on:** Confluence documentation, prototype implementation, Discovery Canvas analysis, dependency awareness research
+- **Updated:** 2026-08-11 (split dependency awareness to Campaign Hub; Journey Builder now focuses on automation only)
+- **Based on:** Confluence documentation, prototype implementation, Discovery Canvas analysis
+- **Key insight:** Campaign Hub provides structure (dependency awareness, unified campaigns); Journey Builder provides automation (triggers, orchestration). Journeys are children of campaigns.
