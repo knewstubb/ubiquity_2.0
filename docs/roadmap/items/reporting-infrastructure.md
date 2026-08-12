@@ -66,7 +66,7 @@ This pain point is directly addressed by the Aurora replica architecture:
 |----------|--------|--------------|
 | What report formats do customers expect? | ✅ Known | Dashboard views, CSV exports, time-series charts |
 | Cross-campaign aggregation needed? | ✅ Known | Yes — currently impossible |
-| Real-time vs near-real-time expectations? | ⚠️ Partial | Accept 15-min lag documented; need to confirm |
+| Real-time vs near-real-time expectations? | ✅ Known | **Near real-time** — <1 minute data freshness via DataFlow CDC |
 
 ### Scope Decisions
 
@@ -90,12 +90,13 @@ The legacy stack uses ObjectSpace, a proprietary ORM that:
 ### The Solution: Aurora Read Replica
 
 DataFlow CDC (shipped in 1.179.0) replicates `u3_data` to Aurora PostgreSQL:
+- **Near real-time data** — <1 minute freshness under normal conditions
 - Proper SQL with JOINs and aggregations
 - Time-partitioned `mail_logs`/`mail_events` via `pg_partman`
 - Row-level security (RLS) for account isolation
 - Can stream large result sets directly
 
-**Key insight:** The data already exists in Aurora. Reporting improvements are about building query patterns and UI, not data infrastructure.
+**Key insight:** The data already exists in Aurora with near real-time freshness. Reporting improvements are about building query patterns and UI, not data infrastructure.
 
 ---
 
