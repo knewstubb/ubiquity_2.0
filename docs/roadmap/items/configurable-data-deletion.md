@@ -1,7 +1,7 @@
 # Configurable Data Deletion
 
 > **Status:** Discovery
-> **Last updated:** 2026-08-11
+> **Last updated:** 2026-08-11 (Confluence gaps resolved)
 > **Priority:** High (operational pain — currently requires dev team involvement)
 > **Pain source:** User feedback — "I can't automate my data retention policy" (mapped to "reduce dev reliance")
 
@@ -24,36 +24,39 @@ Customers need to:
 
 ## Information Gaps
 
-### Current State (Partially Known)
+### Current State (Partially Known from Confluence)
 
 | Question | Status | What We Know |
 |----------|--------|--------------|
-| What deletion requests does our team handle today? | ⚠️ Partial | User feedback suggests "a lot" — need volume data |
-| How long does a typical deletion request take? | ❓ Unknown | Days? Hours? |
-| What's the SLA expectation for GDPR erasure requests? | ⚠️ Partial | GDPR: "without undue delay" and within 1 month |
-| What data types do customers most often want to delete? | ❓ Unknown | Contacts? Transactions? Mail history? |
-| What criteria do they use? | ❓ Unknown | Age? Engagement? Specific contacts? |
+| What deletion requests does our team handle today? | ⚠️ Partial | Privacy Act erasure requests documented in "UbiQuity Customer Data Deletion/Access Requests" (Confluence 11921457579) — involves transfer to data controller, then Qrious deletes from UbiQuity |
+| How long does a typical deletion request take? | ⚠️ Partial | Manual process involving multiple handoffs. Must notify data subject within 10 days per legal requirement. |
+| What's the SLA expectation for GDPR erasure requests? | ✅ Known | Privacy Act 2020 (NZ): "without undue delay", within 10 days for acknowledgment. GDPR Art. 17: within 1 month. |
+| What data types do customers most often want to delete? | ❓ Unknown | Need support ticket analysis |
+| What criteria do they use? | ❓ Unknown | Need support ticket analysis |
+| Account-level deletion process? | ✅ Known | Documented in "Delete Account" page (Confluence 885719095) — stored procedure `DeleteAccount_Live`, must run during maintenance window, cannot lock tables mid-process |
 
-### Technical Architecture (Partially Known)
+### Technical Architecture (Partially Known from Confluence)
 
 | Question | Status | What We Know |
 |----------|--------|--------------|
-| Is there a soft-delete mechanism today? | ❓ Unknown | Need backend audit |
-| What cascade behaviours exist on contact delete? | ❓ Unknown | Transactions? Mail history? Form responses? |
-| Is deletion auditable? | ⚠️ Partial | ServiceHistory exists but may not cover deletions |
+| Is there a soft-delete mechanism today? | ⚠️ Partial | Account deletion is hard delete (per Confluence 885719095: "hard to rollback, would need to restore database from backup") |
+| What cascade behaviours exist on contact delete? | ⚠️ Partial | Account deletion cascades to webhooks, DTEs, scripts, microsites (must be deleted first). Contact-level cascade unknown. |
+| Is deletion auditable? | ✅ Known | `DeleteAccount..DeleteAccountHistory` table holds deletion history (per Confluence 885719095) |
 | How does deletion interact with multi-account sync? | ⚠️ Partial | **Need production audit — delete propagation unknown** |
-| What's the job queue impact of bulk deletions? | ⚠️ Partial | Bulk operations go through job engine |
-| Is there a "recycle bin" or undo period? | ❓ Unknown | Need backend audit |
+| What's the job queue impact of bulk deletions? | ✅ Known | Process can cause table deadlocks. **Must run during maintenance window** — previous incident required database reboot. (Confluence 885719095) |
+| Is there a "recycle bin" or undo period? | ❌ No | Per Confluence 885719095: "hard to rollback, would need to restore database from backup" |
+| Pre-deletion requirements? | ✅ Known | Must delete DTEs, SFTP folders, scripts, wrappers, microsites, deactivate webhooks/webtracking goals first |
 
-### Compliance Requirements (Partially Known)
+### Compliance Requirements (Known from Confluence)
 
 | Question | Status | What We Know |
 |----------|--------|--------------|
-| NZ Privacy Act requirements? | ⚠️ Partial | Principle 9: Agencies must not keep personal info longer than needed |
+| NZ Privacy Act requirements? | ✅ Known | Section 43 enables transfer of requests to data controller. Acknowledgment required within 10 days. (Confluence 11921457579) |
 | AU Privacy Act requirements? | ⚠️ Partial | APP 11: Agencies must destroy or de-identify when no longer needed |
-| GDPR Art. 17 (Right to Erasure)? | ⚠️ Partial | Must delete "without undue delay" when requested |
-| What constitutes "deletion" vs "anonymisation"? | ❓ Unknown | Is soft-delete sufficient? |
-| Audit trail requirements for deletions? | ❓ Unknown | Must we prove what was deleted and when? |
+| GDPR Art. 17 (Right to Erasure)? | ✅ Known | Must delete "without undue delay" when requested. Current process documented with handoff to data controller. |
+| What constitutes "deletion" vs "anonymisation"? | ⚠️ Partial | Current process is full deletion; legal review needed for anonymisation acceptability |
+| Audit trail requirements for deletions? | ✅ Known | `DeleteAccountHistory` table exists. Per Privacy Act, must be able to confirm deletion to data subject. |
+| Current erasure request process? | ✅ Known | Multi-step: Qrious receives → transfers to client (data controller) → client cleans source systems → Qrious deletes from UbiQuity → confirms completion. (Confluence 11921457579) |
 
 ### Customer Requirements (Unknown)
 
@@ -302,14 +305,15 @@ Based on production system knowledge:
 
 | # | Question | Impact | Owner |
 |---|----------|--------|-------|
-| 1 | What deletion capability exists in the backend today? | Scope — may already have primitives | Dev |
-| 2 | What volume of deletion requests does our team handle? | Prioritisation — is this really a pain point? | Support |
-| 3 | What's the legal minimum for "right to erasure" timing? | SLA — may need priority queue | Legal |
+| 1 | ~~Backend deletion capability~~ | ✅ Resolved — `DeleteAccount_Live` stored procedure exists (Confluence 885719095). Runs during maintenance window. | Dev |
+| 2 | ~~Deletion SLA for erasure requests~~ | ✅ Resolved — 10 days to acknowledge under NZ Privacy Act. Process documented in Confluence 11921457579. | Legal |
+| 3 | What volume of deletion requests does our team handle? | Prioritisation — is this really a pain point? | Support |
 | 4 | Do customers want scheduled retention or is ad-hoc sufficient? | Scope — Phase 3 may not be needed | PM |
 | 5 | Should multi-account sync propagate deletes? | Architecture — significant scope | PM + Dev |
 | 6 | What happens to aggregate reporting when contacts are deleted? | Data integrity — may need anonymisation path | PM |
-| 7 | Is soft-delete legally sufficient, or must data be purged? | Compliance — affects architecture | Legal |
+| 7 | Is soft-delete legally sufficient, or must data be purged? | Compliance — current process is hard delete | Legal |
 | 8 | How do we handle deletion of contacts who are mid-journey? | Edge case — journey execution | Dev |
+| 9 | Can deletion run outside maintenance window safely? | Operational — current constraint is significant | Dev |
 
 ---
 
@@ -332,6 +336,8 @@ Based on production system knowledge:
 
 - **Discovery Canvas:** `docs/roadmap/discovery-canvas-framework.md` — "Configurable data deletion / soft delete"
 - **Pain Themes:** `docs/roadmap/pain-themes.md` — "I can't automate my data retention policy"
+- **Confluence:** "Delete Account" (885719095) — account-level deletion process and constraints
+- **Confluence:** "UbiQuity Customer Data Deletion/Access Requests" (11921457579) — erasure request workflow
 
 ---
 

@@ -2,7 +2,7 @@
 
 > **Status:** Planning
 > **Pain Score:** 54 (tied highest)
-> **Last updated:** 2026-08-11
+> **Last updated:** 2026-08-11 (Confluence gaps resolved)
 > **User Quote:** "Our reports are awful... maybe this could be made easier using the new separate read-only data source"
 
 ---
@@ -37,10 +37,11 @@ Reporting is a foundational capability that affects user confidence, decision-ma
 
 | Question | Status | What We Know |
 |----------|--------|--------------|
-| Aurora replica latency in production? | ❓ Unknown | Sets expectations for data freshness; noted in Open Questions |
+| Aurora replica latency in production? | ✅ Known | **<1 minute data freshness** under normal conditions per DataFlow design. See Confluence "DataFlow - Data Replication" (13001654502). |
 | Largest account by mail_logs volume? | ❓ Unknown | Performance baseline for R1 queries; noted in Open Questions |
-| Is SMS event data in CDC scope? | ❓ Unknown | Determines R5 feasibility; noted in Open Questions |
+| Is SMS event data in CDC scope? | ✅ Known | **Yes — Phase 3 of DataFlow delivery.** Phase 1 = Contacts & Transactions, Phase 2 = Mail logs & events, **Phase 3 = SMS, survey responses, event registrations**. See Confluence 13001654502. |
 | Platform Filter service: extend legacy or build new? | ❓ Unknown | Unblocks R3; noted in Open Questions |
+| CDC pipeline architecture? | ✅ Known | Debezium Server → Kinesis → Aurora PostgreSQL; uses PostgreSQL RLS for tenant isolation. |
 
 ### Customer Requirements
 
@@ -255,20 +256,20 @@ Internal delivery health metrics:
 
 **Goal:** Extend reporting to TXT Programme (SMS).
 
-**Effort:** Medium (2–3 sprints) if data exists, High if not
+**Effort:** Medium (2–3 sprints) — data confirmed in CDC scope
 
-**Dependencies:** Confirm SMS events in CDC scope
+**Dependencies:** Phase 3 CDC delivery (SMS in DataFlow Phase 3), R1 query patterns
+
+**CDC Status:** ✅ Confirmed in scope — SMS, survey responses, and event registrations are scheduled for DataFlow Phase 3 delivery. See Confluence "DataFlow - Data Replication" (13001654502).
 
 #### R5: TXT/SMS Programme Metrics
 
 | Metric | Feasibility |
 |--------|-------------|
-| SMS sent/delivered | Depends on CDC scope |
-| SMS click rate | Depends on link tracking |
-| SMS unsubscribe rate | Depends on data model |
-| SMS vs Email comparison | Cross-service query |
-
-**First step:** Spike to confirm what SMS data is in Aurora.
+| SMS sent/delivered | ✅ In scope via CDC Phase 3 |
+| SMS click rate | Depends on link tracking implementation |
+| SMS unsubscribe rate | ✅ In scope via CDC Phase 3 |
+| SMS vs Email comparison | Cross-channel query once data lands |
 
 ---
 
@@ -350,11 +351,10 @@ GROUP BY 1 ORDER BY 1;
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Aurora replica latency | Stale data in reports | Accept 15-min lag; document; don't claim "real-time" |
 | Large account query performance | Slow dashboards | Index tuning; query timeouts; pagination |
 | R3 blocked by filter service | Can't deliver audience counts | Sequence R3 after Platform Filter decision |
-| SMS data not in CDC scope | R5 blocked | Spike early to confirm scope |
 | External integration complexity (R6) | Scope creep | Ship internal metrics first; external is Phase 5+ |
+| R5 blocked by CDC Phase 3 timing | SMS metrics delayed | Sequence after DataFlow Phase 3 ships |
 
 ---
 
@@ -398,9 +398,9 @@ R1 + R2 ────────────────────────
    │
    ├──► R6 (internal metrics first) ────────────────► MEDIUM EFFORT
    │
-   ├──► R3 (after Platform Filter) ─────────────────► BLOCKED
+   ├──► R3 (after Platform Filter) ─────────────────► BLOCKED ON FILTER SVC
    │
-   └──► R5 (confirm CDC scope first) ───────────────► SPIKE REQUIRED
+   └──► R5 (after CDC Phase 3) ─────────────────────► BLOCKED ON CDC PHASE 3
 ```
 
 **Recommended order:** R1 → R2 → R4 → R7 → R6 → R3 → R5
@@ -411,8 +411,8 @@ R1 + R2 ────────────────────────
 
 | # | Question | Impact | Owner |
 |---|----------|--------|-------|
-| 1 | What's the Aurora replica lag in production? | Sets expectations for data freshness | DevOps |
-| 2 | Is SMS event data in CDC scope? | Determines R5 feasibility | Backend |
+| 1 | ~~Aurora replica latency~~ | ✅ Resolved — <1 min freshness per DataFlow design (Confluence 13001654502) | DevOps |
+| 2 | ~~SMS event data in CDC scope~~ | ✅ Resolved — Phase 3 of DataFlow (Confluence 13001654502) | Backend |
 | 3 | What's the largest account by mail_logs volume? | Performance baseline for R1 queries | Data |
 | 4 | Platform Filter service: extend legacy or build new? | Unblocks R3 | Architect |
 | 5 | Do we want external deliverability integrations? | Scope for R6 Phase 2 | PM |

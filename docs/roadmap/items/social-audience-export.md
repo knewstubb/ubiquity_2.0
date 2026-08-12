@@ -3,7 +3,7 @@
 > **Status:** Planning
 > **Pain Point:** "I am double-handling audiences for social"
 > **Also known as:** AdSync, Ad Audiences, Social Export
-> **Last updated:** 2026-08-11
+> **Last updated:** 2026-08-11 (Confluence gaps resolved)
 
 ---
 
@@ -44,8 +44,8 @@ Users currently export audiences manually, reformat them, hash emails, and uploa
 
 | Question | Status | What We Know |
 |----------|--------|--------------|
-| Do we have Meta Business verification? | ❓ Unknown | Phase 2 blocker; noted in Open Questions |
-| OAuth infrastructure exists? | ⚠️ Partial | Some OAuth patterns exist; may need expansion |
+| Do we have Meta Business verification? | ⚠️ Partial | Meta requires "system user token or business manager scope" for Custom Audiences. See Confluence "Ad Audiences Deep Research" (12160925705). Verification status needs confirmation. |
+| OAuth infrastructure exists? | ✅ Known | **Existing Facebook OAuth integration pattern documented** in Confluence (200966287). Can extend for other platforms. |
 | Rate limits per platform? | ⚠️ Partial | Documented in platform docs; need to model |
 
 ### Customer Requirements
@@ -348,7 +348,7 @@ def hash_for_ads(value: str, platform: str) -> str:
 |---|----------|--------|-------|
 | 1 | Do we need consent enforcement before Phase 1? | Compliance | Legal/PM |
 | 2 | Which platform should be first for Phase 2? | Resource allocation | PM |
-| 3 | Do we have Meta Business verification? | Phase 2 blocker | DevOps |
+| 3 | Meta Business verification status? | ⚠️ Partial info — requires "system user token or business manager scope" per Confluence 12160925705. Need to confirm our current verification status. | DevOps |
 | 4 | What's the expected segment size for ad uploads? | Performance | Data |
 | 5 | Should Phase 1 use Connectors Exporter or standalone? | Architecture | Dev |
 

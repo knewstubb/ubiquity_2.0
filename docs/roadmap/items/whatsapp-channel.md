@@ -1,7 +1,7 @@
 # WhatsApp Channel
 
 > **Status:** Discovery (significant information gaps)
-> **Last updated:** 2026-08-11
+> **Last updated:** 2026-08-11 (Confluence gaps resolved)
 > **Validation needed:** Customer demand, cost model, technical feasibility
 
 ---
@@ -51,9 +51,10 @@ This item has significant gaps that must be filled before scoping work.
 | WhatsApp Business API requirements? | ⚠️ Partial | Requires Meta Business verification |
 | Template approval process? | ⚠️ Partial | Templates must be pre-approved by Meta |
 | 24-hour messaging window? | ⚠️ Partial | Can only send to users who messaged in last 24h, unless using templates |
-| BSP (Business Solution Provider) needed? | ❓ Unknown | Direct API vs third-party |
+| BSP (Business Solution Provider) needed? | ⚠️ Partial | **LivePerson already has WhatsApp integration** — see Confluence 11502813239. Spark uses LivePerson for WhatsApp channels. Could explore partnership/integration path. |
 | Integration with existing u3_txt infrastructure? | ❓ Unknown | May need new service |
 | Opt-in requirements? | ❓ Unknown | WhatsApp has specific consent rules |
+| Existing Spark WhatsApp infrastructure? | ✅ Known | Spark has multiple WhatsApp channels via LivePerson (Confluence 11502813239), including channels set up using WhatsApp Business Setup Guide. Genesys Cloud also has WhatsApp config (Confluence 10919314157). |
 
 ### Competitor Landscape (Unknown)
 
@@ -186,8 +187,8 @@ If we were to build this, a phased approach might look like:
 
 | Dependency | Status | Notes |
 |------------|--------|-------|
-| Meta Business verification | ❓ Unknown | May already have for Ad Audiences |
-| BSP selection (if needed) | ❓ Unknown | Twilio, MessageBird, etc. |
+| Meta Business verification | ⚠️ Partial | Spark has WhatsApp via LivePerson — may have verification already |
+| BSP selection (if needed) | ⚠️ Partial | **LivePerson already in use** (Confluence 11502813239) — could be integration path |
 | Journey Builder | In progress | WhatsApp node requires JB Phase 2+ |
 | RemotingBridge | Exists | May need expansion for new channel |
 | Consent model | Planned | WhatsApp has specific opt-in requirements |
@@ -234,6 +235,8 @@ If Phase 0 validates demand and business case, then scope Phase 1.
 - **Journey Builder:** `docs/roadmap/items/journey-builder.md` — Phase 5 multi-channel
 - **SMS Spec:** `.kiro/specs/sms-messaging/requirements.md` — future channels placeholder
 - **Meta docs:** [WhatsApp Business Platform](https://business.whatsapp.com/) (external)
+- **Confluence:** "LivePerson - WhatsApp" (11502813239) — existing Spark WhatsApp channels via LivePerson
+- **Confluence:** "Genesys Cloud - CCaaS Org - Channels - WhatsApp" (10919314157) — Genesys WhatsApp config
 
 ---
 

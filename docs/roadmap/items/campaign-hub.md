@@ -2,7 +2,7 @@
 
 > **Status:** Planning
 > **Pain Point:** "Lack of visibility between objects linked by a filter"
-> **Last updated:** 2026-08-11
+> **Last updated:** 2026-08-11 (Confluence gaps resolved)
 
 ---
 
@@ -45,10 +45,11 @@ Campaign Hub is foundation work that enables:
 
 | Question | Status | What We Know |
 |----------|--------|--------------|
-| Filter serialisation format — exact XML/JSON structure? | ⚠️ Partial | Filters are embedded in mailout metadata; exact parsing logic needs spike |
+| Filter serialisation format — exact structure? | ✅ Known | **JSON using FilterDefinition protobuf messages** — new Platform Filter Builder uses human-readable field paths (e.g. `contact.source`, `mail_log.status`); replaces legacy opaque GUID-based expression grammar. See Confluence "Platform Filter Builder" (13112115212). |
 | How many mailouts on the largest accounts? | ❓ Unknown | Need data query for performance baseline |
 | TXT/Push filter storage — same format as email? | ⚠️ Partial | Likely similar but needs confirmation |
 | Legacy Campaign table — what does it currently hold? | ✅ Known | Email-only; no cross-channel support |
+| Legacy filter format (ICondition AST)? | ✅ Known | Legacy system uses ICondition AST pattern — documented in Confluence "Filter Builder - Technical Analysis" (13105954983) |
 
 ### Customer Requirements
 
@@ -394,7 +395,7 @@ Journey Builder (separate item)
 
 | # | Question | Impact | Owner |
 |---|----------|--------|-------|
-| 1 | Filter serialisation format — exact XML/JSON structure? | Scanner implementation | Backend |
+| 1 | ~~Filter serialisation format~~ | ✅ Resolved — JSON FilterDefinition (protobuf). See Confluence 13112115212. | Backend |
 | 2 | How many mailouts on the largest accounts? | Performance baseline | Data |
 | 3 | TXT/Push filter storage — same format as email? | Phase 3 scope | Backend |
 | 4 | Where does "Where Used" panel appear? Tab, side panel, modal? | UX design | Designer |
