@@ -4,9 +4,12 @@ export interface MailoutMetrics {
   sent: number;
   delivered: number;
   bounced: number;
+  hardBounced: number;
+  softBounced: number;
   opened: number;
   clicked: number;
   unsubscribed: number;
+  optedOut: number;
   spamComplaints: number;
 }
 
