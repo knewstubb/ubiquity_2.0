@@ -8,13 +8,15 @@
 
 ## Outcome
 
-> Make the platform safer to change and reveal the implicit campaign structure that already exists.
+> Give marketers a campaign-centric view of all communications, so they can see everything related to a campaign in one place and create new content that's automatically associated.
 
 Campaign Hub is foundation work that enables:
-1. **Safer operations** — Know what will break before you change it
-2. **Unified campaigns** — Group related assets across channels (email, SMS, push)
-3. **Centralised segments** — Define audience logic once, use everywhere
-4. **Journey containment** — Journeys become children of campaigns
+1. **Campaign-centric workflow** — See all emails, SMS, push for a campaign in one view
+2. **Contextual creation** — Create new content from within a campaign; it's automatically linked
+3. **Safer operations** — Know what will break before you change it
+4. **Unified campaigns** — Group related assets across channels (email, SMS, push)
+5. **Centralised segments** — Define audience logic once, use everywhere
+6. **Journey containment** — Journeys become children of campaigns
 
 ---
 
@@ -22,6 +24,9 @@ Campaign Hub is foundation work that enables:
 
 | Problem | Evidence | Source |
 |---------|----------|--------|
+| **Marketers think in campaigns, not channels** | Users mentally group related communications but system doesn't reflect this | User feedback |
+| No single view of all campaign communications | Must visit Email, SMS, Push modules separately to see related sends | Gap Analysis |
+| Can't create content in campaign context | New emails/SMS aren't automatically associated with the campaign they belong to | Workflow gap |
 | No reverse lookup — deleting a field doesn't warn which mailouts use it | Silent breakage risk | Gap Analysis |
 | No "Where Used" panel — can see filter contents but not what uses it | Manual impact analysis | Gap Analysis |
 | Duplicated logic — same targeting criteria copied into dozens of mailouts | Maintenance burden | Gap Analysis |
