@@ -2,7 +2,7 @@
 
 > **Status:** Planning
 > **Pain Score:** 54 (tied highest)
-> **Last updated:** 2026-08-11 (Confluence gaps resolved)
+> **Last updated:** 2026-08-11 (added cross-account reporting pain point)
 > **User Quote:** "Our reports are awful... maybe this could be made easier using the new separate read-only data source"
 
 ---
@@ -24,6 +24,23 @@ Reporting is a foundational capability that affects user confidence, decision-ma
 | Can't see cross-campaign totals | Missing capability | ObjectSpace queries are per-mailout |
 | Audience counts take too long | Filters run through job engine | No direct SQL path for counts |
 | Exports time out on large datasets | Job engine constraints | No streaming export capability |
+| **Custom cross-account reports are expensive** | Internal delivery history | Manual data stitching required for multi-account reporting |
+
+### The Cross-Account Reporting Pain Point
+
+We've historically spent **significant time and cost** building custom reports that stitch data together across accounts. This is a recurring pattern:
+
+- Multi-location customers (e.g., franchises) need rollup views across branches
+- Account hierarchy doesn't have native aggregation — each account is siloed
+- Workaround: manual data exports, external tools (Excel, BI platforms), or expensive custom development
+- **Impact:** High customer cost, high delivery effort, delayed insights
+
+This pain point is directly addressed by the Aurora replica architecture:
+- **R2 (Cross-Campaign Aggregations)** enables same-account rollups via SQL
+- **Future:** Account-tree aggregation would need RLS extension to allow parent accounts to query child data
+- **Key question:** Should R2 explicitly include cross-account (within tree) aggregation, or is that Phase 2+?
+
+> **Historical context:** Every time we've built a custom report for a multi-account customer, it's been a significant project. The platform should handle this natively.
 
 ---
 
@@ -416,6 +433,7 @@ R1 + R2 ────────────────────────
 | 3 | What's the largest account by mail_logs volume? | Performance baseline for R1 queries | Data |
 | 4 | Platform Filter service: extend legacy or build new? | Unblocks R3 | Architect |
 | 5 | Do we want external deliverability integrations? | Scope for R6 Phase 2 | PM |
+| 6 | **Should R2 include cross-account (within tree) aggregation?** | Currently R2 is single-account; multi-account rollups have been expensive custom work historically. Requires RLS extension to allow parent accounts to query child data. | PM + Architect |
 
 ---
 
