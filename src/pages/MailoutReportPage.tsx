@@ -161,52 +161,145 @@ function EngagementDonut({
   );
 }
 
-// Stacked bar chart for hourly activity (Read Only + Read and Clicked)
+// Line chart for hourly activity (Opens + Clicks)
 function MailoutActivityChart({ data }: { data: { hour: number; opens: number; clicks: number }[] }) {
   if (data.length === 0) return null;
 
   const maxValue = Math.max(...data.map((d) => d.opens));
+  const chartHeight = 140;
+  const chartWidth = 100; // percentage-based
+  
+  // Generate nice y-axis ticks
+  const yTicks = generateYAxisTicks(maxValue);
+  const yMax = yTicks[yTicks.length - 1];
+
+  // Build SVG path for opens line
+  const opensPath = data.map((d, i) => {
+    const x = (i / (data.length - 1)) * 100;
+    const y = 100 - (d.opens / yMax) * 100;
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+
+  // Build SVG path for clicks line
+  const clicksPath = data.map((d, i) => {
+    const x = (i / (data.length - 1)) * 100;
+    const y = 100 - (d.clicks / yMax) * 100;
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4 text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-sm bg-primary" />
-          <span>Read Only</span>
+          <div className="w-3 h-0.5 bg-primary rounded-full" />
+          <span>Opens</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-sm bg-teal-700" />
-          <span>Read and Clicked</span>
+          <div className="w-3 h-0.5 bg-teal-700 rounded-full" />
+          <span>Clicks</span>
         </div>
       </div>
-      <div className="flex items-end gap-1 h-40">
-        {data.map((d) => {
-          const clickedHeight = maxValue > 0 ? (d.clicks / maxValue) * 100 : 0;
-          const opensOnlyHeight = maxValue > 0 ? ((d.opens - d.clicks) / maxValue) * 100 : 0;
-          
-          return (
-            <div key={d.hour} className="flex-1 flex flex-col items-center gap-1">
-              <div className="w-full flex flex-col-reverse" style={{ height: '130px' }}>
-                {/* Read and Clicked (bottom, darker) */}
-                <div
-                  className="w-full bg-teal-700 rounded-t-sm transition-all duration-300"
-                  style={{ height: `${clickedHeight}%` }}
-                  title={`${d.clicks} read & clicked`}
+      <div className="flex">
+        {/* Y-axis labels */}
+        <div className="flex flex-col justify-between pr-2 text-[10px] text-muted-foreground tabular-nums" style={{ height: `${chartHeight}px` }}>
+          {[...yTicks].reverse().map((tick) => (
+            <span key={tick} className="leading-none">{formatNumber(tick)}</span>
+          ))}
+        </div>
+        {/* Chart area */}
+        <div className="flex-1 relative" style={{ height: `${chartHeight}px` }}>
+          {/* Grid lines */}
+          <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+            {yTicks.map((tick) => {
+              const y = 100 - (tick / yMax) * 100;
+              return (
+                <line
+                  key={tick}
+                  x1="0%"
+                  y1={`${y}%`}
+                  x2="100%"
+                  y2={`${y}%`}
+                  stroke="currentColor"
+                  strokeWidth="1"
+                  className="text-border"
                 />
-                {/* Read Only (top, lighter) */}
-                <div
-                  className="w-full bg-primary transition-all duration-300"
-                  style={{ height: `${opensOnlyHeight}%` }}
-                  title={`${d.opens - d.clicks} read only`}
-                />
-              </div>
-              <span className="text-[10px] text-muted-foreground tabular-nums">{d.hour}h</span>
-            </div>
-          );
-        })}
+              );
+            })}
+          </svg>
+          {/* Line chart */}
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            {/* Opens line */}
+            <path
+              d={opensPath}
+              fill="none"
+              stroke="#14B88A"
+              strokeWidth="2"
+              vectorEffect="non-scaling-stroke"
+              className="transition-all duration-300"
+            />
+            {/* Clicks line */}
+            <path
+              d={clicksPath}
+              fill="none"
+              stroke="#0D9488"
+              strokeWidth="2"
+              vectorEffect="non-scaling-stroke"
+              className="transition-all duration-300"
+            />
+          </svg>
+          {/* Data points */}
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            {data.map((d, i) => {
+              const x = (i / (data.length - 1)) * 100;
+              const yOpens = 100 - (d.opens / yMax) * 100;
+              const yClicks = 100 - (d.clicks / yMax) * 100;
+              return (
+                <g key={d.hour}>
+                  <circle cx={x} cy={yOpens} r="1.5" fill="#14B88A" vectorEffect="non-scaling-stroke" />
+                  <circle cx={x} cy={yClicks} r="1.5" fill="#0D9488" vectorEffect="non-scaling-stroke" />
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+      </div>
+      {/* X-axis labels */}
+      <div className="flex pl-8">
+        {data.map((d, i) => (
+          <span 
+            key={d.hour} 
+            className="flex-1 text-[10px] text-muted-foreground tabular-nums text-center"
+            style={{ marginLeft: i === 0 ? '-0.5em' : 0, marginRight: i === data.length - 1 ? '-0.5em' : 0 }}
+          >
+            {d.hour}h
+          </span>
+        ))}
       </div>
     </div>
   );
+}
+
+// Generate nice y-axis tick values
+function generateYAxisTicks(maxValue: number): number[] {
+  if (maxValue === 0) return [0];
+  
+  // Find a nice step size
+  const magnitude = Math.pow(10, Math.floor(Math.log10(maxValue)));
+  let step = magnitude;
+  
+  if (maxValue / step < 3) step = magnitude / 2;
+  if (maxValue / step > 6) step = magnitude * 2;
+  
+  const ticks: number[] = [];
+  for (let i = 0; i <= maxValue; i += step) {
+    ticks.push(i);
+  }
+  // Ensure we have a tick above the max value
+  if (ticks[ticks.length - 1] < maxValue) {
+    ticks.push(ticks[ticks.length - 1] + step);
+  }
+  
+  return ticks;
 }
 
 // Links table matching Figma design
