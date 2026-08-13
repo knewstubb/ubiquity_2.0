@@ -167,7 +167,6 @@ function MailoutActivityChart({ data }: { data: { hour: number; opens: number; c
 
   const maxValue = Math.max(...data.map((d) => d.opens));
   const chartHeight = 140;
-  const chartWidth = 100; // percentage-based
   
   // Generate nice y-axis ticks
   const yTicks = generateYAxisTicks(maxValue);
@@ -247,20 +246,26 @@ function MailoutActivityChart({ data }: { data: { hour: number; opens: number; c
               className="transition-all duration-300"
             />
           </svg>
-          {/* Data points */}
-          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-            {data.map((d, i) => {
-              const x = (i / (data.length - 1)) * 100;
-              const yOpens = 100 - (d.opens / yMax) * 100;
-              const yClicks = 100 - (d.clicks / yMax) * 100;
-              return (
-                <g key={d.hour}>
-                  <circle cx={x} cy={yOpens} r="1.5" fill="#14B88A" vectorEffect="non-scaling-stroke" />
-                  <circle cx={x} cy={yClicks} r="1.5" fill="#0D9488" vectorEffect="non-scaling-stroke" />
-                </g>
-              );
-            })}
-          </svg>
+          {/* Data points - rendered as absolutely positioned divs to avoid SVG stretching */}
+          {data.map((d, i) => {
+            const x = (i / (data.length - 1)) * 100;
+            const yOpens = 100 - (d.opens / yMax) * 100;
+            const yClicks = 100 - (d.clicks / yMax) * 100;
+            return (
+              <div key={d.hour}>
+                <div 
+                  className="absolute w-2 h-2 rounded-full bg-primary -translate-x-1/2 -translate-y-1/2"
+                  style={{ left: `${x}%`, top: `${yOpens}%` }}
+                  title={`${d.hour}h: ${formatNumberFull(d.opens)} opens`}
+                />
+                <div 
+                  className="absolute w-2 h-2 rounded-full bg-teal-700 -translate-x-1/2 -translate-y-1/2"
+                  style={{ left: `${x}%`, top: `${yClicks}%` }}
+                  title={`${d.hour}h: ${formatNumberFull(d.clicks)} clicks`}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
       {/* X-axis labels */}
