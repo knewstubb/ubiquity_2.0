@@ -460,37 +460,37 @@ export default function MailoutReportPage() {
           <MetricCard
             label="Delivered"
             value={deliveredPercent}
-            icon={<PaperPlaneTilt size={24} weight="fill" />}
+            icon={<PaperPlaneTilt size={24} />}
             variant="success"
           />
           <MetricCard
             label="Read"
             value={readPercent}
-            icon={<EnvelopeOpen size={24} weight="fill" />}
+            icon={<EnvelopeOpen size={24} />}
             variant="success"
           />
           <MetricCard
             label="Unread"
             value={unreadPercent}
-            icon={<EnvelopeSimple size={24} weight="fill" />}
+            icon={<EnvelopeSimple size={24} />}
             variant="muted"
           />
           <MetricCard
             label="Bounced"
             value={bouncedPercent}
-            icon={<XCircle size={24} weight="fill" />}
+            icon={<XCircle size={24} />}
             variant="warning"
           />
           <MetricCard
             label="Click Thru"
             value={clickThroughPercent}
-            icon={<CursorClick size={24} weight="fill" />}
+            icon={<CursorClick size={24} />}
             variant="success"
           />
           <MetricCard
             label="Click to Open"
             value={clickToOpenPercent}
-            icon={<ChartPieSlice size={24} weight="fill" />}
+            icon={<ChartPieSlice size={24} />}
             variant="success"
           />
         </div>
