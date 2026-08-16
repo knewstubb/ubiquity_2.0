@@ -13,10 +13,21 @@ import {
   Desktop,
   DeviceMobile,
 } from '@phosphor-icons/react';
-import { PageShell } from '../components/layout/PageShell';
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { MetricCard } from '@/components/composed/metric-card';
+import { StatBar } from '@/components/composed/stat-bar';
+import { DonutChart } from '@/components/composed/donut-chart';
 import { mailouts } from '../data/mailouts';
 import type { Mailout } from '../models/mailout';
-import { cn } from '../lib/utils';
 
 function formatDate(isoString: string): string {
   const date = new Date(isoString);
@@ -47,118 +58,6 @@ function formatNumberFull(num: number): string {
 function formatPercent(value: number, total: number): string {
   if (total === 0) return '0%';
   return `${((value / total) * 100).toFixed(2)}%`;
-}
-
-// Primary metric card matching Figma design (6 cards row)
-function MetricCard({
-  label,
-  value,
-  icon,
-  variant = 'default',
-}: {
-  label: string;
-  value: string;
-  icon: React.ReactNode;
-  variant?: 'default' | 'success' | 'warning' | 'muted';
-}) {
-  const iconColorClass = {
-    default: 'text-primary',
-    success: 'text-primary',
-    warning: 'text-amber-500',
-    muted: 'text-muted-foreground',
-  };
-
-  return (
-    <div className="flex flex-col items-center justify-center gap-2 p-4 bg-background border border-border rounded-lg min-w-[120px]">
-      <div className={cn('flex items-center justify-center', iconColorClass[variant])}>
-        {icon}
-      </div>
-      <span className="text-2xl font-bold text-foreground tabular-nums">{value}</span>
-      <span className="text-xs font-medium text-muted-foreground text-center">{label}</span>
-    </div>
-  );
-}
-
-// Secondary stat item for the stats row
-function SecondaryStatItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col items-center px-4 py-2">
-      <span className="text-lg font-semibold text-foreground tabular-nums">{value}</span>
-      <span className="text-xs text-muted-foreground whitespace-nowrap">{label}</span>
-    </div>
-  );
-}
-
-// Engagement donut chart
-function EngagementDonut({
-  readAndClicked,
-  readOnly,
-  unread,
-  bounced,
-  total,
-}: {
-  readAndClicked: number;
-  readOnly: number;
-  unread: number;
-  bounced: number;
-  total: number;
-}) {
-  // Calculate percentages for the donut segments
-  const segments = [
-    { value: readAndClicked, color: '#0D9488', label: 'Read and clicked' }, // teal-600
-    { value: readOnly, color: '#14B88A', label: 'Read only' }, // primary
-    { value: unread, color: '#A1A1AA', label: 'Unread' }, // zinc-400
-    { value: bounced, color: '#EF4444', label: 'Bounced' }, // red-500
-  ];
-
-  // Build stroke-dasharray for each segment
-  const circumference = 2 * Math.PI * 40; // radius = 40
-  let cumulativeOffset = 0;
-
-  return (
-    <div className="flex items-center gap-8">
-      <div className="relative w-44 h-44">
-        <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-          {segments.map((segment, index) => {
-            const percent = total > 0 ? (segment.value / total) * 100 : 0;
-            const strokeLength = (percent / 100) * circumference;
-            const offset = cumulativeOffset;
-            cumulativeOffset += strokeLength;
-
-            return (
-              <circle
-                key={index}
-                cx="50"
-                cy="50"
-                r="40"
-                fill="none"
-                stroke={segment.color}
-                strokeWidth="12"
-                strokeDasharray={`${strokeLength} ${circumference - strokeLength}`}
-                strokeDashoffset={-offset}
-                className="transition-all duration-500"
-              />
-            );
-          })}
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-bold text-foreground">{formatNumber(total)}</span>
-          <span className="text-xs text-muted-foreground">Total</span>
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        {segments.map((segment, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: segment.color }} />
-            <span className="text-sm text-foreground">{segment.label}</span>
-            <span className="text-sm font-semibold text-foreground tabular-nums ml-auto">
-              {formatNumberFull(segment.value)}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 }
 
 // Line chart for hourly activity (Opens + Clicks)
@@ -397,7 +296,7 @@ function LinkHeatmap({ links }: { links: Mailout['links'] }) {
           </div>
           
           {/* Heatmap overlay for links */}
-          {linkPositions.map((link, index) => {
+          {linkPositions.map((link) => {
             // Color intensity based on clicks (red = hot, yellow = warm)
             const hue = 0 + (1 - link.intensity) * 60; // 0 (red) to 60 (yellow)
             const saturation = 80 + link.intensity * 20;
@@ -520,144 +419,192 @@ export default function MailoutReportPage() {
   // Total unique clicks from links
   const uniqueClicks = mailout.links.reduce((sum, link) => sum + link.uniqueClicks, 0);
 
+  // Stats for the StatBar component
+  const statBarItems = [
+    { label: 'Total Messages', value: formatNumberFull(metrics.sent) },
+    { label: 'Total Delivered', value: formatNumberFull(metrics.delivered) },
+    { label: 'Total Unread', value: formatNumberFull(unreadCount) },
+    { label: 'Total Read', value: formatNumberFull(metrics.opened) },
+    { label: 'Unique Clicks', value: formatNumberFull(uniqueClicks) },
+    { label: 'Hard Bounced', value: formatNumberFull(metrics.hardBounced) },
+    { label: 'Soft Bounced', value: formatNumberFull(metrics.softBounced) },
+    { label: 'Opted Out', value: formatNumberFull(metrics.optedOut) },
+    { label: 'Marked as Spam', value: formatNumberFull(metrics.spamComplaints) },
+  ];
+
+  // Engagement segments for DonutChart
+  const engagementSegments = [
+    { value: readAndClicked, color: '#0D9488', label: 'Read and clicked' },
+    { value: readOnly, color: '#14B88A', label: 'Read only' },
+    { value: unreadCount, color: '#A1A1AA', label: 'Unread' },
+    { value: metrics.bounced, color: '#EF4444', label: 'Bounced' },
+  ];
+
   return (
-    <PageShell
-      title="Mailout Report"
-      subtitle={mailout.name}
-      action={
-        <button
-          className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-foreground border border-border rounded font-medium text-sm cursor-pointer transition-colors duration-150 hover:bg-muted"
-          onClick={() => navigate('/channels/mailouts')}
-        >
-          <ArrowLeft size={16} />
+    <div className="w-full max-w-[1440px] mx-auto min-h-[calc(100vh-85px)] py-7 px-6 bg-background">
+      {/* Breadcrumb */}
+      <Breadcrumb className="mb-3">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/automations/campaigns">Campaigns</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/channels/mailouts">Mailouts</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Report</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      {/* Page header */}
+      <div className="flex items-center justify-between mb-7">
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground m-0">Mailout Report</h1>
+          <p className="text-sm text-tertiary-foreground mt-1 mb-0 font-normal">
+            {mailout.name}
+          </p>
+        </div>
+        <Button variant="outline" onClick={() => navigate('/channels/mailouts')}>
+          <ArrowLeft size={16} className="mr-1.5" />
           Back to Mailouts
-        </button>
-      }
-    >
+        </Button>
+      </div>
+
       <div className="flex flex-col gap-6">
         {/* Header metadata block */}
-        <div className="p-4 bg-muted/30 border border-border rounded-lg">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Send Date</span>
-              <span className="text-sm text-foreground">{formatDate(mailout.sentAt)}</span>
+        <Card>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Send Date</span>
+                <span className="text-sm text-foreground">{formatDate(mailout.sentAt)}</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Subject</span>
+                <span className="text-sm text-foreground">{mailout.subject}</span>
+              </div>
+              <div className="flex flex-col gap-1 lg:col-span-2">
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Pre-header Text</span>
+                <span className="text-sm text-foreground">{mailout.preheaderText || '—'}</span>
+              </div>
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Subject</span>
-              <span className="text-sm text-foreground">{mailout.subject}</span>
-            </div>
-            <div className="flex flex-col gap-1 lg:col-span-2">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Pre-header Text</span>
-              <span className="text-sm text-foreground">{mailout.preheaderText || '—'}</span>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* 6 Primary metric cards row */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <MetricCard
             label="Delivered"
             value={deliveredPercent}
             icon={<PaperPlaneTilt size={24} />}
+            layout="centered"
             variant="success"
           />
           <MetricCard
             label="Read"
             value={readPercent}
             icon={<EnvelopeOpen size={24} />}
+            layout="centered"
             variant="success"
           />
           <MetricCard
             label="Unread"
             value={unreadPercent}
             icon={<EnvelopeSimple size={24} />}
+            layout="centered"
             variant="muted"
           />
           <MetricCard
             label="Bounced"
             value={bouncedPercent}
             icon={<XCircle size={24} />}
+            layout="centered"
             variant="warning"
           />
           <MetricCard
             label="Click Thru"
             value={clickThroughPercent}
             icon={<CursorClick size={24} />}
+            layout="centered"
             variant="success"
           />
           <MetricCard
             label="Click to Open"
             value={clickToOpenPercent}
             icon={<ChartPieSlice size={24} />}
+            layout="centered"
             variant="success"
           />
         </div>
 
         {/* Secondary stats row */}
-        <div className="flex items-center justify-between p-2 bg-background border border-border rounded-lg overflow-x-auto">
-          <SecondaryStatItem label="Total Messages" value={formatNumberFull(metrics.sent)} />
-          <div className="w-px h-8 bg-border" />
-          <SecondaryStatItem label="Total Delivered" value={formatNumberFull(metrics.delivered)} />
-          <div className="w-px h-8 bg-border" />
-          <SecondaryStatItem label="Total Unread" value={formatNumberFull(unreadCount)} />
-          <div className="w-px h-8 bg-border" />
-          <SecondaryStatItem label="Total Read" value={formatNumberFull(metrics.opened)} />
-          <div className="w-px h-8 bg-border" />
-          <SecondaryStatItem label="Unique Clicks" value={formatNumberFull(uniqueClicks)} />
-          <div className="w-px h-8 bg-border" />
-          <SecondaryStatItem label="Hard Bounced" value={formatNumberFull(metrics.hardBounced)} />
-          <div className="w-px h-8 bg-border" />
-          <SecondaryStatItem label="Soft Bounced" value={formatNumberFull(metrics.softBounced)} />
-          <div className="w-px h-8 bg-border" />
-          <SecondaryStatItem label="Opted Out" value={formatNumberFull(metrics.optedOut)} />
-          <div className="w-px h-8 bg-border" />
-          <SecondaryStatItem label="Marked as Spam" value={formatNumberFull(metrics.spamComplaints)} />
-        </div>
+        <StatBar items={statBarItems} />
 
         {/* Two-column: Engagement donut + Mailout Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="p-5 bg-background border border-border rounded-lg">
-            <h3 className="text-sm font-semibold text-foreground mb-4">Engagement</h3>
-            <EngagementDonut
-              readAndClicked={readAndClicked}
-              readOnly={readOnly}
-              unread={unreadCount}
-              bounced={metrics.bounced}
-              total={metrics.sent}
-            />
-          </div>
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-sm font-semibold">Engagement</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DonutChart
+                segments={engagementSegments}
+                centerLabel={{ value: formatNumber(metrics.sent), label: 'Total' }}
+                formatValue={formatNumberFull}
+              />
+            </CardContent>
+          </Card>
 
-          <div className="p-5 bg-background border border-border rounded-lg">
-            <h3 className="text-sm font-semibold text-foreground mb-4">Mailout Activity</h3>
-            <MailoutActivityChart data={mailout.hourlyActivity} />
-          </div>
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-sm font-semibold">Mailout Activity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MailoutActivityChart data={mailout.hourlyActivity} />
+            </CardContent>
+          </Card>
         </div>
 
         {/* Two-column: Links table + Link Heatmap */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="p-5 bg-background border border-border rounded-lg">
-            <h3 className="text-sm font-semibold text-foreground mb-4">Links</h3>
-            <LinksTable links={mailout.links} />
-          </div>
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-sm font-semibold">Links</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <LinksTable links={mailout.links} />
+            </CardContent>
+          </Card>
 
-          <div className="p-5 bg-background border border-border rounded-lg">
-            <div className="flex items-center gap-2 mb-4">
-              <Fire size={16} className="text-orange-500" />
-              <h3 className="text-sm font-semibold text-foreground">Link Map</h3>
-            </div>
-            <LinkHeatmap links={mailout.links} />
-          </div>
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Fire size={16} className="text-orange-500" />
+                Link Map
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <LinkHeatmap links={mailout.links} />
+            </CardContent>
+          </Card>
         </div>
 
         {/* Device breakdown (additional context) */}
-        <div className="p-5 bg-background border border-border rounded-lg">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Opens by Device</h3>
-          <DeviceBreakdown
-            desktop={mailout.deviceBreakdown.desktop}
-            mobile={mailout.deviceBreakdown.mobile}
-          />
-        </div>
+        <Card>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-sm font-semibold">Opens by Device</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DeviceBreakdown
+              desktop={mailout.deviceBreakdown.desktop}
+              mobile={mailout.deviceBreakdown.mobile}
+            />
+          </CardContent>
+        </Card>
       </div>
-    </PageShell>
+    </div>
   );
 }

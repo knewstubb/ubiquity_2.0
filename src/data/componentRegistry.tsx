@@ -2088,6 +2088,78 @@ export const componentRegistry: ComponentEntry[] = [
     ],
   },
   {
+    name: 'StatBar',
+    slug: 'stat-bar',
+    category: 'display',
+    description: 'Horizontal bar of stats with separators, used for secondary metrics displays below primary cards.',
+    searchTerms: ['stats row', 'metrics bar', 'secondary stats', 'kpi row', 'stat strip', 'numbers row'],
+    usesComponents: ['Card', 'Separator'],
+    component: lazy(() => import('../pages/component-demos/StatBarDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Secondary metrics row below primary metric cards',
+        'Compact display of multiple related stats (sent, delivered, opened, clicked)',
+        'Report summary rows where space is limited',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'Primary KPI displays — use MetricCard instead',
+        'Stats that need icons or trends — use MetricCard with centered layout',
+        'More than 8 items — consider using a table or splitting into multiple rows',
+      ]},
+      { heading: 'Anatomy', content: [
+        'Card container with horizontal layout',
+        'Vertical separator between each stat item',
+        'Value displayed in semibold text, label in muted text below',
+        'Horizontally scrollable when items overflow',
+      ]},
+    ],
+    propControls: [
+      { name: 'itemCount', label: 'Number of Items', controlType: 'select', defaultValue: 4, options: [
+        { label: '2 items', value: 2 },
+        { label: '3 items', value: 3 },
+        { label: '4 items', value: 4 },
+        { label: '5 items', value: 5 },
+        { label: '6 items', value: 6 },
+      ]},
+    ],
+  },
+  {
+    name: 'DonutChart',
+    slug: 'donut-chart',
+    category: 'display',
+    description: 'Donut chart for visualizing proportional data with optional center label and legend.',
+    searchTerms: ['pie chart', 'ring chart', 'engagement', 'breakdown', 'proportional', 'percentage', 'distribution'],
+    usesComponents: [],
+    component: lazy(() => import('../pages/component-demos/DonutChartDemo')),
+    designGuidance: [
+      { heading: 'When to use', content: [
+        'Showing proportional breakdown of a whole (engagement stats, device distribution)',
+        'Visualizing 2-5 categories with clear percentage differences',
+        'Dashboard widgets where a total value is meaningful',
+      ]},
+      { heading: 'When NOT to use', content: [
+        'More than 5 segments — too many slices become hard to read',
+        'Comparing values across time — use a line or bar chart',
+        'Precise value comparison — use a bar chart instead',
+      ]},
+      { heading: 'Anatomy', content: [
+        'SVG donut ring with colored segments',
+        'Optional center label showing total or key metric',
+        'Optional legend with color swatches and formatted values',
+        'Three size variants: sm (96px), md (176px), lg (224px)',
+      ]},
+    ],
+    propControls: [
+      { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'md', options: [
+        { label: 'Small', value: 'sm' },
+        { label: 'Medium', value: 'md' },
+        { label: 'Large', value: 'lg' },
+      ]},
+      { name: 'showLegend', label: 'Show Legend', controlType: 'toggle', defaultValue: true },
+      { name: 'showCenterLabel', label: 'Show Center Label', controlType: 'toggle', defaultValue: true },
+    ],
+  },
+  {
     name: 'DataTable',
     slug: 'data-table',
     category: 'display',
