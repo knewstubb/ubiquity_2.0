@@ -632,6 +632,7 @@
    Activated by adding `data-highlighter="on"` to the <html> element.
    - Teal outlines for UI primitives (data-component^="ui/")
    - Blue outlines for composed components (data-component^="composed/")
+   - Hover shows component name tooltip and reveals nested components
    ══════════════════════════════════════════════════════════════════════════════ */
 
 /* Base: no highlighting */
@@ -643,24 +644,26 @@
 html[data-highlighter="on"] [data-component^="ui/"] {
   outline: 2px solid var(--primary) !important;
   outline-offset: 1px;
+  position: relative;
 }
 
 /* Highlighter ON: Composed Components — Blue outline */
 html[data-highlighter="on"] [data-component^="composed/"] {
   outline: 2px solid #3B82F6 !important;
   outline-offset: 1px;
+  position: relative;
 }
 
-/* Prevent double-outline on nested components — only outermost gets outline */
-html[data-highlighter="on"] [data-component^="ui/"] [data-component],
-html[data-highlighter="on"] [data-component^="composed/"] [data-component] {
+/* Prevent double-outline on nested components — only outermost gets outline by default */
+html[data-highlighter="on"] [data-component] [data-component] {
   outline: none !important;
 }
 
-/* Re-enable outline on nested components on hover for inspection */
+/* On hover: show outline on the hovered component (including nested) */
 html[data-highlighter="on"] [data-component]:hover {
   outline: 2px solid currentColor !important;
   outline-offset: 1px;
+  z-index: 9998;
 }
 
 html[data-highlighter="on"] [data-component^="ui/"]:hover {
@@ -669,4 +672,32 @@ html[data-highlighter="on"] [data-component^="ui/"]:hover {
 
 html[data-highlighter="on"] [data-component^="composed/"]:hover {
   outline-color: #3B82F6 !important;
+}
+
+/* Component name tooltip — appears on hover */
+html[data-highlighter="on"] [data-component]:hover::after {
+  content: attr(data-component);
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(-100%);
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  white-space: nowrap;
+  border-radius: 3px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Tooltip colors match outline colors */
+html[data-highlighter="on"] [data-component^="ui/"]:hover::after {
+  background: var(--primary);
+  color: white;
+}
+
+html[data-highlighter="on"] [data-component^="composed/"]:hover::after {
+  background: #3B82F6;
+  color: white;
 }
