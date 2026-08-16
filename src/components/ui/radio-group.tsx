@@ -11,6 +11,7 @@ const RadioGroup = React.forwardRef<
 >(({ className, ...props }, ref) => {
   return (
     <RadioGroupPrimitive.Root
+      data-component="ui/RadioGroup"
       className={cn("grid gap-2", className)}
       {...props}
       ref={ref}

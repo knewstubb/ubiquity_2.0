@@ -33,7 +33,7 @@ interface SegmentedToggleProps {
 
 export function SegmentedToggle({ value, onValueChange, options, className, disabled }: SegmentedToggleProps) {
   return (
-    <div className={cn('flex items-center gap-1 p-1.5 bg-secondary rounded-lg w-full', disabled && 'opacity-50 pointer-events-none', className)}>
+    <div data-component="ui/SegmentedToggle" className={cn('flex items-center gap-1 p-1.5 bg-secondary rounded-lg w-full', disabled && 'opacity-50 pointer-events-none', className)}>
       {options.map((option) => {
         const isActive = value === option.value
         return (

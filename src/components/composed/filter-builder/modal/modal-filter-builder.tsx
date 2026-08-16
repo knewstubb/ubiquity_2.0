@@ -159,7 +159,7 @@ export function ModalFilterBuilder({
 
   if (sourceCategories.length === 0) {
     return (
-      <div className="rounded-md border border-border p-6">
+      <div data-component="composed/ModalFilterBuilder" className="rounded-md border border-border p-6">
         <div className="flex items-center gap-2 text-muted-foreground">
           <Warning size={18} weight="fill" className="text-warning" />
           <span className="text-sm">
@@ -175,7 +175,7 @@ export function ModalFilterBuilder({
   // Empty state — no conditions configured yet
   if (value.conditions.length === 0 && !inProgressCard) {
     return (
-      <div className="flex-1 flex flex-col items-center gap-4">
+      <div data-component="composed/ModalFilterBuilder" className="flex-1 flex flex-col items-center gap-4">
         <div className="flex-[0_0_20%]" />
         {emptyState ?? (
           <>
@@ -202,7 +202,7 @@ export function ModalFilterBuilder({
   // Empty state with in-progress card (first condition being added)
   if (value.conditions.length === 0 && inProgressCard) {
     return (
-      <div className={compact ? "" : "rounded-lg p-6"}>
+      <div data-component="composed/ModalFilterBuilder" className={compact ? "" : "rounded-lg p-6"}>
         <InlineConditionCard
           sourceCategories={sourceCategories}
           mode="add"
@@ -216,7 +216,7 @@ export function ModalFilterBuilder({
   }
 
   return (
-    <div className={compact ? "" : "rounded-lg p-6"}>
+    <div data-component="composed/ModalFilterBuilder" className={compact ? "" : "rounded-lg p-6"}>
       <LogicGroupRenderer
         group={value}
         onChange={handleGroupChange}

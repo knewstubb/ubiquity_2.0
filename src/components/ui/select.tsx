@@ -38,6 +38,7 @@ const SelectTrigger = React.forwardRef<
 >(({ className, children, surface, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
+    data-component="ui/Select"
     className={cn(selectTriggerVariants({ surface }), className)}
     {...props}
   >

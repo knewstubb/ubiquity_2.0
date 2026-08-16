@@ -14,6 +14,7 @@ import { ConnectionsProvider } from '../contexts/ConnectionsContext';
 import { AutomationsProvider } from '../contexts/AutomationsContext';
 import { DataProvider } from '../contexts/DataContext';
 import { PrototypePhaseProvider } from '../contexts/PrototypePhaseContext';
+import { HighlighterProvider } from '../contexts/HighlighterContext';
 
 /**
  * Composes all domain-level providers that live inside ProtectedRoute.
@@ -22,6 +23,7 @@ import { PrototypePhaseProvider } from '../contexts/PrototypePhaseContext';
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
     /* Infrastructure & role resolution */
+    <HighlighterProvider>
     <PrototypePhaseProvider>
     <DataLayerProvider>
       <RoleSimulatorProvider>
@@ -54,5 +56,6 @@ export function AppProviders({ children }: { children: ReactNode }) {
       </RoleSimulatorProvider>
     </DataLayerProvider>
     </PrototypePhaseProvider>
+    </HighlighterProvider>
   );
 }

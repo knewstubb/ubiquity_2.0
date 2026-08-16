@@ -27,6 +27,7 @@ const Table = React.forwardRef<
   <div className="relative w-full overflow-x-auto">
     <table
       ref={ref}
+      data-component="ui/Table"
       className={cn("w-full caption-bottom text-sm", className)}
       {...props}
     />

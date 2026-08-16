@@ -29,6 +29,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <input
         type={type}
+        data-component="ui/Input"
         className={cn(inputVariants({ surface }), className)}
         ref={ref}
         {...props}

@@ -16,6 +16,7 @@ const PopoverContent = React.forwardRef<
   <PopoverPrimitive.Portal>
     <PopoverPrimitive.Content
       ref={ref}
+      data-component="ui/Popover"
       align={align}
       sideOffset={sideOffset}
       className={cn(

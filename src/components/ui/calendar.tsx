@@ -151,6 +151,7 @@ function Calendar({
           return (
             <div
               data-slot="calendar"
+              data-component="ui/Calendar"
               ref={rootRef}
               className={cn(className)}
               {...props}

@@ -47,6 +47,7 @@ const TabsList = React.forwardRef<
     <TabsSizeContext.Provider value={size}>
       <TabsPrimitive.List
         ref={ref}
+        data-component="ui/Tabs"
         className={cn(
           variant === 'pill' && "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
           variant === 'underline' && "flex items-center gap-0 border-b border-border",

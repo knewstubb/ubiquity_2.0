@@ -71,7 +71,7 @@ const SpinnerInput = React.forwardRef<HTMLInputElement, SpinnerInputProps>(
     }
 
     return (
-      <div className={cn('flex flex-col gap-1', className)}>
+      <div data-component="ui/SpinnerInput" className={cn('flex flex-col gap-1', className)}>
         {label && (
           <label className="text-xs font-medium text-muted-foreground">{label}</label>
         )}

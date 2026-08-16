@@ -402,6 +402,7 @@ export function ConditionCard({
 
   return (
     <div
+      data-component="composed/ConditionCard"
       data-condition-card
       className={cn(
         'relative rounded-lg border bg-card p-2 flex items-center gap-3 transition-all duration-150',

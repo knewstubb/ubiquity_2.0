@@ -1037,7 +1037,7 @@ export function InlineConditionCard({
   // ─── Render ────────────────────────────────────────────────────────────
 
   return (
-    <div ref={cardRef} className={cn("rounded-lg border border-primary bg-card shadow-md overflow-visible", compact ? "p-2" : "p-4")}>
+    <div ref={cardRef} data-component="composed/InlineConditionCard" className={cn("rounded-lg border border-primary bg-card shadow-md overflow-visible", compact ? "p-2" : "p-4")}>
       {/* Header row — hidden during drilldown phases (navigator has its own breadcrumb) */}
       {state.phase === 'operator-value' && (
       <div className="flex items-center justify-between mb-2 h-7" style={{ animation: "drillForward 450ms ease both" }}>

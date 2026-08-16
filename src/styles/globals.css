@@ -623,3 +623,50 @@
 .react-flow__selectionpane {
   cursor: crosshair !important;
 }
+
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   COMPONENT HIGHLIGHTER — Debug Overlay
+   
+   Toggleable visual debug tool that outlines library components.
+   Activated by adding `data-highlighter="on"` to the <html> element.
+   - Teal outlines for UI primitives (data-component^="ui/")
+   - Blue outlines for composed components (data-component^="composed/")
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Base: no highlighting */
+[data-component] {
+  /* No default styles — only active when highlighter is on */
+}
+
+/* Highlighter ON: UI Primitives — Teal outline */
+html[data-highlighter="on"] [data-component^="ui/"] {
+  outline: 2px solid var(--primary) !important;
+  outline-offset: 1px;
+}
+
+/* Highlighter ON: Composed Components — Blue outline */
+html[data-highlighter="on"] [data-component^="composed/"] {
+  outline: 2px solid #3B82F6 !important;
+  outline-offset: 1px;
+}
+
+/* Prevent double-outline on nested components — only outermost gets outline */
+html[data-highlighter="on"] [data-component^="ui/"] [data-component],
+html[data-highlighter="on"] [data-component^="composed/"] [data-component] {
+  outline: none !important;
+}
+
+/* Re-enable outline on nested components on hover for inspection */
+html[data-highlighter="on"] [data-component]:hover {
+  outline: 2px solid currentColor !important;
+  outline-offset: 1px;
+}
+
+html[data-highlighter="on"] [data-component^="ui/"]:hover {
+  outline-color: var(--primary) !important;
+}
+
+html[data-highlighter="on"] [data-component^="composed/"]:hover {
+  outline-color: #3B82F6 !important;
+}

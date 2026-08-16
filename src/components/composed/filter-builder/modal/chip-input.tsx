@@ -146,7 +146,7 @@ export function FilterChipInput({
   }
 
   return (
-    <div className={cn('flex flex-col gap-2', className)}>
+    <div data-component="composed/FilterChipInput" className={cn('flex flex-col gap-2', className)}>
       {/* Input with values count as suffix */}
       <div ref={inputWrapperRef} className="relative">
         <div className="flex rounded-md border border-input overflow-hidden focus-within:border-ring focus-within:shadow-ring h-8">

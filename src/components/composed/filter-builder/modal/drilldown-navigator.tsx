@@ -257,6 +257,7 @@ export function DrilldownNavigator({ sourceCategories, onSelect, slideInFromLeft
 
   return (
     <div
+      data-component="composed/DrilldownNavigator"
       className="flex flex-col gap-3"
       style={slideInFromLeft ? { animation: 'drillBack 450ms ease both' } : undefined}
     >

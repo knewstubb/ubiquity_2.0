@@ -72,6 +72,7 @@ const CloseButton = React.forwardRef<HTMLButtonElement, CloseButtonProps>(
 
     return (
       <Comp
+        data-component="ui/CloseButton"
         className={cn(closeButtonVariants({ size, className }))}
         ref={ref}
         {...props}

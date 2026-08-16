@@ -21,6 +21,7 @@ import {
 import { useFeatureFlags } from '../../contexts/FeatureFlagContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlatformAdmin } from '../../contexts/PlatformAdminContext';
+import { useHighlighter } from '../../contexts/HighlighterContext';
 import { cn } from '../../lib/utils';
 
 interface SubItem {
@@ -112,6 +113,7 @@ export function AppNavBar() {
   const { isRouteEnabled } = useFeatureFlags();
   const { user, signOut } = useAuth();
   const { isPlatformAdmin } = usePlatformAdmin();
+  const { isActive: highlighterActive, toggle: toggleHighlighter, hasAccess: hasHighlighterAccess } = useHighlighter();
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showFlagsModal, setShowFlagsModal] = useState(false);
   const [darkMode, setDarkMode] = useState(() => document.documentElement.getAttribute('data-theme') === 'dark');
@@ -311,6 +313,12 @@ export function AppNavBar() {
                   <span className="font-sans text-[13px] font-medium text-foreground">Dark Mode</span>
                   <Switch checked={darkMode} onCheckedChange={setDarkMode} />
                 </div>
+                {hasHighlighterAccess && (
+                  <div className="flex items-center justify-between px-3 py-2 rounded">
+                    <span className="font-sans text-[13px] font-medium text-foreground">Highlighter</span>
+                    <Switch checked={highlighterActive} onCheckedChange={toggleHighlighter} />
+                  </div>
+                )}
                 <div className="h-px bg-border my-1" />
                 <ResetAccountButton />
                 <div className="h-px bg-border my-1" />

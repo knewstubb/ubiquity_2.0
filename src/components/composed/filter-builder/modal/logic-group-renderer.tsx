@@ -359,6 +359,7 @@ export function LogicGroupRenderer({
 
   return (
     <div
+      data-component="composed/LogicGroupRenderer"
       className="flex flex-col"
       role="group"
       aria-label={`${group.logic.toUpperCase()} filter group`}

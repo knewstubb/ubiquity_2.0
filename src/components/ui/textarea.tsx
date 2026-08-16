@@ -28,6 +28,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, surface, ...props }, ref) => {
     return (
       <textarea
+        data-component="ui/Textarea"
         className={cn(textareaVariants({ surface }), className)}
         ref={ref}
         {...props}

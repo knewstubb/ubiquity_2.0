@@ -641,7 +641,7 @@ export function ConditionModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[520px] top-[20%] translate-y-0">
+      <DialogContent data-component="composed/ConditionModal" className="max-w-[520px] top-[20%] translate-y-0">
         <DialogHeader className="border-b border-border pb-4">
           <DialogTitle>{mode === 'edit' ? 'Edit Filter Condition' : 'Add Filter Condition'}</DialogTitle>
           <CloseButton size="sm" onClick={handleDismiss} />

@@ -99,6 +99,7 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
             ref={ref}
             type="button"
             role="combobox"
+            data-component="ui/Combobox"
             aria-expanded={open}
             disabled={disabled}
             className={cn(

@@ -13,6 +13,7 @@ const Slider = React.forwardRef<
   return (
     <SliderPrimitive.Root
       ref={ref}
+      data-component="ui/Slider"
       className={cn(
         "relative flex w-full touch-none select-none items-center",
         props.disabled && "opacity-40 cursor-not-allowed",
