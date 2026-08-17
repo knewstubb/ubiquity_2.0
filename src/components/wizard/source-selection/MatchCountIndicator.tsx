@@ -1,6 +1,6 @@
 import { SpinnerGap, DotsThree } from '@phosphor-icons/react'
 import { formatMatchCount } from '../../../utils/source-config-utils'
-import { Button } from '../../ui/button'
+import { Button } from '../../atoms/button'
 
 interface MatchCountIndicatorProps {
   count: number | null

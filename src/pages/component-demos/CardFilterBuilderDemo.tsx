@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react'
 import { UsersThree, Table, EnvelopeSimple, ChatCentered, Confetti, ClipboardText, ListChecks, Bell, Funnel as FunnelIcon, BookmarkSimple, TrendDown, Trash } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
-import { ModalFilterBuilder } from '@/components/composed/filter-builder'
-import type { SourceCategoryConfig, FilterGroup } from '@/components/composed/filter-builder'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { ModalFilterBuilder } from '@/components/organisms/filter-builder'
+import type { SourceCategoryConfig, FilterGroup } from '@/components/organisms/filter-builder'
+import { Button } from '@/components/atoms/button'
+import { Input } from '@/components/atoms/input'
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from '@/components/ui/dialog'
+} from '@/components/atoms/dialog'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,7 +24,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+} from '@/components/atoms/alert-dialog'
 import { toast } from 'sonner'
 
 const DEFAULT_SOURCE_CATEGORIES: SourceCategoryConfig[] = [

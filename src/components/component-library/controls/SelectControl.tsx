@@ -4,8 +4,8 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
+} from '@/components/atoms/select'
+import { Label } from '@/components/atoms/label'
 import { cn } from '@/lib/utils'
 
 interface SelectControlProps {

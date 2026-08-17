@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { Input } from '../ui/input';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
-import { CheckboxCard } from '@/components/composed/checkbox-card';
+import { Input } from '../atoms/input';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../atoms/select';
+import { SelectorCard } from '@/components/molecules/selector-card';
 import { FilterBuilder } from '../shared/FilterBuilder';
 import { getFieldsForDataType } from '../../data/fieldRegistry';
 import type { FilterGroup } from '../../models/segment';
@@ -102,8 +102,9 @@ export function DataSourceStep({ draft, onUpdate }: DataSourceStepProps) {
         <div className="w-[552px] flex flex-col gap-3">
           <div className="flex flex-col gap-2">
             {SOURCE_OPTIONS.map((source) => (
-              <CheckboxCard
+              <SelectorCard
                 key={source.id}
+                variant="checkbox"
                 selected={selectedSources.includes(source.id)}
                 onToggle={() => handleSourceToggle(source.id)}
                 label={source.label}

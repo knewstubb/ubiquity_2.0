@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/atoms/collapsible'
+import { Button } from '@/components/atoms/button'
 import { CaretUpDown } from '@phosphor-icons/react'
 
 interface CollapsibleDemoProps {

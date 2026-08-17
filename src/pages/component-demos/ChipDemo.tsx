@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Chip } from '@/components/composed/chip'
+import { Chip } from '@/components/molecules/chip'
 import { EnvelopeSimple, Tag, User } from '@phosphor-icons/react'
 
 const SAMPLE_CHIPS = ['Email', 'Customer ID', 'First Name', 'Last Name', 'Phone']

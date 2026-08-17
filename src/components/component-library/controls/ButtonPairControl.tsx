@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
+import { Button } from '@/components/atoms/button'
+import { Label } from '@/components/atoms/label'
 import { cn } from '@/lib/utils'
 
 interface ButtonPairControlProps {

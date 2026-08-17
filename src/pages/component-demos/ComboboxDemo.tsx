@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Combobox } from '@/components/ui/combobox'
+import { Combobox } from '@/components/molecules/combobox'
 
 /* ── Types ── */
 

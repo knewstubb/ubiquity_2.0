@@ -1,4 +1,4 @@
-import { InfoHint } from '@/components/composed/info-hint'
+import { InfoHint } from '@/components/molecules/info-hint'
 import type { ControlValue } from '@/data/componentRegistry'
 
 interface InfoHintDemoProps {

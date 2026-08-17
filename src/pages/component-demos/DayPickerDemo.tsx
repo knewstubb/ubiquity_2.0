@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DayPicker } from '@/components/composed/day-picker';
+import { DayPicker } from '@/components/molecules/day-picker';
 import { cn } from '@/lib/utils';
 
 interface DayPickerDemoProps {

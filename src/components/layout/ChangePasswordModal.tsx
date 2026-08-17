@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
-import { CloseButton } from '@/components/ui/close-button';
+import { CloseButton } from '@/components/atoms/close-button';
 
 interface ChangePasswordModalProps {
   onClose: () => void;

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useChangelog } from '../../contexts/ChangelogContext';
-import { CloseButton } from '../ui/close-button';
+import { CloseButton } from '../atoms/close-button';
 
 function formatDate(iso: string): string {
   try {

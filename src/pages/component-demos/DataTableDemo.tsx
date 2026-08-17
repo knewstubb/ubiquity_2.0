@@ -1,11 +1,11 @@
 import { useState, useMemo } from 'react'
-import { DataTable, type DataTableColumn, type DataTableDensity, type DataTableContainer } from '@/components/composed/data-table'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import { NumberStepper } from '@/components/composed/number-stepper'
+import { DataTable, type DataTableColumn, type DataTableDensity, type DataTableContainer } from '@/components/organisms/data-table'
+import { Badge } from '@/components/atoms/badge'
+import { Button } from '@/components/atoms/button'
+import { Switch } from '@/components/atoms/switch'
+import { Label } from '@/components/atoms/label'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/atoms/select'
+import { NumberStepper } from '@/components/molecules/number-stepper'
 
 interface Contact {
   name: string

@@ -1,8 +1,8 @@
 import { FilePlus, ToggleRight, ToggleLeft, PencilSimple } from '@phosphor-icons/react'
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../ui/dialog'
-import { ModalHeader } from '../composed/modal-header'
-import { ModalFooter } from '../composed/modal-footer'
-import { Timeline, type TimelineEntry } from '../composed/timeline'
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../atoms/dialog'
+import { ModalHeader } from '../molecules/modal-header'
+import { ModalFooter } from '../molecules/modal-footer'
+import { Timeline, type TimelineEntry } from '../organisms/timeline'
 import type { Automation } from '../../models/automation'
 
 interface HistoryModalProps {

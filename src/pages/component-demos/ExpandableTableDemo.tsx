@@ -1,5 +1,5 @@
-import { ExpandableTable, ExpandableRow, DISCLOSURE_INDENT } from '@/components/composed/expandable-table'
-import { Badge } from '@/components/ui/badge'
+import { ExpandableTable, ExpandableRow, DISCLOSURE_INDENT } from '@/components/organisms/expandable-table'
+import { Badge } from '@/components/atoms/badge'
 import { cn } from '@/lib/utils'
 
 const COLUMNS = [

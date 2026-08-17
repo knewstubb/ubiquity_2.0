@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { DateRangePicker, type DateRangePreset } from '@/components/composed/date-range-picker'
+import { DateRangePicker, type DateRangePreset } from '@/components/molecules/date-range-picker'
 
 const SAMPLE_PRESETS: DateRangePreset[] = [
   { label: 'Today', start: '2026-05-22', end: '2026-05-22' },

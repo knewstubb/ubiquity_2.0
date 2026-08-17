@@ -1,8 +1,8 @@
-import { SelectorCard } from '@/components/composed/selector-card';
-import { InfoHint } from '@/components/composed/info-hint';
-import { HelpPopover } from '@/components/composed/help-popover';
-import { DayPicker } from '@/components/composed/day-picker';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
+import { SelectorCard } from '@/components/molecules/selector-card';
+import { InfoHint } from '@/components/molecules/info-hint';
+import { HelpPopover } from '@/components/molecules/help-popover';
+import { DayPicker } from '@/components/molecules/day-picker';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../atoms/select';
 import { NotificationsStep } from '../shared/NotificationsStep';
 import { usePrototypePhases } from '../../contexts/PrototypePhaseContext';
 import type { ExporterWizardDraft, ExporterScheduleConfig, ExporterNotificationConfig } from '../../models/wizard';

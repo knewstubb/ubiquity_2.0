@@ -9,7 +9,7 @@ import {
   MenubarSub,
   MenubarSubContent,
   MenubarSubTrigger,
-} from '@/components/ui/menubar'
+} from '@/components/molecules/menubar'
 
 interface MenubarDemoProps {
   'menu-count'?: number

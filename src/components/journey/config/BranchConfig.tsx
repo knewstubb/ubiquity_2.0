@@ -11,18 +11,18 @@ import type {
   MultiWayCondition,
 } from '../../../models/journey';
 import type { FilterGroup as SegmentFilterGroup } from '../../../models/segment';
-import type { FilterGroup as ModalFilterGroup, SourceCategoryConfig, CardFilterRow } from '../../composed/filter-builder/types';
+import type { FilterGroup as ModalFilterGroup, SourceCategoryConfig, CardFilterRow } from '../../organisms/filter-builder';
 import { CONTACT_FIELDS, TREATMENT_FIELDS, PRODUCT_FIELDS } from '../../../data/fieldRegistry';
-import { ModalFilterBuilder } from '../../composed/filter-builder';
-import { Label } from '../../ui/label';
-import { Input } from '../../ui/input';
+import { ModalFilterBuilder } from '../../organisms/filter-builder';
+import { Label } from '../../atoms/label';
+import { Input } from '../../atoms/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../ui/select';
+} from '../../atoms/select';
 
 export interface BranchConfigProps {
   journeyId: string;

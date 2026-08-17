@@ -1,22 +1,22 @@
 import { useState, useMemo } from 'react';
 import { Tag, CalendarBlank } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
-import { SelectorCard } from '../composed/selector-card';
-import { ModalHeader } from '../composed/modal-header';
-import { ModalFooter } from '../composed/modal-footer';
+import { SelectorCard } from '../molecules/selector-card';
+import { ModalHeader } from '../molecules/modal-header';
+import { ModalFooter } from '../molecules/modal-footer';
 import {
   Dialog,
   DialogContent,
   DialogBody,
-} from '../ui/dialog';
-import { Separator } from '../ui/separator';
-import { Combobox } from '../ui/combobox';
-import { Input } from '../ui/input';
-import { Switch } from '../ui/switch';
-import { Label } from '../ui/label';
-import { Badge } from '../ui/badge';
-import { ChipInput } from '../composed/chip-input';
-import { DayPicker } from '../composed/day-picker';
+} from '../atoms/dialog';
+import { Separator } from '../atoms/separator';
+import { Combobox } from '../molecules/combobox';
+import { Input } from '../atoms/input';
+import { Switch } from '../atoms/switch';
+import { Label } from '../atoms/label';
+import { Badge } from '../atoms/badge';
+import { ChipInput } from '../molecules/chip-input';
+import { DayPicker } from '../molecules/day-picker';
 import type { ImportDefaultRow } from '../../models/importer';
 
 /* ── Types ── */

@@ -1,4 +1,4 @@
-import { HelpPopover } from '@/components/composed/help-popover';
+import { HelpPopover } from '@/components/molecules/help-popover';
 import { useControlValues } from '@/lib/useControlValues';
 
 export default function HelpPopoverDemo({ controls }: { controls?: Record<string, unknown> }) {

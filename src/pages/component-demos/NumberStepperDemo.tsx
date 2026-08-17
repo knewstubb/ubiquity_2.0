@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NumberStepper } from '@/components/composed/number-stepper'
+import { NumberStepper } from '@/components/molecules/number-stepper'
 
 interface NumberStepperDemoProps {
   size?: string

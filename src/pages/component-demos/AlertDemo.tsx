@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Alert, AlertDescription, AlertTitle } from '@/components/atoms/alert'
 import { Info, Warning, WarningCircle, CheckCircle } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 

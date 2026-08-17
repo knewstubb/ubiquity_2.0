@@ -76,11 +76,100 @@ Account Sync solves this by watching for changes in one account and automaticall
 
 #### Acceptance Criteria
 
-- WHEN the administrator clicks "Add Column Mapping", THE SYSTEM SHALL add a new empty mapping row with source and target column dropdowns.
+- WHEN the administrator clicks "Add mapping", THE SYSTEM SHALL add a new empty mapping row with source and target column dropdowns.
 - WHEN a mapping row has both source and target columns selected, THE SYSTEM SHALL count it as a valid mapping and display the total mapped count in a badge.
-- WHEN the administrator clicks the remove button on a mapping row, THE SYSTEM SHALL remove that mapping from the list.
-- WHEN no source or target account is selected (and therefore no columns are available), THE SYSTEM SHALL disable the "Add Column Mapping" button.
+- WHEN the administrator clicks the remove button on a non-required mapping row, THE SYSTEM SHALL remove that mapping from the list.
+- WHEN no source or target account is selected (and therefore no columns are available), THE SYSTEM SHALL disable the "Add mapping" button.
 - WHEN saving a rule, THE SYSTEM SHALL only persist mapping rows where both source and target columns have been selected (incomplete rows are discarded).
+
+---
+
+### 5.4a Match Key Behavior in Mapping Grid
+
+**US-5.4a.1** As a global administrator, when I select a match key, I want the mapping grid to automatically reflect this selection so that the match key relationship is visually clear.
+
+#### Acceptance Criteria
+
+- WHEN the administrator selects both source and target match key columns, THE SYSTEM SHALL automatically create a mapping row at the top of the mapping grid.
+- WHEN viewing the match key mapping row, THE SYSTEM SHALL display a **Key icon** next to the source column name with teal styling.
+- WHEN viewing the match key mapping row, THE SYSTEM SHALL display the source and target columns as **read-only text** (not dropdowns).
+- WHEN sorting the mapping grid, THE SYSTEM SHALL always position the match key row at the top.
+- WHEN viewing the match key mapping row, THE SYSTEM SHALL NOT display a remove (trash) icon — the match key mapping cannot be deleted from the grid.
+
+---
+
+### 5.4b Mandatory (Required) Fields
+
+**US-5.4b.1** As a global administrator, I want required target columns to be automatically populated in the mapping grid so that I cannot accidentally create an incomplete sync rule.
+
+#### Acceptance Criteria
+
+- WHEN the target account schema defines required columns **without default values**, THE SYSTEM SHALL automatically add those columns as rows in the mapping grid when accounts are selected.
+- WHEN displaying a required column row, THE SYSTEM SHALL show the target column as **read-only text** (not a dropdown) with an **asterisk (\*) indicator** in amber colour.
+- WHEN displaying a required column row, THE SYSTEM SHALL **auto-match by column name** if a matching source column exists in the source schema (e.g., "email" → "email").
+- WHEN displaying a required column row, THE SYSTEM SHALL allow the administrator to change the source column selection via dropdown.
+- WHEN sorting the mapping grid, THE SYSTEM SHALL position required column rows **below the match key row** and **above additional (non-required) mappings**.
+- WHEN displaying a required column row, THE SYSTEM SHALL NOT display a remove (trash) icon — required mappings cannot be deleted.
+
+---
+
+### 5.4c Mandatory Fields with Default Values
+
+**US-5.4c.1** As a global administrator, I want required columns that have default values to be excluded from automatic population so that the mapping grid only shows columns I must explicitly map.
+
+#### Acceptance Criteria
+
+- WHEN the target account schema defines required columns **with default values**, THE SYSTEM SHALL NOT automatically add those columns to the mapping grid.
+- WHEN the administrator wants to map a required column with a default value, THE SYSTEM SHALL allow them to add it manually via the "Add mapping" button.
+
+---
+
+### 5.4d Unmapped Required Count
+
+**US-5.4d.1** As a global administrator, I want to see how many required columns still need source mappings so that I know when the rule is complete.
+
+#### Acceptance Criteria
+
+- WHEN one or more required columns in the mapping grid have **no source column selected**, THE SYSTEM SHALL display "**X required unmapped**" in the column mapping header in amber text with an asterisk icon.
+- WHEN all required columns have a source column selected, THE SYSTEM SHALL hide the "required unmapped" indicator.
+- WHEN required columns remain unmapped, THE SYSTEM SHALL disable the "Create Contact Sync" / "Save Changes" button.
+
+---
+
+### 5.4e Mapped Count Display
+
+**US-5.4e.1** As a global administrator, I want to see the total count of mapped columns so that I can gauge the completeness of my configuration.
+
+#### Acceptance Criteria
+
+- WHEN mapping rows exist in the grid with a target column selected, THE SYSTEM SHALL display a badge showing "**X mapped**" in the column mapping header.
+- WHEN no mappings have a target column selected, THE SYSTEM SHALL show "0 mapped" in neutral style.
+- WHEN mappings exist with target columns, THE SYSTEM SHALL show the count in default (teal) style.
+
+---
+
+### 5.4f Row Sorting Order
+
+**US-5.4f.1** As a global administrator, I want mapping rows to be sorted in a predictable hierarchy so that the most important mappings are always visible first.
+
+#### Acceptance Criteria
+
+- WHEN the mapping grid is displayed, THE SYSTEM SHALL render rows in this order:
+  1. **Match key row** (if match key is selected)
+  2. **Required column rows** (columns without default values)
+  3. **Additional mapping rows** (user-added non-required mappings)
+
+---
+
+### 5.4g Duplicate Target Validation
+
+**US-5.4g.1** As a global administrator, I want to be prevented from mapping multiple source columns to the same target column so that sync conflicts are avoided.
+
+#### Acceptance Criteria
+
+- WHEN multiple mapping rows target the same column, THE SYSTEM SHALL display a "**Duplicate targets**" warning in the column mapping header.
+- WHEN duplicate targets exist, THE SYSTEM SHALL display the affected rows with destructive (red) styling and a warning indicator.
+- WHEN duplicate targets exist, THE SYSTEM SHALL disable the "Create Contact Sync" / "Save Changes" button.
 
 ---
 

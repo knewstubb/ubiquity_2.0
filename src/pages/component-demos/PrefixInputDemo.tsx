@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PrefixInput } from '@/components/composed/prefix-input';
+import { PrefixInput } from '@/components/molecules/prefix-input';
 import { useControlValues } from '@/lib/useControlValues';
 
 export default function PrefixInputDemo({ controls }: { controls?: Record<string, unknown> }) {

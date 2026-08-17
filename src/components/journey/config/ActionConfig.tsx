@@ -3,7 +3,7 @@ import { EnvelopeSimple, DeviceMobile, UserCircle, WebhooksLogo } from '@phospho
 import { useJourneys } from '../../../contexts/JourneysContext';
 import { createDefaultConfig } from '../../../models/journey';
 import { emailTemplates } from '../../../data/emailTemplates';
-import { Label } from '../../ui/label';
+import { Label } from '../../atoms/label';
 import {
   Select,
   SelectContent,
@@ -12,10 +12,10 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '../../ui/select';
-import { Input } from '../../ui/input';
-import { Textarea } from '../../ui/textarea';
-import { Button } from '../../ui/button';
+} from '../../atoms/select';
+import { Input } from '../../atoms/input';
+import { Textarea } from '../../atoms/textarea';
+import { Button } from '../../atoms/button';
 import type { JourneyNode, ActionSubType } from '../../../models/journey';
 
 export interface ActionConfigProps {

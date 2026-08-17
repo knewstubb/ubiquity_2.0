@@ -1,5 +1,5 @@
 import { PencilSimple, Play, Pause, PlusCircle, Trash, EnvelopeSimple } from '@phosphor-icons/react'
-import { Timeline, type TimelineEntry } from '@/components/composed/timeline'
+import { Timeline, type TimelineEntry } from '@/components/organisms/timeline'
 
 const sampleEntries: TimelineEntry[] = [
   {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../ui/dialog';
-import { ModalHeader } from '../composed/modal-header';
-import { ModalFooter } from '../composed/modal-footer';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../atoms/dialog';
+import { ModalHeader } from '../molecules/modal-header';
+import { ModalFooter } from '../molecules/modal-footer';
 import { TruncatedText } from '../shared/TruncatedText';
 import { transactionalDatabases } from '../../data/transactionalData';
 import { useAccount } from '../../contexts/AccountContext';

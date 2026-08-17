@@ -1,8 +1,8 @@
 import { useState, useCallback, useMemo } from 'react';
 import { cn } from '../../lib/utils';
-import { Checkbox } from '../ui/checkbox';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
+import { Checkbox } from '../atoms/checkbox';
+import { Label } from '../atoms/label';
+import { Input } from '../atoms/input';
 import { DragHandle } from '../shared/DragHandle';
 import { TruncatedText } from '../shared/TruncatedText';
 import { SourceChipsRow } from './SourceChipsRow';

@@ -1,5 +1,5 @@
 import { useChangelog } from '../../contexts/ChangelogContext';
-import { CloseButton } from '../ui/close-button';
+import { CloseButton } from '../atoms/close-button';
 
 export function ChangelogBanner() {
   const { showBanner, unseenEntries, dismissBanner } = useChangelog();

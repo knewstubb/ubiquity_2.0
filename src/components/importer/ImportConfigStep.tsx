@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { CaretDown, X } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
-import { HelpPopover } from '@/components/composed/help-popover';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
-import { Switch } from '../ui/switch';
-import { Label } from '../ui/label';
+import { HelpPopover } from '@/components/molecules/help-popover';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../atoms/select';
+import { Switch } from '../atoms/switch';
+import { Label } from '../atoms/label';
 import type { ContactConfig, TransactionalConfig } from '../../models/importer';
 
 interface ImportConfigStepProps {

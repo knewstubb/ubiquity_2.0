@@ -3,15 +3,15 @@ import type { Connection } from '../../models/connection';
 import type { Automation } from '../../models/automation';
 import { DotsThree, PencilSimple, Trash, Plus, CaretRight, Wrench } from '@phosphor-icons/react';
 import { ProtocolIcon } from '../shared/ProtocolIcon';
-import { Button } from '@/components/ui/button';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+import { Button } from '@/components/atoms/button';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/atoms/collapsible';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/atoms/dropdown-menu';
 import { cn } from '@/lib/utils';
 
 interface ConnectionRowProps {

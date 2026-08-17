@@ -1,14 +1,14 @@
 import type { Automation } from '../../models/automation';
 import { DotsThree, GearSix, PencilSimple, ListBullets, ClockCounterClockwise, Trash, UsersThree, NewspaperClipping } from '@phosphor-icons/react';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/atoms/switch';
+import { Badge } from '@/components/atoms/badge';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/atoms/dropdown-menu';
 import { cn } from '@/lib/utils';
 
 interface AutomationCardProps {

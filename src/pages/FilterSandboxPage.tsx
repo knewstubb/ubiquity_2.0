@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Plus, X, ArrowsClockwise } from '@phosphor-icons/react';
 import { PageShell } from '../components/layout/PageShell';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select';
-import { Input } from '../components/ui/input';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/atoms/tabs';
+import { Button } from '../components/atoms/button';
+import { Badge } from '../components/atoms/badge';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/atoms/select';
+import { Input } from '../components/atoms/input';
 import { cn } from '../lib/utils';
 
 // ─── Shared Types & Constants ───────────────────────────────────────────────

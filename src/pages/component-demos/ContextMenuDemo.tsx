@@ -8,7 +8,7 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
-} from '@/components/ui/context-menu'
+} from '@/components/atoms/context-menu'
 import { PencilSimple, Copy, ArrowRight, Trash, Gear, ListBullets, ClockCounterClockwise } from '@phosphor-icons/react'
 
 interface ContextMenuDemoProps {

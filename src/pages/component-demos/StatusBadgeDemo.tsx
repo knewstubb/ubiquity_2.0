@@ -1,5 +1,5 @@
-import { StatusBadge } from '@/components/composed/status-badge'
-import type { StatusBadgeVariant } from '@/components/composed/status-badge'
+import { StatusBadge } from '@/components/molecules/status-badge'
+import type { StatusBadgeVariant } from '@/components/molecules/status-badge'
 
 interface StatusBadgeDemoProps {
   variant?: StatusBadgeVariant

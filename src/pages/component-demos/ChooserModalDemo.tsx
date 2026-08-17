@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { CloudArrowDown, CloudArrowUp, Database, PlugsConnected } from '@phosphor-icons/react'
-import { ChooserModal } from '@/components/composed/chooser-modal'
-import type { ChooserOption } from '@/components/composed/chooser-modal'
-import { Button } from '@/components/ui/button'
+import { ChooserModal } from '@/components/organisms/chooser-modal'
+import type { ChooserOption } from '@/components/organisms/chooser-modal'
+import { Button } from '@/components/atoms/button'
 import type { ControlValue } from '@/data/componentRegistry'
 
 // ─── Types ───────────────────────────────────────────────────────────────────

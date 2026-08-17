@@ -10,8 +10,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
+} from '@/components/atoms/dropdown-menu'
+import { Button } from '@/components/atoms/button'
 import { User, Gear, SignOut, Plus, Envelope, ChatCircle } from '@phosphor-icons/react'
 
 interface DropdownMenuDemoProps {

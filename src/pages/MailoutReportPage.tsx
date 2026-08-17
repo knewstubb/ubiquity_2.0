@@ -20,12 +20,12 @@ import {
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MetricCard } from '@/components/composed/metric-card';
-import { StatBar } from '@/components/composed/stat-bar';
-import { DonutChart } from '@/components/composed/donut-chart';
+} from '@/components/molecules/breadcrumb';
+import { Button } from '@/components/atoms/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/atoms/card';
+import { MetricCard } from '@/components/organisms/metric-card';
+import { StatBar } from '@/components/organisms/stat-bar';
+import { DonutChart } from '@/components/organisms/donut-chart';
 import { mailouts } from '../data/mailouts';
 import type { Mailout } from '../models/mailout';
 

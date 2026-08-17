@@ -1,4 +1,4 @@
-import { SectionDivider } from '@/components/composed/section-divider';
+import { SectionDivider } from '@/components/molecules/section-divider';
 import { useControlValues } from '@/lib/useControlValues';
 
 export default function SectionDividerDemo({ controls }: { controls?: Record<string, unknown> }) {

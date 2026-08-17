@@ -1,4 +1,4 @@
-import { CheckboxCard } from '@/components/composed/checkbox-card'
+import { SelectorCard } from '@/components/molecules/selector-card'
 import type { ExporterType } from '@/models/wizard'
 
 interface TypeSelectionStepProps {
@@ -30,8 +30,9 @@ export function TypeSelectionStep({ selectedType, onSelect }: TypeSelectionStepP
       </div>
       <div className="flex flex-col gap-2" role="radiogroup" aria-label="Exporter type selection">
         {TYPE_OPTIONS.map((option) => (
-          <CheckboxCard
+          <SelectorCard
             key={option.id}
+            variant="checkbox"
             selected={selectedType === option.id}
             onToggle={() => onSelect(option.id)}
             label={option.label}

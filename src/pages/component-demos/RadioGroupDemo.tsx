@@ -1,5 +1,5 @@
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/atoms/radio-group'
+import { Label } from '@/components/atoms/label'
 
 interface RadioGroupDemoProps {
   'option-count'?: number

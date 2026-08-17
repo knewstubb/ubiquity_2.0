@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { createRef } from 'react'
 import fc from 'fast-check'
-import { CloseButton } from '@/components/ui/close-button'
+import { CloseButton } from '@/components/atoms/close-button'
 
 /**
  * Unit tests and property tests for CloseButton rendering and accessibility.

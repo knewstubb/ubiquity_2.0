@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed'
+import { AlertDialogComposed } from '@/components/organisms/alert-dialog-composed'
 
 /**
  * Unit tests for AlertDialogComposed component.

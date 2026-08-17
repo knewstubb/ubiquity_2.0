@@ -1,5 +1,5 @@
-import { showToast } from '@/components/composed/toast'
-import { Button } from '@/components/ui/button'
+import { showToast } from '@/components/molecules/toast'
+import { Button } from '@/components/atoms/button'
 
 interface ToastDemoProps {
   variant?: string

@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../ui/dialog'
-import { ModalHeader } from '../composed/modal-header'
-import { ModalFooter } from '../composed/modal-footer'
-import { ExpandableTable, ExpandableRow, DISCLOSURE_INDENT } from '../composed/expandable-table'
-import { Badge } from '../ui/badge'
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../atoms/dialog'
+import { ModalHeader } from '../molecules/modal-header'
+import { ModalFooter } from '../molecules/modal-footer'
+import { ExpandableTable, ExpandableRow, DISCLOSURE_INDENT } from '../organisms/expandable-table'
+import { Badge } from '../atoms/badge'
 import {
   Pagination,
   PaginationContent,
@@ -11,7 +11,7 @@ import {
   PaginationLink,
   PaginationPrevious,
   PaginationNext,
-} from '../ui/pagination'
+} from '../molecules/pagination'
 import { cn } from '@/lib/utils'
 import type { Automation } from '../../models/automation'
 

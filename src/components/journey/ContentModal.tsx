@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { FloppyDisk, Envelope, ListBullets, ChartBar } from '@phosphor-icons/react';
-import { CloseButton } from '@/components/ui/close-button';
+import { CloseButton } from '@/components/atoms/close-button';
 
 export interface ContentModalProps {
   contentType: 'email' | 'form' | 'survey';

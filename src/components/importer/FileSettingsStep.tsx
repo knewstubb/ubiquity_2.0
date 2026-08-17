@@ -1,12 +1,12 @@
 import { useState, useRef } from 'react';
 import { UploadSimple, X, FileCsv, WarningCircle, CaretRight } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
-import { SegmentedControl } from '@/components/composed/segmented-control';
-import { PrefixInput } from '@/components/composed/prefix-input';
-import { HelpPopover } from '@/components/composed/help-popover';
-import { Input } from '../ui/input';
-import { Checkbox } from '../ui/checkbox';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
+import { SegmentedControl } from '@/components/molecules/segmented-control';
+import { PrefixInput } from '@/components/molecules/prefix-input';
+import { HelpPopover } from '@/components/molecules/help-popover';
+import { Input } from '../atoms/input';
+import { Checkbox } from '../atoms/checkbox';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../atoms/select';
 import { parse } from '../../utils/csv-parser';
 import type { ImporterConfig, PathMode, ImportDataType, CsvDelimiter, CsvTextQualifier, CsvEncoding } from '../../models/importer';
 

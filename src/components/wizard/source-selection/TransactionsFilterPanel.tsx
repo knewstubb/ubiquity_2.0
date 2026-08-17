@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { Plus, X } from '@phosphor-icons/react';
 import { cn } from '../../../lib/utils';
-import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../../ui/select';
+import { Input } from '../../atoms/input';
+import { Button } from '../../atoms/button';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../../atoms/select';
 import { validateDays } from '../../../utils/source-selection-validation';
 import type { TransactionsFilterConfig, TransactionsFilterType, FieldFilterRow } from '../../../models/source-selection';
 import type { SourceFieldDefinition } from '../../../utils/source-config-utils';

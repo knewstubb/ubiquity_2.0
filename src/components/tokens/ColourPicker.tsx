@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/atoms/popover'
 import { PALETTE_NAMES, SHADE_STEPS, tailwindPalette, resolveToHex } from '../../data/tailwindPalette'
 import type { PrimitiveRef } from '../../models/tokenConfig'
 import { cn } from '../../lib/utils'

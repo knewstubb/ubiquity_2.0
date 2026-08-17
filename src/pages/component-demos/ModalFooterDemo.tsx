@@ -1,5 +1,5 @@
-import { ModalFooter } from '@/components/composed/modal-footer'
-import type { ModalAction } from '@/components/composed/modal-footer'
+import { ModalFooter } from '@/components/molecules/modal-footer'
+import type { ModalAction } from '@/components/molecules/modal-footer'
 
 export default function ModalFooterDemo(props: Record<string, unknown>) {
   const intent = (props.intent as string) ?? 'default'

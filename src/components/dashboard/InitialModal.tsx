@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { DownloadSimple, UploadSimple, ArrowsLeftRight } from '@phosphor-icons/react';
 import type { Connection } from '../../models/connection';
-import { ChooserModal, type ChooserOption } from '@/components/composed/chooser-modal';
+import { ChooserModal, type ChooserOption } from '@/components/organisms/chooser-modal';
 
 interface InitialModalProps {
   connection: Connection;

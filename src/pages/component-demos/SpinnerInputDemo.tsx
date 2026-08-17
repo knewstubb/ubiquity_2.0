@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SpinnerInput } from '@/components/ui/spinner-input'
+import { SpinnerInput } from '@/components/molecules/spinner-input'
 
 export default function SpinnerInputDemo(props: Record<string, unknown>) {
   const min = (props.min as number) ?? 0

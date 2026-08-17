@@ -1,5 +1,5 @@
 import { FloppyDisk, FileArrowDown, SignOut } from '@phosphor-icons/react'
-import { SplitButton } from '@/components/composed/split-button'
+import { SplitButton } from '@/components/molecules/split-button'
 
 interface SplitButtonDemoProps {
   label?: string

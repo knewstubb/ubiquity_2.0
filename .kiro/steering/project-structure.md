@@ -15,11 +15,19 @@ src/
 │   │   ├── AppNavBar.tsx            # Primary nav bar — top-level only, no sub-nav
 │   │   ├── AccountSwitcher.tsx      # Account context switcher in nav
 │   │   └── PageShell.tsx            # Standard page wrapper (title + subtitle + action)
-│   ├── ui/                          # shadcn/ui component registry (Tailwind-styled)
-│   │   ├── dialog.tsx
-│   │   ├── tabs.tsx
-│   │   └── ...                      # Added via `npx shadcn@latest add <component>`
-│   └── {feature}/                   # Feature-scoped components
+│   ├── atoms/                       # Atomic Design: indivisible UI primitives
+│   │   ├── button.tsx
+│   │   ├── input.tsx
+│   │   └── ...                      # ~32 components (shadcn/ui base)
+│   ├── molecules/                   # Atomic Design: atom combinations, generic patterns
+│   │   ├── chip.tsx
+│   │   ├── combobox.tsx
+│   │   └── ...                      # ~29 components
+│   ├── organisms/                   # Atomic Design: domain-aware, business patterns
+│   │   ├── data-table.tsx
+│   │   ├── filter-builder/          # Complex organisms can have subfolders
+│   │   └── ...                      # ~10 components
+│   └── {feature}/                   # Feature-scoped components (not in library)
 │       └── ComponentName.tsx
 ├── pages/                           # One file per route (flat, not nested)
 │   └── PageName.tsx

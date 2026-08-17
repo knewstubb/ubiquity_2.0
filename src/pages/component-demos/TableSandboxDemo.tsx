@@ -1,13 +1,13 @@
 import { useState, useMemo } from 'react'
 import { cn } from '@/lib/utils'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import { NumberStepper } from '@/components/composed/number-stepper'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Checkbox } from '@/components/atoms/checkbox'
+import { Badge } from '@/components/atoms/badge'
+import { Button } from '@/components/atoms/button'
+import { Switch } from '@/components/atoms/switch'
+import { Label } from '@/components/atoms/label'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/atoms/select'
+import { NumberStepper } from '@/components/molecules/number-stepper'
+import { Tabs, TabsList, TabsTrigger } from '@/components/atoms/tabs'
 import {
   Pagination,
   PaginationContent,
@@ -15,7 +15,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination'
+} from '@/components/molecules/pagination'
 import {
   Table,
   TableBody,
@@ -23,7 +23,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@/components/atoms/table'
 
 // Sample data — larger set for pagination demo
 const CONTACTS = [

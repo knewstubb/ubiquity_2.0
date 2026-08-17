@@ -20,7 +20,7 @@ import {
   Play,
 } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
-import { CloseButton } from '../ui/close-button';
+import { CloseButton } from '../atoms/close-button';
 import { useJourneys } from '../../contexts/JourneysContext';
 import type { JourneyNode, NodeType } from '../../models/journey';
 import { FIXED_START_ID } from '../../models/journey';

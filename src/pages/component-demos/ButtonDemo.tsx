@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/atoms/button'
 import { EnvelopeSimple, Plus, SpinnerGap, Trash, PencilSimple, ArrowRight } from '@phosphor-icons/react'
 
 interface ButtonDemoProps {

@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '@/components/atoms/select'
 import type {
   MessageEnrichmentOptions,
   Channel,

@@ -630,9 +630,13 @@
    
    Toggleable visual debug tool that outlines library components.
    Activated by adding `data-highlighter="on"` to the <html> element.
-   - Teal outlines for UI primitives (data-component^="ui/")
-   - Blue outlines for composed components (data-component^="composed/")
-   - Hover shows component name tooltip and reveals nested components
+   
+   Atomic Design tiers:
+   - Teal outlines for Atoms (data-component^="atoms/") — indivisible primitives
+   - Blue outlines for Molecules (data-component^="molecules/") — atom combinations
+   - Purple outlines for Organisms (data-component^="organisms/") — domain-aware patterns
+   
+   Hover shows component name tooltip and reveals nested components
    ══════════════════════════════════════════════════════════════════════════════ */
 
 /* Base: no highlighting */
@@ -640,16 +644,23 @@
   /* No default styles — only active when highlighter is on */
 }
 
-/* Highlighter ON: UI Primitives — Teal outline */
-html[data-highlighter="on"] [data-component^="ui/"] {
+/* Highlighter ON: Atoms — Teal outline */
+html[data-highlighter="on"] [data-component^="atoms/"] {
   outline: 2px solid var(--primary) !important;
   outline-offset: 1px;
   position: relative;
 }
 
-/* Highlighter ON: Composed Components — Blue outline */
-html[data-highlighter="on"] [data-component^="composed/"] {
+/* Highlighter ON: Molecules — Blue outline */
+html[data-highlighter="on"] [data-component^="molecules/"] {
   outline: 2px solid #3B82F6 !important;
+  outline-offset: 1px;
+  position: relative;
+}
+
+/* Highlighter ON: Organisms — Purple outline */
+html[data-highlighter="on"] [data-component^="organisms/"] {
+  outline: 2px solid #8B5CF6 !important;
   outline-offset: 1px;
   position: relative;
 }
@@ -666,12 +677,16 @@ html[data-highlighter="on"] [data-component]:hover {
   z-index: 9998;
 }
 
-html[data-highlighter="on"] [data-component^="ui/"]:hover {
+html[data-highlighter="on"] [data-component^="atoms/"]:hover {
   outline-color: var(--primary) !important;
 }
 
-html[data-highlighter="on"] [data-component^="composed/"]:hover {
+html[data-highlighter="on"] [data-component^="molecules/"]:hover {
   outline-color: #3B82F6 !important;
+}
+
+html[data-highlighter="on"] [data-component^="organisms/"]:hover {
+  outline-color: #8B5CF6 !important;
 }
 
 /* Component name tooltip — appears on hover */
@@ -692,12 +707,17 @@ html[data-highlighter="on"] [data-component]:hover::after {
 }
 
 /* Tooltip colors match outline colors */
-html[data-highlighter="on"] [data-component^="ui/"]:hover::after {
+html[data-highlighter="on"] [data-component^="atoms/"]:hover::after {
   background: var(--primary);
   color: white;
 }
 
-html[data-highlighter="on"] [data-component^="composed/"]:hover::after {
+html[data-highlighter="on"] [data-component^="molecules/"]:hover::after {
   background: #3B82F6;
+  color: white;
+}
+
+html[data-highlighter="on"] [data-component^="organisms/"]:hover::after {
+  background: #8B5CF6;
   color: white;
 }

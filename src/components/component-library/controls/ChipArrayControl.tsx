@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { X, Plus } from '@phosphor-icons/react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
+import { Input } from '@/components/atoms/input'
+import { Button } from '@/components/atoms/button'
+import { Label } from '@/components/atoms/label'
 import { cn } from '@/lib/utils'
 
 interface ChipArrayControlProps {

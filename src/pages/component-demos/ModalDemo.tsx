@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { ModalHeader } from '@/components/composed/modal-header'
-import { ModalFooter } from '@/components/composed/modal-footer'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/atoms/dialog'
+import { ModalHeader } from '@/components/molecules/modal-header'
+import { ModalFooter } from '@/components/molecules/modal-footer'
+import { Button } from '@/components/atoms/button'
+import { Input } from '@/components/atoms/input'
+import { Label } from '@/components/atoms/label'
 
 interface ModalDemoProps {
   title?: string

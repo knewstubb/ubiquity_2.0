@@ -3,7 +3,7 @@ import { Plus, Trash, CaretDown, CaretRight } from '@phosphor-icons/react';
 import { useFeatureFlags } from '../../contexts/FeatureFlagContext';
 import type { FeatureFlag } from '../../contexts/FeatureFlagContext';
 import { cn } from '../../lib/utils';
-import { CloseButton } from '../ui/close-button';
+import { CloseButton } from '../atoms/close-button';
 
 interface FeatureFlagsModalProps {
   onClose: () => void;

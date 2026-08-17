@@ -1,13 +1,13 @@
 import { ArrowRight, DotsThree, PencilSimple, Trash, UsersThree, NewspaperClipping, Play, Pause } from '@phosphor-icons/react';
-import { Chip } from '@/components/composed/chip';
+import { Chip } from '@/components/molecules/chip';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+} from '@/components/atoms/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/atoms/tooltip';
 import { cn } from '@/lib/utils';
 import type { SyncRule } from '../../models/account-sync';
 

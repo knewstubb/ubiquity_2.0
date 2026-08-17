@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/atoms/checkbox'
+import { Label } from '@/components/atoms/label'
 import { cn } from '@/lib/utils'
 import type { CheckedState } from '@radix-ui/react-checkbox'
 

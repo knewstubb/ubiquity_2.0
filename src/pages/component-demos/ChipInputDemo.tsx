@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChipInput } from '@/components/composed/chip-input';
+import { ChipInput } from '@/components/molecules/chip-input';
 import { useControlValues } from '@/lib/useControlValues';
 
 const DROPDOWN_OPTIONS = ['Email', 'Customer ID', 'Phone', 'First Name', 'Last Name', 'Company'];

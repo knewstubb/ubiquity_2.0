@@ -1,4 +1,4 @@
-import { MetricCard } from '@/components/composed/metric-card'
+import { MetricCard } from '@/components/organisms/metric-card'
 
 interface MetricCardDemoProps {
   showTrend?: boolean

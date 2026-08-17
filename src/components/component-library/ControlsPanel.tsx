@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { isVisible } from '@/lib/useControlValues'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/atoms/button'
 import { TextControl } from './controls/TextControl'
 import { TextareaControl } from './controls/TextareaControl'
 import { SelectControl } from './controls/SelectControl'

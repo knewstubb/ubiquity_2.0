@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { ChatCircle } from '@phosphor-icons/react';
 import { useFeedback } from '../../contexts/FeedbackContext';
 import { useAuth } from '../../contexts/AuthContext';
-import { CloseButton } from '../ui/close-button';
+import { CloseButton } from '../atoms/close-button';
 
 function formatTimestamp(iso: string): string {
   try {

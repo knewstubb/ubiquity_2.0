@@ -1,13 +1,40 @@
 # Delivery Log — Account Sync
 
 > Feature: Account Sync
-> Status: Prototype complete — spec documentation outstanding
-> Audit date: 2026-07-14
-> Audited by: Gene (Delivery Lead)
+> Status: Prototype complete — spec documentation updated
+> Last updated: 2026-08-11
+> Maintained by: Gene (Delivery Lead)
 
 ---
 
-## Audit Summary
+## 2026-08-11 — Spec Update: Mandatory Fields Behavior
+
+**Context:** ADO PBI 3643279 (UX/UI: Create Contact Sync Page) was updated with detailed acceptance criteria for mandatory fields, match key behavior, and column mapping grid patterns based on prototype analysis.
+
+**What changed:**
+
+1. **requirements.md** — Added new user stories and acceptance criteria:
+   - US-5.4a: Match key behavior in mapping grid (auto-creates row, Key icon, read-only, sorted to top)
+   - US-5.4b: Mandatory (required) fields without defaults (auto-added, asterisk indicator, auto-match by name, can't delete)
+   - US-5.4c: Mandatory fields with default values (NOT auto-added, must add manually)
+   - US-5.4d: Unmapped required count ("X required unmapped" indicator, disables save)
+   - US-5.4e: Mapped count display (badge showing "X mapped")
+   - US-5.4f: Row sorting order (match key → required → additional)
+   - US-5.4g: Duplicate target validation (warning, destructive styling, disables save)
+
+2. **design.md** — Updated Column Mapping section with detailed row types:
+   - Match key row styling and behavior
+   - Required column row styling and behavior
+   - Additional mapping row styling and behavior
+   - Grid layout and sorting logic
+
+**Refs:**
+- ADO PBI: https://dev.azure.com/sparknz/Spark/_workitems/edit/3643279
+- Prototype: `src/pages/AccountSyncWizardPage.tsx`
+
+---
+
+## Previous: Audit Summary (2026-07-14)
 
 The Account Sync feature has been built as a functional prototype and is working in the UI at `/admin/account-sync`. The prototype covers the full creation, editing, pausing, resuming, and deletion of both contact and transaction sync rules, including cascading behaviours and the nested parent/child relationship.
 

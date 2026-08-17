@@ -6,8 +6,8 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select'
-import { CheckboxCard } from '@/components/composed/checkbox-card'
+} from '@/components/atoms/select'
+import { SelectorCard } from '@/components/molecules/selector-card'
 import type { PrimarySourceType, Channel } from '../../../models/source-selection'
 
 interface SubSourceSelectorProps {
@@ -108,7 +108,8 @@ export function SubSourceSelector({
           <p className="text-xs text-muted-foreground m-0">
             Only one channel is available — automatically selected.
           </p>
-          <CheckboxCard
+          <SelectorCard
+            variant="checkbox"
             selected={true}
             onToggle={() => {}}
             label={channelLabel}
@@ -122,8 +123,9 @@ export function SubSourceSelector({
     return (
       <div className="flex flex-col gap-2">
         {CHANNEL_OPTIONS.filter((opt) => availableChannels.includes(opt.id)).map((option) => (
-          <CheckboxCard
+          <SelectorCard
             key={option.id}
+            variant="checkbox"
             selected={selectedChannels.includes(option.id)}
             onToggle={() => onChannelChange(option.id)}
             label={option.label}

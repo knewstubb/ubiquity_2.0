@@ -1,7 +1,7 @@
 import { FUNCTIONAL_GROUPS } from '../../data/permissions';
 import { usePermissions } from '../../contexts/PermissionsContext';
 import { PermissionCard } from './PermissionCard';
-import { CloseButton } from '../ui/close-button';
+import { CloseButton } from '../atoms/close-button';
 
 interface PermissionEditPanelProps {
   open: boolean;

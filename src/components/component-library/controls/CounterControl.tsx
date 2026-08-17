@@ -1,5 +1,5 @@
-import { Label } from '@/components/ui/label'
-import { NumberStepper } from '@/components/composed/number-stepper'
+import { Label } from '@/components/atoms/label'
+import { NumberStepper } from '@/components/molecules/number-stepper'
 
 interface CounterControlProps {
   value: number

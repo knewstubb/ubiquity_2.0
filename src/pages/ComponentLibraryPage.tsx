@@ -4,7 +4,7 @@ import { CaretRight, CaretDown, MagnifyingGlass } from '@phosphor-icons/react'
 import { componentRegistry } from '../data/componentRegistry'
 import type { ComponentCategory, ComponentEntry, PropDefinition } from '../data/componentRegistry'
 import { cn } from '../lib/utils'
-import { Badge } from '../components/ui/badge'
+import { Badge } from '../components/atoms/badge'
 import { useControlValues } from '../lib/useControlValues'
 import { ControlsPanel } from '../components/component-library/ControlsPanel'
 import {
@@ -14,7 +14,7 @@ import {
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '../components/ui/breadcrumb'
+} from '../components/molecules/breadcrumb'
 import {
   SidebarProvider,
   Sidebar,
@@ -25,7 +25,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-} from '../components/ui/sidebar'
+} from '../components/molecules/sidebar'
 
 interface CategoryDef {
   id: ComponentCategory

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Plus, DownloadSimple, MagnifyingGlass, FunnelSimple, GearSix } from '@phosphor-icons/react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuLink } from '@/components/ui/navigation-menu'
+import { Button } from '@/components/atoms/button'
+import { Input } from '@/components/atoms/input'
+import { Badge } from '@/components/atoms/badge'
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/molecules/breadcrumb'
+import { Tabs, TabsList, TabsTrigger } from '@/components/atoms/tabs'
+import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuLink } from '@/components/molecules/navigation-menu'
 import { cn } from '@/lib/utils'
 
 const SAMPLE_TABS = ['Overview', 'Contacts', 'Transactional', 'Activity', 'Settings']

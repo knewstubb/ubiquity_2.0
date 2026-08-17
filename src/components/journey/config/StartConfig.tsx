@@ -5,18 +5,18 @@ import type { JourneyNode, TriggerSubType } from '../../../models/journey';
 import type { FilterGroup as SegmentFilterGroup } from '../../../models/segment';
 import { segments } from '../../../data/segments';
 import { CONTACT_FIELDS, TREATMENT_FIELDS, PRODUCT_FIELDS } from '../../../data/fieldRegistry';
-import { ModalFilterBuilder } from '../../composed/filter-builder';
-import type { FilterGroup as ModalFilterGroup, SourceCategoryConfig, CardFilterRow } from '../../composed/filter-builder';
-import { Label } from '../../ui/label';
+import { ModalFilterBuilder } from '../../organisms/filter-builder';
+import type { FilterGroup as ModalFilterGroup, SourceCategoryConfig, CardFilterRow } from '../../organisms/filter-builder';
+import { Label } from '../../atoms/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../ui/select';
-import { Input } from '../../ui/input';
-import { Textarea } from '../../ui/textarea';
+} from '../../atoms/select';
+import { Input } from '../../atoms/input';
+import { Textarea } from '../../atoms/textarea';
 import { cn } from '../../../lib/utils';
 
 /** Map field registry dataType to ModalFilterBuilder dataType */

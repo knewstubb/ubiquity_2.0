@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
 import { CaretRight } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
-import { InfoHint } from '@/components/composed/info-hint';
-import { HelpPopover } from '@/components/composed/help-popover';
-import { Switch } from '../ui/switch';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
+import { InfoHint } from '@/components/molecules/info-hint';
+import { HelpPopover } from '@/components/molecules/help-popover';
+import { Switch } from '../atoms/switch';
+import { Label } from '../atoms/label';
+import { Input } from '../atoms/input';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../atoms/select';
 import { resolveTimestamp } from '../../utils/exporter-utils';
 import type { ExporterWizardDraft } from '../../models/wizard';
 import type { FormatOptions } from '../../models/automation';

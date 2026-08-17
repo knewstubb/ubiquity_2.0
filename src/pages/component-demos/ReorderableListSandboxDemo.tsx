@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react'
 import { cn } from '@/lib/utils'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import { Checkbox } from '@/components/atoms/checkbox'
+import { Badge } from '@/components/atoms/badge'
+import { Button } from '@/components/atoms/button'
+import { Switch } from '@/components/atoms/switch'
+import { Label } from '@/components/atoms/label'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/atoms/select'
 import { DragHandle } from '@/components/shared/DragHandle'
 
 interface FieldItem {

@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { cn } from '../../lib/utils';
-import { SegmentedControl } from '@/components/composed/segmented-control';
-import { ChipInput } from '@/components/composed/chip-input';
-import { HelpPopover } from '@/components/composed/help-popover';
-import { DayPicker } from '@/components/composed/day-picker';
-import { Switch } from '../ui/switch';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
+import { SegmentedControl } from '@/components/molecules/segmented-control';
+import { ChipInput } from '@/components/molecules/chip-input';
+import { HelpPopover } from '@/components/molecules/help-popover';
+import { DayPicker } from '@/components/molecules/day-picker';
+import { Switch } from '../atoms/switch';
+import { Label } from '../atoms/label';
+import { Input } from '../atoms/input';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../atoms/select';
 import type { ExporterNotificationConfig } from '../../models/wizard';
 
 /* ── Types ── */

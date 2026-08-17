@@ -7,9 +7,9 @@ import {
   DialogFooter,
   DialogTitle,
   DialogDescription,
-} from '../ui/dialog';
-import { SelectorCard } from '../composed/selector-card';
-import { Button } from '../ui/button';
+} from '../atoms/dialog';
+import { SelectorCard } from '../molecules/selector-card';
+import { Button } from '../atoms/button';
 import { transactionalDatabases } from '../../data/transactionalData';
 import { usePrototypePhases } from '../../contexts/PrototypePhaseContext';
 import { useAccount } from '../../contexts/AccountContext';

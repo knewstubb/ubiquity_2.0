@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/atoms/badge'
 import { CheckCircle } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 

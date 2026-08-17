@@ -1,5 +1,5 @@
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
+import { ScrollArea, ScrollBar } from '@/components/atoms/scroll-area'
+import { Separator } from '@/components/atoms/separator'
 
 interface ScrollAreaDemoProps {
   height?: number

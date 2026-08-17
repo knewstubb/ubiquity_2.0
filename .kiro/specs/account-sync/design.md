@@ -167,12 +167,48 @@ A dialog for creating or editing sync rules. Two modes: contact and transaction.
 #### Section: Column Mapping
 
 - Separated with `border-t` and `pt-5`
-- Header row: section title + "{n} mapped" badge (neutral-subtle)
-- Description: "Map source columns to their corresponding target columns. Unmapped columns will not be synced."
-- Column headers: "Source" and "Target" (text-[10px] uppercase tracking-wide tertiary)
-- Each row: Source combobox → ArrowRight (12px) → Target combobox → Trash button (remove)
-- Add button: "Add Column Mapping" (variant: outline, size: sm, Plus icon)
-- Add button disabled when no columns are available (accounts/lists not yet selected)
+- Header row: section title ("Column Mapping" with ArrowsLeftRight icon) + validation indicators + mapped count badge
+- Header validation indicators (right side):
+  - "X required unmapped" (amber text, asterisk icon) — shown when required columns lack source mappings
+  - "Duplicate targets" (destructive text, warning icon) — shown when multiple rows target the same column
+  - "X mapped" badge (neutral-subtle when 0, default-subtle otherwise)
+- Column headers: "Source Column", "Target Column", "Example Values" (text-[10px] uppercase tracking-wide tertiary)
+
+**Row Types:**
+
+1. **Match Key Row** (always first when match key selected)
+   - Background: `bg-primary/5` with stronger bottom border
+   - Source column: Read-only text with **Key icon** (14px, fill, primary colour) prefix, teal text, font-semibold
+   - Target column: Read-only text, teal text, font-semibold
+   - Arrow: `→` in primary colour
+   - Example value: Teal text
+   - No remove button
+
+2. **Required Column Rows** (below match key, above additional)
+   - Source column: Combobox dropdown (editable) — system auto-matches by name if possible
+   - Target column: Read-only text with **asterisk (\*) indicator** (12px, bold, amber colour)
+   - Arrow: `→` in primary colour when source selected, tertiary otherwise
+   - Example value: Tertiary text
+   - No remove button — required rows cannot be deleted
+
+3. **Additional Mapping Rows** (user-added, at bottom)
+   - Source column: Combobox dropdown
+   - Target column: Combobox dropdown (excludes required columns from options)
+   - Arrow: `→` in primary colour when both selected, tertiary otherwise
+   - Duplicate indicator: If target matches another row, warning icon + "Duplicate" text in destructive colour
+   - Remove button: Trash icon (16px, muted-foreground, hover:destructive)
+
+**Row Layout:** Grid with columns `[1fr 40px 1fr 40px 1fr 40px]` — source, arrow, target, equals, example, action
+
+**Sorting Logic:**
+1. Match key row (if exists)
+2. Required column rows (sorted by column name)
+3. Additional mapping rows (in order added)
+
+**Add Button:**
+- Position: Below last row, inside scrollable area
+- Label: "Add mapping" (Plus icon, 16px bold, primary colour)
+- Disabled: When no columns available (accounts not selected)
 
 ---
 

@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed'
-import { Button } from '@/components/ui/button'
+import { AlertDialogComposed } from '@/components/organisms/alert-dialog-composed'
+import { Button } from '@/components/atoms/button'
 
 interface AlertDialogDemoProps {
   'object-name'?: string

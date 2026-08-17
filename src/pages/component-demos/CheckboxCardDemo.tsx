@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CheckboxCard } from '@/components/composed/checkbox-card'
+import { SelectorCard } from '@/components/molecules/selector-card'
 import { useControlValues } from '@/lib/useControlValues'
 
 const DEMO_OPTIONS = [
@@ -21,7 +21,8 @@ export default function CheckboxCardDemo({ controls }: { controls?: Record<strin
   if (controls) {
     return (
       <div className="flex flex-col gap-2 p-8 max-w-md">
-        <CheckboxCard
+        <SelectorCard
+          variant="checkbox"
           selected={controlledSelected}
           onToggle={() => {}}
           label={label}
@@ -49,8 +50,9 @@ export default function CheckboxCardDemo({ controls }: { controls?: Record<strin
   return (
     <div className="flex flex-col gap-2 p-8 max-w-md">
       {DEMO_OPTIONS.map((opt) => (
-        <CheckboxCard
+        <SelectorCard
           key={opt.id}
+          variant="checkbox"
           selected={selected.has(opt.id)}
           onToggle={() => handleToggle(opt.id)}
           label={opt.label}

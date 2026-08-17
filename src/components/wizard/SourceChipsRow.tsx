@@ -1,6 +1,6 @@
 import { Plus } from '@phosphor-icons/react';
-import { Chip } from '../composed/chip';
-import { Button } from '../ui/button';
+import { Chip } from '../molecules/chip';
+import { Button } from '../atoms/button';
 import { transactionalDatabases } from '../../data/transactionalData';
 import type { PrimarySourceType, EnrichmentConfig } from '../../models/source-selection';
 

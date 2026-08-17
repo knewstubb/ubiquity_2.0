@@ -3,7 +3,7 @@ import {
   Warning,
   CheckCircle,
 } from '@phosphor-icons/react';
-import { CloseButton } from '../ui/close-button';
+import { CloseButton } from '../atoms/close-button';
 import type { ValidationError } from '../../utils/journeyValidation';
 
 export interface ValidationSummaryProps {

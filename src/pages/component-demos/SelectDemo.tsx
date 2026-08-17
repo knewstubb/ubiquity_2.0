@@ -6,7 +6,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '@/components/atoms/select'
 import { cn } from '@/lib/utils'
 
 // --- Types ---

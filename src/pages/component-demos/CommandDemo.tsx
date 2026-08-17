@@ -6,7 +6,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@/components/ui/command'
+} from '@/components/molecules/command'
 import { CalendarBlank, Envelope, Gear, User, MagnifyingGlass, ChatCircle, Bell, Star } from '@phosphor-icons/react'
 import type { ReactNode } from 'react'
 

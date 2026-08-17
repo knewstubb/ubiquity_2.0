@@ -1,5 +1,5 @@
-import { Button } from '../ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { Button } from '../atoms/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../atoms/tooltip';
 
 interface WizardNavButtonsProps {
   onBack: () => void;

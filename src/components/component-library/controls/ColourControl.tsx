@@ -1,11 +1,11 @@
-import { Label } from '@/components/ui/label'
+import { Label } from '@/components/atoms/label'
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select'
+} from '@/components/atoms/select'
 import type { PropOption } from '@/data/componentRegistry'
 
 // Default token colours from the UDS design system

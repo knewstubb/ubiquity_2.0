@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { SelectorCard } from '@/components/composed/selector-card'
+import { SelectorCard } from '@/components/molecules/selector-card'
 import { CloudArrowUp, Database, Tag, CalendarBlank, Folder, Globe } from '@phosphor-icons/react'
-import { Input } from '@/components/ui/input'
+import { Input } from '@/components/atoms/input'
 
 const ICONS = [CloudArrowUp, Database, Tag, CalendarBlank, Folder, Globe]
 const LABELS = ['Cloud Upload', 'Database', 'Tagged', 'Scheduled', 'File Storage', 'Web API']

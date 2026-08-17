@@ -7,7 +7,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu'
+} from '@/components/molecules/navigation-menu'
 import { cn } from '@/lib/utils'
 
 interface NavigationMenuDemoProps {

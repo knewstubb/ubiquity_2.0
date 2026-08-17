@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CurrencyDollar, PlugsConnected, Plus } from '@phosphor-icons/react';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/atoms/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/atoms/popover';
 import { useConnections } from '../contexts/ConnectionsContext';
 import { useAutomations } from '../contexts/AutomationsContext';
 import { useAccount } from '../contexts/AccountContext';
@@ -14,8 +14,8 @@ import { InitialModal } from '../components/dashboard/InitialModal';
 import { AutomationSettingsModal } from '../components/dashboard/AutomationSettingsModal';
 import { ActivityLogModal } from '../components/dashboard/ActivityLogModal';
 import { HistoryModal } from '../components/dashboard/HistoryModal';
-import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed';
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import { AlertDialogComposed } from '@/components/organisms/alert-dialog-composed';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/molecules/breadcrumb';
 import type { Automation } from '../models/automation';
 
 export default function DashboardPage() {

@@ -3,16 +3,16 @@ import { useJourneys } from '../../../contexts/JourneysContext';
 import { segments } from '../../../data/segments';
 import type { JourneySettings, ReEntryRule } from '../../../models/journey';
 import type { CampaignStatus, JourneyType } from '../../../models/campaign';
-import { Label } from '../../ui/label';
-import { Input } from '../../ui/input';
-import { Textarea } from '../../ui/textarea';
+import { Label } from '../../atoms/label';
+import { Input } from '../../atoms/input';
+import { Textarea } from '../../atoms/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../ui/select';
+} from '../../atoms/select';
 
 export interface JourneySettingsFormProps {
   journeyId: string;

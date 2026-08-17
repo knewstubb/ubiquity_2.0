@@ -6,13 +6,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@/components/atoms/table'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import { NumberStepper } from '@/components/composed/number-stepper'
+import { Button } from '@/components/atoms/button'
+import { Switch } from '@/components/atoms/switch'
+import { Label } from '@/components/atoms/label'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/atoms/select'
+import { NumberStepper } from '@/components/molecules/number-stepper'
 import { CaretRight } from '@phosphor-icons/react'
 
 type Density = 'compact' | 'default' | 'relaxed'

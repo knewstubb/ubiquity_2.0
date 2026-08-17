@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Trash, Image, FileText } from '@phosphor-icons/react';
-import { CloseButton } from '../ui/close-button';
+import { CloseButton } from '../atoms/close-button';
 import type { Asset } from '../../models/asset';
 
 interface AssetDetailPanelProps {

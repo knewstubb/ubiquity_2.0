@@ -6,7 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination'
+} from '@/components/molecules/pagination'
 
 interface PaginationDemoProps {
   'total-pages'?: number

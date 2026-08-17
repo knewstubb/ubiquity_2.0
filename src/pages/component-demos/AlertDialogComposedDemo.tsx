@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed'
-import { Button } from '@/components/ui/button'
+import { AlertDialogComposed } from '@/components/organisms/alert-dialog-composed'
+import { Button } from '@/components/atoms/button'
 
 export default function AlertDialogComposedDemo(props: Record<string, unknown>) {
   const [open, setOpen] = useState(false)

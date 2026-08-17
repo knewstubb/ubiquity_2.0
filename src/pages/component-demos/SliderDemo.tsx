@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Slider } from '@/components/ui/slider'
+import { Slider } from '@/components/atoms/slider'
 import { cn } from '@/lib/utils'
 
 interface SliderDemoProps {

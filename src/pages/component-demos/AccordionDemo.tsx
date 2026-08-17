@@ -3,7 +3,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion'
+} from '@/components/atoms/accordion'
 
 interface AccordionDemoProps {
   'item-count'?: number

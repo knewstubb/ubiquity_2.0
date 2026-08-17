@@ -83,12 +83,12 @@ For selects (AWS Region, Auth Method):
 </div>
 ```
 
-### CardSelector Usage
+### SelectorCard Usage
 
-The new composed `CardSelector` at `@/components/composed/card-selector` has the same props interface as the old shared one. Direct swap:
+Use `SelectorCard` with `variant="icon"` from `@/components/molecules/selector-card`:
 
 ```tsx
-import { CardSelector } from '@/components/composed/card-selector'
+import { SelectorCard } from '@/components/molecules/selector-card'
 ```
 
 ### Toggle Group (SFTP Auth Method)

@@ -1,7 +1,7 @@
 import type { ExportDataType, TransactionalSource, SelectedField, FormatOptions, ScheduleFrequency, FileType } from './automation';
 import type { FilterGroup } from './segment';
 import type { SourceConfig } from './source-selection';
-import type { FilterGroup as CardFilterGroup } from '../components/composed/filter-builder/types';
+import type { FilterGroup as CardFilterGroup } from '../components/organisms/filter-builder/types';
 
 // --- Existing types ---
 

@@ -1,15 +1,15 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { ArrowRight, ArrowsLeftRight, WarningCircle, Key, Asterisk, Plus, Trash } from '@phosphor-icons/react';
-import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Combobox } from '@/components/ui/combobox';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { CloseButton } from '@/components/ui/close-button';
-import { SegmentedToggle } from '@/components/ui/segmented-toggle';
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/components/atoms/dialog';
+import { Button } from '@/components/atoms/button';
+import { Combobox } from '@/components/molecules/combobox';
+import { Label } from '@/components/atoms/label';
+import { Badge } from '@/components/atoms/badge';
+import { CloseButton } from '@/components/atoms/close-button';
+import { SegmentedToggle } from '@/components/molecules/segmented-toggle';
 import { useAccount } from '../../contexts/AccountContext';
 import { accountSchemas } from '../../data/account-sync';
-import { SectionDivider } from '@/components/composed/section-divider';
+import { SectionDivider } from '@/components/molecules/section-divider';
 import type { SyncRule, ColumnMapping, SyncTableType, OnMissingBehaviour } from '../../models/account-sync';
 import { cn } from '@/lib/utils';
 

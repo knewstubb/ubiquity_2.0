@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SegmentedToggle } from '@/components/ui/segmented-toggle'
+import { SegmentedToggle } from '@/components/molecules/segmented-toggle'
 
 interface SegmentedToggleDemoProps {
   'label-left'?: string

@@ -1,10 +1,10 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, ArrowsClockwise, Warning } from '@phosphor-icons/react';
-import { Button } from '@/components/ui/button';
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import { Button } from '@/components/atoms/button';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/molecules/breadcrumb';
 import { SyncRuleCard } from '../components/account-sync/SyncRuleCard';
-import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed';
+import { AlertDialogComposed } from '@/components/organisms/alert-dialog-composed';
 import { useAccount } from '../contexts/AccountContext';
 import { useToast } from '../components/shared/Toast';
 import { cn } from '@/lib/utils';

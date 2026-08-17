@@ -8,7 +8,7 @@ import { WhatsNewPanel } from './WhatsNewPanel';
 import { ResetAccountButton } from '../shared/ResetAccountButton';
 import { ChangePasswordModal } from './ChangePasswordModal';
 import { FeatureFlagsModal } from './FeatureFlagsModal';
-import { Switch } from '../ui/switch';
+import { Switch } from '../atoms/switch';
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -17,7 +17,7 @@ import {
   NavigationMenuContent,
   NavigationMenuLink,
   navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
+} from '@/components/molecules/navigation-menu';
 import { useFeatureFlags } from '../../contexts/FeatureFlagContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlatformAdmin } from '../../contexts/PlatformAdminContext';

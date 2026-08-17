@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { Chip } from '@/components/composed/chip';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { Chip } from '@/components/molecules/chip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../atoms/tooltip';
 
 interface FileNamingInputProps {
   value: string;

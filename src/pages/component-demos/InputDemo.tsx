@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Chip } from '@/components/composed/chip'
+import { Label } from '@/components/atoms/label'
+import { Input } from '@/components/atoms/input'
+import { Chip } from '@/components/molecules/chip'
 import { MagnifyingGlass, EnvelopeSimple, WarningCircle, CheckCircle } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 

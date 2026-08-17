@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CardSelector } from '@/components/composed/card-selector'
+import { SelectorCard } from '@/components/molecules/selector-card'
 import {
   DownloadSimple,
   UploadSimple,
@@ -66,14 +66,15 @@ export default function CardSelectorDemo(props: CardSelectorDemoProps) {
             const IconComp = ICON_MAP[iconName] ?? DownloadSimple
             const description = showDescription ? (DEFAULT_DESCRIPTIONS[i] ?? undefined) : undefined
             return (
-              <CardSelector
+              <SelectorCard
                 key={i}
+                variant="icon"
                 icon={<IconComp size={24} />}
                 label={label}
                 description={description}
                 selected={selected === i}
                 disabled={disabled}
-                onClick={() => setSelected(i)}
+                onSelect={() => setSelected(i)}
               />
             )
           })}
@@ -92,12 +93,13 @@ export default function CardSelectorDemo(props: CardSelectorDemoProps) {
           {DEFAULT_LABELS.slice(0, 3).map((label, i) => {
             const IconComp = ICON_MAP[DEFAULT_ICONS[i]]
             return (
-              <CardSelector
+              <SelectorCard
                 key={i}
+                variant="icon"
                 icon={<IconComp size={24} />}
                 label={label}
                 selected={selected === i}
-                onClick={() => setSelected(i)}
+                onSelect={() => setSelected(i)}
               />
             )
           })}
@@ -111,12 +113,14 @@ export default function CardSelectorDemo(props: CardSelectorDemoProps) {
           {DEFAULT_LABELS.slice(0, 3).map((label, i) => {
             const IconComp = ICON_MAP[DEFAULT_ICONS[i]]
             return (
-              <CardSelector
+              <SelectorCard
                 key={i}
+                variant="icon"
                 icon={<IconComp size={24} />}
                 label={label}
                 selected={i === 0}
                 disabled
+                onSelect={() => {}}
               />
             )
           })}
@@ -130,12 +134,13 @@ export default function CardSelectorDemo(props: CardSelectorDemoProps) {
           {DEFAULT_LABELS.map((label, i) => {
             const IconComp = ICON_MAP[DEFAULT_ICONS[i]]
             return (
-              <CardSelector
+              <SelectorCard
                 key={i}
+                variant="icon"
                 icon={<IconComp size={24} />}
                 label={label}
                 selected={selected === i}
-                onClick={() => setSelected(i)}
+                onSelect={() => setSelected(i)}
               />
             )
           })}

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SegmentedControl } from '@/components/composed/segmented-control'
+import { SegmentedControl } from '@/components/molecules/segmented-control'
 
 const defaultOptions = [
   { label: 'Contacts', value: 'contacts' },

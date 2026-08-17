@@ -1,5 +1,5 @@
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/atoms/switch'
+import { Label } from '@/components/atoms/label'
 
 interface ToggleControlProps {
   value: boolean

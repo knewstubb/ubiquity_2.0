@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@/components/atoms/table';
 import type { AccountTreeNode } from './useBillingReport';
 import type { BillingLineItem } from '../../models/billing';
 import type { BillingCategory } from '../../models/billing';

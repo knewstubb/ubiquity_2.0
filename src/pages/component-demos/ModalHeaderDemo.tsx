@@ -1,4 +1,4 @@
-import { ModalHeader } from '@/components/composed/modal-header'
+import { ModalHeader } from '@/components/molecules/modal-header'
 
 export default function ModalHeaderDemo(props: Record<string, unknown>) {
   const title = (props.title as string) ?? 'Modal Title'

@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastProvider } from './components/shared/Toast';
-import { Toaster } from './components/ui/sonner';
+import { Toaster } from './components/molecules/sonner';
 import { AuthProvider } from './contexts/AuthContext';
 import { FeatureFlagProvider } from './contexts/FeatureFlagContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';

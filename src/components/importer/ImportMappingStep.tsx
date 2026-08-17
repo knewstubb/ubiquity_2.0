@@ -1,12 +1,12 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Plus, X, UploadSimple, ArrowLeft, WarningCircle, CalendarBlank, ArrowCounterClockwise, ProhibitInset } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
-import { Button } from '../ui/button';
-import { Combobox } from '../ui/combobox';
-import { Badge } from '../ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { Button } from '../atoms/button';
+import { Combobox } from '../molecules/combobox';
+import { Badge } from '../atoms/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../atoms/tooltip';
 import { TruncatedText } from '../shared/TruncatedText';
-import { HelpPopover } from '@/components/composed/help-popover';
+import { HelpPopover } from '@/components/molecules/help-popover';
 import type { FieldMapping, LookupMapping, ImportDefaultRow } from '../../models/importer';
 import { CONTACT_LOOKUP_FIELDS } from '../../models/importer';
 import { SetImportDefaultModal } from './SetImportDefaultModal';

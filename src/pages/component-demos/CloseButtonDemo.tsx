@@ -1,4 +1,4 @@
-import { CloseButton } from '@/components/ui/close-button'
+import { CloseButton } from '@/components/atoms/close-button'
 
 interface CloseButtonDemoProps {
   size?: 'xs' | 'sm' | 'default' | 'lg'

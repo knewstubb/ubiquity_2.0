@@ -7,16 +7,16 @@ import type { FilterGroup } from '../../../models/segment';
 import { segments } from '../../../data/segments';
 import { CONTACT_FIELDS } from '../../../data/fieldRegistry';
 import { FilterBuilder } from '../../shared/FilterBuilder';
-import { Label } from '../../ui/label';
+import { Label } from '../../atoms/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../ui/select';
-import { Input } from '../../ui/input';
-import { Textarea } from '../../ui/textarea';
+} from '../../atoms/select';
+import { Input } from '../../atoms/input';
+import { Textarea } from '../../atoms/textarea';
 
 export interface TriggerConfigProps {
   journeyId: string;

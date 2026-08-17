@@ -1,7 +1,7 @@
 import { accounts } from '../../data/accounts';
 import type { Account } from '../../models/account';
 import type { CategoryFilter } from './useBillingReport';
-import { DateRangePicker, type DateRangePreset } from '@/components/composed/date-range-picker';
+import { DateRangePicker, type DateRangePreset } from '@/components/molecules/date-range-picker';
 import { getCurrentBillingCycle } from '../../models/billing';
 
 const MONTH_NAMES = [

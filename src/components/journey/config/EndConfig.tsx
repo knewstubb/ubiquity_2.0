@@ -2,15 +2,15 @@ import { useCallback } from 'react';
 import { SignOut, ArrowSquareRight, Info } from '@phosphor-icons/react';
 import { useJourneys } from '../../../contexts/JourneysContext';
 import { createDefaultConfig } from '../../../models/journey';
-import { Label } from '../../ui/label';
+import { Label } from '../../atoms/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../ui/select';
-import { Input } from '../../ui/input';
+} from '../../atoms/select';
+import { Input } from '../../atoms/input';
 import type { JourneyNode, EndSubType } from '../../../models/journey';
 
 export interface EndConfigProps {

@@ -1,5 +1,5 @@
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/atoms/label'
+import { Textarea } from '@/components/atoms/textarea'
 
 interface TextareaControlProps {
   value: string

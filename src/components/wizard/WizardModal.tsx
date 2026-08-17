@@ -9,7 +9,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
-} from '../ui/breadcrumb';
+} from '../molecules/breadcrumb';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -19,8 +19,8 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from '../ui/alert-dialog';
-import { Stepper } from '../composed/stepper';
+} from '../atoms/alert-dialog';
+import { Stepper } from '../organisms/stepper';
 import { WizardNavButtons } from './WizardNavButtons';
 import { SourceSelectionStep } from './SourceSelectionStep';
 import { DataSourceFilterStep } from './DataSourceFilterStep';

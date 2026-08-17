@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import fc from 'fast-check'
-import { closeButtonVariants } from '../components/ui/close-button'
+import { closeButtonVariants } from '../components/atoms/close-button'
 
 /**
  * Feature: close-button-component

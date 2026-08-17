@@ -1,5 +1,5 @@
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/atoms/hover-card'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/atoms/avatar'
 import { CalendarBlank } from '@phosphor-icons/react'
 
 interface HoverCardDemoProps {

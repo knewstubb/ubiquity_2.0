@@ -9,9 +9,9 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
-} from '../ui/breadcrumb';
-import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed';
-import { Stepper } from '../composed/stepper';
+} from '../molecules/breadcrumb';
+import { AlertDialogComposed } from '@/components/organisms/alert-dialog-composed';
+import { Stepper } from '../organisms/stepper';
 import { WizardNavButtons } from '../wizard/WizardNavButtons';
 import { FileSettingsStep } from './FileSettingsStep';
 import { NotificationsStep } from './NotificationsStep';

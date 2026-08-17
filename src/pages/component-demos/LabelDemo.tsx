@@ -1,6 +1,6 @@
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/atoms/label'
+import { Input } from '@/components/atoms/input'
+import { Checkbox } from '@/components/atoms/checkbox'
 import { cn } from '@/lib/utils'
 
 interface LabelDemoProps {

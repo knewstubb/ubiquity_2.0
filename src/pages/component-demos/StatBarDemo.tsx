@@ -1,4 +1,4 @@
-import { StatBar } from '@/components/composed/stat-bar'
+import { StatBar } from '@/components/organisms/stat-bar'
 
 interface StatBarDemoProps {
   itemCount?: number

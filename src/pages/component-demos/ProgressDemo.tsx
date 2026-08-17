@@ -1,4 +1,4 @@
-import { Progress } from '@/components/ui/progress'
+import { Progress } from '@/components/atoms/progress'
 
 interface ProgressDemoProps {
   value?: number

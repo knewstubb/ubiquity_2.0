@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Stepper, type StepperStep } from '@/components/composed/stepper'
+import { Stepper, type StepperStep } from '@/components/organisms/stepper'
 import { cn } from '@/lib/utils'
 
 const defaultLabels = ['Details', 'Configuration', 'Review', 'Complete']

@@ -1,6 +1,6 @@
 import { Users, Receipt, ChatCircle, X } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
-import { CheckboxCard } from '@/components/composed/checkbox-card'
+import { SelectorCard } from '@/components/molecules/selector-card'
 import { getAvailableEnrichments } from '@/utils/source-config-utils'
 import type {
   PrimarySourceType,
@@ -71,8 +71,9 @@ export function EnrichmentSection({ primarySource, config, onChange }: Enrichmen
       {config === null && (
         <div className="grid grid-cols-2 gap-3" role="group" aria-label="Enrichment options">
           {options.map((option) => (
-            <CheckboxCard
+            <SelectorCard
               key={option.entity}
+              variant="checkbox"
               label={option.label}
               selected={false}
               onToggle={() => handleSelectEnrichment(option.entity)}

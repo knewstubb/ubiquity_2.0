@@ -1,4 +1,4 @@
-import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed'
+import { AlertDialogComposed } from '@/components/organisms/alert-dialog-composed'
 
 interface DeleteConfirmDialogProps {
   itemName: string

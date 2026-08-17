@@ -12,13 +12,13 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { User, ShoppingCart, EnvelopeSimple, ChatCircleDots, BookmarkSimple, Trash, TrendDown, ArrowsClockwise, Funnel, CaretLeft, ClipboardText, ListChecks, CheckCircle } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
-import { SelectorCard } from '@/components/composed/selector-card'
-import { InfoHint } from '@/components/composed/info-hint'
-import { HelpPopover } from '@/components/composed/help-popover'
-import { ModalFilterBuilder } from '@/components/composed/filter-builder'
-import type { FilterGroup, SourceCategoryConfig, CardFilterRow } from '@/components/composed/filter-builder'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { SelectorCard } from '@/components/molecules/selector-card'
+import { InfoHint } from '@/components/molecules/info-hint'
+import { HelpPopover } from '@/components/molecules/help-popover'
+import { ModalFilterBuilder } from '@/components/organisms/filter-builder'
+import type { FilterGroup, SourceCategoryConfig, CardFilterRow } from '@/components/organisms/filter-builder'
+import { Button } from '@/components/atoms/button'
+import { Input } from '@/components/atoms/input'
 import { usePrototypePhases } from '../../contexts/PrototypePhaseContext'
 import { useAccount } from '../../contexts/AccountContext'
 import { transactionalDatabases } from '../../data/transactionalData'
@@ -31,7 +31,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from '@/components/ui/dialog'
+} from '@/components/atoms/dialog'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,7 +41,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+} from '@/components/atoms/alert-dialog'
 import { toast } from 'sonner'
 import type { ExporterWizardDraft } from '../../models/wizard'
 import type { SourceConfig } from '../../models/source-selection'

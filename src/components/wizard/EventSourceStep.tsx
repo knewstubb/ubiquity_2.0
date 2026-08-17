@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { CheckboxCard } from '@/components/composed/checkbox-card'
+import { SelectorCard } from '@/components/molecules/selector-card'
 import type { EventSource, ExporterWizardDraft } from '@/models/wizard'
 
 interface EventSourceStepProps {
@@ -59,8 +59,9 @@ export function EventSourceStep({ draft, onUpdate }: EventSourceStepProps) {
 
       <div className="flex flex-col gap-2" role="group" aria-label="Event source selection">
         {EVENT_SOURCE_OPTIONS.map((option) => (
-          <CheckboxCard
+          <SelectorCard
             key={option.id}
+            variant="checkbox"
             selected={selectedEventSources.includes(option.id)}
             onToggle={() => handleToggle(option.id)}
             label={option.label}

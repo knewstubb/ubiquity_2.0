@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Users, Receipt, ChatCircle } from '@phosphor-icons/react'
-import { CardSelector } from '@/components/composed/card-selector'
-import { AlertDialogComposed } from '@/components/composed/alert-dialog-composed'
+import { SelectorCard } from '@/components/molecules/selector-card'
+import { AlertDialogComposed } from '@/components/organisms/alert-dialog-composed'
 import type { PrimarySourceType } from '../../../models/source-selection'
 
 interface PrimarySourceSelectorProps {
@@ -73,13 +73,14 @@ export function PrimarySourceSelector({
         aria-label="Primary source selection"
       >
         {SOURCE_OPTIONS.map((option) => (
-          <CardSelector
+          <SelectorCard
             key={option.id}
+            variant="icon"
             icon={option.icon}
             label={option.label}
             description={option.description}
             selected={selected === option.id}
-            onClick={() => handleSelect(option.id)}
+            onSelect={() => handleSelect(option.id)}
           />
         ))}
       </div>

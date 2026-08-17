@@ -1,4 +1,4 @@
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { ToggleGroup, ToggleGroupItem } from '@/components/atoms/toggle-group'
 import {
   TextAlignLeft,
   TextAlignCenter,

@@ -1,4 +1,4 @@
-import { DonutChart } from '@/components/composed/donut-chart'
+import { DonutChart } from '@/components/organisms/donut-chart'
 
 interface DonutChartDemoProps {
   size?: 'sm' | 'md' | 'lg'

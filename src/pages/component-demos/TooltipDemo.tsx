@@ -3,8 +3,8 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { Button } from '@/components/ui/button'
+} from '@/components/atoms/tooltip'
+import { Button } from '@/components/atoms/button'
 import { Plus, Gear, Trash } from '@phosphor-icons/react'
 
 interface TooltipDemoProps {
