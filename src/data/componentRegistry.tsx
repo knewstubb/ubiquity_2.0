@@ -2,7 +2,7 @@ import { lazy, type LazyExoticComponent, type ComponentType, type ReactNode } fr
 import { DownloadSimple, UploadSimple, CloudArrowUp, Folder, Database, Globe, Lightning, Gear } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
 
-export type ComponentCategory = 'tokens' | 'atoms' | 'inputs' | 'display' | 'feedback' | 'navigation' | 'compositions' | 'sandboxes'
+export type ComponentCategory = 'tokens' | 'atoms' | 'molecules' | 'organisms' | 'sandboxes'
 
 export type ControlType =
   | 'text' | 'textarea' | 'select' | 'toggle' | 'colour' | 'number' | 'range' | 'radio'
@@ -130,7 +130,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Button',
     slug: 'shadcn-button',
-    category: 'inputs',
+    category: 'atoms',
     description: 'Accessible button with variants: default, destructive, destructiveOutline, destructiveGhost, outline, secondary, secondaryOutline, ghost, secondaryGhost, link.',
     searchTerms: ['action', 'click', 'submit', 'cta', 'primary action', 'trigger'],
     component: lazy(() => import('../pages/component-demos/ButtonDemo')),
@@ -244,7 +244,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Calendar',
     slug: 'calendar',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Date picker calendar grid with month navigation.',
     searchTerms: ['date picker', 'date selector', 'month view', 'day selection', 'schedule'],
     usesComponents: ['Button'],
@@ -284,7 +284,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Checkbox',
     slug: 'shadcn-checkbox',
-    category: 'inputs',
+    category: 'atoms',
     description: 'Accessible checkbox with indeterminate state support.',
     searchTerms: ['tick', 'check', 'boolean', 'multi select', 'checkmark', 'agree'],
     usesComponents: ['Label'],
@@ -327,7 +327,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Input',
     slug: 'input',
-    category: 'inputs',
+    category: 'atoms',
     description: 'Text input field with consistent styling and focus ring.',
     searchTerms: ['text field', 'type', 'form field', 'entry', 'text box', 'field'],
     component: lazy(() => import('../pages/component-demos/InputDemo')),
@@ -376,7 +376,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Spinner Input',
     slug: 'spinner-input',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Numeric input with increment/decrement stepper arrows.',
     searchTerms: ['number', 'stepper', 'spinner', 'increment', 'decrement', 'counter', 'numeric'],
     usesComponents: [],
@@ -410,7 +410,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'InputOTP',
     slug: 'input-otp',
-    category: 'inputs',
+    category: 'molecules',
     description: 'One-time password input with individual character slots.',
     searchTerms: ['verification code', 'pin', 'otp', 'two factor', 'mfa', 'code entry'],
     component: lazy(() => import('../pages/component-demos/InputOTPDemo')),
@@ -473,7 +473,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'RadioGroup',
     slug: 'radio-group',
-    category: 'inputs',
+    category: 'atoms',
     description: 'Radio button group for single-choice selection.',
     searchTerms: ['radio', 'single select', 'one of many', 'exclusive choice', 'option group'],
     usesComponents: ['Label'],
@@ -513,7 +513,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'RadioCard',
     slug: 'radio-card',
-    category: 'inputs',
+    category: 'sandboxes',
     description: 'Selectable radio-style card with label, radio indicator, and optional child content revealed on selection.',
     searchTerms: ['radio', 'single select card', 'option card', 'filter option', 'radio button card'],
     component: lazy(() => import('../pages/component-demos/RadioCardDemo')),
@@ -544,7 +544,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'SelectorCard',
     slug: 'selector-card',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Unified selectable card with four variants: icon (centred with badge), checkbox (multi-select), radio (single-select with disclosure), and option (horizontal with badge).',
     searchTerms: ['card', 'selector', 'picker', 'option card', 'radio card', 'checkbox card', 'icon card', 'choice card'],
     component: lazy(() => import('../pages/component-demos/SelectorCardDemo')),
@@ -631,7 +631,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Combobox',
     slug: 'combobox',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Searchable select with type-to-filter dropdown.',
     searchTerms: ['searchable dropdown', 'autocomplete', 'typeahead', 'field with dropdown options', 'filterable select'],
     component: lazy(() => import('../pages/component-demos/ComboboxDemo')),
@@ -677,7 +677,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Slider',
     slug: 'slider',
-    category: 'inputs',
+    category: 'atoms',
     description: 'Range input for selecting numeric values.',
     searchTerms: ['range', 'scrubber', 'value slider', 'numeric range', 'drag to select'],
     component: lazy(() => import('../pages/component-demos/SliderDemo')),
@@ -719,7 +719,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Switch',
     slug: 'switch',
-    category: 'inputs',
+    category: 'atoms',
     description: 'Toggle switch for boolean on/off states. Three sizes: default, small, and extra-small.',
     searchTerms: ['toggle', 'on off', 'boolean', 'enable disable', 'flip'],
     usesComponents: ['Label'],
@@ -760,7 +760,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Textarea',
     slug: 'textarea',
-    category: 'inputs',
+    category: 'atoms',
     description: 'Multi-line text input with auto-resize support.',
     searchTerms: ['multiline', 'text area', 'paragraph input', 'long text', 'description field'],
     component: lazy(() => import('../pages/component-demos/TextareaDemo')),
@@ -828,7 +828,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'ToggleGroup',
     slug: 'toggle-group',
-    category: 'inputs',
+    category: 'atoms',
     description: 'Group of toggle buttons for single or multi-select.',
     searchTerms: ['button group', 'multi toggle', 'option buttons', 'segmented toggle'],
     usesComponents: ['Toggle'],
@@ -865,7 +865,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Form',
     slug: 'form',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Form wrapper with validation, error messages, and field state management.',
     searchTerms: ['form layout', 'validation', 'field group', 'submit', 'form builder'],
     component: lazy(() => import('../pages/component-demos/FormDemo')),
@@ -1014,7 +1014,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Card',
     slug: 'card',
-    category: 'display',
+    category: 'atoms',
     description: 'Container with header, content, and footer sections.',
     searchTerms: ['panel', 'container', 'box', 'content card', 'surface'],
     component: lazy(() => import('../pages/component-demos/CardDemo')),
@@ -1107,7 +1107,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Table',
     slug: 'table',
-    category: 'display',
+    category: 'atoms',
     description: 'Structured data table with header, body, and footer sections.',
     searchTerms: ['grid', 'data grid', 'rows', 'columns', 'tabular', 'spreadsheet'],
     component: lazy(() => import('../pages/component-demos/TableDemo')),
@@ -1223,7 +1223,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Alert',
     slug: 'alert',
-    category: 'feedback',
+    category: 'atoms',
     description: 'Callout for important messages with icon, title, and description.',
     searchTerms: ['banner', 'notification', 'message', 'info box', 'warning', 'callout'],
     component: lazy(() => import('../pages/component-demos/AlertDemo')),
@@ -1262,7 +1262,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'AlertDialog',
     slug: 'alert-dialog',
-    category: 'feedback',
+    category: 'atoms',
     description: 'Confirmation dialog with neutral, warning, and destructive intent variants and tiered confirmation guards.',
     searchTerms: ['confirm', 'confirmation', 'destructive modal', 'are you sure', 'delete confirm'],
     usesComponents: ['Button', 'Input', 'Checkbox', 'Label', 'Close Button'],
@@ -1321,7 +1321,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'AlertDialogComposed',
     slug: 'alert-dialog-composed',
-    category: 'feedback',
+    category: 'organisms',
     description: 'Pre-composed alert dialog with intent variants (neutral, warning, destructive), optional type-to-confirm guard, and async loading state.',
     searchTerms: ['confirmation', 'confirm dialog', 'destructive dialog', 'delete confirm', 'warning dialog', 'type to confirm'],
     component: lazy(() => import('../pages/component-demos/AlertDialogComposedDemo')),
@@ -1358,7 +1358,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Dialog',
     slug: 'dialog',
-    category: 'feedback',
+    category: 'atoms',
     description: 'Accessible modal dialog built on Radix UI with structured Header → Body → Footer layout and blurred overlay.',
     searchTerms: ['modal', 'popup', 'overlay', 'confirmation', 'alert', 'lightbox'],
     usesComponents: ['Button', 'Input', 'Close Button'],
@@ -1415,7 +1415,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Sheet',
     slug: 'sheet',
-    category: 'feedback',
+    category: 'atoms',
     description: 'Slide-out panel from screen edge for secondary content or forms.',
     searchTerms: ['drawer', 'slide panel', 'side panel', 'flyout', 'slide out'],
     usesComponents: ['Button', 'Close Button'],
@@ -1452,7 +1452,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Sonner',
     slug: 'sonner',
-    category: 'feedback',
+    category: 'molecules',
     description: 'Toast notification system with stacking and auto-dismiss.',
     searchTerms: ['toast', 'snackbar', 'notification', 'flash message', 'pop up message'],
     component: lazy(() => import('../pages/component-demos/SonnerDemo')),
@@ -1490,7 +1490,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Tooltip',
     slug: 'tooltip',
-    category: 'feedback',
+    category: 'atoms',
     description: 'Hover-triggered informational popup with configurable placement.',
     searchTerms: ['hint', 'hover text', 'help text', 'info bubble', 'title attribute'],
     usesComponents: [],
@@ -1526,7 +1526,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'HoverCard',
     slug: 'hover-card',
-    category: 'feedback',
+    category: 'atoms',
     description: 'Hover-triggered card preview for links or user profiles.',
     searchTerms: ['preview card', 'hover preview', 'link preview', 'user card', 'profile popup'],
     usesComponents: ['Avatar', 'Button'],
@@ -1557,7 +1557,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Popover',
     slug: 'popover',
-    category: 'feedback',
+    category: 'atoms',
     description: 'Click-triggered floating panel for forms or additional content.',
     searchTerms: ['popup', 'things that popup', 'floating', 'dropdown panel', 'floating content'],
     usesComponents: ['Button'],
@@ -1608,7 +1608,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Accordion',
     slug: 'accordion',
-    category: 'navigation',
+    category: 'atoms',
     description: 'Collapsible content sections with single or multiple open panels.',
     searchTerms: ['expandable', 'collapsible', 'expand collapse', 'faq', 'disclosure'],
     component: lazy(() => import('../pages/component-demos/AccordionDemo')),
@@ -1646,7 +1646,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Breadcrumb',
     slug: 'breadcrumb',
-    category: 'navigation',
+    category: 'molecules',
     description: 'Navigation trail showing page hierarchy.',
     searchTerms: ['path', 'trail', 'hierarchy', 'navigation path', 'location'],
     component: lazy(() => import('../pages/component-demos/BreadcrumbDemo')),
@@ -1670,7 +1670,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Collapsible',
     slug: 'collapsible',
-    category: 'navigation',
+    category: 'atoms',
     description: 'Expandable/collapsible content section with trigger.',
     searchTerms: ['expand', 'collapse', 'toggle section', 'show hide', 'disclosure'],
     component: lazy(() => import('../pages/component-demos/CollapsibleDemo')),
@@ -1697,7 +1697,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Command',
     slug: 'command',
-    category: 'navigation',
+    category: 'molecules',
     description: 'Combobox/command palette with search filtering and keyboard selection.',
     searchTerms: ['command palette', 'spotlight', 'quick action', 'cmd k', 'keyboard shortcut'],
     component: lazy(() => import('../pages/component-demos/CommandDemo')),
@@ -1727,7 +1727,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'ContextMenu',
     slug: 'context-menu',
-    category: 'navigation',
+    category: 'atoms',
     description: 'Right-click menu with items, sub-menus, and separators.',
     searchTerms: ['right click', 'context actions', 'secondary menu', 'action menu'],
     component: lazy(() => import('../pages/component-demos/ContextMenuDemo')),
@@ -1754,7 +1754,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'DropdownMenu',
     slug: 'dropdown-menu',
-    category: 'navigation',
+    category: 'atoms',
     description: 'Click-triggered menu with items, separators, and keyboard navigation.',
     searchTerms: ['menu', 'action menu', 'options menu', 'kebab menu', 'more actions'],
     component: lazy(() => import('../pages/component-demos/DropdownMenuDemo')),
@@ -1784,7 +1784,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Menubar',
     slug: 'menubar',
-    category: 'navigation',
+    category: 'molecules',
     description: 'Horizontal menu bar with dropdown sub-menus.',
     searchTerms: ['menu strip', 'file menu', 'toolbar menu', 'app menu'],
     component: lazy(() => import('../pages/component-demos/MenubarDemo')),
@@ -1811,7 +1811,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'NavigationMenu',
     slug: 'navigation-menu',
-    category: 'navigation',
+    category: 'molecules',
     description: 'Site navigation with links, dropdowns, and viewport animations.',
     searchTerms: ['nav bar', 'site navigation', 'top nav', 'mega menu', 'header nav'],
     usesComponents: ['Button'],
@@ -1844,7 +1844,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Pagination',
     slug: 'pagination',
-    category: 'navigation',
+    category: 'molecules',
     description: 'Page navigation with previous/next and numbered page links.',
     searchTerms: ['pages', 'page numbers', 'next previous', 'paging', 'page controls'],
     component: lazy(() => import('../pages/component-demos/PaginationDemo')),
@@ -1887,7 +1887,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'ScrollArea',
     slug: 'scroll-area',
-    category: 'navigation',
+    category: 'atoms',
     description: 'Custom scrollbar container with consistent cross-browser styling.',
     searchTerms: ['scrollbar', 'overflow', 'scroll container', 'scrollable', 'scroll pane'],
     component: lazy(() => import('../pages/component-demos/ScrollAreaDemo')),
@@ -1915,7 +1915,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Tabs',
     slug: 'tabs',
-    category: 'navigation',
+    category: 'atoms',
     description: 'Tabbed interface with pill and underline variants. Pill for content switching, underline for page-level navigation.',
     searchTerms: ['tab bar', 'sections', 'views', 'navigation tabs', 'page tabs'],
     component: lazy(() => import('../pages/component-demos/TabsDemo')),
@@ -1963,7 +1963,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'CardSelector',
     slug: 'card-selector',
-    category: 'inputs',
+    category: 'sandboxes',
     description: 'Selectable card with icon, label, and checkmark badge for single/multi-choice selections.',
     searchTerms: ['card picker', 'option cards', 'visual selector', 'icon cards', 'choice cards'],
     usesComponents: [],
@@ -2056,7 +2056,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'MetricCard',
     slug: 'metric-card',
-    category: 'display',
+    category: 'organisms',
     description: 'Dashboard metric card with value, label, and trend indicator.',
     searchTerms: ['stat', 'kpi', 'number card', 'dashboard stat', 'metric tile', 'data point'],
     usesComponents: ['Card'],
@@ -2090,7 +2090,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'StatBar',
     slug: 'stat-bar',
-    category: 'display',
+    category: 'organisms',
     description: 'Horizontal bar of stats with separators, used for secondary metrics displays below primary cards.',
     searchTerms: ['stats row', 'metrics bar', 'secondary stats', 'kpi row', 'stat strip', 'numbers row'],
     usesComponents: ['Card', 'Separator'],
@@ -2126,7 +2126,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'DonutChart',
     slug: 'donut-chart',
-    category: 'display',
+    category: 'organisms',
     description: 'Donut chart for visualizing proportional data with optional center label and legend.',
     searchTerms: ['pie chart', 'ring chart', 'engagement', 'breakdown', 'proportional', 'percentage', 'distribution'],
     usesComponents: [],
@@ -2162,7 +2162,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'DataTable',
     slug: 'data-table',
-    category: 'display',
+    category: 'organisms',
     description: 'Generic sortable data table with density control, container styles, selection, striping, and empty state handling.',
     searchTerms: ['sortable table', 'data grid', 'list view', 'records', 'database table'],
     usesComponents: ['Table', 'Checkbox'],
@@ -2190,7 +2190,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'ExpandableTable',
     slug: 'expandable-table',
-    category: 'display',
+    category: 'organisms',
     description: 'Table with expandable disclosure rows for progressive detail. Single-expand accordion — only one row open at a time.',
     searchTerms: ['expandable', 'collapsible rows', 'tree table', 'accordion table', 'nested rows', 'disclosure table', 'drill down'],
     usesComponents: [],
@@ -2228,7 +2228,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'FilterBuilder',
     slug: 'filter-builder',
-    category: 'compositions',
+    category: 'organisms',
     demoLayout: 'full-bleed',
     description: 'Card-based filter builder with progressive drill-down source categories, sub-sources, and human-readable condition cards. Supports nested AND/OR logic groups.',
     searchTerms: ['filter', 'query builder', 'field filter', 'conditions', 'where clause', 'rule builder', 'AND filter', 'OR filter', 'segment builder', 'nested conditions', 'group filter', 'source', 'category', 'drill-down', 'card', 'progressive'],
@@ -2298,7 +2298,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Toast',
     slug: 'toast',
-    category: 'feedback',
+    category: 'molecules',
     description: 'Notification helper using Sonner with UDS styling and variants.',
     searchTerms: ['notification', 'snackbar', 'flash', 'alert toast', 'success message'],
     component: lazy(() => import('../pages/component-demos/ToastDemo')),
@@ -2335,7 +2335,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Modal',
     slug: 'modal',
-    category: 'feedback',
+    category: 'sandboxes',
     description: 'Modal dialog pattern with ModalHeader (title + close) and ModalFooter (button slots) composed on shadcn Dialog.',
     searchTerms: ['dialog header', 'modal title', 'overlay header', 'modal footer', 'modal buttons', 'action bar'],
     usesComponents: ['Dialog', 'Button', 'Input', 'Label', 'Close Button'],
@@ -2373,7 +2373,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'ModalFooter',
     slug: 'modal-footer',
-    category: 'feedback',
+    category: 'molecules',
     description: 'Standardised modal footer with primary, secondary, and optional tertiary action buttons in consistent right-aligned layout.',
     searchTerms: ['dialog footer', 'modal buttons', 'action bar', 'modal actions', 'footer buttons'],
     usesComponents: ['Button'],
@@ -2407,7 +2407,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'ModalHeader',
     slug: 'modal-header',
-    category: 'feedback',
+    category: 'molecules',
     description: 'Standardised modal header with title, optional description, and close button.',
     searchTerms: ['dialog header', 'modal title', 'overlay header', 'modal heading'],
     component: lazy(() => import('../pages/component-demos/ModalHeaderDemo')),
@@ -2433,7 +2433,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Stepper',
     slug: 'stepper',
-    category: 'compositions',
+    category: 'organisms',
     description: 'Sequential step indicator with vertical and horizontal orientations.',
     searchTerms: ['progress', 'steps', 'wizard progress', 'multi-step', 'step indicator'],
     component: lazy(() => import('../pages/component-demos/StepperDemo')),
@@ -2521,7 +2521,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'SplitButton',
     slug: 'split-button',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Button with primary action and dropdown menu for secondary actions.',
     searchTerms: ['dropdown button', 'button menu', 'action dropdown', 'multi action button'],
     usesComponents: ['Button', 'DropdownMenu'],
@@ -2612,7 +2612,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'SegmentedControl',
     slug: 'segmented-control',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Single-select toggle with border-separated segments. Active state uses teal text with bottom border accent.',
     searchTerms: ['toggle group', 'button group', 'option toggle', 'switcher', 'segmented buttons'],
     component: lazy(() => import('../pages/component-demos/SegmentedControlDemo')),
@@ -2668,7 +2668,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'NumberStepper',
     slug: 'number-stepper',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Compact numeric input with decrement/value/increment buttons. Toggle variant colours the value teal when active. Plain variant shows neutral numbers.',
     searchTerms: ['counter', 'increment', 'decrement', 'numeric input', 'plus minus', 'quantity'],
     usesComponents: [],
@@ -2743,7 +2743,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Chip',
     slug: 'chip',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Interactive label with optional dismiss button, icon, selectable state, and insertable token variant. Used for tags, filters, multi-select values, and variable insertion.',
     searchTerms: ['tag', 'pill', 'removable tag', 'filter chip', 'token', 'insert variable'],
     usedIn: [{ label: 'ChipInput', route: '/admin/components/inputs/chip-input' }, { label: 'Exporter File Naming', route: '/' }],
@@ -2810,7 +2810,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'ChooserModal',
     slug: 'chooser-modal',
-    category: 'compositions',
+    category: 'organisms',
     description: 'Centred selection modal for picking from 2–4 options before proceeding. Uses CardSelector grid with icon header, title, and description.',
     searchTerms: ['selection modal', 'chooser', 'type picker', 'option selector modal'],
     usesComponents: ['Dialog', 'CardSelector', 'Button'],
@@ -2837,7 +2837,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Timeline',
     slug: 'timeline',
-    category: 'compositions',
+    category: 'organisms',
     description: 'Vertical timeline with connected entries. Each entry has a coloured icon circle, a connector line to the next entry, and content with a date.',
     searchTerms: ['history', 'audit log', 'events', 'chronological', 'activity feed'],
     usesComponents: [],
@@ -2864,7 +2864,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Controls Panel',
     slug: 'controls-panel',
-    category: 'compositions',
+    category: 'sandboxes',
     description: 'Declarative controls panel that renders interactive controls from a PropDefinition array. Supports 11 control types, section grouping, conditional visibility, and custom render slots.',
     searchTerms: ['prop panel', 'settings panel', 'control panel', 'configuration', 'property editor'],
     usesComponents: ['Select', 'Switch', 'Slider', 'Input'],
@@ -2890,7 +2890,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'InfoHint',
     slug: 'info-hint',
-    category: 'compositions',
+    category: 'molecules',
     description: 'Lightweight informational annotation with icon + text. Two variants: inline (transparent) and panel (contained muted card).',
     searchTerms: ['info', 'hint', 'annotation', 'helper text', 'note', 'fyi', 'explanation'],
     component: lazy(() => import('../pages/component-demos/InfoHintDemo')),
@@ -2922,7 +2922,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'SectionDivider',
     slug: 'section-divider',
-    category: 'atoms',
+    category: 'molecules',
     description: 'Labelled horizontal divider for separating logical sections in modals and forms. Supports a centred line variant and a left-aligned heading variant.',
     searchTerms: ['section header', 'form divider', 'group separator', 'labelled line'],
     component: lazy(() => import('../pages/component-demos/SectionDividerDemo')),
@@ -2956,7 +2956,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'StatusBadge',
     slug: 'status-badge',
-    category: 'atoms',
+    category: 'molecules',
     description: 'Semantic status indicator badge with predefined colour mappings for common states (active, paused, error, etc.).',
     searchTerms: ['status', 'state indicator', 'active badge', 'error badge', 'status pill', 'automation status'],
     component: lazy(() => import('../pages/component-demos/StatusBadgeDemo')),
@@ -2989,7 +2989,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'PrefixInput',
     slug: 'prefix-input',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Input field with a non-editable prefix. Used for paths, URLs, or any value with a fixed base.',
     searchTerms: ['url input', 'path input', 'domain input', 'prefixed field', 'base path'],
     usesComponents: ['Input'],
@@ -3013,7 +3013,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'ChipInput',
     slug: 'chip-input',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Multi-value text input. Type and press Enter, Tab, or comma to add chips. Shows a validation pill below the input (green when valid, red when invalid). Supports dropdown selection, clear-all, copy-from-above, and three sizes.',
     searchTerms: ['tag input', 'multi value', 'email input', 'token input', 'multi entry'],
     usesComponents: [],
@@ -3061,7 +3061,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'DateRangePicker',
     slug: 'date-range-picker',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Date range selector combining Calendar (range mode) with preset shortcuts. Uses Popover for the floating panel.',
     searchTerms: ['date range', 'period selector', 'from to date', 'date filter', 'range picker'],
     usesComponents: ['Calendar', 'Popover'],
@@ -3101,7 +3101,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'HelpPopover',
     slug: 'help-popover',
-    category: 'feedback',
+    category: 'molecules',
     description: 'Teal circle with ? that opens a Popover with a title and body. Used inline next to field labels for contextual help.',
     searchTerms: ['info popup', 'help icon', 'question mark', 'contextual help', 'tooltip help'],
     usesComponents: ['Popover'],
@@ -3137,7 +3137,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'DayPicker',
     slug: 'day-picker',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Seven circular day-of-week toggle buttons (Mon–Sun). Selected days are filled primary, unselected have a 1px primary outline.',
     searchTerms: ['weekday picker', 'day selector', 'schedule days', 'recurring days'],
     component: lazy(() => import('../pages/component-demos/DayPickerDemo')),
@@ -3172,7 +3172,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'SegmentedToggle',
     slug: 'segmented-toggle',
-    category: 'inputs',
+    category: 'molecules',
     description: 'Binary pill toggle with two equally-weighted options rendered inside a rounded container. Active segment is white with teal text; inactive is transparent with muted text.',
     searchTerms: ['binary toggle', 'pill toggle', 'two option', 'switch selector', 'either or', 'create skip'],
     component: lazy(() => import('../pages/component-demos/SegmentedToggleDemo')),
@@ -3208,7 +3208,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'CheckboxCard',
     slug: 'checkbox-card',
-    category: 'inputs',
+    category: 'sandboxes',
     description: 'Selectable card with a checkbox indicator for multi-select patterns. Renders as a button with role="checkbox" for accessibility.',
     searchTerms: ['multi select card', 'selectable card', 'toggle card', 'check card'],
     component: lazy(() => import('../pages/component-demos/CheckboxCardDemo')),
@@ -3291,7 +3291,7 @@ export const componentRegistry: ComponentEntry[] = [
   {
     name: 'Journey Node Card',
     slug: 'journey-node-card',
-    category: 'compositions',
+    category: 'sandboxes',
     description: 'Compact node card for the journey builder canvas. Displays node type, title, description, and audience count with consistent styling.',
     searchTerms: ['journey', 'node', 'canvas', 'automation', 'workflow', 'step', 'action', 'trigger', 'wait', 'branch'],
     component: lazy(() => import('../pages/component-demos/JourneyNodeCardDemo')),

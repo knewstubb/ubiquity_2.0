@@ -35,11 +35,8 @@ interface CategoryDef {
 const CATEGORIES: CategoryDef[] = [
   { id: 'tokens', label: 'Tokens' },
   { id: 'atoms', label: 'Atoms' },
-  { id: 'inputs', label: 'Inputs' },
-  { id: 'display', label: 'Display' },
-  { id: 'feedback', label: 'Feedback' },
-  { id: 'navigation', label: 'Navigation' },
-  { id: 'compositions', label: 'Compositions' },
+  { id: 'molecules', label: 'Molecules' },
+  { id: 'organisms', label: 'Organisms' },
   { id: 'sandboxes', label: 'Sandboxes' },
 ]
 
