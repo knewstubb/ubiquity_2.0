@@ -18,7 +18,7 @@ import { AlertDialogComposed } from '@/components/organisms/alert-dialog-compose
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/molecules/breadcrumb';
 import type { Automation } from '../models/automation';
 
-export default function DashboardPage() {
+export default function ConnectorsPage() {
   const { connections, getConnectionById, addConnection, updateConnection, deleteConnection } = useConnections();
   const { automations, addAutomation, addAutomationDirect, updateAutomation, toggleAutomationStatus, deleteAutomation } =
     useAutomations();

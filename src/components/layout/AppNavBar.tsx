@@ -56,7 +56,7 @@ const NAV_ITEMS: NavItem[] = [
     subItems: [
       { label: 'Databases', path: '/audiences/databases' },
       { label: 'Segments', path: '/audiences/segments' },
-      { label: 'Connectors', path: '/' },
+      { label: 'Connectors', path: '/audiences/connectors' },
       { label: 'Fields & Config', path: '/audiences/attributes' },
     ],
   },

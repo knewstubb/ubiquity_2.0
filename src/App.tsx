@@ -29,8 +29,8 @@ const ImporterWizardPage = React.lazy(() => import('./pages/ImporterWizardPage')
 const AccountSyncWizardPage = React.lazy(() => import('./pages/AccountSyncWizardPage'));
 
 // Lazy-loaded page imports for code splitting
-const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
-const OverviewDashboardPage = React.lazy(() => import('./pages/OverviewDashboardPage'));
+const HomePage = React.lazy(() => import('./pages/HomePage'));
+const ConnectorsPage = React.lazy(() => import('./pages/ConnectorsPage'));
 const SegmentsPage = React.lazy(() => import('./pages/SegmentsPage'));
 const SegmentDetailPage = React.lazy(() => import('./pages/SegmentDetailPage'));
 const DatabasesPage = React.lazy(() => import('./pages/DatabasesPage'));
@@ -178,8 +178,9 @@ function App() {
                         <AdminAccountBanner />
                         <Suspense fallback={<div className="flex items-center justify-center h-full"><p className="text-sm text-muted-foreground">Loading…</p></div>}>
                         <Routes>
-                          <Route path="/" element={<DashboardPage />} />
-                          <Route path="/dashboard" element={<OverviewDashboardPage />} />
+                          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                          <Route path="/dashboard" element={<HomePage />} />
+                          <Route path="/audiences/connectors" element={<ConnectorsPage />} />
                           <Route path="/audiences/segments" element={<SegmentsPage />} />
                           <Route path="/audiences/segments/:segmentId" element={<SegmentDetailPage />} />
                           <Route path="/audiences/databases" element={<DatabasesPage />} />
