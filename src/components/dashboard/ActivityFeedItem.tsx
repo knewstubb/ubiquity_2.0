@@ -13,6 +13,7 @@ import {
   ArrowsClockwise,
   PlugsConnected,
   UserMinus,
+  Robot,
 } from '@phosphor-icons/react';
 import type { Icon } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
@@ -22,26 +23,40 @@ interface ActivityFeedItemProps {
   item: ActivityFeedItemType;
 }
 
-const severityConfig: Record<ActivitySeverity, { icon: Icon; iconClass: string; bgClass: string }> = {
+const severityConfig: Record<ActivitySeverity, { 
+  icon: Icon; 
+  iconClass: string; 
+  bgClass: string;
+  badgeClass: string;
+  label: string;
+}> = {
   error: { 
     icon: XCircle, 
     iconClass: 'text-destructive',
-    bgClass: 'bg-destructive/5',
+    bgClass: 'bg-destructive/5 border-l-2 border-l-destructive',
+    badgeClass: 'bg-destructive/10 text-destructive',
+    label: 'Error',
   },
   warning: { 
     icon: Warning, 
     iconClass: 'text-amber-600',
-    bgClass: 'bg-amber-500/5',
+    bgClass: 'bg-amber-500/5 border-l-2 border-l-amber-500',
+    badgeClass: 'bg-amber-500/10 text-amber-600',
+    label: 'Warning',
   },
   success: { 
     icon: CheckCircle, 
     iconClass: 'text-primary',
-    bgClass: 'bg-primary/5',
+    bgClass: 'bg-transparent',
+    badgeClass: 'bg-primary/10 text-primary',
+    label: 'Success',
   },
   info: { 
     icon: Info, 
     iconClass: 'text-muted-foreground',
-    bgClass: 'bg-muted/50',
+    bgClass: 'bg-transparent',
+    badgeClass: 'bg-muted text-muted-foreground',
+    label: 'Info',
   },
 };
 
@@ -56,6 +71,14 @@ const typeIcons: Record<ActivityType, Icon> = {
   connection_error: PlugsConnected,
   contact_added: UsersThree,
   unsubscribe: UserMinus,
+};
+
+const actorColors = {
+  teal: 'bg-primary/15 text-primary',
+  amber: 'bg-amber-500/15 text-amber-700',
+  violet: 'bg-violet-500/15 text-violet-700',
+  rose: 'bg-rose-500/15 text-rose-700',
+  sky: 'bg-sky-500/15 text-sky-700',
 };
 
 function formatRelativeTime(timestamp: string): string {
@@ -76,57 +99,97 @@ function formatRelativeTime(timestamp: string): string {
 
 /**
  * Individual activity feed item.
+ * 
+ * Features:
+ * - Actor avatar (colored initials) or system icon
+ * - Severity badge for errors/warnings
+ * - Richer visual hierarchy
+ * - Hover state with action link
  */
 export function ActivityFeedItem({ item }: ActivityFeedItemProps) {
   const navigate = useNavigate();
-  const { type, severity, title, description, timestamp, link } = item;
+  const { type, severity, title, description, timestamp, link, actor } = item;
 
   const config = severityConfig[severity];
   const TypeIcon = typeIcons[type];
-  const SeverityIcon = config.icon;
+  const showBadge = severity === 'error' || severity === 'warning';
 
   return (
-    <div className={cn("flex items-start gap-3 px-4 py-3 rounded-lg", config.bgClass)}>
-      {/* Icon */}
-      <div className="relative shrink-0 mt-0.5">
-        <TypeIcon size={18} weight="duotone" className="text-muted-foreground" />
-        {(severity === 'error' || severity === 'warning') && (
-          <SeverityIcon 
-            size={12} 
-            weight="fill" 
-            className={cn("absolute -bottom-1 -right-1", config.iconClass)} 
-          />
+    <div 
+      className={cn(
+        'group flex items-start gap-3 px-4 py-3 rounded-lg transition-colors',
+        config.bgClass,
+        link && 'hover:bg-secondary/50 cursor-pointer'
+      )}
+      onClick={link ? () => navigate(link.path) : undefined}
+      role={link ? 'button' : undefined}
+      tabIndex={link ? 0 : undefined}
+      onKeyDown={link ? (e) => e.key === 'Enter' && navigate(link.path) : undefined}
+    >
+      {/* Avatar or System Icon */}
+      <div className="shrink-0 mt-0.5">
+        {actor ? (
+          <div 
+            className={cn(
+              'flex items-center justify-center w-8 h-8 rounded-full text-xs font-semibold',
+              actorColors[actor.color || 'teal']
+            )}
+            title={actor.name}
+          >
+            {actor.initials}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted">
+            <Robot size={16} weight="duotone" className="text-muted-foreground" />
+          </div>
         )}
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between gap-2">
-          <p className={cn(
-            "text-sm font-medium m-0",
-            severity === 'error' ? "text-destructive" : "text-foreground"
-          )}>
-            {title}
-          </p>
-          <span className="text-xs text-muted-foreground shrink-0">{formatRelativeTime(timestamp)}</span>
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5">
+            <TypeIcon size={14} weight="duotone" className="text-muted-foreground shrink-0" />
+            <p className={cn(
+              'text-sm font-medium',
+              severity === 'error' ? 'text-destructive' : 'text-foreground'
+            )}>
+              {title}
+            </p>
+          </div>
+          
+          {showBadge && (
+            <span className={cn(
+              'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide',
+              config.badgeClass
+            )}>
+              <config.icon size={10} weight="fill" />
+              {config.label}
+            </span>
+          )}
+          
+          <span className="text-xs text-muted-foreground ml-auto shrink-0">
+            {formatRelativeTime(timestamp)}
+          </span>
         </div>
+        
         {description && (
-          <p className="text-sm text-muted-foreground m-0 mt-0.5">{description}</p>
+          <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+            {actor && <span className="font-medium text-foreground/80">{actor.name}</span>}
+            {actor && ' · '}
+            {description}
+          </p>
         )}
+        
         {link && (
-          <button
-            type="button"
-            onClick={() => navigate(link.path)}
-            className={cn(
-              "flex items-center gap-1 mt-2 px-0 py-0",
-              "text-xs font-medium text-primary",
-              "bg-transparent border-none cursor-pointer",
-              "hover:underline"
-            )}
-          >
+          <span className={cn(
+            'inline-flex items-center gap-1 mt-2',
+            'text-xs font-medium text-primary',
+            'opacity-0 group-hover:opacity-100 transition-opacity'
+          )}>
             {link.label}
-            <ArrowRight size={10} weight="bold" />
-          </button>
+            <ArrowRight size={10} weight="bold" className="transition-transform group-hover:translate-x-0.5" />
+          </span>
         )}
       </div>
     </div>

@@ -17,6 +17,10 @@ export interface DashboardStat {
   trend?: number;
   /** Description shown on hover */
   description?: string;
+  /** Last 7 data points for sparkline visualization */
+  sparkline?: number[];
+  /** Accent color for the card */
+  accent?: 'teal' | 'amber' | 'violet' | 'rose';
 }
 
 export const dashboardStats: DashboardStat[] = [
@@ -27,6 +31,8 @@ export const dashboardStats: DashboardStat[] = [
     format: 'number',
     trend: 3.2,
     description: 'All contacts in your database',
+    sparkline: [42100, 43500, 44200, 45800, 46500, 47900, 48752],
+    accent: 'teal',
   },
   {
     id: 'contactable',
@@ -35,6 +41,8 @@ export const dashboardStats: DashboardStat[] = [
     format: 'number',
     trend: 1.8,
     description: 'Contacts with valid email who have not unsubscribed',
+    sparkline: [38200, 38900, 39400, 40100, 40500, 40900, 41284],
+    accent: 'teal',
   },
   {
     id: 'active-mailouts',
@@ -43,6 +51,8 @@ export const dashboardStats: DashboardStat[] = [
     format: 'number',
     trend: 0,
     description: 'Currently running mailout campaigns',
+    sparkline: [5, 8, 6, 9, 7, 6, 7],
+    accent: 'amber',
   },
   {
     id: 'engagement-rate',
@@ -51,5 +61,7 @@ export const dashboardStats: DashboardStat[] = [
     format: 'percent',
     trend: -0.4,
     description: 'Average open rate across recent mailouts',
+    sparkline: [26.2, 25.8, 25.1, 24.9, 25.0, 24.8, 24.6],
+    accent: 'violet',
   },
 ];

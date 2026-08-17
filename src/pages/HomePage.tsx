@@ -1,11 +1,12 @@
 import { DownloadSimple, ChartLineUp, PaperPlaneTilt } from '@phosphor-icons/react';
-import { PageShell } from '../components/layout/PageShell';
+import { WelcomeHeader } from '../components/dashboard/WelcomeHeader';
 import { StatCard } from '../components/dashboard/StatCard';
 import { PillarCard, type PillarLink } from '../components/dashboard/PillarCard';
 import { ActivityFeed } from '../components/dashboard/ActivityFeed';
 import { useAccount } from '../contexts/AccountContext';
 import { dashboardStats } from '../data/dashboardStats';
 import { activityFeed } from '../data/activityFeed';
+import { cn } from '../lib/utils';
 
 /** AAA Pillar definitions */
 const acquireLinks: PillarLink[] = [
@@ -30,61 +31,88 @@ const actLinks: PillarLink[] = [
  * Landing Dashboard — gives users an instant pulse on their data, campaigns, and system health.
  * 
  * Structure:
- * - Hero Stats Row (4 cards: Total Contacts, Contactable, Active Mailouts, Engagement Rate)
- * - AAA Pillar Cards (Acquire, Analyse, Act)
- * - Activity Feed (last 7 days, errors/warnings first)
+ * - Welcome Header (time-aware greeting, account name)
+ * - Hero Stats Row (4 cards with sparklines)
+ * - AAA Pillar Cards (Acquire, Analyse, Act) + Activity Feed
  */
 export default function HomePage() {
-  const { selectedAccountId } = useAccount();
+  const { selectedAccountId, accounts } = useAccount();
+  const selectedAccount = accounts.find((a) => a.id === selectedAccountId);
+  const accountName = selectedAccount?.name || 'your workspace';
 
   // Filter activity feed by selected account
   const accountActivity = activityFeed.filter((item) => item.accountId === selectedAccountId);
 
   return (
-    <PageShell title="Dashboard" subtitle="Overview of your workspace">
-      {/* Hero Stats */}
-      <section aria-label="Key metrics">
-        <div className="grid grid-cols-4 gap-4">
-          {dashboardStats.map((stat) => (
-            <StatCard key={stat.id} stat={stat} />
-          ))}
-        </div>
-      </section>
+    <div className="min-h-screen bg-background">
+      {/* Welcome Header */}
+      <div className="animate-fade-in">
+        <WelcomeHeader accountName={accountName} />
+      </div>
 
-      {/* AAA Pillars + Activity Feed */}
-      <section aria-label="Quick access" className="mt-6">
-        <div className="grid grid-cols-4 gap-4">
-          {/* Acquire */}
-          <PillarCard
-            title="Acquire"
-            description="Get data in"
-            icon={DownloadSimple}
-            accentColor="teal"
-            links={acquireLinks}
-          />
+      {/* Main Content */}
+      <div className="px-6 pb-8 space-y-6">
+        {/* Hero Stats */}
+        <section aria-label="Key metrics">
+          <div className="grid grid-cols-4 gap-4">
+            {dashboardStats.map((stat, index) => (
+              <div 
+                key={stat.id} 
+                className={cn(
+                  'animate-fade-in-up',
+                  index === 0 && 'animation-delay-100',
+                  index === 1 && 'animation-delay-200',
+                  index === 2 && 'animation-delay-300',
+                  index === 3 && 'animation-delay-400'
+                )}
+              >
+                <StatCard stat={stat} />
+              </div>
+            ))}
+          </div>
+        </section>
 
-          {/* Analyse */}
-          <PillarCard
-            title="Analyse"
-            description="Make sense of it"
-            icon={ChartLineUp}
-            accentColor="amber"
-            links={analyseLinks}
-          />
+        {/* AAA Pillars + Activity Feed */}
+        <section aria-label="Quick access">
+          <div className="grid grid-cols-12 gap-4">
+            {/* Pillar Cards - 3 columns each */}
+            <div className="col-span-3 animate-fade-in-up animation-delay-300">
+              <PillarCard
+                title="Acquire"
+                description="Get data in"
+                icon={DownloadSimple}
+                accentColor="teal"
+                links={acquireLinks}
+              />
+            </div>
 
-          {/* Act */}
-          <PillarCard
-            title="Act"
-            description="Do something with it"
-            icon={PaperPlaneTilt}
-            accentColor="violet"
-            links={actLinks}
-          />
+            <div className="col-span-3 animate-fade-in-up animation-delay-400">
+              <PillarCard
+                title="Analyse"
+                description="Make sense of it"
+                icon={ChartLineUp}
+                accentColor="amber"
+                links={analyseLinks}
+              />
+            </div>
 
-          {/* Activity Feed */}
-          <ActivityFeed items={accountActivity} maxItems={5} />
-        </div>
-      </section>
-    </PageShell>
+            <div className="col-span-3 animate-fade-in-up animation-delay-500">
+              <PillarCard
+                title="Act"
+                description="Do something with it"
+                icon={PaperPlaneTilt}
+                accentColor="violet"
+                links={actLinks}
+              />
+            </div>
+
+            {/* Activity Feed - wider column */}
+            <div className="col-span-3 animate-fade-in-up animation-delay-600">
+              <ActivityFeed items={accountActivity} maxItems={6} />
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
   );
 }

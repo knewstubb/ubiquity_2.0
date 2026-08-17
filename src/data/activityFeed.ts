@@ -33,6 +33,12 @@ export interface ActivityFeedItem {
   };
   /** Account ID for filtering */
   accountId: string;
+  /** Actor who triggered this activity (optional) */
+  actor?: {
+    name: string;
+    initials: string;
+    color?: 'teal' | 'amber' | 'violet' | 'rose' | 'sky';
+  };
 }
 
 /**
@@ -84,6 +90,7 @@ export const activityFeed: ActivityFeedItem[] = [
     timestamp: hoursAgo(4),
     link: { label: 'View report', path: '/channels/mailouts' },
     accountId: 'acc-spark-energy',
+    actor: { name: 'Sarah Chen', initials: 'SC', color: 'teal' },
   },
   {
     id: 'act-004',
@@ -93,6 +100,7 @@ export const activityFeed: ActivityFeedItem[] = [
     description: '1,234 new contacts added from "Q4_leads.csv"',
     timestamp: hoursAgo(8),
     accountId: 'acc-spark-energy',
+    actor: { name: 'Mike Torres', initials: 'MT', color: 'violet' },
   },
   {
     id: 'act-005',
@@ -122,6 +130,7 @@ export const activityFeed: ActivityFeedItem[] = [
     timestamp: daysAgo(1),
     link: { label: 'View mailout', path: '/channels/mailouts' },
     accountId: 'acc-spark-energy',
+    actor: { name: 'Emma Wilson', initials: 'EW', color: 'amber' },
   },
   {
     id: 'act-008',
@@ -131,6 +140,7 @@ export const activityFeed: ActivityFeedItem[] = [
     description: '15,890 contacts synced to audience "Retargeting Q4"',
     timestamp: daysAgo(2),
     accountId: 'acc-spark-energy',
+    actor: { name: 'Sarah Chen', initials: 'SC', color: 'teal' },
   },
   {
     id: 'act-009',
@@ -160,6 +170,7 @@ export const activityFeed: ActivityFeedItem[] = [
     description: 'Delivered to 2,100 contacts',
     timestamp: hoursAgo(3),
     accountId: 'acc-simply-energy',
+    actor: { name: 'James Park', initials: 'JP', color: 'sky' },
   },
   {
     id: 'act-012',
