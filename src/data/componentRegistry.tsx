@@ -38,11 +38,6 @@ export interface PropDefinition {
   variant?: 'default' | 'active'
 }
 
-export interface UsedInLink {
-  label: string
-  route: string
-}
-
 export interface DesignGuidanceSection {
   heading: string
   content: string | string[]
@@ -56,8 +51,6 @@ export interface ComponentEntry {
   searchTerms?: string[]
   component: LazyExoticComponent<ComponentType>
   propControls?: PropDefinition[]
-  usesComponents?: string[]
-  usedIn?: UsedInLink[]
   renderControls?: (
     values: Record<string, ControlValue>,
     setValue: (name: string, value: ControlValue) => void
@@ -158,10 +151,7 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'show-icon', label: 'Show Icon', controlType: 'toggle', defaultValue: false },
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
     ],
-    usedIn: [
-      { label: 'Dashboard', route: '/dashboard' },
-      { label: 'Campaigns', route: '/automations/campaigns' },
-    ],
+
     designGuidance: [
       { heading: 'When to use', content: [
         'Any clickable action that is not a navigation link',
@@ -216,12 +206,7 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
       { name: 'ariaLabel', label: 'Aria Label', controlType: 'text', defaultValue: 'Close' },
     ],
-    usesComponents: [],
-    usedIn: [
-      { label: 'Sheet', route: '/admin/components/feedback/sheet' },
-      { label: 'AlertDialog', route: '/admin/components/feedback/alert-dialog' },
-      { label: 'Modal', route: '/admin/components/feedback/modal' },
-    ],
+
     designGuidance: [
       { heading: 'When to use', content: [
         'Dismissing containers: modals, sheets, panels, banners, toasts',
@@ -247,7 +232,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'molecules',
     description: 'Date picker calendar grid with month navigation.',
     searchTerms: ['date picker', 'date selector', 'month view', 'day selection', 'schedule'],
-    usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/CalendarDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -287,7 +271,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'atoms',
     description: 'Accessible checkbox with indeterminate state support.',
     searchTerms: ['tick', 'check', 'boolean', 'multi select', 'checkmark', 'agree'],
-    usesComponents: ['Label'],
     component: lazy(() => import('../pages/component-demos/CheckboxDemo')),
     propControls: [
       { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Accept terms and conditions' },
@@ -379,7 +362,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'molecules',
     description: 'Numeric input with increment/decrement stepper arrows.',
     searchTerms: ['number', 'stepper', 'spinner', 'increment', 'decrement', 'counter', 'numeric'],
-    usesComponents: [],
     component: lazy(() => import('../pages/component-demos/SpinnerInputDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -476,7 +458,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'atoms',
     description: 'Radio button group for single-choice selection.',
     searchTerms: ['radio', 'single select', 'one of many', 'exclusive choice', 'option group'],
-    usesComponents: ['Label'],
     component: lazy(() => import('../pages/component-demos/RadioGroupDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -644,7 +625,6 @@ export const componentRegistry: ComponentEntry[] = [
       ]},
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
     ],
-    usesComponents: [],
     designGuidance: [
       { heading: 'When to use', content: [
         'Option list exceeds ~7 items and benefits from search filtering',
@@ -722,7 +702,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'atoms',
     description: 'Toggle switch for boolean on/off states. Three sizes: default, small, and extra-small.',
     searchTerms: ['toggle', 'on off', 'boolean', 'enable disable', 'flip'],
-    usesComponents: ['Label'],
     component: lazy(() => import('../pages/component-demos/SwitchDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -753,9 +732,7 @@ export const componentRegistry: ComponentEntry[] = [
       ]},
       { name: 'disabled', label: 'Disabled', controlType: 'toggle', defaultValue: false },
     ],
-    usedIn: [
-      { label: 'Settings', route: '/settings' },
-    ],
+
   },
   {
     name: 'Textarea',
@@ -831,7 +808,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'atoms',
     description: 'Group of toggle buttons for single or multi-select.',
     searchTerms: ['button group', 'multi toggle', 'option buttons', 'segmented toggle'],
-    usesComponents: ['Toggle'],
     component: lazy(() => import('../pages/component-demos/ToggleGroupDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -869,7 +845,6 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Form wrapper with validation, error messages, and field state management.',
     searchTerms: ['form layout', 'validation', 'field group', 'submit', 'form builder'],
     component: lazy(() => import('../pages/component-demos/FormDemo')),
-    usesComponents: ['Input', 'Label', 'Button', 'Checkbox', 'Select', 'Textarea'],
     designGuidance: [
       { heading: 'When to use', content: [
         'Any data entry flow requiring validation feedback',
@@ -1007,9 +982,7 @@ export const componentRegistry: ComponentEntry[] = [
       { name: 'show-icon', label: 'Show Icon', controlType: 'toggle', defaultValue: false },
       { name: 'clickable', label: 'Clickable', controlType: 'toggle', defaultValue: false },
     ],
-    usedIn: [
-      { label: 'Segments', route: '/audiences/segments' },
-    ],
+
   },
   {
     name: 'Card',
@@ -1111,7 +1084,6 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Structured data table with header, body, and footer sections.',
     searchTerms: ['grid', 'data grid', 'rows', 'columns', 'tabular', 'spreadsheet'],
     component: lazy(() => import('../pages/component-demos/TableDemo')),
-    usesComponents: [],
     designGuidance: [
       { heading: 'When to use', content: [
         'Custom or hierarchical tables where DataTable column-driven API does not fit',
@@ -1136,7 +1108,6 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Interactive sandbox for exploring table design language — density, borders, containers, selection, striping, and hover states.',
     searchTerms: ['table playground', 'table explorer', 'data table options', 'table styling'],
     component: lazy(() => import('../pages/component-demos/TableSandboxDemo')),
-    usesComponents: ['Table', 'Badge', 'Checkbox'],
     designGuidance: [
       { heading: 'When to use', content: [
         'Exploring and standardising table styling across the product',
@@ -1156,7 +1127,6 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Interactive sandbox for reorderable checkbox lists — drag to reorder selected items, toggle selection, with configurable drag indicators and styling.',
     searchTerms: ['drag and drop', 'sortable list', 'reorder', 'drag list', 'field ordering'],
     component: lazy(() => import('../pages/component-demos/ReorderableListSandboxDemo')),
-    usesComponents: ['Checkbox', 'Badge'],
     designGuidance: [
       { heading: 'When to use', content: [
         'Field selection with drag-to-reorder for the selected subset',
@@ -1176,7 +1146,6 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Interactive sandbox for expandable card list patterns — rich list items with icons, metadata, actions, and nested content.',
     searchTerms: ['expandable list', 'nested list', 'parent child list', 'rich list'],
     component: lazy(() => import('../pages/component-demos/CardListSandboxDemo')),
-    usesComponents: ['Badge', 'Switch'],
     designGuidance: [
       { heading: 'When to use', content: [
         'Rich list items that are more than a table row but less than a full card grid',
@@ -1265,7 +1234,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'atoms',
     description: 'Confirmation dialog with neutral, warning, and destructive intent variants and tiered confirmation guards.',
     searchTerms: ['confirm', 'confirmation', 'destructive modal', 'are you sure', 'delete confirm'],
-    usesComponents: ['Button', 'Input', 'Checkbox', 'Label', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/AlertDialogDemo')),
     propControls: [
       { name: 'object-name', label: 'Object name', controlType: 'text', defaultValue: '' },
@@ -1361,7 +1329,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'atoms',
     description: 'Accessible modal dialog built on Radix UI with structured Header → Body → Footer layout and blurred overlay.',
     searchTerms: ['modal', 'popup', 'overlay', 'confirmation', 'alert', 'lightbox'],
-    usesComponents: ['Button', 'Input', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/DialogDemo')),
     propControls: [
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Edit Profile' },
@@ -1418,7 +1385,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'atoms',
     description: 'Slide-out panel from screen edge for secondary content or forms.',
     searchTerms: ['drawer', 'slide panel', 'side panel', 'flyout', 'slide out'],
-    usesComponents: ['Button', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/SheetDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -1493,7 +1459,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'atoms',
     description: 'Hover-triggered informational popup with configurable placement.',
     searchTerms: ['hint', 'hover text', 'help text', 'info bubble', 'title attribute'],
-    usesComponents: [],
     designGuidance: [
       {
         heading: 'When to use',
@@ -1529,7 +1494,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'atoms',
     description: 'Hover-triggered card preview for links or user profiles.',
     searchTerms: ['preview card', 'hover preview', 'link preview', 'user card', 'profile popup'],
-    usesComponents: ['Avatar', 'Button'],
     component: lazy(() => import('../pages/component-demos/HoverCardDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -1560,7 +1524,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'atoms',
     description: 'Click-triggered floating panel for forms or additional content.',
     searchTerms: ['popup', 'things that popup', 'floating', 'dropdown panel', 'floating content'],
-    usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/PopoverDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -1814,7 +1777,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'molecules',
     description: 'Site navigation with links, dropdowns, and viewport animations.',
     searchTerms: ['nav bar', 'site navigation', 'top nav', 'mega menu', 'header nav'],
-    usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/NavigationMenuDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -1873,7 +1835,6 @@ export const componentRegistry: ComponentEntry[] = [
         'Ellipsis is aria-hidden with sr-only "More pages" text',
       ]},
     ],
-    usesComponents: [],
     propControls: [
       { name: 'size', label: 'Size', controlType: 'select', defaultValue: 'default', options: [
         { label: 'Default', value: 'default' },
@@ -1919,7 +1880,6 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Tabbed interface with pill and underline variants. Pill for content switching, underline for page-level navigation.',
     searchTerms: ['tab bar', 'sections', 'views', 'navigation tabs', 'page tabs'],
     component: lazy(() => import('../pages/component-demos/TabsDemo')),
-    usesComponents: [],
     designGuidance: [
       { heading: 'When to use', content: [
         'Switching between views of related content within the same context',
@@ -1966,7 +1926,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'sandboxes',
     description: 'Selectable card with icon, label, and checkmark badge for single/multi-choice selections.',
     searchTerms: ['card picker', 'option cards', 'visual selector', 'icon cards', 'choice cards'],
-    usesComponents: [],
     designGuidance: [
       { heading: 'When to use', content: [
         '2–6 option selections where each option benefits from an icon',
@@ -2059,7 +2018,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'organisms',
     description: 'Dashboard metric card with value, label, and trend indicator.',
     searchTerms: ['stat', 'kpi', 'number card', 'dashboard stat', 'metric tile', 'data point'],
-    usesComponents: ['Card'],
     component: lazy(() => import('../pages/component-demos/MetricCardDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -2093,7 +2051,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'organisms',
     description: 'Horizontal bar of stats with separators, used for secondary metrics displays below primary cards.',
     searchTerms: ['stats row', 'metrics bar', 'secondary stats', 'kpi row', 'stat strip', 'numbers row'],
-    usesComponents: ['Card', 'Separator'],
     component: lazy(() => import('../pages/component-demos/StatBarDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -2129,7 +2086,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'organisms',
     description: 'Donut chart for visualizing proportional data with optional center label and legend.',
     searchTerms: ['pie chart', 'ring chart', 'engagement', 'breakdown', 'proportional', 'percentage', 'distribution'],
-    usesComponents: [],
     component: lazy(() => import('../pages/component-demos/DonutChartDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -2165,7 +2121,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'organisms',
     description: 'Generic sortable data table with density control, container styles, selection, striping, and empty state handling.',
     searchTerms: ['sortable table', 'data grid', 'list view', 'records', 'database table'],
-    usesComponents: ['Table', 'Checkbox'],
     designGuidance: [
       { heading: 'When to use', content: [
         'Structured tabular data with optional column sorting (billing reports, user lists, audit logs)',
@@ -2193,7 +2148,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'organisms',
     description: 'Table with expandable disclosure rows for progressive detail. Single-expand accordion — only one row open at a time.',
     searchTerms: ['expandable', 'collapsible rows', 'tree table', 'accordion table', 'nested rows', 'disclosure table', 'drill down'],
-    usesComponents: [],
     designGuidance: [
       { heading: 'When to use', content: [
         'Tables where rows need progressive disclosure (run history with file details, grouped transactions)',
@@ -2232,7 +2186,6 @@ export const componentRegistry: ComponentEntry[] = [
     demoLayout: 'full-bleed',
     description: 'Card-based filter builder with progressive drill-down source categories, sub-sources, and human-readable condition cards. Supports nested AND/OR logic groups.',
     searchTerms: ['filter', 'query builder', 'field filter', 'conditions', 'where clause', 'rule builder', 'AND filter', 'OR filter', 'segment builder', 'nested conditions', 'group filter', 'source', 'category', 'drill-down', 'card', 'progressive'],
-    usesComponents: ['Select', 'Input', 'Button', 'CloseButton', 'Dialog', 'SpinnerInput', 'Popover', 'Calendar', 'Tooltip', 'Badge'],
     designGuidance: [
       { heading: 'When to use', content: [
         'Building filter conditions for data exports (contacts, messages, transactions)',
@@ -2338,7 +2291,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'sandboxes',
     description: 'Modal dialog pattern with ModalHeader (title + close) and ModalFooter (button slots) composed on shadcn Dialog.',
     searchTerms: ['dialog header', 'modal title', 'overlay header', 'modal footer', 'modal buttons', 'action bar'],
-    usesComponents: ['Dialog', 'Button', 'Input', 'Label', 'Close Button'],
     component: lazy(() => import('../pages/component-demos/ModalDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -2376,7 +2328,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'molecules',
     description: 'Standardised modal footer with primary, secondary, and optional tertiary action buttons in consistent right-aligned layout.',
     searchTerms: ['dialog footer', 'modal buttons', 'action bar', 'modal actions', 'footer buttons'],
-    usesComponents: ['Button'],
     component: lazy(() => import('../pages/component-demos/ModalFooterDemo')),
     propControls: [
       { name: 'intent', label: 'Intent', controlType: 'select', defaultValue: 'default', options: [
@@ -2524,7 +2475,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'molecules',
     description: 'Button with primary action and dropdown menu for secondary actions.',
     searchTerms: ['dropdown button', 'button menu', 'action dropdown', 'multi action button'],
-    usesComponents: ['Button', 'DropdownMenu'],
     component: lazy(() => import('../pages/component-demos/SplitButtonDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -2563,7 +2513,6 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Configurable page header with breadcrumbs, title, status badge, actions, tabs, filters, and bulk actions.',
     searchTerms: ['page title', 'header bar', 'page top', 'title bar', 'filter bar', 'bulk actions'],
     demoLayout: 'full-bleed',
-    usesComponents: ['Button', 'Badge', 'Tabs', 'Input', 'Breadcrumb'],
     component: lazy(() => import('../pages/component-demos/PageHeaderDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -2671,7 +2620,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'molecules',
     description: 'Compact numeric input with decrement/value/increment buttons. Toggle variant colours the value teal when active. Plain variant shows neutral numbers.',
     searchTerms: ['counter', 'increment', 'decrement', 'numeric input', 'plus minus', 'quantity'],
-    usesComponents: [],
     designGuidance: [
       { heading: 'When to use', content: [
         'Small integer ranges with tight bounds (1–10)',
@@ -2746,7 +2694,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'molecules',
     description: 'Interactive label with optional dismiss button, icon, selectable state, and insertable token variant. Used for tags, filters, multi-select values, and variable insertion.',
     searchTerms: ['tag', 'pill', 'removable tag', 'filter chip', 'token', 'insert variable'],
-    usedIn: [{ label: 'ChipInput', route: '/admin/components/inputs/chip-input' }, { label: 'Exporter File Naming', route: '/' }],
     component: lazy(() => import('../pages/component-demos/ChipDemo')),
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'default', options: [
@@ -2813,7 +2760,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'organisms',
     description: 'Centred selection modal for picking from 2–4 options before proceeding. Uses CardSelector grid with icon header, title, and description.',
     searchTerms: ['selection modal', 'chooser', 'type picker', 'option selector modal'],
-    usesComponents: ['Dialog', 'CardSelector', 'Button'],
     component: lazy(() => import('../pages/component-demos/ChooserModalDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -2840,7 +2786,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'organisms',
     description: 'Vertical timeline with connected entries. Each entry has a coloured icon circle, a connector line to the next entry, and content with a date.',
     searchTerms: ['history', 'audit log', 'events', 'chronological', 'activity feed'],
-    usesComponents: [],
     component: lazy(() => import('../pages/component-demos/TimelineDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -2867,9 +2812,7 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'sandboxes',
     description: 'Declarative controls panel that renders interactive controls from a PropDefinition array. Supports 11 control types, section grouping, conditional visibility, and custom render slots.',
     searchTerms: ['prop panel', 'settings panel', 'control panel', 'configuration', 'property editor'],
-    usesComponents: ['Select', 'Switch', 'Slider', 'Input'],
     component: lazy(() => import('../pages/component-demos/ControlsPanelDemo')),
-    usedIn: [{ label: 'All Component Demos', route: '/component-library' }],
     propControls: [
       { name: 'mode', label: 'Mode', controlType: 'select', defaultValue: 'sectioned', options: [
         { label: 'All Controls', value: 'all-controls' },
@@ -2894,7 +2837,6 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Lightweight informational annotation with icon + text. Two variants: inline (transparent) and panel (contained muted card).',
     searchTerms: ['info', 'hint', 'annotation', 'helper text', 'note', 'fyi', 'explanation'],
     component: lazy(() => import('../pages/component-demos/InfoHintDemo')),
-    usesComponents: [],
     propControls: [
       { name: 'variant', label: 'Variant', controlType: 'select', defaultValue: 'inline', options: [
         { label: 'Inline', value: 'inline' },
@@ -2992,7 +2934,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'molecules',
     description: 'Input field with a non-editable prefix. Used for paths, URLs, or any value with a fixed base.',
     searchTerms: ['url input', 'path input', 'domain input', 'prefixed field', 'base path'],
-    usesComponents: ['Input'],
     designGuidance: [
       { heading: 'When to use', content: [
         'Values with a known, non-editable prefix (URL base path, file path root, domain)',
@@ -3016,7 +2957,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'molecules',
     description: 'Multi-value text input. Type and press Enter, Tab, or comma to add chips. Shows a validation pill below the input (green when valid, red when invalid). Supports dropdown selection, clear-all, copy-from-above, and three sizes.',
     searchTerms: ['tag input', 'multi value', 'email input', 'token input', 'multi entry'],
-    usesComponents: [],
     designGuidance: [
       { heading: 'When to use', content: [
         'Multi-value free-text entry (emails, tags, keywords)',
@@ -3064,7 +3004,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'molecules',
     description: 'Date range selector combining Calendar (range mode) with preset shortcuts. Uses Popover for the floating panel.',
     searchTerms: ['date range', 'period selector', 'from to date', 'date filter', 'range picker'],
-    usesComponents: ['Calendar', 'Popover'],
     component: lazy(() => import('../pages/component-demos/DateRangePickerDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -3104,7 +3043,6 @@ export const componentRegistry: ComponentEntry[] = [
     category: 'molecules',
     description: 'Teal circle with ? that opens a Popover with a title and body. Used inline next to field labels for contextual help.',
     searchTerms: ['info popup', 'help icon', 'question mark', 'contextual help', 'tooltip help'],
-    usesComponents: ['Popover'],
     component: lazy(() => import('../pages/component-demos/HelpPopoverDemo')),
     designGuidance: [
       { heading: 'When to use', content: [
@@ -3212,8 +3150,6 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Selectable card with a checkbox indicator for multi-select patterns. Renders as a button with role="checkbox" for accessibility.',
     searchTerms: ['multi select card', 'selectable card', 'toggle card', 'check card'],
     component: lazy(() => import('../pages/component-demos/CheckboxCardDemo')),
-    usesComponents: [],
-    usedIn: [{ label: 'Exporter Wizard — Data Source', route: '/' }],
     propControls: [
       { name: 'label', label: 'Label', controlType: 'text', defaultValue: 'Option label' },
       { name: 'description', label: 'Description', controlType: 'text', defaultValue: 'Optional description text' },
@@ -3295,8 +3231,6 @@ export const componentRegistry: ComponentEntry[] = [
     description: 'Compact node card for the journey builder canvas. Displays node type, title, description, and audience count with consistent styling.',
     searchTerms: ['journey', 'node', 'canvas', 'automation', 'workflow', 'step', 'action', 'trigger', 'wait', 'branch'],
     component: lazy(() => import('../pages/component-demos/JourneyNodeCardDemo')),
-    usesComponents: [],
-    usedIn: [{ label: 'Journey Builder Canvas', route: '/automations/journeys' }],
     propControls: [
       { name: 'title', label: 'Title', controlType: 'text', defaultValue: 'Schedule' },
       { name: 'iconType', label: 'Icon Type', controlType: 'select', defaultValue: 'schedule', options: [
