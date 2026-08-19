@@ -84,11 +84,11 @@ export default function ImporterWizardPage() {
   }
 
   function handleClose() {
-    navigate('/');
+    navigate('/audiences/connectors');
   }
 
   if (!resolvedConnectionId) {
-    navigate('/');
+    navigate('/audiences/connectors');
     return null;
   }
 

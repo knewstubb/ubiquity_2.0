@@ -66,11 +66,11 @@ export default function ExporterWizardPage() {
   }
 
   function handleClose() {
-    navigate('/');
+    navigate('/audiences/connectors');
   }
 
   if (!resolvedConnectionId) {
-    navigate('/');
+    navigate('/audiences/connectors');
     return null;
   }
 
