@@ -98,8 +98,8 @@
   --border: #E4E4E7;
   --border-strong: #D4D4D8;
   --input: #E4E4E7;
-  --ring: #A1A1AA;
-  --ring-shadow: 0 0 0 3px rgba(161, 161, 170, 0.2);
+  --ring: #D4D4D8;
+  --ring-shadow: 0 0 0 3px rgba(212, 212, 216, 0.3);
   --ring-shadow-destructive: 0 0 0 3px rgba(239, 68, 68, 0.15);
   --ring-shadow-warning: 0 0 0 3px rgba(245, 158, 11, 0.15);
 
