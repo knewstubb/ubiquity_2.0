@@ -58,23 +58,26 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
     return getEventFields(draft.selectedEventSources);
   }, [isEventBased, draft.selectedEventSources]);
 
-  // Contact/transactional available fields
+  // Contact/transactional available fields (sorted alphabetically by label)
   const availableContactFields = useMemo<SelectedField[]>(() => {
+    let fields: SelectedField[];
     // Use new sourceConfig-based field resolution when available
     if (draft.sourceConfig) {
       const sourceFields = getFieldsForSourceConfig(draft.sourceConfig);
-      return sourceFields.map((f) => ({
+      fields = sourceFields.map((f) => ({
         key: f.key,
         label: f.label,
         source: f.source as SelectedField['source'],
       }));
-    }
-    // Legacy fallback for drafts without sourceConfig
-    if (isEventBased) {
+    } else if (isEventBased) {
+      // Legacy fallback for drafts without sourceConfig
       // For event-based, optional contact fields come from 'contact' source
-      return getFieldsForSources(['contact']);
+      fields = getFieldsForSources(['contact']);
+    } else {
+      fields = getFieldsForSources(draft.selectedSources ?? []);
     }
-    return getFieldsForSources(draft.selectedSources ?? []);
+    // Sort alphabetically by label
+    return fields.sort((a, b) => a.label.localeCompare(b.label));
   }, [isEventBased, draft.sourceConfig, draft.selectedSources]);
 
   // Set of event field keys for quick lookup
