@@ -361,8 +361,8 @@ describe('FieldMappingStep', () => {
       )
     })
 
-    it('shows validation error for column name exceeding 128 characters', () => {
-      const longName = 'a'.repeat(129)
+    it('shows validation error for column name exceeding 64 characters', () => {
+      const longName = 'a'.repeat(65)
       const draft = createDraft({
         exporterType: 'contact_transactional',
         selectedSources: ['contact'],
@@ -375,7 +375,7 @@ describe('FieldMappingStep', () => {
       render(<FieldMappingStep draft={draft} onUpdate={onUpdate} />)
 
       expect(screen.getByTestId('field-error-firstName')).toHaveTextContent(
-        'Column name cannot exceed 128 characters'
+        'Column name cannot exceed 64 characters'
       )
     })
 

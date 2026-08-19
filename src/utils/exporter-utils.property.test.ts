@@ -663,7 +663,7 @@ describe('Feature: exporter-wizard-rework, Property 5: Column name resolution', 
 /**
  * Property 6: Column name validation rejects invalid input
  * For any string that is empty, composed entirely of whitespace characters, or exceeds
- * 128 characters in length, the column name validation function should return a validation error.
+ * 64 characters in length, the column name validation function should return a validation error.
  *
  * **Validates: Requirements 6.1, 6.5**
  */
@@ -677,7 +677,7 @@ describe('Feature: exporter-wizard-rework, Property 6: Column name validation re
   it('whitespace-only strings (random lengths of spaces/tabs/newlines) are rejected', () => {
     const whitespaceChars = [' ', '\t', '\n', '\r', '\f', '\v'];
     const whitespaceOnlyArb = fc
-      .array(fc.constantFrom(...whitespaceChars), { minLength: 1, maxLength: 128 })
+      .array(fc.constantFrom(...whitespaceChars), { minLength: 1, maxLength: 64 })
       .map((chars) => chars.join(''));
 
     fc.assert(
@@ -690,8 +690,8 @@ describe('Feature: exporter-wizard-rework, Property 6: Column name validation re
     );
   });
 
-  it('strings exceeding 128 characters are rejected', () => {
-    const longStringArb = fc.string({ minLength: 129, maxLength: 500 });
+  it('strings exceeding 64 characters are rejected', () => {
+    const longStringArb = fc.string({ minLength: 65, maxLength: 500 });
 
     fc.assert(
       fc.property(longStringArb, (name) => {
@@ -703,10 +703,10 @@ describe('Feature: exporter-wizard-rework, Property 6: Column name validation re
     );
   });
 
-  it('valid strings (1-128 chars, at least one non-whitespace) are accepted', () => {
-    // Generate strings that have at least one non-whitespace character and are 1-128 chars
+  it('valid strings (1-64 chars, at least one non-whitespace) are accepted', () => {
+    // Generate strings that have at least one non-whitespace character and are 1-64 chars
     const validColumnNameArb = fc
-      .string({ minLength: 1, maxLength: 128 })
+      .string({ minLength: 1, maxLength: 64 })
       .filter((s) => s.trim().length > 0);
 
     fc.assert(

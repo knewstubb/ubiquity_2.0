@@ -6,7 +6,6 @@ import { Input } from '../atoms/input';
 import { DragHandle } from '../shared/DragHandle';
 import { TruncatedText } from '../shared/TruncatedText';
 import { SourceChipsRow } from './SourceChipsRow';
-import { AddSourceModal } from './AddSourceModal';
 import { Lock, ArrowCounterClockwise } from '@phosphor-icons/react';
 import {
   getFieldsForSources,
@@ -23,7 +22,6 @@ import { useAccount } from '../../contexts/AccountContext';
 import { transactionalDatabases } from '../../data/transactionalData';
 import type { ExporterWizardDraft, ColumnRename } from '../../models/wizard';
 import type { SelectedField } from '../../models/automation';
-import type { EnrichmentConfig } from '../../models/source-selection';
 
 interface FieldMappingStepProps {
   draft: ExporterWizardDraft;
@@ -48,7 +46,6 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
   }
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
 
   const isEventBased = draft.exporterType === 'event_based';
 
@@ -223,18 +220,6 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
     [draft.sourceConfig, draft.selectedFields, draft.columnRenames, onUpdate],
   );
 
-  // Confirm add handler — appends new enrichments to the existing array
-  const handleConfirmAdd = useCallback(
-    (newEnrichments: EnrichmentConfig[]) => {
-      if (!draft.sourceConfig) return;
-      const existing = draft.sourceConfig.enrichments ?? [];
-      onUpdate({
-        sourceConfig: { ...draft.sourceConfig, enrichments: [...existing, ...newEnrichments] },
-      });
-    },
-    [draft.sourceConfig, onUpdate],
-  );
-
   // Drag handlers for reordering
   const handleDragStart = useCallback((index: number) => { setDragIndex(index); }, []);
 
@@ -305,23 +290,13 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
         </div>
       )}
 
-      {/* Source chips row — shows active sources with add/remove (Phase 2+) */}
+      {/* Source chips row — shows active sources (Phase 2+) */}
       {draft.sourceConfig && exporterPhase >= 2 && (
-        <>
-          <SourceChipsRow
-            primarySource={draft.sourceConfig.primarySource}
-            enrichments={draft.sourceConfig.enrichments ?? []}
-            onRemoveEnrichment={handleRemoveEnrichment}
-            onOpenAddModal={() => setModalOpen(true)}
-          />
-          <AddSourceModal
-            open={modalOpen}
-            onOpenChange={setModalOpen}
-            activeEnrichments={draft.sourceConfig.enrichments ?? []}
-            primarySource={draft.sourceConfig.primarySource}
-            onConfirm={handleConfirmAdd}
-          />
-        </>
+        <SourceChipsRow
+          primarySource={draft.sourceConfig.primarySource}
+          enrichments={draft.sourceConfig.enrichments ?? []}
+          onRemoveEnrichment={handleRemoveEnrichment}
+        />
       )}
 
       {/* Event fields section (event-based only) */}
@@ -371,7 +346,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                       onChange={(e) => handleRename(field.key, e.target.value)}
                       placeholder={field.label}
                       className="h-7 w-40 text-xs"
-                      maxLength={128}
+                      maxLength={64}
                       aria-label={`Output column name for ${field.label}`}
                       aria-invalid={!!error}
                       data-testid={`rename-input-${field.key}`}

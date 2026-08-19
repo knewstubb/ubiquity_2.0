@@ -99,8 +99,8 @@ describe('validateColumnName', () => {
     expect(result.error).toBeDefined();
   });
 
-  it('rejects string exceeding 128 characters', () => {
-    const result = validateColumnName('a'.repeat(129));
+  it('rejects string exceeding 64 characters', () => {
+    const result = validateColumnName('a'.repeat(65));
     expect(result.valid).toBe(false);
     expect(result.error).toBeDefined();
   });
@@ -111,8 +111,8 @@ describe('validateColumnName', () => {
     expect(result.error).toBeUndefined();
   });
 
-  it('accepts exactly 128 characters', () => {
-    const result = validateColumnName('a'.repeat(128));
+  it('accepts exactly 64 characters', () => {
+    const result = validateColumnName('a'.repeat(64));
     expect(result.valid).toBe(true);
   });
 });

@@ -102,7 +102,7 @@ export function resolveColumnName(
 
 /**
  * Validates a single column name.
- * Rejects empty strings, whitespace-only strings, or strings exceeding 128 characters.
+ * Rejects empty strings, whitespace-only strings, or strings exceeding 64 characters.
  */
 export function validateColumnName(name: string): { valid: boolean; error?: string } {
   if (name.length === 0) {
@@ -111,8 +111,8 @@ export function validateColumnName(name: string): { valid: boolean; error?: stri
   if (name.trim().length === 0) {
     return { valid: false, error: 'Column name cannot be whitespace only' };
   }
-  if (name.length > 128) {
-    return { valid: false, error: 'Column name cannot exceed 128 characters' };
+  if (name.length > 64) {
+    return { valid: false, error: 'Column name cannot exceed 64 characters' };
   }
   return { valid: true };
 }
