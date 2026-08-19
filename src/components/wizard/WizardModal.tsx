@@ -161,6 +161,19 @@ export function WizardModal({
     draft.notifications.failureEmails.length > 0,
   );
 
+  // Sync field list on mount if source definitions changed (e.g., CONTACTS_FIELDS expanded)
+  // This ensures existing drafts pick up newly added fields without requiring a source change
+  useEffect(() => {
+    if (draft.sourceConfig && draft.selectedFields.length > 0) {
+      const patch = populateFieldsForTransition(draft, draft.sourceConfig);
+      if (patch) {
+        setDraft(prev => ({ ...prev, ...patch }));
+      }
+    }
+    // Only run on mount — intentionally excluding draft from deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Dynamic steps — derive stepper label for Step 0 based on source selection
   const { phases } = usePrototypePhases();
   const exporterPhase = phases.exporterPhase;
