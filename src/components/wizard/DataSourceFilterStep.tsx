@@ -10,7 +10,7 @@
  */
 
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
-import { User, ShoppingCart, EnvelopeSimple, ChatCircleDots, BookmarkSimple, Trash, TrendDown, ArrowsClockwise, Funnel, CaretLeft, ClipboardText, ListChecks, CheckCircle } from '@phosphor-icons/react'
+import { User, Receipt, EnvelopeSimple, ChatCircleDots, BookmarkSimple, Trash, TrendDown, ArrowsClockwise, Funnel, CaretLeft, ClipboardText, ListChecks, CheckCircle } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 import { SelectorCard } from '@/components/molecules/selector-card'
 import { InfoHint } from '@/components/molecules/info-hint'
@@ -80,7 +80,7 @@ const SOURCE_CATEGORIES: SourceCategoryConfig[] = [
   },
   {
     key: 'transactional',
-    icon: <ShoppingCart size={20} weight="duotone" className="text-primary" />,
+    icon: <Receipt size={20} weight="duotone" className="text-primary" />,
     title: 'Transactional',
     description: 'Purchase and product data',
     fields: [],
@@ -434,7 +434,7 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
                     <SelectorCard
                       key={table.id}
                       variant="option"
-                      icon={<ShoppingCart size={20} weight="regular" className="text-primary" />}
+                      icon={<Receipt size={20} weight="regular" className="text-primary" />}
                       label={table.name}
                       description="Purchase and activity data"
                       selected={draft.sourceConfig?.primarySource === 'transactions' && (draft.sourceConfig as { tableId?: string }).tableId === table.id}
@@ -483,7 +483,7 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
                     <SelectorCard
                       key={table.id}
                       variant="option"
-                      icon={<ShoppingCart size={20} weight="regular" className="text-primary" />}
+                      icon={<Receipt size={20} weight="regular" className="text-primary" />}
                       label={table.name}
                       description="Purchase and activity data"
                       selected={draft.sourceConfig?.primarySource === 'transactions' && (draft.sourceConfig as { tableId?: string }).tableId === table.id}
@@ -541,7 +541,7 @@ export function DataSourceFilterStep({ draft, onUpdate }: DataSourceFilterStepPr
                     <SelectorCard
                       key={table.id}
                       variant="option"
-                      icon={<ShoppingCart size={20} weight="regular" className="text-primary" />}
+                      icon={<Receipt size={20} weight="regular" className="text-primary" />}
                       label={table.name}
                       description="Purchase and activity data"
                       selected={draft.sourceConfig?.primarySource === 'transactions' && (draft.sourceConfig as { tableId?: string }).tableId === table.id}

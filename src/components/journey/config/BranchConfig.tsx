@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { User, ShoppingCart } from '@phosphor-icons/react';
+import { User, Receipt } from '@phosphor-icons/react';
 import { useJourneys } from '../../../contexts/JourneysContext';
 import { createDefaultConfig } from '../../../models/journey';
 import type {
@@ -57,7 +57,7 @@ const SOURCE_CATEGORIES: SourceCategoryConfig[] = [
   },
   {
     key: 'transactional',
-    icon: <ShoppingCart size={20} weight="duotone" className="text-primary" />,
+    icon: <Receipt size={20} weight="duotone" className="text-primary" />,
     title: 'Transactional',
     description: 'Purchase and transaction data',
     fields: [],
