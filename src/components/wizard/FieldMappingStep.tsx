@@ -358,7 +358,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                   <span className="text-xs text-accent-foreground font-semibold min-w-5 text-center shrink-0">{index + 1}</span>
                   <Lock size={12} weight="bold" className="text-muted-foreground shrink-0" />
                   <TruncatedText className="text-sm text-foreground font-medium max-w-[160px]">{field.label}</TruncatedText>
-                  <span className="text-xs text-secondary-foreground font-semibold py-0.5 px-2 bg-muted border border-border rounded-full shrink-0">{getSourceDisplayName(field.source)}</span>
+                  <span className="text-xs text-primary font-medium py-0.5 px-2 bg-primary/10 border border-primary/20 rounded-full shrink-0">{getSourceDisplayName(field.source)}</span>
 
                   {/* Column rename input */}
                   <div className="ml-auto flex items-center gap-1.5 shrink-0">
@@ -453,7 +453,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                   />
                   <TruncatedText className="text-sm font-medium max-w-[160px]">{field.label}</TruncatedText>
                 </div>
-                <span className="text-xs text-secondary-foreground font-semibold py-0.5 px-2 bg-muted border border-border rounded-full shrink-0">{getSourceDisplayName(field.source)}</span>
+                <span className="text-xs text-primary font-medium py-0.5 px-2 bg-primary/10 border border-primary/20 rounded-full shrink-0">{getSourceDisplayName(field.source)}</span>
 
                 {/* Column rename input */}
                 <div className="ml-auto flex items-center gap-1.5 shrink-0">
@@ -499,7 +499,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                 />
                 <TruncatedText className="text-sm font-medium max-w-[160px]">{field.label}</TruncatedText>
               </div>
-              <span className="text-xs text-secondary-foreground font-semibold py-0.5 px-2 bg-muted border border-border rounded-full shrink-0">{getSourceDisplayName(field.source)}</span>
+              <span className="text-xs text-muted-foreground font-medium py-0.5 px-2 bg-primary/5 border border-primary/10 rounded-full shrink-0">{getSourceDisplayName(field.source)}</span>
             </div>
           ))}
           </div>
