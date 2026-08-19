@@ -471,7 +471,7 @@ export function WizardModal({
             </div>
           </div>
 
-          <div className={cn("flex-1 px-8 flex flex-col gap-6 scrollbar-gutter-stable min-h-0", steps[currentStep]?.label !== 'Data Source' && steps[currentStep]?.label !== 'Filter' && "overflow-y-auto pb-8")} data-testid="wizard-step-content">
+          <div className={cn("flex-1 px-8 flex flex-col gap-6 scrollbar-gutter-stable min-h-0", steps[currentStep]?.label !== 'Data Source' && steps[currentStep]?.label !== 'Filter' && steps[currentStep]?.label !== 'Export Fields' && "overflow-y-auto pb-8")} data-testid="wizard-step-content">
             {stepContent}
           </div>
 

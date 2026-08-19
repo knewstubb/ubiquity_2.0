@@ -291,7 +291,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
   };
 
   return (
-    <div className="flex flex-col gap-6" data-testid="field-mapping-step">
+    <div className="flex flex-col gap-6 flex-1 min-h-0" data-testid="field-mapping-step">
 
       {/* Join key indicator for contact/transactional with multiple sources */}
       {showJoinIndicator && (
@@ -395,7 +395,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
       )}
 
       {/* Contact/Additional fields section */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 flex-1 min-h-0">
         {isEventBased && (
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
@@ -405,9 +405,9 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
           </div>
         )}
 
-        <div className="border border-border rounded-md overflow-hidden" role="group" aria-label={isEventBased ? "Additional contact fields" : "Export fields"}>
+        <div className="border border-border rounded-md overflow-hidden flex-1 min-h-0 flex flex-col" role="group" aria-label={isEventBased ? "Additional contact fields" : "Export fields"}>
           {/* Select all header */}
-          <div className="flex items-center py-2 px-3 border-b border-border bg-secondary">
+          <div className="flex items-center py-2 px-3 border-b border-border bg-secondary shrink-0">
             <div className="flex items-center gap-2">
               <Checkbox
                 id="select-all-fields"
@@ -419,7 +419,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
           </div>
 
           {/* Scrollable field list */}
-          <div className="max-h-[400px] overflow-y-auto">
+          <div className="flex-1 min-h-0 overflow-y-auto">
           {/* Selected contact fields — draggable with rename */}
           {(isEventBased ? selectedContactFields : draft.selectedFields).map((field, index) => {
             const displayIndex = isEventBased ? eventFields.length + index : index;
