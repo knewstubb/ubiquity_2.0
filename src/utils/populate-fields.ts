@@ -26,11 +26,12 @@ export function didSourceOrSubSourceChange(
  * Pure function that determines what draft patches (if any) should be applied
  * when transitioning from the Data Source step to the Field Mapping step.
  *
- * Three branches:
+ * Five branches:
  * 1. No sourceConfig → return null (no-op)
  * 2. selectedFields is empty → populate all fields from sourceConfig
  * 3. Source changed → clear and re-populate with new fields, reset columnRenames
- * 4. Source unchanged, fields non-empty → return null (preserve existing)
+ * 4. Available fields count changed → re-populate (field definitions were updated)
+ * 5. Source unchanged, fields non-empty, count matches → return null (preserve existing)
  */
 export function populateFieldsForTransition(
   draft: ExporterWizardDraft,
@@ -41,11 +42,12 @@ export function populateFieldsForTransition(
   // No source config — leave fields unchanged
   if (!sourceConfig) return null;
 
+  const availableFields = getFieldsForSourceConfig(sourceConfig);
+
   // Fields empty — first visit, populate all
   if (selectedFields.length === 0) {
-    const fields = getFieldsForSourceConfig(sourceConfig);
     return {
-      selectedFields: fields.map((f) => ({
+      selectedFields: availableFields.map((f) => ({
         key: f.key,
         label: f.label,
         source: f.source as SelectedField['source'],
@@ -55,9 +57,8 @@ export function populateFieldsForTransition(
 
   // Source changed — clear and re-populate
   if (didSourceOrSubSourceChange(previousSourceConfig, sourceConfig)) {
-    const fields = getFieldsForSourceConfig(sourceConfig);
     return {
-      selectedFields: fields.map((f) => ({
+      selectedFields: availableFields.map((f) => ({
         key: f.key,
         label: f.label,
         source: f.source as SelectedField['source'],
@@ -66,6 +67,19 @@ export function populateFieldsForTransition(
     };
   }
 
-  // Source unchanged, fields non-empty — preserve
+  // Available fields count changed — field definitions were updated, re-populate
+  // This handles cases where the seed data or field config was expanded/reduced
+  if (availableFields.length !== selectedFields.length) {
+    return {
+      selectedFields: availableFields.map((f) => ({
+        key: f.key,
+        label: f.label,
+        source: f.source as SelectedField['source'],
+      })),
+      columnRenames: [],
+    };
+  }
+
+  // Source unchanged, fields non-empty, count matches — preserve
   return null;
 }
