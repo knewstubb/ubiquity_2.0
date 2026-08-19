@@ -18,8 +18,7 @@ type Frequency = ExporterScheduleConfig['frequency'];
 const FREQUENCY_OPTIONS: { value: Frequency; label: string; price: string }[] = [
   { value: '10_minute', label: '10 Minute', price: '$1,000 /month' },
   { value: 'hourly', label: 'Hourly', price: '$500 /month' },
-  { value: 'daily', label: 'Daily', price: '$250 /month' },
-  { value: 'weekly', label: 'Weekly', price: '$250 /month' },
+  { value: 'weekly', label: 'Daily', price: '$250 /month' },
 ];
 
 type TimeOfDay = NonNullable<ExporterScheduleConfig['timeOfDay']>;
@@ -64,7 +63,7 @@ export function ScheduleStep({ draft, onUpdate, onNotificationsValidChange }: Sc
           <p className="text-xs text-tertiary-foreground mt-1 m-0">How often this export runs</p>
         </div>
         <div className="w-[552px] flex flex-col gap-5">
-          <div className="grid grid-cols-4 gap-3 overflow-visible pt-2 pr-2" role="radiogroup" aria-label="Export frequency">
+          <div className="grid grid-cols-3 gap-3 overflow-visible pt-2 pr-2" role="radiogroup" aria-label="Export frequency">
             {FREQUENCY_OPTIONS.map((opt) => (
               <SelectorCard
                 key={opt.value}
@@ -77,7 +76,7 @@ export function ScheduleStep({ draft, onUpdate, onNotificationsValidChange }: Sc
             ))}
           </div>
 
-          {/* Weekly: day-of-week picker */}
+          {/* Weekly (now labeled "Daily"): day-of-week picker */}
           {schedule.frequency === 'weekly' && (
             <div className="flex items-start gap-6">
               <div>
@@ -105,28 +104,6 @@ export function ScheduleStep({ draft, onUpdate, onNotificationsValidChange }: Sc
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-          )}
-
-          {/* Time of day: shown for Daily only */}
-          {schedule.frequency === 'daily' && (
-            <div>
-              <p className="text-xs font-medium text-muted-foreground m-0 mb-2">At</p>
-              <Select
-                value={schedule.timeOfDay ?? undefined}
-                onValueChange={(v) => updateSchedule({ timeOfDay: v as TimeOfDay })}
-              >
-                <SelectTrigger aria-label="Time of day" className="w-48">
-                  <SelectValue placeholder="Select time window" />
-                </SelectTrigger>
-                <SelectContent>
-                  {TIME_OF_DAY_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label} ({opt.description})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           )}
         </div>
