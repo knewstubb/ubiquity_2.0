@@ -1,5 +1,5 @@
 import type { Automation } from '../../models/automation';
-import { DotsThree, GearSix, PencilSimple, ListBullets, ClockCounterClockwise, Trash, UsersThree, NewspaperClipping } from '@phosphor-icons/react';
+import { DotsThree, GearSix, PencilSimple, ListBullets, ClockCounterClockwise, Trash, UsersThree, Receipt } from '@phosphor-icons/react';
 import { Switch } from '@/components/atoms/switch';
 import { Badge } from '@/components/atoms/badge';
 import {
@@ -116,12 +116,12 @@ export function AutomationCard({ connector, connectionError, onToggleStatus, onV
           </>
         ) : connector.dataType === 'transactional' ? (
           <>
-            <NewspaperClipping size={14} weight="regular" />
+            <Receipt size={14} weight="regular" />
             {dataTypeLabel}
           </>
         ) : connector.dataType === 'transactional_with_contact' ? (
           <>
-            <NewspaperClipping size={14} weight="regular" />
+            <Receipt size={14} weight="regular" />
             {connector.transactionalSource}
             {' + '}
             <UsersThree size={14} weight="regular" />
