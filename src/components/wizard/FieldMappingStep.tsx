@@ -177,6 +177,11 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
   const handleRename = useCallback(
     (fieldKey: string, outputName: string) => {
       const existing = draft.columnRenames.filter((r) => r.fieldKey !== fieldKey);
+      // If output name is empty, just remove the rename (use default label)
+      if (outputName.length === 0) {
+        onUpdate({ columnRenames: existing });
+        return;
+      }
       const newRenames: ColumnRename[] = [...existing, { fieldKey, outputName }];
       onUpdate({ columnRenames: newRenames });
     },
@@ -346,7 +351,7 @@ export function FieldMappingStep({ draft, onUpdate }: FieldMappingStepProps) {
                       onChange={(e) => handleRename(field.key, e.target.value)}
                       placeholder={field.label}
                       className="h-7 w-40 text-xs"
-                      maxLength={64}
+                      maxLength={50}
                       aria-label={`Output column name for ${field.label}`}
                       aria-invalid={!!error}
                       data-testid={`rename-input-${field.key}`}

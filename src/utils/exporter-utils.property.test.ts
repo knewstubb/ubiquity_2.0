@@ -662,22 +662,22 @@ describe('Feature: exporter-wizard-rework, Property 5: Column name resolution', 
 
 /**
  * Property 6: Column name validation rejects invalid input
- * For any string that is empty, composed entirely of whitespace characters, or exceeds
- * 64 characters in length, the column name validation function should return a validation error.
+ * Empty strings are valid (use default label).
+ * Whitespace-only strings or strings exceeding 50 characters are rejected.
  *
  * **Validates: Requirements 6.1, 6.5**
  */
 describe('Feature: exporter-wizard-rework, Property 6: Column name validation rejects invalid input', () => {
-  it('empty strings are rejected', () => {
+  it('empty strings are accepted (use default label)', () => {
     const result = validateColumnName('');
-    expect(result.valid).toBe(false);
-    expect(result.error).toBeDefined();
+    expect(result.valid).toBe(true);
+    expect(result.error).toBeUndefined();
   });
 
   it('whitespace-only strings (random lengths of spaces/tabs/newlines) are rejected', () => {
     const whitespaceChars = [' ', '\t', '\n', '\r', '\f', '\v'];
     const whitespaceOnlyArb = fc
-      .array(fc.constantFrom(...whitespaceChars), { minLength: 1, maxLength: 64 })
+      .array(fc.constantFrom(...whitespaceChars), { minLength: 1, maxLength: 50 })
       .map((chars) => chars.join(''));
 
     fc.assert(
@@ -690,8 +690,8 @@ describe('Feature: exporter-wizard-rework, Property 6: Column name validation re
     );
   });
 
-  it('strings exceeding 64 characters are rejected', () => {
-    const longStringArb = fc.string({ minLength: 65, maxLength: 500 });
+  it('strings exceeding 50 characters are rejected', () => {
+    const longStringArb = fc.string({ minLength: 51, maxLength: 500 });
 
     fc.assert(
       fc.property(longStringArb, (name) => {
@@ -703,10 +703,10 @@ describe('Feature: exporter-wizard-rework, Property 6: Column name validation re
     );
   });
 
-  it('valid strings (1-64 chars, at least one non-whitespace) are accepted', () => {
-    // Generate strings that have at least one non-whitespace character and are 1-64 chars
+  it('valid strings (1-50 chars, at least one non-whitespace) are accepted', () => {
+    // Generate strings that have at least one non-whitespace character and are 1-50 chars
     const validColumnNameArb = fc
-      .string({ minLength: 1, maxLength: 64 })
+      .string({ minLength: 1, maxLength: 50 })
       .filter((s) => s.trim().length > 0);
 
     fc.assert(

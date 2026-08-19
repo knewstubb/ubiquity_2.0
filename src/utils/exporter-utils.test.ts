@@ -87,10 +87,10 @@ describe('resolveColumnName', () => {
 });
 
 describe('validateColumnName', () => {
-  it('rejects empty string', () => {
+  it('accepts empty string (uses default label)', () => {
     const result = validateColumnName('');
-    expect(result.valid).toBe(false);
-    expect(result.error).toBeDefined();
+    expect(result.valid).toBe(true);
+    expect(result.error).toBeUndefined();
   });
 
   it('rejects whitespace-only string', () => {
@@ -99,8 +99,8 @@ describe('validateColumnName', () => {
     expect(result.error).toBeDefined();
   });
 
-  it('rejects string exceeding 64 characters', () => {
-    const result = validateColumnName('a'.repeat(65));
+  it('rejects string exceeding 50 characters', () => {
+    const result = validateColumnName('a'.repeat(51));
     expect(result.valid).toBe(false);
     expect(result.error).toBeDefined();
   });
@@ -111,8 +111,8 @@ describe('validateColumnName', () => {
     expect(result.error).toBeUndefined();
   });
 
-  it('accepts exactly 64 characters', () => {
-    const result = validateColumnName('a'.repeat(64));
+  it('accepts exactly 50 characters', () => {
+    const result = validateColumnName('a'.repeat(50));
     expect(result.valid).toBe(true);
   });
 });
