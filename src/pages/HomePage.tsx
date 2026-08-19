@@ -113,7 +113,7 @@ function getSendsPerDay(_accountMailouts: typeof mailouts): { date: string; send
   return days;
 }
 
-/** Simple SVG line chart component */
+/** Simple SVG line chart component with hoverable data points */
 function SendsLineChart({ data }: { data: { date: string; sends: number }[] }) {
   const width = 800;
   const height = 160;
@@ -153,6 +153,24 @@ function SendsLineChart({ data }: { data: { date: string; sends: number }[] }) {
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
+      <style>{`
+        .chart-point {
+          transition: r 150ms ease-out;
+          cursor: pointer;
+        }
+        .chart-point:hover {
+          r: 6;
+        }
+        .chart-tooltip {
+          opacity: 0;
+          transition: opacity 150ms ease-out;
+          pointer-events: none;
+        }
+        .chart-point:hover + .chart-tooltip {
+          opacity: 1;
+        }
+      `}</style>
+      
       {/* Gradient definition for area fill */}
       <defs>
         <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
@@ -191,15 +209,37 @@ function SendsLineChart({ data }: { data: { date: string; sends: number }[] }) {
         strokeLinejoin="round"
       />
       
-      {/* Data points */}
+      {/* Data points with hover tooltips */}
       {points.map((p, i) => (
-        <circle
-          key={i}
-          cx={p.x}
-          cy={p.y}
-          r={p.sends > 0 ? 3 : 0}
-          fill={primaryColor}
-        />
+        <g key={i}>
+          <circle
+            className="chart-point"
+            cx={p.x}
+            cy={p.y}
+            r={p.sends > 0 ? 3 : 0}
+            fill={primaryColor}
+          />
+          {/* Tooltip background */}
+          <g className="chart-tooltip">
+            <rect
+              x={p.x - 35}
+              y={p.y - 32}
+              width={70}
+              height={24}
+              rx={4}
+              fill="#18181B"
+            />
+            <text
+              x={p.x}
+              y={p.y - 16}
+              textAnchor="middle"
+              fill="white"
+              className="text-[10px] font-medium"
+            >
+              {p.sends.toLocaleString()} sent
+            </text>
+          </g>
+        </g>
       ))}
       
       {/* Y-axis labels */}
@@ -261,10 +301,11 @@ function generateSparklineData(trend: 'up' | 'down' | 'stable', base: number): n
 }
 
 /** Mini sparkline component */
-function Sparkline({ data, color }: { data: number[]; color: string }) {
+function Sparkline({ data }: { data: number[] }) {
   const width = 60;
   const height = 24;
   const padding = 2;
+  const primaryColor = '#14B88A';
   
   const min = Math.min(...data);
   const max = Math.max(...data);
@@ -283,7 +324,7 @@ function Sparkline({ data, color }: { data: number[]; color: string }) {
       <path
         d={pathD}
         fill="none"
-        stroke={color}
+        stroke={primaryColor}
         strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -292,13 +333,8 @@ function Sparkline({ data, color }: { data: number[]; color: string }) {
   );
 }
 
-/** Metric card colours */
-const metricColors = {
-  contacts: '#14B88A',    // Primary teal
-  sent: '#3B82F6',        // Blue
-  openRate: '#8B5CF6',    // Purple
-  clickRate: '#F59E0B',   // Amber
-};
+/** Primary teal colour */
+const primaryColor = '#14B88A';
 
 /**
  * Landing Dashboard — clean overview with key metrics and navigation
@@ -338,36 +374,36 @@ export default function HomePage() {
         <div className="p-5 rounded-xl border border-border bg-background">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm text-muted-foreground">Total Contacts</p>
-            <Sparkline data={sparklines.contacts} color={metricColors.contacts} />
+            <Sparkline data={sparklines.contacts} />
           </div>
-          <p className="text-2xl font-semibold" style={{ color: metricColors.contacts }}>
+          <p className="text-2xl font-semibold text-primary">
             {accountContacts.length.toLocaleString()}
           </p>
         </div>
         <div className="p-5 rounded-xl border border-border bg-background">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm text-muted-foreground">Emails Sent</p>
-            <Sparkline data={sparklines.sent} color={metricColors.sent} />
+            <Sparkline data={sparklines.sent} />
           </div>
-          <p className="text-2xl font-semibold" style={{ color: metricColors.sent }}>
+          <p className="text-2xl font-semibold text-primary">
             {metrics.sent.toLocaleString()}
           </p>
         </div>
         <div className="p-5 rounded-xl border border-border bg-background">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm text-muted-foreground">Open Rate</p>
-            <Sparkline data={sparklines.openRate} color={metricColors.openRate} />
+            <Sparkline data={sparklines.openRate} />
           </div>
-          <p className="text-2xl font-semibold" style={{ color: metricColors.openRate }}>
+          <p className="text-2xl font-semibold text-primary">
             {metrics.openRate.toFixed(1)}%
           </p>
         </div>
         <div className="p-5 rounded-xl border border-border bg-background">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm text-muted-foreground">Click Rate</p>
-            <Sparkline data={sparklines.clickRate} color={metricColors.clickRate} />
+            <Sparkline data={sparklines.clickRate} />
           </div>
-          <p className="text-2xl font-semibold" style={{ color: metricColors.clickRate }}>
+          <p className="text-2xl font-semibold text-primary">
             {metrics.clickRate.toFixed(1)}%
           </p>
         </div>
