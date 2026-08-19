@@ -7,6 +7,32 @@
 
 ---
 
+## 2026-08-13 — Chip Styling Revision + Field Count Fix
+
+**Context:** User feedback that darker chip text was too harsh, requested mint styling instead. Also reported Serenity Spa only showing 9 fields despite expansion to 30.
+
+**What changed:**
+
+1. **Reverted chip text colour, added mint backgrounds**
+   - Selected fields: `bg-primary/10 border-primary/20 text-primary` (mint tint, teal text)
+   - Unselected fields: `bg-primary/5 border-primary/10 text-muted-foreground` (lighter mint, grey text)
+   - Provides visual differentiation while maintaining requested mint aesthetic
+
+2. **Fixed 30 fields not refreshing for existing drafts**
+   - Root cause: `populateFieldsForTransition()` only repopulated when fields empty or source changed
+   - Existing Serenity Spa exporter had 9 fields cached from before expansion
+   - Added fifth branch: detect when available field count differs from cached selection and repopulate
+   - Resets `columnRenames` when repopulating to avoid stale mappings
+
+**Commits:**
+- `c2dbece` — style(exporter): apply mint tint to source chips
+- `b6fd9d1` — fix(exporter): refresh fields when available count changes
+
+**Refs:**
+- specs/exporter-wizard-rework/
+
+---
+
 ## 2026-08-13 — Export Fields UI Improvements
 
 **Context:** User feedback on Export Fields step — chips showing generic "transactions" label, low contrast chips, need to test with many fields.

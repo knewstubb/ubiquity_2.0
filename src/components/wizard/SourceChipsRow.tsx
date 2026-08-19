@@ -1,6 +1,4 @@
-import { Plus } from '@phosphor-icons/react';
 import { Chip } from '../molecules/chip';
-import { Button } from '../atoms/button';
 import { transactionalDatabases } from '../../data/transactionalData';
 import type { PrimarySourceType, EnrichmentConfig } from '../../models/source-selection';
 
@@ -10,7 +8,6 @@ interface SourceChipsRowProps {
   primarySource: PrimarySourceType;
   enrichments: EnrichmentConfig[];
   onRemoveEnrichment: (index: number) => void;
-  onOpenAddModal: () => void;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -34,7 +31,6 @@ export function SourceChipsRow({
   primarySource,
   enrichments,
   onRemoveEnrichment,
-  onOpenAddModal,
 }: SourceChipsRowProps) {
   return (
     <div
@@ -54,18 +50,6 @@ export function SourceChipsRow({
           />
         );
       })}
-
-      {/* Add source button */}
-      <Button
-        type="button"
-        variant="secondaryOutline"
-        size="xs"
-        onClick={onOpenAddModal}
-        data-testid="add-source-button"
-      >
-        <Plus size={14} weight="bold" />
-        Add source
-      </Button>
     </div>
   );
 }

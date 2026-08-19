@@ -26,16 +26,18 @@ export function didSourceOrSubSourceChange(
  * Pure function that determines what draft patches (if any) should be applied
  * when transitioning from the Data Source step to the Field Mapping step.
  *
- * Five branches:
+ * Branches:
  * 1. No sourceConfig → return null (no-op)
- * 2. selectedFields is empty → populate all fields from sourceConfig
- * 3. Source changed → clear and re-populate with new fields, reset columnRenames
- * 4. Available fields count changed → re-populate (field definitions were updated)
- * 5. Source unchanged, fields non-empty, count matches → return null (preserve existing)
+ * 2. New exporter (isEdit=false) with empty fields → return null (start deselected)
+ * 3. Edit mode with empty fields → populate all (backward compat for legacy data)
+ * 4. Source changed → clear selections (user must re-select)
+ * 5. Available fields count changed on edit → re-sync to new field definitions
+ * 6. Source unchanged, fields non-empty, count matches → preserve existing
  */
 export function populateFieldsForTransition(
   draft: ExporterWizardDraft,
   previousSourceConfig: SourceConfig | null,
+  isEdit: boolean = false,
 ): Partial<ExporterWizardDraft> | null {
   const { sourceConfig, selectedFields } = draft;
 
@@ -44,8 +46,13 @@ export function populateFieldsForTransition(
 
   const availableFields = getFieldsForSourceConfig(sourceConfig);
 
-  // Fields empty — first visit, populate all
+  // Fields empty
   if (selectedFields.length === 0) {
+    // New exporter — start with all fields deselected
+    if (!isEdit) {
+      return null;
+    }
+    // Edit mode with empty fields (legacy data) — populate all for backward compat
     return {
       selectedFields: availableFields.map((f) => ({
         key: f.key,
@@ -55,21 +62,17 @@ export function populateFieldsForTransition(
     };
   }
 
-  // Source changed — clear and re-populate
+  // Source changed — clear selections, user must re-select
   if (didSourceOrSubSourceChange(previousSourceConfig, sourceConfig)) {
     return {
-      selectedFields: availableFields.map((f) => ({
-        key: f.key,
-        label: f.label,
-        source: f.source as SelectedField['source'],
-      })),
+      selectedFields: [],
       columnRenames: [],
     };
   }
 
-  // Available fields count changed — field definitions were updated, re-populate
+  // Edit mode: available fields count changed — field definitions were updated, re-sync
   // This handles cases where the seed data or field config was expanded/reduced
-  if (availableFields.length !== selectedFields.length) {
+  if (isEdit && availableFields.length !== selectedFields.length) {
     return {
       selectedFields: availableFields.map((f) => ({
         key: f.key,
@@ -80,6 +83,6 @@ export function populateFieldsForTransition(
     };
   }
 
-  // Source unchanged, fields non-empty, count matches — preserve
+  // Source unchanged, fields non-empty — preserve existing
   return null;
 }

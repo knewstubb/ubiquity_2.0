@@ -72,7 +72,7 @@ const enrichmentsArb: fc.Arbitrary<EnrichmentConfig[]> = fc
 function getExpectedLabel(config: EnrichmentConfig): string {
   switch (config.entity) {
     case 'messages':
-      return 'Messages';
+      return 'Mailout';
     case 'transactions': {
       const table = transactionalDatabases.find((t) => t.id === config.tableId);
       return table?.name ?? config.tableId;
@@ -88,14 +88,13 @@ function getExpectedLabel(config: EnrichmentConfig): string {
  * Property 1: Chip Row Ordering Invariant
  *
  * For any array of enrichments (0 to N items), the Source Chips Row SHALL render
- * elements in the order: [Contacts chip, ...enrichment chips in array order, Add Source button].
- * The total rendered element count SHALL equal `enrichments.length + 2`
- * (one Contacts chip + one chip per enrichment + one Add button).
+ * enrichment chips in array order. The total rendered element count SHALL equal
+ * `enrichments.length` (one chip per enrichment).
  *
  * **Validates: Requirements 1.2, 1.4, 1.5**
  */
 describe('Feature: field-mapping-source-panel, Property 1: Chip Row Ordering Invariant', () => {
-  it('rendered element count equals enrichments.length + 2 (Contacts + chips + Add button)', () => {
+  it('rendered element count equals enrichments.length', () => {
     fc.assert(
       fc.property(enrichmentsArb, (enrichments) => {
         const { container, unmount } = render(
@@ -103,15 +102,13 @@ describe('Feature: field-mapping-source-panel, Property 1: Chip Row Ordering Inv
             primarySource="contacts"
             enrichments={enrichments}
             onRemoveEnrichment={() => {}}
-            onOpenAddModal={() => {}}
           />,
         );
 
         const row = container.querySelector('[data-testid="source-chips-row"]')!;
-        // Direct children: Contacts chip (span) + enrichment chips (spans) + Add button (button)
         const children = Array.from(row.children);
 
-        expect(children.length).toBe(enrichments.length + 2);
+        expect(children.length).toBe(enrichments.length);
 
         unmount();
       }),
@@ -119,33 +116,25 @@ describe('Feature: field-mapping-source-panel, Property 1: Chip Row Ordering Inv
     );
   });
 
-  it('order matches [Contacts, ...enrichments in array order, Add button]', () => {
+  it('order matches enrichments in array order', () => {
     fc.assert(
-      fc.property(enrichmentsArb, (enrichments) => {
+      fc.property(enrichmentsArb.filter((e) => e.length > 0), (enrichments) => {
         const { container, unmount } = render(
           <SourceChipsRow
             primarySource="contacts"
             enrichments={enrichments}
             onRemoveEnrichment={() => {}}
-            onOpenAddModal={() => {}}
           />,
         );
 
         const row = container.querySelector('[data-testid="source-chips-row"]')!;
         const children = Array.from(row.children);
 
-        // First element: Contacts chip — should contain text "Contacts"
-        expect(children[0].textContent).toContain('Contacts');
-
-        // Middle elements: enrichment chips in array order
+        // Each element should be an enrichment chip in array order
         for (let i = 0; i < enrichments.length; i++) {
           const expectedLabel = getExpectedLabel(enrichments[i]);
-          expect(children[i + 1].textContent).toContain(expectedLabel);
+          expect(children[i].textContent).toContain(expectedLabel);
         }
-
-        // Last element: Add source button
-        const lastChild = children[children.length - 1];
-        expect(lastChild.getAttribute('data-testid')).toBe('add-source-button');
 
         unmount();
       }),
@@ -153,7 +142,7 @@ describe('Feature: field-mapping-source-panel, Property 1: Chip Row Ordering Inv
     );
   });
 
-  it('Contacts chip has no dismiss button, enrichment chips have dismiss buttons', () => {
+  it('each enrichment chip has a dismiss button', () => {
     fc.assert(
       fc.property(
         enrichmentsArb.filter((e) => e.length > 0),
@@ -163,19 +152,14 @@ describe('Feature: field-mapping-source-panel, Property 1: Chip Row Ordering Inv
               primarySource="contacts"
               enrichments={enrichments}
               onRemoveEnrichment={() => {}}
-              onOpenAddModal={() => {}}
             />,
           );
 
           const row = container.querySelector('[data-testid="source-chips-row"]')!;
           const children = Array.from(row.children);
 
-          // Contacts chip (first) should NOT have a dismiss button
-          const contactsDismiss = children[0].querySelector('button[aria-label^="Remove"]');
-          expect(contactsDismiss).toBeNull();
-
           // Each enrichment chip should have a dismiss button
-          for (let i = 1; i <= enrichments.length; i++) {
+          for (let i = 0; i < enrichments.length; i++) {
             const dismissBtn = children[i].querySelector('button[aria-label^="Remove"]');
             expect(dismissBtn).not.toBeNull();
           }
