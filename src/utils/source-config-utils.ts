@@ -32,13 +32,37 @@ export interface SourceFieldDefinition {
 // ─── Static field arrays per source type ─────────────────────────────────────
 
 const CONTACTS_FIELDS: SourceFieldDefinition[] = [
+  // Core identity (5)
   { key: 'contact_email', label: 'Email', source: 'contacts' },
   { key: 'contact_firstName', label: 'First Name', source: 'contacts' },
   { key: 'contact_lastName', label: 'Last Name', source: 'contacts' },
   { key: 'contact_phone', label: 'Phone', source: 'contacts' },
   { key: 'contact_mobilePhone', label: 'Mobile Phone', source: 'contacts' },
+  // Demographics (5)
   { key: 'contact_dateOfBirth', label: 'Date of Birth', source: 'contacts' },
+  { key: 'contact_gender', label: 'Gender', source: 'contacts' },
+  { key: 'contact_preferredLanguage', label: 'Preferred Language', source: 'contacts' },
   { key: 'contact_company', label: 'Company', source: 'contacts' },
+  { key: 'contact_jobTitle', label: 'Job Title', source: 'contacts' },
+  // Address (5)
+  { key: 'contact_addressLine1', label: 'Address Line 1', source: 'contacts' },
+  { key: 'contact_addressLine2', label: 'Address Line 2', source: 'contacts' },
+  { key: 'contact_city', label: 'City', source: 'contacts' },
+  { key: 'contact_region', label: 'Region', source: 'contacts' },
+  { key: 'contact_postalCode', label: 'Postal Code', source: 'contacts' },
+  // Spa-specific preferences (5)
+  { key: 'contact_preferredTreatment', label: 'Preferred Treatment', source: 'contacts' },
+  { key: 'contact_preferredTherapist', label: 'Preferred Therapist', source: 'contacts' },
+  { key: 'contact_allergies', label: 'Allergies & Sensitivities', source: 'contacts' },
+  { key: 'contact_medicalNotes', label: 'Medical Notes', source: 'contacts' },
+  { key: 'contact_preferredContactMethod', label: 'Preferred Contact Method', source: 'contacts' },
+  // Membership & loyalty (5)
+  { key: 'contact_membershipTier', label: 'Membership Tier', source: 'contacts' },
+  { key: 'contact_membershipExpiry', label: 'Membership Expiry', source: 'contacts' },
+  { key: 'contact_loyaltyPoints', label: 'Loyalty Points', source: 'contacts' },
+  { key: 'contact_lifetimeValue', label: 'Lifetime Value', source: 'contacts' },
+  { key: 'contact_referralSource', label: 'Referral Source', source: 'contacts' },
+  // System fields (5)
   { key: 'contact_status', label: 'Status', source: 'contacts' },
   { key: 'contact_segment', label: 'Segment', source: 'contacts' },
   { key: 'contact_source', label: 'Acquisition Source', source: 'contacts' },
@@ -46,16 +70,22 @@ const CONTACTS_FIELDS: SourceFieldDefinition[] = [
   { key: 'contact_updatedAt', label: 'Last Modified', source: 'contacts' },
 ];
 
-const TRANSACTIONS_FIELDS: SourceFieldDefinition[] = [
-  { key: 'transaction_id', label: 'Transaction ID', source: 'transactions' },
-  { key: 'transaction_contactId', label: 'Contact ID', source: 'transactions' },
-  { key: 'transaction_amount', label: 'Amount', source: 'transactions' },
-  { key: 'transaction_date', label: 'Date', source: 'transactions' },
-  { key: 'transaction_type', label: 'Type', source: 'transactions' },
-  { key: 'transaction_status', label: 'Status', source: 'transactions' },
-  { key: 'transaction_reference', label: 'Reference', source: 'transactions' },
-  { key: 'transaction_notes', label: 'Notes', source: 'transactions' },
+// Transaction field templates — source is set dynamically based on tableId
+const TRANSACTIONS_FIELD_TEMPLATES = [
+  { key: 'transaction_id', label: 'Transaction ID' },
+  { key: 'transaction_contactId', label: 'Contact ID' },
+  { key: 'transaction_amount', label: 'Amount' },
+  { key: 'transaction_date', label: 'Date' },
+  { key: 'transaction_type', label: 'Type' },
+  { key: 'transaction_status', label: 'Status' },
+  { key: 'transaction_reference', label: 'Reference' },
+  { key: 'transaction_notes', label: 'Notes' },
 ];
+
+function getTransactionFields(tableId?: string): SourceFieldDefinition[] {
+  const source = tableId ? `txn:${tableId}` : 'transactions';
+  return TRANSACTIONS_FIELD_TEMPLATES.map((f) => ({ ...f, source }));
+}
 
 const MESSAGES_FIELDS: SourceFieldDefinition[] = [
   { key: 'message_id', label: 'Message ID', source: 'mailout' },
@@ -70,12 +100,12 @@ const MESSAGES_FIELDS: SourceFieldDefinition[] = [
   { key: 'message_subject', label: 'Subject Line', source: 'mailout' },
 ];
 
-function getPrimaryFields(primarySource: PrimarySourceType): SourceFieldDefinition[] {
+function getPrimaryFields(primarySource: PrimarySourceType, tableId?: string): SourceFieldDefinition[] {
   switch (primarySource) {
     case 'contacts':
       return CONTACTS_FIELDS;
     case 'transactions':
-      return TRANSACTIONS_FIELDS;
+      return getTransactionFields(tableId);
     case 'messages':
       return MESSAGES_FIELDS;
   }
@@ -121,7 +151,9 @@ function getEnrichmentFields(enrichment: EnrichmentConfig): SourceFieldDefinitio
  * Falls back to legacy `config.enrichment` if `enrichments` is empty/undefined.
  */
 export function getFieldsForSourceConfig(config: SourceConfig): SourceFieldDefinition[] {
-  const primaryFields = getPrimaryFields(config.primarySource);
+  // Pass tableId for transactions so source tag includes the actual table
+  const tableId = config.primarySource === 'transactions' ? config.tableId : undefined;
+  const primaryFields = getPrimaryFields(config.primarySource, tableId);
   const enrichments = config.enrichments?.length
     ? config.enrichments
     : config.enrichment
