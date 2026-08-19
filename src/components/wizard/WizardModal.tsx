@@ -165,7 +165,7 @@ export function WizardModal({
   // This ensures existing drafts pick up newly added fields without requiring a source change
   useEffect(() => {
     if (draft.sourceConfig && draft.selectedFields.length > 0) {
-      const patch = populateFieldsForTransition(draft, draft.sourceConfig);
+      const patch = populateFieldsForTransition(draft, draft.sourceConfig, !!editConnectorId);
       if (patch) {
         setDraft(prev => ({ ...prev, ...patch }));
       }
@@ -295,7 +295,7 @@ export function WizardModal({
     // This happens from Filter (Phase 3) or from Data Source (Phase 1–2 when Filter is hidden)
     const nextStepLabel = steps[currentStep + 1]?.label;
     if (nextStepLabel === 'Export Fields') {
-      const patch = populateFieldsForTransition(draft, previousSourceConfigRef.current);
+      const patch = populateFieldsForTransition(draft, previousSourceConfigRef.current, !!editConnectorId);
       if (patch) {
         setDraft(prev => ({ ...prev, ...patch }));
       }
