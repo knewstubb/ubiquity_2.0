@@ -98,10 +98,10 @@
   --border: #E4E4E7;
   --border-strong: #D4D4D8;
   --input: #E4E4E7;
-  --ring: #14B88A;
-  --ring-shadow: 0 0 0 3px rgba(20, 184, 138, 0.15);
-  --ring-shadow-destructive: 0 0 0 3px rgba(239, 68, 68, 0.15);
-  --ring-shadow-warning: 0 0 0 3px rgba(245, 158, 11, 0.15);
+  --ring: transparent;
+  --ring-shadow: none;
+  --ring-shadow-destructive: none;
+  --ring-shadow-warning: none;
 
   /* ─── Neutral ────────────────────────────────────────────────────────────────
      Utility tokens for edge cases — inverted text, sunken/elevated surfaces
@@ -208,10 +208,10 @@
   --border: #27272A;
   --border-strong: #3F3F46;
   --input: #27272A;
-  --ring: #14B88A;
-  --ring-shadow: 0 0 0 3px rgba(20, 184, 138, 0.15);
-  --ring-shadow-destructive: 0 0 0 3px rgba(239, 68, 68, 0.15);
-  --ring-shadow-warning: 0 0 0 3px rgba(245, 158, 11, 0.15);
+  --ring: transparent;
+  --ring-shadow: none;
+  --ring-shadow-destructive: none;
+  --ring-shadow-warning: none;
 
   /* ─── Neutral ────────────────────────────────────────────────────────────────*/
   --background-sunken: #000000;
