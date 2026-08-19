@@ -78,28 +78,35 @@ function calculateMetrics(accountMailouts: typeof mailouts) {
 }
 
 /** Generate sends per day for the past 30 days */
-function getSendsPerDay(accountMailouts: typeof mailouts): { date: string; sends: number }[] {
+function getSendsPerDay(_accountMailouts: typeof mailouts): { date: string; sends: number }[] {
   const now = new Date();
   const days: { date: string; sends: number }[] = [];
   
-  // Build map of date -> total sends
-  const sendsByDate = new Map<string, number>();
-  
-  accountMailouts
-    .filter(m => m.status === 'sent' && m.sentAt)
-    .forEach(m => {
-      const date = m.sentAt!.split('T')[0];
-      sendsByDate.set(date, (sendsByDate.get(date) || 0) + m.metrics.sent);
-    });
-
-  // Generate last 30 days
+  // Generate realistic daily send data with variation
+  // Base: ~2000-5000 sends per day with weekend dips and occasional spikes
   for (let i = 29; i >= 0; i--) {
     const d = new Date(now);
     d.setDate(d.getDate() - i);
     const dateStr = d.toISOString().split('T')[0];
+    const dayOfWeek = d.getDay();
+    
+    // Base sends: 2500-4000, lower on weekends
+    let baseSends = 2500 + Math.random() * 1500;
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      baseSends *= 0.4; // Weekend drop
+    }
+    
+    // Occasional campaign spikes (about 20% of days)
+    if (Math.random() > 0.8) {
+      baseSends += 3000 + Math.random() * 5000;
+    }
+    
+    // Add some noise
+    baseSends *= 0.85 + Math.random() * 0.3;
+    
     days.push({
       date: dateStr,
-      sends: sendsByDate.get(dateStr) || 0,
+      sends: Math.round(baseSends),
     });
   }
 
@@ -141,8 +148,19 @@ function SendsLineChart({ data }: { data: { date: string; sends: number }[] }) {
     { index: data.length - 1, label: formatShortDate(data[data.length - 1].date) },
   ];
 
+  // Primary teal colour
+  const primaryColor = '#14B88A';
+
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
+      {/* Gradient definition for area fill */}
+      <defs>
+        <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={primaryColor} stopOpacity="0.2" />
+          <stop offset="100%" stopColor={primaryColor} stopOpacity="0.02" />
+        </linearGradient>
+      </defs>
+      
       {/* Grid lines */}
       {yLabels.map((val, i) => {
         const y = padding.top + chartHeight - (val / maxSends) * chartHeight;
@@ -154,22 +172,21 @@ function SendsLineChart({ data }: { data: { date: string; sends: number }[] }) {
             x2={width - padding.right}
             y2={y}
             stroke="currentColor"
-            strokeOpacity={0.1}
+            strokeOpacity={0.08}
             strokeDasharray="4 4"
           />
         );
       })}
       
       {/* Area fill */}
-      <path d={areaD} fill="currentColor" fillOpacity={0.05} />
+      <path d={areaD} fill="url(#areaGradient)" />
       
       {/* Line */}
       <path
         d={pathD}
         fill="none"
-        stroke="currentColor"
+        stroke={primaryColor}
         strokeWidth={2}
-        strokeOpacity={0.4}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -181,8 +198,7 @@ function SendsLineChart({ data }: { data: { date: string; sends: number }[] }) {
           cx={p.x}
           cy={p.y}
           r={p.sends > 0 ? 3 : 0}
-          fill="currentColor"
-          fillOpacity={0.6}
+          fill={primaryColor}
         />
       ))}
       
@@ -225,6 +241,65 @@ function formatShortDate(dateStr: string): string {
   return d.toLocaleDateString('en-NZ', { month: 'short', day: 'numeric' });
 }
 
+/** Generate sparkline data (7 data points for last 7 periods) */
+function generateSparklineData(trend: 'up' | 'down' | 'stable', base: number): number[] {
+  const data: number[] = [];
+  let value = base * (0.85 + Math.random() * 0.1);
+  
+  for (let i = 0; i < 7; i++) {
+    data.push(value);
+    if (trend === 'up') {
+      value *= 1.02 + Math.random() * 0.06;
+    } else if (trend === 'down') {
+      value *= 0.94 + Math.random() * 0.04;
+    } else {
+      value *= 0.97 + Math.random() * 0.06;
+    }
+  }
+  
+  return data;
+}
+
+/** Mini sparkline component */
+function Sparkline({ data, color }: { data: number[]; color: string }) {
+  const width = 60;
+  const height = 24;
+  const padding = 2;
+  
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  
+  const points = data.map((v, i) => {
+    const x = padding + (i / (data.length - 1)) * (width - padding * 2);
+    const y = padding + (1 - (v - min) / range) * (height - padding * 2);
+    return { x, y };
+  });
+  
+  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+  
+  return (
+    <svg width={width} height={height} className="shrink-0">
+      <path
+        d={pathD}
+        fill="none"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Metric card colours */
+const metricColors = {
+  contacts: '#14B88A',    // Primary teal
+  sent: '#3B82F6',        // Blue
+  openRate: '#8B5CF6',    // Purple
+  clickRate: '#F59E0B',   // Amber
+};
+
 /**
  * Landing Dashboard — clean overview with key metrics and navigation
  */
@@ -239,6 +314,14 @@ export default function HomePage() {
   const accountMailouts = mailouts.filter((m) => m.accountId === selectedAccountId);
   const metrics = calculateMetrics(accountMailouts);
   const sendsPerDay = useMemo(() => getSendsPerDay(accountMailouts), [accountMailouts]);
+  
+  // Generate sparkline data for each metric
+  const sparklines = useMemo(() => ({
+    contacts: generateSparklineData('up', accountContacts.length),
+    sent: generateSparklineData('up', metrics.sent),
+    openRate: generateSparklineData('stable', metrics.openRate),
+    clickRate: generateSparklineData('up', metrics.clickRate),
+  }), [accountContacts.length, metrics.sent, metrics.openRate, metrics.clickRate]);
 
   return (
     <div className="w-full max-w-[1200px] mx-auto min-h-[calc(100vh-85px)] py-10 px-6">
@@ -253,26 +336,38 @@ export default function HomePage() {
       {/* Key metrics */}
       <div className="grid grid-cols-4 gap-4 mb-10">
         <div className="p-5 rounded-xl border border-border bg-background">
-          <p className="text-sm text-muted-foreground mb-1">Total Contacts</p>
-          <p className="text-2xl font-semibold text-foreground">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-muted-foreground">Total Contacts</p>
+            <Sparkline data={sparklines.contacts} color={metricColors.contacts} />
+          </div>
+          <p className="text-2xl font-semibold" style={{ color: metricColors.contacts }}>
             {accountContacts.length.toLocaleString()}
           </p>
         </div>
         <div className="p-5 rounded-xl border border-border bg-background">
-          <p className="text-sm text-muted-foreground mb-1">Emails Sent</p>
-          <p className="text-2xl font-semibold text-foreground">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-muted-foreground">Emails Sent</p>
+            <Sparkline data={sparklines.sent} color={metricColors.sent} />
+          </div>
+          <p className="text-2xl font-semibold" style={{ color: metricColors.sent }}>
             {metrics.sent.toLocaleString()}
           </p>
         </div>
         <div className="p-5 rounded-xl border border-border bg-background">
-          <p className="text-sm text-muted-foreground mb-1">Open Rate</p>
-          <p className="text-2xl font-semibold text-foreground">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-muted-foreground">Open Rate</p>
+            <Sparkline data={sparklines.openRate} color={metricColors.openRate} />
+          </div>
+          <p className="text-2xl font-semibold" style={{ color: metricColors.openRate }}>
             {metrics.openRate.toFixed(1)}%
           </p>
         </div>
         <div className="p-5 rounded-xl border border-border bg-background">
-          <p className="text-sm text-muted-foreground mb-1">Click Rate</p>
-          <p className="text-2xl font-semibold text-foreground">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-muted-foreground">Click Rate</p>
+            <Sparkline data={sparklines.clickRate} color={metricColors.clickRate} />
+          </div>
+          <p className="text-2xl font-semibold" style={{ color: metricColors.clickRate }}>
             {metrics.clickRate.toFixed(1)}%
           </p>
         </div>
@@ -281,9 +376,7 @@ export default function HomePage() {
       {/* Sends chart */}
       <div className="p-5 rounded-xl border border-border bg-background mb-10">
         <p className="text-sm text-muted-foreground mb-4">Sends — Last 30 Days</p>
-        <div className="text-muted-foreground">
-          <SendsLineChart data={sendsPerDay} />
-        </div>
+        <SendsLineChart data={sendsPerDay} />
       </div>
 
       {/* Navigation sections */}
@@ -297,8 +390,8 @@ export default function HomePage() {
             >
               {/* Section header */}
               <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-muted">
-                  <Icon size={18} weight="bold" className="text-muted-foreground" />
+                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10">
+                  <Icon size={18} weight="bold" className="text-primary" />
                 </div>
                 <div>
                   <h2 className="text-base font-semibold text-foreground">{section.title}</h2>
